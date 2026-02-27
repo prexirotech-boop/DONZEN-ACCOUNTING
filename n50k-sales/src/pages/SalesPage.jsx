@@ -51,10 +51,13 @@ const FAQS = [
     "This guide works for anyone who wants to build a business in Nigeria — NYSC corpers, graduates, civil servants, stay-at-home parents, market traders, people with side income looking to grow, and complete beginners of any age."],
 ]
 
-export default function SalesPage({ onCheckout }) {
+import { useNavigate } from 'react-router-dom'
+
+export default function SalesPage() {
+  const navigate = useNavigate()
   useReveal()
   useToasts()
-  const go = () => { onCheckout(); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  const go = () => { navigate('/checkout'); window.scrollTo({ top: 0, behavior: 'smooth' }) }
 
   return (
     <>

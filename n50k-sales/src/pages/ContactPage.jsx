@@ -14,10 +14,13 @@ const headings = {
     fontWeight: '900',
 };
 
-export default function ContactPage({ onBack }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function ContactPage() {
+    const navigate = useNavigate();
     return (
         <div style={layout}>
-            <button onClick={onBack} className="btn-ghost" style={{ color: 'var(--g700)', marginBottom: 20 }}>← Back to Home</button>
+            <button onClick={() => navigate('/')} className="btn-ghost" style={{ color: 'var(--g700)', marginBottom: 20 }}>← Back to Home</button>
             <h1 style={headings}>Contact Us</h1>
 
             <p style={{ marginBottom: 16 }}>We are committed to providing top-notch support to our readers and future entrepreneurs. If you have any questions, encounter any issues downloading the material, or just need guidance, please don't hesitate to reach out to us.</p>

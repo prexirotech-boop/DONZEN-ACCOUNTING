@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import SalesPage from './pages/SalesPage'
 import PaymentPage from './pages/PaymentPage'
 import ThankYouPage from './pages/ThankYouPage'
@@ -13,29 +13,24 @@ import ContactPage from './pages/ContactPage'
 import Footer from './components/Footer'
 
 export default function App() {
-  const [page, setPage] = useState('sales')
-  const [customer, setCustomer] = useState(null)
-
-  const goPayment = () => setPage('payment')
-  const goSuccess = data => { setCustomer(data); setPage('thankyou') }
-  const goBack = () => setPage('sales')
-  const goNav = (p) => setPage(p)
-
   return (
-    <>
-      {/* Toast container — lives outside pages so it persists */}
+    <BrowserRouter>
+      {/* Toast container — lives outside routes so it persists */}
       <div id="toast-root" />
 
-      {page === 'sales' && <SalesPage onCheckout={goPayment} />}
-      {page === 'payment' && <PaymentPage onSuccess={goSuccess} onBack={goBack} />}
-      {page === 'thankyou' && <ThankYouPage customer={customer} />}
+      <Routes>
+        <Route path="/" element={<SalesPage />} />
+        <Route path="/checkout" element={<PaymentPage />} />
+        <Route path="/success" element={<ThankYouPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/refund" element={<RefundPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        {/* Fallback to home */}
+        <Route path="*" element={<SalesPage />} />
+      </Routes>
 
-      {page === 'terms' && <TermsPage onBack={goBack} />}
-      {page === 'privacy' && <PrivacyPage onBack={goBack} />}
-      {page === 'refund' && <RefundPage onBack={goBack} />}
-      {page === 'contact' && <ContactPage onBack={goBack} />}
-
-      <Footer onNav={goNav} />
-    </>
+      <Footer />
+    </BrowserRouter>
   )
 }

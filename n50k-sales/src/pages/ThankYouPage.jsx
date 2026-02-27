@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { CONFIG } from '../lib/config'
 
-export default function ThankYouPage({ customer }) {
+export default function ThankYouPage() {
+  const customer = JSON.parse(localStorage.getItem('paid_customer') || '{}')
+
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, [])
 
   const first = (customer?.name || 'Champion').split(' ')[0]

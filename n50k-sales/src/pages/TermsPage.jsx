@@ -14,10 +14,13 @@ const headings = {
     fontWeight: '900',
 };
 
-export default function TermsPage({ onBack }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function TermsPage() {
+    const navigate = useNavigate();
     return (
         <div style={layout}>
-            <button onClick={onBack} className="btn-ghost" style={{ color: 'var(--g700)', marginBottom: 20 }}>← Back to Home</button>
+            <button onClick={() => navigate('/')} className="btn-ghost" style={{ color: 'var(--g700)', marginBottom: 20 }}>← Back to Home</button>
             <h1 style={headings}>Terms and Conditions</h1>
             <p style={{ marginBottom: 16 }}>Last updated: {new Date().getFullYear()}</p>
 

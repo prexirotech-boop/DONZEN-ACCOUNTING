@@ -17,11 +17,21 @@ const Field = ({ id, label, hint, type = 'text', placeholder, val, err, onChange
   </div>
 )
 
-export default function PaymentPage({ onSuccess, onBack }) {
-  const [form, setForm] = useState({ name: '', email: '', phone: '' })
+import { useNavigate } from 'react-router-dom'
+
+export default function PaymentPage() {
+  const navigate = useNavigate()
+  const [form, setForm] = useState(() => {
+    const saved = localStorage.getItem('order_form')
+    return saved ? JSON.parse(saved) : { name: '', email: '', phone: '' }
+  })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [psReady, setPsReady] = useState(!!window.PaystackPop)
+
+  useEffect(() => {
+    localStorage.setItem('order_form', JSON.stringify(form))
+  }, [form])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -74,12 +84,16 @@ export default function PaymentPage({ onSuccess, onBack }) {
       callback: async (response) => {
         setLoading(false)
         await saveOrder({ reference: response.reference, name: form.name, email: form.email, phone: form.phone })
-        onSuccess({ ...form, ref: response.reference })
+        const customerData = { ...form, ref: response.reference }
+        localStorage.setItem('paid_customer', JSON.stringify(customerData))
+        navigate('/success')
       },
       onClose: () => setLoading(false),
     })
     handler.openIframe()
   }
+
+  const onBack = () => navigate('/')
 
 
   return (
