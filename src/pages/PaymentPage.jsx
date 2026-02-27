@@ -61,36 +61,63 @@ export default function PaymentPage() {
   const pay = () => {
     if (!validate()) return
     if (!psReady || !window.PaystackPop) {
-      alert('Payment is loading, please try again in a moment.')
+      alert('Payment service is still loading, please wait a second and try again.')
       return
     }
+
+    // Safety check for public key
+    if (!CONFIG.PAYSTACK_PUBLIC_KEY || CONFIG.PAYSTACK_PUBLIC_KEY.includes('VITE_')) {
+      alert('Payment configuration is missing! Please contact the administrator.')
+      console.error('Missing PAYSTACK_PUBLIC_KEY in config')
+      return
+    }
+
     setLoading(true)
     const ref = `n50k_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
-    const handler = window.PaystackPop.setup({
-      key: CONFIG.PAYSTACK_PUBLIC_KEY,
-      email: form.email,
-      amount: CONFIG.PRICE_KOBO,
-      currency: 'NGN',
-      ref,
-      label: form.name,
-      metadata: {
-        custom_fields: [
-          { display_name: 'Customer Name', variable_name: 'name', value: form.name },
-          { display_name: 'Phone', variable_name: 'phone', value: form.phone },
-          { display_name: 'Product', variable_name: 'product', value: CONFIG.BOOK_TITLE },
-        ],
-      },
-      callback: async (response) => {
-        setLoading(false)
-        await saveOrder({ reference: response.reference, name: form.name, email: form.email, phone: form.phone })
-        const customerData = { ...form, ref: response.reference }
-        localStorage.setItem('paid_customer', JSON.stringify(customerData))
-        navigate('/success')
-      },
-      onClose: () => setLoading(false),
-    })
-    handler.openIframe()
+    try {
+      const handler = window.PaystackPop.setup({
+        key: CONFIG.PAYSTACK_PUBLIC_KEY,
+        email: form.email.trim(),
+        amount: CONFIG.PRICE_KOBO,
+        currency: 'NGN',
+        ref,
+        label: form.name.trim(),
+        metadata: {
+          custom_fields: [
+            { display_name: 'Customer Name', variable_name: 'name', value: form.name.trim() },
+            { display_name: 'Phone', variable_name: 'phone', value: form.phone.trim() },
+            { display_name: 'Product', variable_name: 'product', value: CONFIG.BOOK_TITLE },
+          ],
+        },
+        callback: function (response) {
+          // Success! 
+          setLoading(false)
+
+          // Show non-blocking success state and navigate
+          const finish = async () => {
+            try {
+              await saveOrder({ reference: response.reference, name: form.name, email: form.email, phone: form.phone })
+            } catch (err) {
+              console.error('Background save error:', err)
+            }
+            const customerData = { ...form, ref: response.reference }
+            localStorage.setItem('paid_customer', JSON.stringify(customerData))
+            navigate('/success')
+          }
+          finish()
+        },
+        onClose: function () {
+          setLoading(false)
+        },
+      })
+
+      handler.openIframe()
+    } catch (err) {
+      console.error('Paystack SDK setup failed:', err)
+      alert('Could not start payment. Please refresh the page and try again.')
+      setLoading(false)
+    }
   }
 
   const onBack = () => navigate('/')
