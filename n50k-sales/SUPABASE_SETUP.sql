@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS subscribers (
 
 ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Allow anon insert on subscribers" ON subscribers;
 CREATE POLICY "Allow anon insert on subscribers"
   ON subscribers FOR INSERT
   TO anon

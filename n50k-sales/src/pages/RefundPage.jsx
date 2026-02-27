@@ -20,24 +20,17 @@ export default function RefundPage({ onBack }) {
             <button onClick={onBack} className="btn-ghost" style={{ color: 'var(--g700)', marginBottom: 20 }}>← Back to Home</button>
             <h1 style={headings}>Refund Policy</h1>
 
-            <p style={{ marginBottom: 16 }}>At The N50K Blueprint, your success is our primary goal. We strongly believe in the value of the information provided within our guide.</p>
+            <p style={{ marginBottom: 16 }}>At The N50K Blueprint, we are committed to providing you with the highest quality information and strategies to build your business in Nigeria.</p>
 
-            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>1. Digital Product Delivery</h3>
-            <p style={{ marginBottom: 16 }}>Due to the nature of digital products, once a purchase is successfully processed and the download access has been granted, the product is considered "used".</p>
+            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>1. No Refund Policy</h3>
+            <p style={{ marginBottom: 16 }}>Due to the nature of digital products, all sales of The N50K Blueprint are final. Once the purchase is complete and the download link has been delivered to your email, the product is considered "used".</p>
+            <p style={{ marginBottom: 16 }}><strong>We do not offer refunds, returns, or exchanges for any reason.</strong> This is because digital files cannot be "returned" in the same way a physical product can.</p>
 
-            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>2. Our Satisfaction Guarantee</h3>
-            <p style={{ marginBottom: 16 }}>We offer a 30-day satisfaction guarantee on the purchase of The N50K Blueprint under specific conditions. To be eligible for a refund, you must be able to demonstrate that you have implemented the actionable steps outlined in at least one of the 20 business ideas but experienced absolutely no results or progress.</p>
+            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>2. Delivery Guarantee</h3>
+            <p style={{ marginBottom: 16 }}>While we do not offer refunds, we do guarantee delivery. If you have any trouble accessing your file after purchase, or if you did not receive your download link, please contact us immediately.</p>
 
-            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>3. Requesting a Refund</h3>
-            <p style={{ marginBottom: 16 }}>If you feel you meet the criteria for a refund, please contact us at <strong>support@n50kblueprint.ng</strong> within 30 days of your original purchase. In your email, please include:</p>
-            <ul style={{ listStyle: 'disc', paddingLeft: 20, marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <li>Your receipt or reference number.</li>
-                <li>The email address used for purchase.</li>
-                <li>A brief explanation and proof of the steps you actively took from the blueprint.</li>
-            </ul>
-
-            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>4. Processing Time</h3>
-            <p style={{ marginBottom: 16 }}>Refund requests are typically reviewed and processed within 5-7 business days. Once approved, the funds will be fully reversed via our payment processor, Paystack.</p>
+            <h3 style={{ marginTop: 24, marginBottom: 12, fontWeight: 700 }}>3. Support</h3>
+            <p style={{ marginBottom: 16 }}>If you have any questions about the content of the guide or need assistance with your order, please reach out to us at <strong>nprecious.official@gmail.com</strong>. We are here to help you succeed.</p>
         </div>
     );
 }

@@ -26,7 +26,7 @@ export default function ContactPage({ onBack }) {
                 <h3 style={{ fontWeight: 800, color: 'var(--g800)', marginBottom: 16, fontSize: '1.2rem' }}>Our Support Channels</h3>
 
                 <p style={{ fontWeight: 700, marginBottom: 6, color: 'var(--n700)' }}>Email Support:</p>
-                <p style={{ marginBottom: 16, color: 'var(--g700)', fontSize: '1.1rem', fontWeight: 600 }}>support@n50kblueprint.ng</p>
+                <p style={{ marginBottom: 16, color: 'var(--g700)', fontSize: '1.1rem', fontWeight: 600 }}>nprecious.official@gmail.com</p>
 
                 <p style={{ fontWeight: 700, marginBottom: 6, color: 'var(--n700)' }}>Business Hours:</p>
                 <p style={{ marginBottom: 0 }}>Monday – Friday: 9:00 AM – 5:00 PM (WAT)</p>
@@ -35,10 +35,8 @@ export default function ContactPage({ onBack }) {
             <p style={{ marginBottom: 16 }}><strong>Note:</strong> We aim to reply to all queries within 24 hours. If your issue is regarding a lost download link, please ensure you email us from the exact address you used during checkout for faster verification.</p>
 
             <div style={{ marginTop: 24 }}>
-                <h4 style={{ fontWeight: 700, marginBottom: 10 }}>Mailing Address:</h4>
                 <p style={{ color: 'var(--n600)' }}>
-                    The N50K Blueprint Support Desk<br />
-                    Lagos, Nigeria
+                    nprecious.official@gmail.com
                 </p>
             </div>
         </div>

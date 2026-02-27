@@ -357,7 +357,7 @@ export default function SalesPage({ onCheckout }) {
                 Nnanta Precious is a Nigerian entrepreneur, business educator, and strategist who has spent years studying, testing, and documenting exactly what works in the Nigerian small business ecosystem.
               </p>
               <p style={{ fontSize: '.93rem', color: 'var(--n600)', lineHeight: 1.78 }}>
-                After watching thousands of talented Nigerians fail — not from lack of ability but from lack of the right information — she created The N50K Blueprint. The guide is built on a single belief:{' '}
+                After watching thousands of talented Nigerians fail — not from lack of ability but from lack of the right information — he created The N50K Blueprint. The guide is built on a single belief:{' '}
                 <strong style={{ color: 'var(--g800)' }}>Intelligence, determination, and the right information are more powerful than money, connections, or credentials.</strong>
               </p>
             </div>
