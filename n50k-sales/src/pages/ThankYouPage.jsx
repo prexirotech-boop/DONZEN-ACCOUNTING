@@ -108,9 +108,6 @@ export default function ThankYouPage({ customer }) {
         </div>
       </section>
 
-      <footer className="footer" style={{ marginTop: 'auto', textAlign: 'center', padding: '24px 20px', fontSize: '.84rem', color: 'var(--n500)', borderTop: '1px solid var(--n100)' }}>
-        <p>© 2026 The N50K Blueprint · All Rights Reserved</p>
-      </footer>
     </>
   )
 }

@@ -533,11 +533,6 @@ export default function SalesPage({ onCheckout }) {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="footer">
-        <p>© 2026 The N50K Blueprint · All Rights Reserved</p>
-        <p style={{ marginTop: 6 }}>This is a digital product. All sales are subject to our 30-day satisfaction guarantee. Paystack is an independent payment processor.</p>
-      </footer>
     </>
   )
 }

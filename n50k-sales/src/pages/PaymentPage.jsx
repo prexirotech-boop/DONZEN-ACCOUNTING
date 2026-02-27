@@ -2,6 +2,21 @@ import { useState, useEffect, useRef } from 'react'
 import { CONFIG } from '../lib/config'
 import { saveOrder } from '../lib/supabase'
 
+const Field = ({ id, label, hint, type = 'text', placeholder, val, err, onChange }) => (
+  <div className="f-group">
+    <label className="f-label" htmlFor={id}>
+      {label}{hint && <span style={{ fontSize: '.76rem', color: 'var(--g600)', fontWeight: 600, marginLeft: 6 }}>{hint}</span>}
+    </label>
+    <input
+      id={id} type={type} placeholder={placeholder}
+      className={`f-input${err ? ' has-error' : ''}`}
+      value={val} onChange={e => onChange(e.target.value)}
+      autoComplete={type === 'email' ? 'email' : type === 'tel' ? 'tel' : 'name'}
+    />
+    {err && <p className="f-err">⚠ {err}</p>}
+  </div>
+)
+
 export default function PaymentPage({ onSuccess, onBack }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
   const [errors, setErrors] = useState({})
@@ -66,20 +81,6 @@ export default function PaymentPage({ onSuccess, onBack }) {
     handler.openIframe()
   }
 
-  const Field = ({ id, label, hint, type = 'text', placeholder, val, err, onChange }) => (
-    <div className="f-group">
-      <label className="f-label" htmlFor={id}>
-        {label}{hint && <span style={{ fontSize: '.76rem', color: 'var(--g600)', fontWeight: 600, marginLeft: 6 }}>{hint}</span>}
-      </label>
-      <input
-        id={id} type={type} placeholder={placeholder}
-        className={`f-input${err ? ' has-error' : ''}`}
-        value={val} onChange={e => onChange(e.target.value)}
-        autoComplete={type === 'email' ? 'email' : type === 'tel' ? 'tel' : 'name'}
-      />
-      {err && <p className="f-err">⚠ {err}</p>}
-    </div>
-  )
 
   return (
     <>
@@ -189,10 +190,6 @@ export default function PaymentPage({ onSuccess, onBack }) {
         </div>
       </section>
 
-      <div className="footer" style={{ textAlign: 'center', padding: '24px 20px', fontSize: '.82rem', color: 'var(--n500)' }}>
-        <p>© 2026 The N50K Blueprint · All Rights Reserved</p>
-        <p style={{ marginTop: 4 }}>Payment processed securely by Paystack. This is a digital product — download delivered instantly after payment.</p>
-      </div>
     </>
   )
 }
