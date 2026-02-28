@@ -36,12 +36,6 @@ export default function ContactPage() {
             </div>
 
             <p style={{ marginBottom: 16 }}><strong>Note:</strong> We aim to reply to all queries within 24 hours. If your issue is regarding a lost download link, please ensure you email us from the exact address you used during checkout for faster verification.</p>
-
-            <div style={{ marginTop: 24 }}>
-                <p style={{ color: 'var(--n600)' }}>
-                    nprecious.official@gmail.com
-                </p>
-            </div>
         </div>
     );
 }

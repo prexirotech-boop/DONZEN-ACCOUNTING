@@ -157,7 +157,7 @@ export default function SalesPage() {
             Entrepreneurs Building Across Nigeria
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-            {['🏙️ Lagos', '🏛️ Abuja', '🏬 Kano', '⚓ Port Harcourt', '🌿 Enugu', '🌆 Ibadan', '🏘️ Aba', '🌊 Warri'].map(c => (
+            {['🏙️ Lagos', '🏛️ Abuja', '🏬 Kano', '⚓ Port Harcourt', '🌿 Enugu', '🌆 Ibadan'].map(c => (
               <span key={c} style={{ fontSize: '.84rem', fontWeight: 600, color: 'var(--n500)' }}>{c}</span>
             ))}
           </div>

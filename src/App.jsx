@@ -12,9 +12,21 @@ import ContactPage from './pages/ContactPage'
 // Components
 import Footer from './components/Footer'
 
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {/* Toast container — lives outside routes so it persists */}
       <div id="toast-root" />
 

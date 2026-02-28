@@ -164,7 +164,7 @@ export default function PaymentPage() {
 
           {/* Mini trust */}
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginTop: 20 }}>
-            {['🔒 SSL Encrypted', '✅ Paystack Trusted', '⚡ Instant Access', '📩 Sent to Your Email'].map(t => (
+            {['🔒 SSL Encrypted', '⚡ Instant Access', '📩 Sent to Your Email'].map(t => (
               <span key={t} style={{ fontSize: '.76rem', color: 'rgba(255,255,255,.55)', fontWeight: 600 }}>{t}</span>
             ))}
           </div>
