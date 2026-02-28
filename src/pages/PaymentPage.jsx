@@ -60,63 +60,86 @@ export default function PaymentPage() {
 
   const pay = () => {
     if (!validate()) return
-    if (!psReady || !window.PaystackPop) {
+    if (!window.PaystackPop) {
       alert('Payment service is still loading, please wait a second and try again.')
       return
     }
 
-    // Safety check for public key
-    if (!CONFIG.PAYSTACK_PUBLIC_KEY || CONFIG.PAYSTACK_PUBLIC_KEY.includes('VITE_')) {
-      alert('Payment configuration is missing! Please contact the administrator.')
-      console.error('Missing PAYSTACK_PUBLIC_KEY in config')
-      return
+    // Track Lead on Facebook when they click Pay
+    if (window.fbq) {
+      fbq('track', 'Lead', {
+        content_name: CONFIG.BOOK_TITLE,
+        value: CONFIG.PRICE_NAIRA,
+        currency: 'NGN'
+      })
     }
 
     setLoading(true)
     const ref = `n50k_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
     try {
-      const handler = window.PaystackPop.setup({
+      // The modern way to call Paystack SDK
+      const paystack = new window.PaystackPop()
+      paystack.newTransaction({
         key: CONFIG.PAYSTACK_PUBLIC_KEY,
         email: form.email.trim(),
         amount: CONFIG.PRICE_KOBO,
         currency: 'NGN',
-        ref,
-        label: form.name.trim(),
-        metadata: {
-          custom_fields: [
-            { display_name: 'Customer Name', variable_name: 'name', value: form.name.trim() },
-            { display_name: 'Phone', variable_name: 'phone', value: form.phone.trim() },
-            { display_name: 'Product', variable_name: 'product', value: CONFIG.BOOK_TITLE },
-          ],
-        },
-        callback: function (response) {
-          // Success! 
-          setLoading(false)
+        ref: ref,
+        onSuccess: (transaction) => {
+          // TRACK PURCHASE ON FACEBOOK
+          if (window.fbq) {
+            fbq('track', 'Purchase', {
+              value: CONFIG.PRICE_NAIRA,
+              currency: 'NGN',
+              content_name: CONFIG.BOOK_TITLE
+            })
+          }
 
-          // Show non-blocking success state and navigate
-          const finish = async () => {
-            try {
-              await saveOrder({ reference: response.reference, name: form.name, email: form.email, phone: form.phone })
-            } catch (err) {
-              console.error('Background save error:', err)
-            }
+          // Save to database and navigate
+          saveOrder({
+            reference: transaction.reference,
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim()
+          }).then(() => {
+            const customerData = { ...form, ref: transaction.reference }
+            localStorage.setItem('paid_customer', JSON.stringify(customerData))
+            setLoading(false)
+            navigate('/success')
+          }).catch(err => {
+            console.error('Database save error:', err)
+            // Still navigate so they get their book, we can reconcile manually if needed
+            navigate('/success')
+          })
+        },
+        onCancel: () => {
+          setLoading(false)
+        }
+      })
+    } catch (err) {
+      console.error('Paystack SDK failed:', err)
+
+      // Fallback for older versions of the SDK if the above fails
+      try {
+        const handler = window.PaystackPop.setup({
+          key: CONFIG.PAYSTACK_PUBLIC_KEY,
+          email: form.email.trim(),
+          amount: CONFIG.PRICE_KOBO,
+          currency: 'NGN',
+          ref: ref,
+          callback: (response) => {
             const customerData = { ...form, ref: response.reference }
             localStorage.setItem('paid_customer', JSON.stringify(customerData))
             navigate('/success')
-          }
-          finish()
-        },
-        onClose: function () {
-          setLoading(false)
-        },
-      })
-
-      handler.openIframe()
-    } catch (err) {
-      console.error('Paystack SDK setup failed:', err)
-      alert('Could not start payment. Please refresh the page and try again.')
-      setLoading(false)
+          },
+          onClose: () => setLoading(false)
+        })
+        handler.openIframe()
+      } catch (e2) {
+        alert('Could not start payment. Please check your internet and refresh.')
+        setLoading(false)
+      }
     }
   }
 
