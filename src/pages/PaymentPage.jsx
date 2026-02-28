@@ -209,7 +209,7 @@ export default function PaymentPage() {
 
 
           {/* Guarantee */}
-          <div className="guarantee">
+          <div className="guarantee" style={{ marginTop: 32 }}>
             <div style={{ fontSize: '2rem', marginBottom: 6 }}>🛡️</div>
             <div className="guarantee-title">Instant & Permanent Access</div>
             <p className="guarantee-text">Your Blueprint is delivered to your email the moment payment is confirmed — tied to your account permanently. One payment, lifetime access.</p>
