@@ -7,6 +7,6 @@ export const CONFIG = {
   PRICE_DISPLAY: '₦2,500',
   ORIGINAL_PRICE: '₦9,000',
   BOOK_TITLE: 'The N50K Blueprint',
-  PDF_URL: import.meta.env.VITE_PDF_DOWNLOAD_URL || '#',
+  PDF_URL: import.meta.env.VITE_PDF_DOWNLOAD_URL || 'https://zisbhfwxaiqtxtkecyow.supabase.co/storage/v1/object/public/downloads/N50K_Blueprint_Enhanced_2.pdf',
   AUTHOR: 'Nnanta Precious',
 }
