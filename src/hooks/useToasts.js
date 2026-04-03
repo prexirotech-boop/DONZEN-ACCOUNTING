@@ -20,14 +20,22 @@ const BUYERS = [
   { name: 'Adaeze P.', city: 'Warri', i: 'A' },
   { name: 'Chidi O.', city: 'Owerri', i: 'C' },
 ]
-const TIMES = ['just now', '1 min ago', '2 min ago', '3 min ago']
+const TIMES = ['just now', '1 min ago', '2 mins ago', '5 mins ago', '8 mins ago', '12 mins ago', '15 mins ago', '22 mins ago', '34 mins ago', '45 mins ago', '1 hour ago']
 
 function fire(buyer) {
   const root = document.getElementById('toast-root')
   if (!root) return
 
+  // Prevent overlapping toasts
+  const existing = document.querySelector('.toast');
+  if (existing) {
+    existing.classList.add('out');
+    setTimeout(() => { if (existing.parentNode) existing.parentNode.removeChild(existing); }, 360);
+  }
+
   const div = document.createElement('div')
   div.className = 'toast'
+  const timeStr = TIMES[Math.floor(Math.random() * TIMES.length)]
   div.innerHTML = `
     <div class="toast-av">${buyer.i}</div>
     <div class="toast-body">
@@ -38,7 +46,7 @@ function fire(buyer) {
         Verified Customer
       </div>
     </div>
-    <div class="toast-time">${TIMES[Math.floor(Math.random() * 3)]}</div>
+    <div class="toast-time">${timeStr}</div>
   `
   root.insertBefore(div, root.firstChild)
 
@@ -51,9 +59,18 @@ function fire(buyer) {
 let idx = 0
 export function useToasts() {
   useEffect(() => {
-    const delays = [7000, 14000, 22000, 33000, 45000]
-    const timers = delays.map(d => setTimeout(() => fire(BUYERS[idx++ % BUYERS.length]), d))
-    const recurring = setInterval(() => fire(BUYERS[idx++ % BUYERS.length]), 32000)
-    return () => { timers.forEach(clearTimeout); clearInterval(recurring) }
+    let timeoutId;
+    
+    const triggerNext = () => {
+      fire(BUYERS[idx++ % BUYERS.length]);
+      // random delay between 45s and 90s to significantly slow it down
+      const nextDelay = Math.random() * 45000 + 45000;
+      timeoutId = setTimeout(triggerNext, nextDelay);
+    };
+
+    // start the first one after 15 seconds
+    timeoutId = setTimeout(triggerNext, 15000);
+
+    return () => clearTimeout(timeoutId);
   }, [])
 }

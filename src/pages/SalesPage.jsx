@@ -353,7 +353,7 @@ export default function SalesPage() {
           <div className="reveal">
             <span className="badge badge-green">About the Author</span>
             <div style={{ marginTop: 20, background: '#fff', borderRadius: 'var(--r-xl)', padding: 28, boxShadow: 'var(--sh)', border: '1.5px solid var(--n100)' }}>
-              <div style={{ width: 76, height: 76, borderRadius: '50%', background: 'linear-gradient(135deg, var(--g700), var(--g400))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.8rem', fontWeight: 900, margin: '0 auto 16px' }}>N</div>
+              <img src="/avatar.png" alt="Nnanta Precious" style={{ width: 86, height: 86, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 16px', display: 'block', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
               <p style={{ textAlign: 'center', fontWeight: 800, fontSize: '1.15rem', marginBottom: 3 }}>Nnanta Precious</p>
               <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--g700)', fontWeight: 600, marginBottom: 18 }}>Nigerian Entrepreneur & Business Strategist</p>
               <p style={{ fontSize: '.93rem', color: 'var(--n600)', lineHeight: 1.78, marginBottom: 14 }}>

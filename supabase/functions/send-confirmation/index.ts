@@ -9,13 +9,22 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
 const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY')
 const PDF_DOWNLOAD_URL = Deno.env.get('PDF_DOWNLOAD_URL') || "https://your-domain.com/downloads/n50k-blueprint.pdf"
 
-serve(async (req) => {
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+serve(async (req: any) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   try {
     const { record } = await req.json()
 
     // 1. Initial validation
     if (!record || !record.reference) {
-      return new Response(JSON.stringify({ message: "No record or reference found" }), { status: 400 })
+      return new Response(JSON.stringify({ message: "No record or reference found" }), { headers: corsHeaders, status: 400 })
     }
 
     // 2. Security Check: Verify payment status with Paystack API
@@ -34,7 +43,7 @@ serve(async (req) => {
     // Note: record.amount is in Naira (2500), Paystack returns in kobo (250000)
     if (!paystackData.status || paystackData.data.status !== 'success') {
       console.error(`Paystack verification failed for ${record.reference}:`, paystackData.message)
-      return new Response(JSON.stringify({ message: "Payment verification failed" }), { status: 400 })
+      return new Response(JSON.stringify({ message: "Payment verification failed" }), { headers: corsHeaders, status: 400 })
     }
 
     // 4. Send the Email via Resend
@@ -147,10 +156,11 @@ serve(async (req) => {
     })
 
     const data = await res.json()
-    return new Response(JSON.stringify(data), { status: 200 })
+    return new Response(JSON.stringify(data), { headers: corsHeaders, status: 200 })
 
   } catch (error) {
-    console.error("Critical error in edge function:", error.message)
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 })
+    const err = error as Error;
+    console.error("Critical error in edge function:", err.message)
+    return new Response(JSON.stringify({ error: err.message }), { headers: corsHeaders, status: 500 })
   }
 })
