@@ -91,19 +91,8 @@ export default function WebinarPage() {
   const [product, setProduct] = useState(null)
   const [showCTASection, setShowCTASection] = useState(false)
   const [showBriefsSection, setShowBriefsSection] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [isTheater, setIsTheater] = useState(false)
   const playerRef = useRef(null)
   const lastAllowedTime = useRef(0)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   // Load product from database to fetch price and old_price dynamically
   useEffect(() => {
@@ -155,8 +144,8 @@ export default function WebinarPage() {
       id: "7w73000sy2",
       options: {
         playbar: false,
-        fullscreenButton: false, // Disables native popups completely
-        playsinline: true,       // Forces iOS to play inline
+        fullscreenButton: true, // Enables native fullscreen button
+        playsinline: true,       // Forces iOS to play inline initially
         videoFoam: true         // Auto-resizes to its parent container
       },
       onReady: (video) => {
@@ -190,7 +179,7 @@ export default function WebinarPage() {
 
         syncVideoTime();
 
-        // 4. Prevent skipping (Seeking Guardrail) synced with wall-clock time
+        // 4. Prevent skipping forward (Seeking Guardrail) synced with wall-clock time
         video.bind('secondchange', (s) => {
           const startTimeStr = localStorage.getItem('webinar_start_time');
           if (startTimeStr) {
@@ -199,14 +188,15 @@ export default function WebinarPage() {
             const duration = video.duration();
             const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
 
-            if (Math.abs(s - targetTime) > 3) {
+            // If user's playhead time jumps forward past the wall-clock time, snap it back
+            if (s > targetTime + 2) {
               video.time(targetTime);
               lastAllowedTime.current = targetTime;
             } else {
               lastAllowedTime.current = s;
             }
           } else {
-            if (s > lastAllowedTime.current + 2 || s < lastAllowedTime.current) {
+            if (s > lastAllowedTime.current + 2) {
               video.time(lastAllowedTime.current);
             } else {
               lastAllowedTime.current = s;
@@ -214,7 +204,31 @@ export default function WebinarPage() {
           }
         });
 
-        // 5. Sync when browser tab gains focus or returns from background
+        // 5. Intercept manual seek events (especially in native mobile fullscreen) to block fast-forwarding
+        video.bind('seek', (currentTime, lastTime) => {
+          const startTimeStr = localStorage.getItem('webinar_start_time');
+          if (startTimeStr) {
+            const startTimeMs = parseInt(startTimeStr, 10);
+            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
+            const duration = video.duration();
+            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
+
+            if (currentTime > targetTime + 2) {
+              video.time(targetTime);
+              lastAllowedTime.current = targetTime;
+            } else {
+              lastAllowedTime.current = currentTime;
+            }
+          } else {
+            if (currentTime > lastAllowedTime.current + 2) {
+              video.time(lastAllowedTime.current);
+            } else {
+              lastAllowedTime.current = currentTime;
+            }
+          }
+        });
+
+        // 6. Sync when browser tab gains focus or returns from background
         const handleFocus = () => {
           syncVideoTime();
           video.play();
@@ -231,6 +245,7 @@ export default function WebinarPage() {
       if (playerRef.current) {
         playerRef.current.unbind('pause');
         playerRef.current.unbind('secondchange');
+        playerRef.current.unbind('seek');
         if (playerRef.current._cleanupFocus) {
           playerRef.current._cleanupFocus();
         }
@@ -339,27 +354,12 @@ export default function WebinarPage() {
 
         {/* Video Player Card */}
         <div className="wb-video-card">
-          <div className={`video-stage-container ${isTheater ? 'is-theater' : ''}`}>
-            <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
-              <wistia-player 
-                media-id="7w73000sy2" 
-                aspect="1.7777777777777777" 
-                playbar="false"
-                play-bar-control="false"
-                fullscreen-control={isMobile ? "false" : "true"}
-                style={{ width: '100%', height: '100%', display: 'block' }}
-              ></wistia-player>
-            </div>
-            
-            {/* Custom Fullscreen / Theater Mode Button for Mobile */}
-            {isMobile && (
-              <button 
-                className="custom-fullscreen-toggle"
-                onClick={() => setIsTheater(!isTheater)}
-              >
-                {isTheater ? "Exit Fullscreen ✕" : "Maximize Video ⛶"}
-              </button>
-            )}
+          <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
+            <wistia-player 
+              media-id="7w73000sy2" 
+              aspect="1.7777777777777777" 
+              style={{ width: '100%', height: '100%', display: 'block' }}
+            ></wistia-player>
           </div>
           <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
         </div>
@@ -660,50 +660,6 @@ export default function WebinarPage() {
           width: 100%;
         }
 
-        /* THEATER MODE (PSEUDO-FULLSCREEN) */
-        .video-stage-container {
-          position: relative;
-          width: 100%;
-          border-radius: 10px;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
-        .video-stage-container.is-theater {
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          max-width: 100vw !important;
-          z-index: 99999 !important;
-          background-color: #000000;
-          border-radius: 0px !important;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .video-stage-container.is-theater .wb-video-wrapper {
-          border-radius: 0px !important;
-          aspect-ratio: 16/9;
-          width: 100%;
-          max-height: 100vh;
-        }
-        .custom-fullscreen-toggle {
-          position: absolute;
-          bottom: 12px;
-          right: 12px;
-          z-index: 100000;
-          background: rgba(0, 0, 0, 0.7);
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: bold;
-          cursor: pointer;
-          outline: none;
-        }
-        
         /* Prevent right-clicks or native long-presses from inspecting the stream */
         wistia-player video,
         .wistia_embed video {
