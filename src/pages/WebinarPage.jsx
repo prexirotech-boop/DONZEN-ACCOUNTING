@@ -777,6 +777,14 @@ export default function WebinarPage() {
           margin-top: 14px;
           padding: 0 4px;
         }
+        @media (max-width: 640px) {
+          .wb-video-caption-row {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+          }
+        }
         .wb-video-caption {
           font-size: 12px;
           color: rgba(255, 255, 255, 0.4);
