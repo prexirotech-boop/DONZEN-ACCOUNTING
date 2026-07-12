@@ -394,6 +394,7 @@ export default function WebinarPage() {
           <div className="wb-video-caption-row">
             <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
             <div className="wb-live-counter">
+              <span className="wb-live-dot"></span>
               <svg className="wb-live-user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
@@ -794,6 +795,18 @@ export default function WebinarPage() {
           display: flex;
           align-items: center;
           gap: 6px;
+        }
+        .wb-live-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #22c55e;
+          flex-shrink: 0;
+          animation: wb-pulse-dot 1.8s ease-in-out infinite;
+        }
+        @keyframes wb-pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.55; transform: scale(0.8); }
         }
 
         .wb-live-user-icon {
