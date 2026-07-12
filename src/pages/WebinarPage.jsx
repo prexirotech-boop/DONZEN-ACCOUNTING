@@ -92,8 +92,10 @@ export default function WebinarPage() {
   const [showCTASection, setShowCTASection] = useState(false)
   const [showBriefsSection, setShowBriefsSection] = useState(false)
   const [isTheater, setIsTheater] = useState(false)
+  const [showControls, setShowControls] = useState(true)
   const playerRef = useRef(null)
   const lastAllowedTime = useRef(0)
+  const controlsTimeoutRef = useRef(null)
 
   // Load product from database to fetch price and old_price dynamically
   useEffect(() => {
@@ -254,6 +256,33 @@ export default function WebinarPage() {
     };
   }, []);
 
+  const resetControlsTimeout = () => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+    controlsTimeoutRef.current = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
+
+  // Auto-hide fullscreen controls in theater mode
+  useEffect(() => {
+    if (isTheater) {
+      resetControlsTimeout();
+    } else {
+      setShowControls(true);
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+    }
+    return () => {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+    };
+  }, [isTheater]);
+
   // Auto-theater mode on landscape rotation on mobile devices
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -263,8 +292,15 @@ export default function WebinarPage() {
       if (isMobileDevice) {
         if (isLandscape) {
           setIsTheater(true);
+          // Scroll slightly to collapse mobile Safari address bar
+          setTimeout(() => {
+            window.scrollTo(0, 1);
+          }, 300);
         } else {
           setIsTheater(false);
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 300);
         }
       }
     };
@@ -389,7 +425,11 @@ export default function WebinarPage() {
 
         {/* Video Player Card */}
         <div className="wb-video-card">
-          <div className={`video-stage-container ${isTheater ? 'is-theater' : ''}`}>
+          <div 
+            className={`video-stage-container ${isTheater ? 'is-theater' : ''}`}
+            onMouseMove={resetControlsTimeout}
+            onTouchStart={resetControlsTimeout}
+          >
             <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
               <wistia-player 
                 media-id="7w73000sy2" 
@@ -400,10 +440,22 @@ export default function WebinarPage() {
             
             {/* Custom Fullscreen / Theater Mode Toggle Button for Mobile */}
             <button 
-              className="custom-fullscreen-toggle"
-              onClick={() => setIsTheater(!isTheater)}
+              className={`custom-fullscreen-toggle ${showControls ? 'visible' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsTheater(!isTheater);
+              }}
+              aria-label={isTheater ? "Exit Fullscreen" : "Maximize Video"}
             >
-              {isTheater ? "Exit Fullscreen ✕" : "Maximize Video ⛶"}
+              {isTheater ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+              )}
             </button>
           </div>
           <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
@@ -729,46 +781,47 @@ export default function WebinarPage() {
         }
         .video-stage-container.is-theater .wb-video-wrapper {
           border-radius: 0px !important;
-          aspect-ratio: 16/9;
-          width: 100%;
-          max-height: 100vh;
+          width: 100vw !important;
+          height: 56.25vw !important; /* 16:9 aspect height */
+          max-width: 177.78vh !important; /* 16:9 aspect width cap */
+          max-height: 100vh !important;
+          margin: auto !important;
+          aspect-ratio: 16/9 !important;
         }
         .custom-fullscreen-toggle {
           position: absolute;
-          bottom: 12px;
+          top: 12px;
           right: 12px;
           z-index: 100000;
-          background: rgba(0, 0, 0, 0.7);
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: bold;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           cursor: pointer;
-          outline: none;
+          transition: opacity 0.3s ease, transform 0.2s ease, background 0.2s ease;
+          opacity: 0;
+          pointer-events: none;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .custom-fullscreen-toggle.visible {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .custom-fullscreen-toggle:active {
+          transform: scale(0.9);
+          background: rgba(15, 23, 42, 0.9);
         }
         /* Desktop hides custom fullscreen button */
         @media (min-width: 1024px) {
           .custom-fullscreen-toggle {
             display: none !important;
-          }
-        }
-        /* Mobile orientation landscape: occupy full screen and look stunning */
-        @media (orientation: landscape) and (max-width: 992px) {
-          .video-stage-container.is-theater {
-            width: 100vw !important;
-            height: 100vh !important;
-            top: 0 !important;
-            left: 0 !important;
-          }
-          .video-stage-container.is-theater .wb-video-wrapper {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: 100vw !important;
-            max-height: 100vh !important;
-            aspect-ratio: 16/9 !important;
-            border-radius: 0px !important;
           }
         }
         /* Body scroll lock during theater mode */
