@@ -399,7 +399,7 @@ export default function WebinarPage() {
                 <circle cx="12" cy="7" r="4"/>
               </svg>
               <span className="wb-live-count-num">{liveViewerCount.toLocaleString()}</span>
-              <span className="wb-live-label">watching right now</span>
+              <span className="wb-live-label">watching live</span>
             </div>
           </div>
         </div>
