@@ -91,6 +91,7 @@ export default function WebinarPage() {
   const [product, setProduct] = useState(null)
   const [showCTASection, setShowCTASection] = useState(false)
   const [showBriefsSection, setShowBriefsSection] = useState(false)
+  const [isTheater, setIsTheater] = useState(false)
   const playerRef = useRef(null)
   const lastAllowedTime = useRef(0)
 
@@ -144,8 +145,8 @@ export default function WebinarPage() {
       id: "7w73000sy2",
       options: {
         playbar: false,
-        fullscreenButton: true, // Enables native fullscreen button
-        playsinline: true,       // Forces iOS to play inline initially
+        fullscreenButton: false, // Disables native fullscreen button to prevent timeline leaks on iOS
+        playsinline: true,       // Forces iOS to play inline
         videoFoam: true         // Auto-resizes to its parent container
       },
       onReady: (video) => {
@@ -253,6 +254,40 @@ export default function WebinarPage() {
     };
   }, []);
 
+  // Auto-theater mode on landscape rotation on mobile devices
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const isMobileDevice = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobileDevice) {
+        if (isLandscape) {
+          setIsTheater(true);
+        } else {
+          setIsTheater(false);
+        }
+      }
+    };
+
+    window.addEventListener('resize', handleOrientationChange);
+    // Initial check
+    handleOrientationChange();
+
+    return () => window.removeEventListener('resize', handleOrientationChange);
+  }, []);
+
+  // Manage body scroll lock during theater mode
+  useEffect(() => {
+    if (isTheater) {
+      document.body.classList.add('wb-no-scroll');
+    } else {
+      document.body.classList.remove('wb-no-scroll');
+    }
+    return () => {
+      document.body.classList.remove('wb-no-scroll');
+    };
+  }, [isTheater]);
+
   // Calculate evergreen date: 4 days from today
   useEffect(() => {
     const date = new Date()
@@ -354,12 +389,22 @@ export default function WebinarPage() {
 
         {/* Video Player Card */}
         <div className="wb-video-card">
-          <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
-            <wistia-player 
-              media-id="7w73000sy2" 
-              aspect="1.7777777777777777" 
-              style={{ width: '100%', height: '100%', display: 'block' }}
-            ></wistia-player>
+          <div className={`video-stage-container ${isTheater ? 'is-theater' : ''}`}>
+            <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
+              <wistia-player 
+                media-id="7w73000sy2" 
+                aspect="1.7777777777777777" 
+                style={{ width: '100%', height: '100%', display: 'block' }}
+              ></wistia-player>
+            </div>
+            
+            {/* Custom Fullscreen / Theater Mode Toggle Button for Mobile */}
+            <button 
+              className="custom-fullscreen-toggle"
+              onClick={() => setIsTheater(!isTheater)}
+            >
+              {isTheater ? "Exit Fullscreen ✕" : "Maximize Video ⛶"}
+            </button>
           </div>
           <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
         </div>
@@ -658,6 +703,80 @@ export default function WebinarPage() {
           display: flex;
           flex-direction: column;
           width: 100%;
+        }
+
+        /* THEATER MODE (PSEUDO-FULLSCREEN) */
+        .video-stage-container {
+          position: relative;
+          width: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        .video-stage-container.is-theater {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-width: 100vw !important;
+          z-index: 99999 !important;
+          background-color: #000000;
+          border-radius: 0px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .video-stage-container.is-theater .wb-video-wrapper {
+          border-radius: 0px !important;
+          aspect-ratio: 16/9;
+          width: 100%;
+          max-height: 100vh;
+        }
+        .custom-fullscreen-toggle {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          z-index: 100000;
+          background: rgba(0, 0, 0, 0.7);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: bold;
+          cursor: pointer;
+          outline: none;
+        }
+        /* Desktop hides custom fullscreen button */
+        @media (min-width: 1024px) {
+          .custom-fullscreen-toggle {
+            display: none !important;
+          }
+        }
+        /* Mobile orientation landscape: occupy full screen and look stunning */
+        @media (orientation: landscape) and (max-width: 992px) {
+          .video-stage-container.is-theater {
+            width: 100vw !important;
+            height: 100vh !important;
+            top: 0 !important;
+            left: 0 !important;
+          }
+          .video-stage-container.is-theater .wb-video-wrapper {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            aspect-ratio: 16/9 !important;
+            border-radius: 0px !important;
+          }
+        }
+        /* Body scroll lock during theater mode */
+        body.wb-no-scroll {
+          overflow: hidden !important;
+          position: fixed !important;
+          width: 100% !important;
+          height: 100% !important;
         }
 
         /* Prevent right-clicks or native long-presses from inspecting the stream */
