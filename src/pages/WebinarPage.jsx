@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { trackEvent } from '../lib/analytics'
 import { supabase } from '../lib/supabase'
@@ -92,6 +92,9 @@ export default function WebinarPage() {
   const [showCTASection, setShowCTASection] = useState(false)
   const [showBriefsSection, setShowBriefsSection] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isTheater, setIsTheater] = useState(false)
+  const playerRef = useRef(null)
+  const lastAllowedTime = useRef(0)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -143,6 +146,97 @@ export default function WebinarPage() {
     script2.type = 'module'
     document.body.appendChild(script2)
   }, [])
+
+  // Set up Wistia player bindings for live stream emulation (WebinarJam behavior)
+  useEffect(() => {
+    window._wq = window._wq || [];
+    
+    window._wq.push({
+      id: "7w73000sy2",
+      options: {
+        playbar: false,
+        fullscreenButton: false, // Disables native popups completely
+        playsinline: true,       // Forces iOS to play inline
+        videoFoam: true         // Auto-resizes to its parent container
+      },
+      onReady: (video) => {
+        playerRef.current = video;
+
+        // 1. Remove control bar components
+        if (typeof video.emailControlHide === 'function') {
+          video.emailControlHide(); 
+        }
+        
+        // 2. Prevent pausing
+        video.bind('pause', () => {
+          video.play();
+        });
+
+        // 3. Wall-clock syncing logic
+        const syncVideoTime = () => {
+          const startTimeStr = localStorage.getItem('webinar_start_time');
+          if (startTimeStr) {
+            const startTimeMs = parseInt(startTimeStr, 10);
+            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
+            const duration = video.duration();
+            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
+
+            if (Math.abs(video.time() - targetTime) > 2) {
+              video.time(targetTime);
+              lastAllowedTime.current = targetTime;
+            }
+          }
+        };
+
+        syncVideoTime();
+
+        // 4. Prevent skipping (Seeking Guardrail) synced with wall-clock time
+        video.bind('secondchange', (s) => {
+          const startTimeStr = localStorage.getItem('webinar_start_time');
+          if (startTimeStr) {
+            const startTimeMs = parseInt(startTimeStr, 10);
+            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
+            const duration = video.duration();
+            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
+
+            if (Math.abs(s - targetTime) > 3) {
+              video.time(targetTime);
+              lastAllowedTime.current = targetTime;
+            } else {
+              lastAllowedTime.current = s;
+            }
+          } else {
+            if (s > lastAllowedTime.current + 2 || s < lastAllowedTime.current) {
+              video.time(lastAllowedTime.current);
+            } else {
+              lastAllowedTime.current = s;
+            }
+          }
+        });
+
+        // 5. Sync when browser tab gains focus or returns from background
+        const handleFocus = () => {
+          syncVideoTime();
+          video.play();
+        };
+        window.addEventListener('focus', handleFocus);
+        
+        video._cleanupFocus = () => {
+          window.removeEventListener('focus', handleFocus);
+        };
+      }
+    });
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.unbind('pause');
+        playerRef.current.unbind('secondchange');
+        if (playerRef.current._cleanupFocus) {
+          playerRef.current._cleanupFocus();
+        }
+      }
+    };
+  }, []);
 
   // Calculate evergreen date: 4 days from today
   useEffect(() => {
@@ -245,15 +339,27 @@ export default function WebinarPage() {
 
         {/* Video Player Card */}
         <div className="wb-video-card">
-          <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
-            <wistia-player 
-              media-id="7w73000sy2" 
-              aspect="1.7777777777777777" 
-              playbar="false"
-              play-bar-control="false"
-              fullscreen-control={isMobile ? "false" : "true"}
-              style={{ width: '100%', height: '100%', display: 'block' }}
-            ></wistia-player>
+          <div className={`video-stage-container ${isTheater ? 'is-theater' : ''}`}>
+            <div className="wb-video-wrapper" style={{ borderRadius: '10px', overflow: 'hidden', background: '#000' }}>
+              <wistia-player 
+                media-id="7w73000sy2" 
+                aspect="1.7777777777777777" 
+                playbar="false"
+                play-bar-control="false"
+                fullscreen-control={isMobile ? "false" : "true"}
+                style={{ width: '100%', height: '100%', display: 'block' }}
+              ></wistia-player>
+            </div>
+            
+            {/* Custom Fullscreen / Theater Mode Button for Mobile */}
+            {isMobile && (
+              <button 
+                className="custom-fullscreen-toggle"
+                onClick={() => setIsTheater(!isTheater)}
+              >
+                {isTheater ? "Exit Fullscreen ✕" : "Maximize Video ⛶"}
+              </button>
+            )}
           </div>
           <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
         </div>
@@ -552,6 +658,69 @@ export default function WebinarPage() {
           display: flex;
           flex-direction: column;
           width: 100%;
+        }
+
+        /* THEATER MODE (PSEUDO-FULLSCREEN) */
+        .video-stage-container {
+          position: relative;
+          width: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        .video-stage-container.is-theater {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-width: 100vw !important;
+          z-index: 99999 !important;
+          background-color: #000000;
+          border-radius: 0px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .video-stage-container.is-theater .wb-video-wrapper {
+          border-radius: 0px !important;
+          aspect-ratio: 16/9;
+          width: 100%;
+          max-height: 100vh;
+        }
+        .custom-fullscreen-toggle {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          z-index: 100000;
+          background: rgba(0, 0, 0, 0.7);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: bold;
+          cursor: pointer;
+          outline: none;
+        }
+        
+        /* Prevent right-clicks or native long-presses from inspecting the stream */
+        wistia-player video,
+        .wistia_embed video {
+          pointer-events: none !important;
+        }
+        
+        /* Hide Wistia branding/watermark */
+        .w-vulcan-watermark,
+        .w-vulcan-watermark--left,
+        .w-vulcan-watermark--right,
+        .wistia_brand,
+        [class*="watermark"],
+        [class*="wistia_brand"] {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
         }
 
         /* FOOTER */
