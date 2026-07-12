@@ -91,6 +91,7 @@ export default function WebinarPage() {
   const [product, setProduct] = useState(null)
   const [showCTASection, setShowCTASection] = useState(false)
   const [showBriefsSection, setShowBriefsSection] = useState(false)
+  const [liveViewerCount, setLiveViewerCount] = useState(124)
   const playerRef = useRef(null)
   const lastAllowedTime = useRef(0)
 
@@ -283,6 +284,55 @@ export default function WebinarPage() {
     }
   }, [])
 
+  // Live viewer counter — fluctuates naturally based on video position curve
+  useEffect(() => {
+    // Viewer curve across 74 minutes (in seconds):
+    // - 0–10 min: ramp up from 124 → 312 (latecomers arriving)
+    // - 10–21 min: slower climb 312 → 389 (peak engagement during AI website build demo)
+    // - 21–40 min: gradual drop 389 → 298
+    // - 40–60 min: slow fade 298 → 241
+    // - 60–74 min: tail-end drop 241 → 178
+    const KEYFRAMES = [
+      { t: 0,    v: 124 },
+      { t: 300,  v: 201 },   // 5 min
+      { t: 600,  v: 312 },   // 10 min
+      { t: 900,  v: 358 },   // 15 min
+      { t: 1260, v: 389 },   // 21 min — peak
+      { t: 1500, v: 371 },   // 25 min
+      { t: 1800, v: 341 },   // 30 min
+      { t: 2400, v: 298 },   // 40 min
+      { t: 3000, v: 263 },   // 50 min
+      { t: 3600, v: 241 },   // 60 min
+      { t: 4200, v: 208 },   // 70 min
+      { t: 4440, v: 178 },   // 74 min
+    ]
+
+    const getBaseCount = (seconds) => {
+      for (let i = 0; i < KEYFRAMES.length - 1; i++) {
+        const a = KEYFRAMES[i]
+        const b = KEYFRAMES[i + 1]
+        if (seconds >= a.t && seconds <= b.t) {
+          const ratio = (seconds - a.t) / (b.t - a.t)
+          return Math.round(a.v + ratio * (b.v - a.v))
+        }
+      }
+      return KEYFRAMES[KEYFRAMES.length - 1].v
+    }
+
+    const updateCount = () => {
+      const savedPos = parseFloat(localStorage.getItem('webinar_video_position') || '0')
+      const base = getBaseCount(savedPos)
+      // Add small random fluctuation of ±3 viewers every tick
+      const jitter = Math.floor(Math.random() * 7) - 3
+      setLiveViewerCount(Math.max(80, base + jitter))
+    }
+
+    updateCount()
+    // Update every 8 seconds for a natural feel
+    const interval = setInterval(updateCount, 8000)
+    return () => clearInterval(interval)
+  }, [])
+
   // Handle sales notification popup rotation
   useEffect(() => {
     if (!salesActive) return
@@ -341,7 +391,18 @@ export default function WebinarPage() {
               style={{ width: '100%', height: '100%', display: 'block' }}
             ></wistia-player>
           </div>
-          <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
+          <div className="wb-video-caption-row">
+            <p className="wb-video-caption">Ensure your audio is turned ON. Do not refresh this page.</p>
+            <div className="wb-live-counter">
+              <span className="wb-live-dot"></span>
+              <svg className="wb-live-user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span className="wb-live-count-num">{liveViewerCount.toLocaleString()}</span>
+              <span className="wb-live-label">watching live</span>
+            </div>
+          </div>
         </div>
 
         {/* Direct Checkout Call to Action & FOMO Section */}
@@ -707,12 +768,54 @@ export default function WebinarPage() {
         .lp-footer-divider {
           color: #374151;
         }
+        .wb-video-caption-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 14px;
+          padding: 0 4px;
+        }
         .wb-video-caption {
-          text-align: center;
           font-size: 12px;
           color: rgba(255, 255, 255, 0.4);
-          margin-top: 14px;
           font-weight: 600;
+          margin: 0;
+        }
+        .wb-live-counter {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .wb-live-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #22c55e;
+          flex-shrink: 0;
+          animation: wb-pulse-dot 1.8s ease-in-out infinite;
+        }
+        @keyframes wb-pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.55; transform: scale(0.8); }
+        }
+        .wb-live-user-icon {
+          width: 14px;
+          height: 14px;
+          color: rgba(255, 255, 255, 0.75);
+          flex-shrink: 0;
+        }
+        .wb-live-count-num {
+          font-size: 13px;
+          font-weight: 700;
+          color: #ffffff;
+          letter-spacing: 0.3px;
+        }
+        .wb-live-label {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.5);
+          font-weight: 500;
         }
 
         /* CTA SECTION */
