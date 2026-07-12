@@ -155,82 +155,59 @@ export default function WebinarPage() {
         if (typeof video.emailControlHide === 'function') {
           video.emailControlHide(); 
         }
-        
-        // 2. Prevent pausing
+
+        // 2. Restore saved video position from localStorage (resume on refresh)
+        const savedPosition = parseFloat(localStorage.getItem('webinar_video_position') || '0');
+        if (savedPosition > 2) {
+          video.time(savedPosition);
+          lastAllowedTime.current = savedPosition;
+        }
+
+        // 3. Save real video position every 5 seconds as it plays
+        const savePositionInterval = setInterval(() => {
+          const currentTime = video.time();
+          if (currentTime > 0) {
+            localStorage.setItem('webinar_video_position', currentTime.toString());
+            // Also keep wall-clock start_time in sync with saved position so reveal timers still work
+            const adjustedStart = Date.now() - (currentTime * 1000);
+            localStorage.setItem('webinar_start_time', adjustedStart.toString());
+          }
+        }, 5000);
+
+        video._savePositionInterval = savePositionInterval;
+
+        // 4. Prevent pausing
         video.bind('pause', () => {
           video.play();
         });
 
-        // 3. Wall-clock syncing logic
-        const syncVideoTime = () => {
-          const startTimeStr = localStorage.getItem('webinar_start_time');
-          if (startTimeStr) {
-            const startTimeMs = parseInt(startTimeStr, 10);
-            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
-            const duration = video.duration();
-            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
-
-            if (Math.abs(video.time() - targetTime) > 2) {
-              video.time(targetTime);
-              lastAllowedTime.current = targetTime;
-            }
-          }
-        };
-
-        syncVideoTime();
-
-        // 4. Prevent skipping forward (Seeking Guardrail) synced with wall-clock time
+        // 5. Prevent fast-forwarding (Seeking Guardrail)
         video.bind('secondchange', (s) => {
-          const startTimeStr = localStorage.getItem('webinar_start_time');
-          if (startTimeStr) {
-            const startTimeMs = parseInt(startTimeStr, 10);
-            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
-            const duration = video.duration();
-            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
-
-            // If user's playhead time jumps forward past the wall-clock time, snap it back
-            if (s > targetTime + 2) {
-              video.time(targetTime);
-              lastAllowedTime.current = targetTime;
-            } else {
-              lastAllowedTime.current = s;
-            }
+          if (s > lastAllowedTime.current + 3) {
+            // Snap back to last legitimate position
+            video.time(lastAllowedTime.current);
           } else {
-            if (s > lastAllowedTime.current + 2) {
-              video.time(lastAllowedTime.current);
-            } else {
-              lastAllowedTime.current = s;
-            }
+            lastAllowedTime.current = s;
           }
         });
 
-        // 5. Intercept manual seek events (especially in native mobile fullscreen) to block fast-forwarding
-        video.bind('seek', (currentTime, lastTime) => {
-          const startTimeStr = localStorage.getItem('webinar_start_time');
-          if (startTimeStr) {
-            const startTimeMs = parseInt(startTimeStr, 10);
-            const elapsedSeconds = (Date.now() - startTimeMs) / 1000;
-            const duration = video.duration();
-            const targetTime = duration > 0 ? Math.min(elapsedSeconds, duration) : elapsedSeconds;
-
-            if (currentTime > targetTime + 2) {
-              video.time(targetTime);
-              lastAllowedTime.current = targetTime;
-            } else {
-              lastAllowedTime.current = currentTime;
-            }
+        // 6. Intercept manual seek events (native mobile fullscreen scrubber) to block fast-forwarding
+        video.bind('seek', (currentTime) => {
+          if (currentTime > lastAllowedTime.current + 3) {
+            video.time(lastAllowedTime.current);
           } else {
-            if (currentTime > lastAllowedTime.current + 2) {
-              video.time(lastAllowedTime.current);
-            } else {
-              lastAllowedTime.current = currentTime;
-            }
+            lastAllowedTime.current = currentTime;
           }
         });
 
-        // 6. Sync when browser tab gains focus or returns from background
+        // 7. Sync when browser tab gains focus or returns from background
         const handleFocus = () => {
-          syncVideoTime();
+          // Restore saved position on focus return, not wall-clock jump
+          const pos = parseFloat(localStorage.getItem('webinar_video_position') || '0');
+          if (pos > 0 && Math.abs(video.time() - pos) > 2) {
+            video.time(pos);
+            lastAllowedTime.current = pos;
+          }
           video.play();
         };
         window.addEventListener('focus', handleFocus);
@@ -248,6 +225,9 @@ export default function WebinarPage() {
         playerRef.current.unbind('seek');
         if (playerRef.current._cleanupFocus) {
           playerRef.current._cleanupFocus();
+        }
+        if (playerRef.current._savePositionInterval) {
+          clearInterval(playerRef.current._savePositionInterval);
         }
       }
     };
