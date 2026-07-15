@@ -1,21 +1,71 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import Countdown from '../components/Countdown'
+import FaqItem from '../components/FaqItem'
+import ProgressBar from '../components/ProgressBar'
+import BookCover from '../components/BookCover'
+import { useReveal } from '../hooks/useReveal'
 import { useToasts } from '../hooks/useToasts'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
+const CHAPTERS = [
+  { n: '01', title: "The Nigerian Entrepreneur's Mindset", desc: "7 mindset shifts that separate businesses that survive from those that don't. Start here." },
+  { n: '02', title: 'Before You Start — 5 Non-Negotiables', desc: "The exact foundations every business must have before you spend your first naira." },
+  { n: '03', title: '20 Businesses You Can Start With ₦50,000', desc: "Each idea includes startup cost, monthly income potential, suppliers, and step-by-step launch plan." },
+  { n: '04', title: 'CAC Business Registration — Step by Step', desc: "How to officially register your business online with exact fees. No consultant needed." },
+  { n: '05', title: 'Funding Your Business', desc: "CBN loans, Tony Elumelu grant, BOI, state government grants, and cooperative savings — all detailed." },
+  { n: '06', title: 'Marketing on Zero Budget', desc: "Complete WhatsApp, Instagram & Facebook strategy that actually works for Nigerian small businesses." },
+  { n: '07', title: 'Managing Money Like a Business Owner', desc: "The 50/30/20 rule, pricing formula, cash book system, and financial habits that build real wealth." },
+  { n: '08', title: 'Real Nigerian Success Stories', desc: "6 Nigerians who built real businesses from exactly your starting point — names, cities, strategies." },
+  { n: '09', title: 'Scaling from ₦50K to Millions', desc: "The exact roadmap from launch → ₦100K/month → ₦1M → enterprise-level business." },
+  { n: '10', title: 'The Digital Economy Chapter', desc: "Freelancing, affiliate marketing, YouTube monetisation, dropshipping, virtual assistance — all Nigerian-specific." },
+  { n: '11', title: 'Building Your Brand Identity', desc: "Logo, colours, packaging, social voice — how to look established with zero budget." },
+  { n: '12', title: 'Customer Service That Builds Loyalty', desc: "The exact system that turns one-time buyers into lifetime ambassadors who refer others." },
+  { n: '13', title: 'Legal Basics Every Nigerian Entrepreneur Needs', desc: "Contracts, IP, taxes, consumer protection — simplified and actionable." },
+  { n: '14', title: 'Writing Your First Business Plan', desc: "A 7-section template you can fill in yourself and use immediately to access funding." },
+  { n: '15', title: 'Understanding the Nigerian Market in 2026', desc: "10 emerging opportunities most Nigerians are sleeping on right now." },
+]
+
+const TESTIMONIALS = [
+  { name: 'Chioma A.', role: 'Food Business Owner, Lagos', text: "I read this in one sitting. The food business chapter alone helped me set up my WhatsApp menu and get my first 3 customers in 5 days. I never thought it would be this simple." },
+  { name: 'Emeka O.', role: 'Mini Importer, Onitsha', text: "The mini importation chapter is worth 10x the price. I followed the freight agent steps exactly and placed my first order in 3 days. Already doubled my investment in the first week." },
+  { name: 'Fatima I.', role: 'Digital Skills Trainer, Kaduna', text: "I was an NYSC corper with ₦33K/month. The teaching business chapter changed my life. I now earn passive income from courses I recorded in my hostel room." },
+  { name: 'Bello T.', role: 'Cleaning Business Owner, Kano', text: "The marketing chapter alone is worth a full course fee. I got my first cleaning contract from Instagram 2 weeks after reading this. Just follow the steps — it works." },
+]
+
+const FAQS = [
+  ["Is this really just ₦2,500? What's the catch?",
+    "Yes — ₦2,500 is the real price, and there is no catch. This is a launch price to get the guide into as many hands as possible. The price will increase. There are no hidden fees, no subscriptions, no upsells. You pay once and get everything listed."],
+  ["I have no business experience. Will this still work for me?",
+    "Absolutely — this guide was written specifically for beginners. Every chapter assumes you're starting from zero knowledge. The language is plain, the steps are numbered, and even if you've never run a business in your life, you'll know exactly what to do after reading."],
+  ["What format is the guide? How do I receive it?",
+    "The N50K Blueprint is a PDF (digital e-book). After payment, you receive an instant download link by email. Read it on your phone, tablet, or laptop. No app required. No waiting."],
+  ["What if these businesses don't work in my state?",
+    "The 20 businesses were specifically selected for the Nigerian market — not just Lagos or Abuja. They include ideas that work across Nigerian cities, towns, and semi-rural areas. The guide also shows you how to adapt each idea to your specific environment."],
+  ["I've bought guides before that didn't help. How is this different?",
+    "Most guides give you inspiration without information. The N50K Blueprint gives you both — but more importantly, the actual steps. Every business includes startup costs, income estimates, suppliers, marketing plans, and real examples of Nigerians who did it. This is an action guide, not a motivation book."],
+  ["What payment methods are accepted?",
+    "Payment is processed through Paystack — Nigeria's most trusted payment platform. You can pay with your debit card (Naira or Dollar), bank transfer, USSD, or mobile money. All transactions are fully secured and encrypted."],
+  ["What happens if I have a problem accessing the guide?",
+    "We're here to help. If you have any issue receiving or opening your Blueprint after payment, email us and we'll resolve it within 24 hours. Every purchase is tied to your email and we can always resend your download link. Our goal is to make sure you get into the guide and start building — we won't leave you hanging."],
+  ["Will I get updates when the guide is revised?",
+    "Yes. Once you purchase, you have lifetime access. Any time the N50K Blueprint is updated, you receive the new version at no extra cost. Your one-time payment covers everything, forever."],
+  ["Is this guide only for young people or can anyone use it?",
+    "This guide works for anyone who wants to build a business in Nigeria — NYSC corpers, graduates, civil servants, stay-at-home parents, market traders, people with side income looking to grow, and complete beginners of any age."],
+]
 
 export default function EbookSalesPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const productId = searchParams.get('product')
   const [product, setProduct] = useState(null)
-  const [openFaq, setOpenFaq] = useState(null)
-  const [showStickyBar, setShowStickyBar] = useState(false)
-
-  const { addToast } = useToasts()
+  
+  useReveal()
+  useToasts()
 
   useEffect(() => {
     async function loadProduct() {
       try {
-        // Try loading product configured for eBook route first
         let { data } = await supabase
           .from('products')
           .select('*')
@@ -23,14 +73,10 @@ export default function EbookSalesPage() {
           .maybeSingle()
 
         if (!data) {
-          // Fallback to latest published ebook product
           const res = await supabase
             .from('products')
             .select('*')
-            .eq('type', 'ebook')
-            .eq('is_published', true)
-            .order('created_at', { ascending: false })
-            .limit(1)
+            .eq('slug', 'freelance-web-design-blueprint')
             .maybeSingle()
           data = res.data
         }
@@ -45,599 +91,489 @@ export default function EbookSalesPage() {
     loadProduct()
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = 500
-      if (window.scrollY > heroHeight) {
-        setShowStickyBar(true)
-      } else {
-        setShowStickyBar(false)
-      }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   const price = product?.price || 2500
   const oldPrice = product?.old_price || 9000
   const savings = Math.max(0, oldPrice - price)
   const formattedPrice = `₦${price.toLocaleString()}`
   const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
+  const formattedSavings = `₦${savings.toLocaleString()}`
   const discountPercentage = oldPrice > 0 ? Math.round((savings / oldPrice) * 100) : 0
 
-  const handleCheckoutRedirect = () => {
-    if (product) {
-      navigate(`/checkout?product=${product.slug}`)
-    } else {
-      navigate(`/checkout?product=ebook`)
-    }
-  }
-
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index)
+  const go = () => { 
+    const target = productId ? `/checkout?product=${productId}` : (product ? `/checkout?product=${product.id}` : '/checkout?product=ebook')
+    navigate(target)
+    window.scrollTo({ top: 0, behavior: 'smooth' }) 
   }
 
   return (
-    <div style={{ backgroundColor: '#FBF8F2', color: '#262220', fontFamily: "'Lora', serif", fontSize: '17px', lineHeight: 1.65 }}>
-      {/* Dynamic Style Tags */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        :root {
-          --dark: #171512; --dark2: #1B2E29; --dark3: #12100D;
-          --cream: #FBF8F2; --paper: #F1EDDF; --paper2: #EFEAD9;
-          --gold: #B8862F; --gold-light: #D8B463; --gold-deep: #8C6420;
-          --teal: #1F5148; --teal-deep: #143932; --teal-pale: #CFE3DD;
-          --rust: #9A3B2C; --rust-pale: #F1D9D2;
-          --ink: #262220; --ink-soft: #4A4438; --hair: #DCD2BC;
-          --maxw: 1120px;
-        }
-        * { box-sizing: border-box; }
-        h1, h2, h3, h4, .disp { font-family: 'Poppins', sans-serif; }
-        .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
-        .eyebrow { font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-deep); }
-        .eyebrow.on-dark { color: var(--gold-light); }
-        .section { padding: 90px 0; }
-        .section.tight { padding: 70px 0; }
-        h2.h-lg { font-size: 38px; font-weight: 700; line-height: 1.18; color: var(--dark); margin: 14px 0 20px; }
-        @media(max-width:640px) { h2.h-lg { font-size: 28px; } }
-        p.lead { font-size: 19px; color: var(--ink-soft); }
-        .center { text-align: center; }
-        .btn {
-          display: inline-flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; font-weight: 700;
-          font-size: 16px; letter-spacing: 0.2px; padding: 18px 34px; border-radius: 8px; text-decoration: none;
-          border: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
-        }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-primary { background: var(--gold); color: #1A1611; box-shadow: 0 10px 26px rgba(184,134,47,0.35); }
-        .btn-primary:hover { background: var(--gold-light); }
-        .btn-primary .arrow { transition: transform .15s ease; }
-        .btn-primary:hover .arrow { transform: translateX(3px); }
-        .btn-ghost { background: transparent; border: 1.5px solid rgba(244,239,228,0.4); color: var(--cream); }
-        .microtrust { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+    <>
+      {/* ── URGENCY BAR ─────────────────────────────────────────── */}
+      <div className="urg-bar">
+        ⏰ Special Launch Price Ending Soon — Save <span>{formattedSavings}</span> Today Only!
+      </div>
 
-        /* ---------- NAV ---------- */
-        header.nav {
-          position: sticky; top: 0; z-index: 50; background: rgba(251,248,242,0.92); backdrop-filter: blur(6px);
-          border-bottom: 1px solid var(--hair);
-        }
-        .navrow { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; max-width: var(--maxw); margin: 0 auto; }
-        .logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: 0.5px; color: var(--dark); }
-        .logo span { color: var(--gold-deep); }
-        .navlinks { display: flex; gap: 28px; font-family: 'Poppins', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
-        .navlinks a { text-decoration: none; }
-        .navlinks a:hover { color: var(--gold-deep); }
-        .nav-cta { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; background: var(--dark); color: var(--cream); padding: 10px 20px; border-radius: 7px; text-decoration: none; white-space: nowrap; }
-        @media(max-width:780px) { .navlinks { display: none; } }
+      {/* ── HERO ────────────────────────────────────────────────── */}
+      <section style={{
+        background: 'linear-gradient(168deg, #052817 0%, #0D3B2E 45%, #10493A 100%)',
+        color: '#fff', overflow: 'hidden', position: 'relative',
+      }} className="pattern-bg">
 
-        /* ---------- HERO ---------- */
-        .hero { background: linear-gradient(155deg, var(--dark3) 0%, var(--dark2) 100%); color: var(--cream); position: relative; overflow: hidden; }
-        .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; padding-top: 76px; padding-bottom: 76px; }
-        @media(max-width:900px) { .hero .wrap { grid-template-columns: 1fr; padding-top: 52px; padding-bottom: 52px; } }
-        .hero h1 { font-size: 46px; font-weight: 800; line-height: 1.12; margin: 16px 0 20px; color: var(--cream); }
-        .hero h1 em { font-style: normal; color: var(--gold-light); }
-        @media(max-width:640px) { .hero h1 { font-size: 32px; } }
-        .hero .sub { font-family: 'Lora', serif; font-size: 18px; color: #D8CBAE; max-width: 520px; margin-bottom: 30px; line-height: 1.6; }
-        .hero-ctarow { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+        <div className="wrap" style={{ paddingTop: 56, paddingBottom: 64 }}>
+          {/* Eyebrow */}
+          <p style={{
+            textAlign: 'center', fontSize: '.78rem', fontWeight: 700, color: 'var(--gold)',
+            textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 22,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}>
+            <span style={{ flex: 1, maxWidth: 44, height: 1, background: 'var(--gold)', opacity: .4 }} />
+            For Every Nigerian Ready to Build
+            <span style={{ flex: 1, maxWidth: 44, height: 1, background: 'var(--gold)', opacity: .4 }} />
+          </p>
 
-        /* invoice mock cards */
-        .quotes { position: relative; height: 430px; }
-        .qcard { position: absolute; width: 290px; background: var(--cream); color: var(--ink); border-radius: 10px; padding: 22px 22px 26px; box-shadow: 0 30px 60px rgba(0,0,0,0.45); font-family: 'Poppins', sans-serif; }
-        .qcard .qhead { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #9A917C; border-bottom: 1px dashed var(--hair); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; }
-        .qcard .qname { font-size: 13.5px; font-weight: 700; color: var(--dark); margin-bottom: 2px; }
-        .qcard .qservice { font-size: 11.5px; color: #7A7261; font-family: 'Lora', serif; font-style: italic; margin-bottom: 16px; }
-        .qcard .qline { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-soft); padding: 5px 0; border-bottom: 1px dotted #E4DBC5; }
-        .qcard .qtotal { display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: var(--dark); margin-top: 12px; padding-top: 10px; border-top: 1.5px solid var(--dark); }
-        .qcard.declined { top: 0; left: 0; transform: rotate(-6deg); z-index: 1; }
-        .qcard.accepted { bottom: 0; right: 0; transform: rotate(4deg); z-index: 2; }
-        .stamp { position: absolute; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 1.5px; padding: 7px 14px; border-radius: 6px; border: 2.5px solid; opacity: 0.94; text-transform: uppercase; }
-        .stamp.no { color: var(--rust); border-color: var(--rust); transform: rotate(-11deg); top: 64px; right: 18px; background: rgba(154,59,44,0.06); }
-        .stamp.yes { color: var(--teal); border-color: var(--teal); transform: rotate(8deg); bottom: 70px; left: 20px; background: rgba(31,81,72,0.06); }
-        @media(max-width:900px) { .quotes { height: 400px; max-width: 420px; margin: 0 auto; } .qcard { width: 250px; } }
-        @media(max-width:480px) { .quotes { transform: scale(0.86); height: 360px; } }
+          {/* Headline */}
+          <h1 className="display t-center" style={{ marginBottom: 22 }}>
+            Turn <span className="t-gold">₦50,000</span> Into<br />
+            a Real Business That<br />
+            <em style={{ fontStyle: 'normal', color: 'var(--g400)' }}>Pays You Every Month</em>
+          </h1>
 
-        /* ---------- HOOK ---------- */
-        .hook { padding: 80px 0 40px; }
-        .hook .wrap { max-width: 700px; }
-        .hook p { font-size: 19px; color: var(--ink-soft); margin-bottom: 18px; }
-        .hook p.strong { color: var(--dark); font-weight: 500; }
+          <p className="body-lg t-center" style={{ color: 'rgba(255,255,255,.76)', maxWidth: 560, margin: '0 auto 36px' }}>
+            The complete step-by-step guide with <strong style={{ color: 'var(--gold)' }}>20 proven Nigerian businesses</strong> you can start right now — no connections, no big capital, no experience required.
+          </p>
 
-        /* ---------- AGITATION ---------- */
-        .agitate { background: var(--teal-deep); color: var(--teal-pale); }
-        .agitate .wrap { max-width: 720px; }
-        .agitate p { font-size: 18.5px; margin-bottom: 18px; color: #DCEAE5; }
-        .agitate .pull { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 23px; color: var(--cream); line-height: 1.4; border-left: 3px solid var(--gold-light); padding-left: 22px; margin: 32px 0; }
-
-        /* ---------- PROBLEM ---------- */
-        .problem .wrap { max-width: 720px; }
-        .problem p { color: var(--ink-soft); margin-bottom: 16px; font-size: 18px; }
-
-        /* ---------- SOLUTION ---------- */
-        .solution { background: var(--paper); }
-        .solution .wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; align-items: center; }
-        @media(max-width:860px) { .solution .wrap { grid-template-columns: 1fr; gap: 36px; } }
-        .bookmock { perspective: 1400px; display: flex; justify-content: center; }
-        .bookmock img { width: 100%; max-width: 320px; border-radius: 4px; box-shadow: 0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2); transform: rotateY(-18deg) rotateX(2deg); transition: transform .4s ease; }
-        .bookmock:hover img { transform: rotateY(-8deg) rotateX(1deg); }
-        .solution h2 { margin-top: 10px; }
-        .solution ul { padding-left: 0; list-style: none; margin-top: 22px; }
-        .solution li { display: flex; gap: 12px; margin-bottom: 14px; font-size: 16px; color: var(--ink-soft); }
-        .solution li .ic { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; margin-top: 2px; font-weight: 700; }
-
-        /* ---------- WHO FOR ---------- */
-        .whofor .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
-        @media(max-width:760px) { .whofor .wrap { grid-template-columns: 1fr; } }
-        .whocard { background: var(--cream); border: 1.5px solid var(--hair); border-radius: 12px; padding: 32px 30px; }
-        .whocard.yes { border-color: var(--teal); }
-        .whocard.no { border-color: var(--rust); }
-        .whocard h3 { font-size: 18px; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
-        .whocard h3 .tag { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; }
-        .whocard.yes h3 .tag { background: var(--teal); }
-        .whocard.no h3 .tag { background: var(--rust); }
-        .whocard p { font-size: 15.5px; color: var(--ink-soft); margin: 0 0 10px; }
-
-        /* ---------- WHAT'S INSIDE ---------- */
-        .inside { background: var(--dark3); color: var(--cream); }
-        .inside .headwrap { max-width: 640px; margin: 0 auto 50px; text-align: center; }
-        .inside .sub { color: #B7AC92; font-size: 17px; }
-        .chgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: rgba(244,239,228,0.12); border-radius: 14px; overflow: hidden; }
-        @media(max-width:760px) { .chgrid { grid-template-columns: 1fr; } }
-        .chitem { background: var(--dark3); padding: 26px 28px; display: flex; gap: 18px; }
-        .chnum { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 26px; color: var(--gold-light); opacity: 0.55; flex-shrink: 0; width: 36px; }
-        .chitem h4 { font-size: 15.5px; margin: 0 0 6px; color: var(--cream); }
-        .chitem p { font-size: 13.5px; color: #A79C82; margin: 0; line-height: 1.55; }
-
-        /* ---------- AUTHOR ---------- */
-        .author { padding: 90px 0; background: var(--cream); }
-        .author .wrap { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
-        @media(max-width:640px) { .author .wrap { grid-template-columns: 1fr; text-align: center; } .author .wrap .avatar { margin: 0 auto; } }
-        .avatar { width: 170px; height: 170px; border-radius: 50%; background: linear-gradient(155deg,var(--teal) 0%, var(--teal-deep) 100%); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 52px; color: var(--gold-light); flex-shrink: 0; }
-        .author h3 { font-size: 22px; margin: 0 0 4px; color: var(--dark); }
-        .author .role { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--gold-deep); font-weight: 700; margin-bottom: 16px; }
-        .author p { color: var(--ink-soft); font-size: 16px; margin-bottom: 14px; }
-
-        /* ---------- SOCIAL PROOF ---------- */
-        .proof { background: var(--paper2); }
-        .proof .headwrap { max-width: 600px; margin: 0 auto 46px; text-align: center; }
-        .tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        @media(max-width:820px) { .tgrid { grid-template-columns: 1fr; } }
-        .tcard { background: var(--cream); border-radius: 12px; padding: 26px 24px; border: 1px solid var(--hair); }
-        .tcard .stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; letter-spacing: 2px; }
-        .tcard p { font-size: 14.5px; color: var(--ink-soft); font-style: italic; margin-bottom: 16px; }
-        .tcard .tname { font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--dark); }
-        .tcard .trole { font-family: 'Poppins', sans-serif; font-size: 11px; color: #8A8272; }
-
-        /* ---------- OFFER (receipt style) ---------- */
-        .offer { background: linear-gradient(155deg, var(--dark3) 0%, var(--dark2) 100%); color: var(--cream); }
-        .offer .headwrap { max-width: 600px; margin: 0 auto 46px; text-align: center; }
-        .receipt { max-width: 460px; margin: 0 auto; background: var(--cream); color: var(--ink); border-radius: 4px; padding: 38px 34px 34px; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.45); }
-        .receipt:before, .receipt:after { content: ''; position: absolute; left: 0; right: 0; height: 14px; background:
-            linear-gradient(135deg, transparent 50%, var(--cream) 50%) 0 0 / 16px 16px repeat-x; }
-        .receipt:before { top: -13px; transform: rotate(180deg); }
-        .receipt:after { bottom: -13px; }
-        .receipt .rtitle { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; text-align: center; color: var(--dark); margin-bottom: 4px; }
-        .receipt .rsub { text-align: center; font-family: 'Poppins', sans-serif; font-size: 11px; color: #9A917C; margin-bottom: 20px; letter-spacing: 0.5px; }
-        .rline { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--hair); font-size: 14.5px; }
-        .rline .rname { color: var(--ink); font-weight: 500; }
-        .rline .rdesc { display: block; font-size: 12px; color: #9A917C; font-family: 'Lora', serif; font-style: italic; margin-top: 2px; }
-        .rline .rval { font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
-        .rline.strike .rval { text-decoration: line-through; color: #B0A78F; }
-        .rtotal { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; margin-top: 6px; }
-        .rtotal .rtlabel { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px; color: var(--dark); }
-        .rtotal .rtval { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 32px; color: var(--gold-deep); }
-        .rtotal .rtorig { font-size: 14px; color: #B0A78F; text-decoration: line-through; margin-right: 8px; font-family: 'Poppins', sans-serif; }
-        .receipt .rbtn { display: block; text-align: center; margin-top: 22px; }
-        .receipt .rbtn .btn { width: 100%; justify-content: center; }
-        .receipt .rfoot { text-align: center; font-size: 11px; color: #9A917C; margin-top: 14px; font-family: 'Poppins', sans-serif; }
-
-        /* ---------- GUARANTEE ---------- */
-        .guarantee .wrap { display: flex; gap: 30px; align-items: center; max-width: 780px; }
-        @media(max-width:640px) { .guarantee .wrap { flex-direction: column; text-align: center; } }
-        .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Poppins', sans-serif; font-weight: 800; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.3; padding: 10px; }
-        .guarantee h3 { margin: 0 0 10px; font-size: 21px; color: var(--dark); }
-        .guarantee p { color: var(--ink-soft); font-size: 15.5px; margin: 0; }
-
-        /* ---------- URGENCY ---------- */
-        .urgency { background: var(--rust); color: #FBEDE8; text-align: center; padding: 18px 20px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14.5px; }
-        .urgency b { color: #fff; }
-
-        /* ---------- FAQ ---------- */
-        .faq .wrap { max-width: 760px; }
-        .fitem { border-bottom: 1px solid var(--hair); }
-        .fq { width: 100%; text-align: left; background: none; border: none; padding: 22px 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; color: var(--dark); display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 20px; }
-        .fq .plus { font-size: 20px; color: var(--gold-deep); transition: transform .2s ease; flex-shrink: 0; }
-        .fitem.open .fq .plus { transform: rotate(45deg); }
-        .fa { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
-        .fa p { padding-bottom: 22px; margin: 0; color: var(--ink-soft); font-size: 15.5px; }
-        .fitem.open .fa { max-height: 300px; }
-
-        /* ---------- FINAL CTA ---------- */
-        .final { background: linear-gradient(155deg, var(--dark3) 0%, var(--dark2) 100%); color: var(--cream); text-align: center; }
-        .final .wrap { max-width: 640px; }
-        .final h2 { font-size: 32px; color: var(--cream); margin-bottom: 16px; }
-        .final p { color: #D8CBAE; font-size: 17px; margin-bottom: 30px; }
-
-        /* ---------- FOOTER / PS ---------- */
-        .ps { background: var(--paper); }
-        .ps .wrap { max-width: 700px; }
-        .ps p { font-size: 14.5px; color: var(--ink-soft); margin-bottom: 12px; }
-        .ps b { color: var(--dark); }
-        footer { background: var(--dark3); color: #8A8272; text-align: center; padding: 36px 20px; font-family: 'Poppins', sans-serif; font-size: 12.5px; }
-        footer a { color: var(--gold-light); text-decoration: none; }
-
-        /* ---------- STICKY MOBILE BAR ---------- */
-        .stickybar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: var(--dark3); border-top: 1px solid rgba(244,239,228,0.15); padding: 12px 18px; display: none; align-items: center; justify-content: space-between; gap: 14px; transform: translateY(100%); transition: transform .3s ease; }
-        .stickybar.show { transform: translateY(0); }
-        .stickybar .sprice { font-family: 'Poppins', sans-serif; color: var(--cream); font-size: 14px; }
-        .stickybar .sprice b { color: var(--gold-light); font-size: 17px; }
-        .stickybar .btn { padding: 12px 22px; font-size: 14px; }
-        @media(max-width:780px) { .stickybar { display: flex; } }
-      ` }} />
-
-      <header className="nav">
-        <div className="navrow">
-          <div className="logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-            AMPLIFIED <span>SKILLS</span>
+          {/* Book visual */}
+          <div style={{ marginBottom: 36 }}>
+            <BookCover />
           </div>
-          <nav className="navlinks">
-            <a href="#inside">What's Inside</a>
-            <a href="#reviews">Reviews</a>
-            <a href="#faq">FAQ</a>
-          </nav>
-          <a href="#offer" className="nav-cta">Get The Playbook</a>
-        </div>
-      </header>
 
-      {/* HERO */}
-      <section className="hero">
-        <div className="wrap">
-          <div>
-            <div className="eyebrow on-dark">FOR FREELANCERS, CONSULTANTS &amp; SERVICE PROVIDERS</div>
-            <h1>Your price isn't the problem.<br />Your <em>pitch</em> is.</h1>
-            <p className="sub">The Pricing &amp; Negotiation Playbook shows you exactly why clients say "too expensive" — and gives you the scripts, frameworks, and mindset shifts to stop hearing it.</p>
-            <div className="hero-ctarow">
-              <a href="#offer" className="btn btn-primary">Get The Playbook Now <span className="arrow">→</span></a>
-              <div className="microtrust">⚡ Instant download &nbsp;·&nbsp; 📖 Read tonight &nbsp;·&nbsp; ✅ Use on your next quote</div>
+          {/* Social proof */}
+          <div className="proof-bar" style={{ marginBottom: 28 }}>
+            <div className="proof-avatars">
+              {[
+                { seed: 'Chioma', bg: '5c3d2e' },
+                { seed: 'Emeka', bg: '3e2723' },
+                { seed: 'Aisha', bg: '4a2c0a' },
+                { seed: 'Fatima', bg: '3b1f0e' },
+                { seed: 'Bello', bg: '2e1503' },
+                { seed: 'Ngozi', bg: '4a2c0a' },
+              ].map(({ seed, bg }, i) => (
+                <span key={i} style={{ padding: 0, overflow: 'hidden', background: 'none', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img
+                    src={`/avatars/${seed.toLowerCase()}.png`}
+                    alt={seed}
+                    width={34}
+                    height={34}
+                    style={{ borderRadius: '50%', display: 'block', objectFit: 'cover' }}
+                    onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.style.background = `#${bg}`; e.currentTarget.parentElement.textContent = seed[0]; }}
+                  />
+                </span>
+              ))}
             </div>
+            <p className="proof-text"><strong>1,847+ Nigerians</strong> already building their businesses</p>
           </div>
-          <div className="quotes">
-            <div className="qcard declined">
-              <div className="qhead"><span>QUOTE #0214</span><span>DESIGNER A</span></div>
-              <div className="qname">5-Page Business Website</div>
-              <div className="qservice">"the package is ₦250,000"</div>
-              <div className="qline"><span>Design + Build</span><span>₦180,000</span></div>
-              <div className="qline"><span>Revisions</span><span>₦70,000</span></div>
-              <div className="qtotal"><span>Total</span><span>₦250,000</span></div>
-              <div className="stamp no">Too Expensive</div>
-            </div>
-            <div className="qcard accepted">
-              <div className="qhead"><span>QUOTE #0215</span><span>DESIGNER B</span></div>
-              <div className="qname">5-Page Business Website</div>
-              <div className="qservice">"here's what changes for your business"</div>
-              <div className="qline"><span>Strategy + Build</span><span>₦420,000</span></div>
-              <div className="qline"><span>Launch Support</span><span>₦180,000</span></div>
-              <div className="qtotal"><span>Total</span><span>₦600,000</span></div>
-              <div className="stamp yes">Paid — 50% Deposit</div>
-            </div>
+
+          {/* CTA */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <button className="btn-cta" onClick={go}>
+              <span>
+                YES! I Want My Blueprint — {formattedPrice}
+                <span className="sub">Instant Digital Download · Permanent Access</span>
+              </span>
+              <span className="arrow">→</span>
+            </button>
+            <p style={{ fontSize: '.77rem', color: 'rgba(255,255,255,.4)', marginTop: 4 }}>
+              🔒 Secure Payment via Paystack · Instant Delivery
+            </p>
+          </div>
+
+          {/* Timer */}
+          <div style={{ marginTop: 36 }}>
+            <p style={{ textAlign: 'center', fontSize: '.8rem', color: 'rgba(255,255,255,.5)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+              ⚡ Offer expires in
+            </p>
+            <Countdown />
           </div>
         </div>
       </section>
 
-      {/* HOOK */}
-      <section className="hook">
+      {/* ── LOGO BAR ────────────────────────────────────────────── */}
+      <section className="section-sm" style={{ borderBottom: '1px solid var(--n200)' }}>
         <div className="wrap">
-          <p className="strong">You send the quote. It's fair. You know your work is good. You've done the math — maybe you even priced it a little lower than you wanted to, just to be safe.</p>
-          <p>Then it comes back. "This is a bit too expensive for us right now."</p>
-          <p>Or worse — nothing comes back at all. The lead just goes quiet. No negotiation. Just silence where a client used to be.</p>
-          <p className="strong">If that's happened more than once this year, I want you to hear this before you read another word: it was never really about the price.</p>
-        </div>
-      </section>
-
-      {/* AGITATION */}
-      <section className="section agitate">
-        <div className="wrap">
-          <div className="eyebrow on-dark" style={{ color: '#8FCFBB' }}>WHAT "TOO EXPENSIVE" ACTUALLY COSTS YOU</div>
-          <p style={{ marginTop: '16px' }}>It's not just the one project. It's the version of you that starts flinching before you even send the next quote. The one who rounds down instead of up. Who adds "but we can discuss it" before anyone's even objected.</p>
-          <p>Meanwhile, someone in your exact field — doing work that isn't obviously better than yours — is quoting double what you quote. And getting a yes.</p>
-          <div className="pull">That gap isn't talent. It isn't luck. It's a handful of specific things happening in the conversation before the price is even said out loud.</div>
-          <p>You can keep guessing your way through that conversation every time a new lead comes in. Or you can learn exactly what's happening in it, and start controlling it.</p>
-        </div>
-      </section>
-
-      {/* PROBLEM */}
-      <section className="section problem">
-        <div className="wrap">
-          <div className="eyebrow">THE REAL PROBLEM</div>
-          <h2 className="h-lg">It was never a pricing problem. It's a proof problem.</h2>
-          <p>Most freelancers try to fix "too expensive" by getting cheaper. Some try to fix it by getting more confident, like confidence alone is the missing ingredient.</p>
-          <p>Neither works — because "too expensive" was never a verdict on your number. It's a verdict on the story the client had in their head before you gave them a price to compare it to.</p>
-          <p>If nobody showed them what the problem is actually costing them, your number will always look bigger than the problem. This isn't a personality flaw. It's a structure problem — and structure problems have structural fixes.</p>
-        </div>
-      </section>
-
-      {/* SOLUTION */}
-      <section className="section solution" id="inside-preview">
-        <div className="wrap">
-          <div className="bookmock">
-            <img src={product?.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'} alt="The Pricing &amp; Negotiation Playbook" />
-          </div>
-          <div>
-            <div className="eyebrow">THE PLAYBOOK SOLUTION</div>
-            <h2 className="h-lg">The Pricing &amp; Negotiation Playbook</h2>
-            <p className="lead">Stop guessing your value. Control the narrative and command your worth with battle-tested frameworks.</p>
-            <ul>
-              <li><span className="ic">✓</span> <span><b>The Value Anchor Template:</b> How to show the cost of the problem before you pitch the solution.</span></li>
-              <li><span className="ic">✓</span> <span><b>Objection Scripts:</b> Word-for-word copy you can copy/paste when clients say "too expensive" or "what's your discount?".</span></li>
-              <li><span className="ic">✓</span> <span><b>Premium Tiering Framework:</b> How to present 3 options so the client chooses you, not the cheaper alternative.</span></li>
-              <li><span className="ic">✓</span> <span><b>Retainer Conversion Guide:</b> Convert one-time projects into monthly recurring support contracts.</span></li>
-            </ul>
+          <p style={{ textAlign: 'center', fontSize: '.72rem', fontWeight: 700, color: 'var(--n400)', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 16 }}>
+            Entrepreneurs Building Across Nigeria
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {['🏙️ Lagos', '🏛️ Abuja', '🏬 Kano', '⚓ Port Harcourt', '🌿 Enugu', '🌆 Ibadan'].map(c => (
+              <span key={c} style={{ fontSize: '.84rem', fontWeight: 600, color: 'var(--n500)' }}>{c}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* WHO FOR */}
-      <section className="section whofor">
+      {/* ── PAIN ────────────────────────────────────────────────── */}
+      <section className="section">
         <div className="wrap">
-          <div className="whocard yes">
-            <h3><span className="tag">✓</span> Who This Playbook Is For</h3>
-            <p>• Freelance designers, developers, copywriters, and marketers tired of getting lowballed.</p>
-            <p>• Consultants and service providers who want to switch from hourly rates to value pricing.</p>
-            <p>• Creative professionals ready to stop writing quotes that lead to ghosting.</p>
+          <div className="reveal sec-head">
+            <span className="badge badge-red">Sound Familiar?</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>
+              You're Working Hard.<br />But <span className="t-red">Nothing Is Changing.</span>
+            </h2>
+            <p className="sec-sub">If any of these hit close to home, this guide was written specifically for you:</p>
           </div>
-          <div className="whocard no">
-            <h3><span className="tag">✗</span> Who This Is NOT For</h3>
-            <p>• Anyone looking for generic motivational quotes instead of concrete action steps.</p>
-            <p>• People expecting client relationships to magically fix themselves without changing their pitch.</p>
-            <p>• Freelancers who want to compete solely on being the cheapest option on Fiverr/Upwork.</p>
-          </div>
-        </div>
-      </section>
 
-      {/* WHAT'S INSIDE */}
-      <section className="section inside" id="inside">
-        <div className="wrap">
-          <div className="headwrap">
-            <div className="eyebrow on-dark">THE OUTLINE</div>
-            <h2 style={{ fontSize: '32px', margin: '14px 0' }}>What you'll learn inside the Playbook</h2>
-            <p className="sub">5 actionable, no-fluff chapters written to be read tonight and used on your very next quote.</p>
-          </div>
-          <div className="chgrid">
-            <div className="chitem">
-              <div className="chnum">01</div>
-              <div>
-                <h4>The "Too Expensive" Myth</h4>
-                <p>Why clients say "too expensive" even when they have the budget — and how to diagnose the real objection instantly.</p>
+          <div className="reveal" style={{ transitionDelay: '.1s' }}>
+            {[
+              ['😤', <><strong>You have money in your account</strong> but zero idea what business to use it for — so it just sits there shrinking.</>,],
+              ['😞', <><strong>You've been job hunting for months</strong> — the silence is deafening and the frustration is building.</>,],
+              ['😰', <><strong>You see people around you building something real</strong> and quietly wonder: why not me? What do they know that I don't?</>,],
+              ['😟', <><strong>You've tried things before</strong> — someone sold you a dream that didn't deliver, and now you're cautious about everything.</>,],
+              ['😔', <><strong>You earn a salary</strong> but it vanishes before month-end, leaving nothing to invest in your own future.</>,],
+              ['😫', <><strong>You want to start a business</strong> but feel completely stuck — confused about which one, where to begin, what to do first.</>,],
+            ].map(([icon, text], i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '15px 0', borderBottom: i < 5 ? '1px solid var(--n100)' : 'none' }}>
+                <div style={{ width: 38, height: 38, minWidth: 38, borderRadius: '50%', background: 'var(--red-l)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>{icon}</div>
+                <p style={{ fontSize: '.95rem', color: 'var(--n700)', lineHeight: 1.65 }}>{text}</p>
               </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">02</div>
-              <div>
-                <h4>Framing &amp; Value Anchoring</h4>
-                <p>How to align your pricing to the client's business goals so your price looks tiny compared to the value they get.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">03</div>
-              <div>
-                <h4>The Three-Tier Pricing Model</h4>
-                <p>Structure your proposal so the client's decision shifts from "should we hire them?" to "how should we work with them?".</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">04</div>
-              <div>
-                <h4>Objection Scripts &amp; Rebuttals</h4>
-                <p>Exact scripts to handle requests for discounts, competitive comparisons, and "we don't have the budget right now" lines.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">05</div>
-              <div>
-                <h4>Closing the Deal</h4>
-                <p>The step-by-step proposal walkthrough and follow-up sequences that get the deposit paid without awkward back-and-forth.</p>
-              </div>
-            </div>
+            ))}
+          </div>
+
+          <div className="reveal hi-box" style={{ marginTop: 28, transitionDelay: '.2s' }}>
+            <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--g800)', lineHeight: 1.65 }}>
+              "The problem isn't that you lack talent, drive, or potential. The problem is <em>nobody ever gave you the right information</em> about how to start and build a real business with what you already have."
+            </p>
+            <p style={{ fontSize: '.84rem', color: 'var(--g700)', marginTop: 10, fontWeight: 600 }}>— Nnanta Precious, Author of The N50K Blueprint</p>
           </div>
         </div>
       </section>
 
-      {/* AUTHOR */}
-      <section className="author">
+      {/* ── THE SOLUTION ────────────────────────────────────────── */}
+      <section className="section section-dark pattern-bg">
         <div className="wrap">
-          <div className="avatar">AS</div>
-          <div>
-            <div className="eyebrow">THE MENTOR</div>
-            <h3>Amplified Skills Team</h3>
-            <div className="role">Freelance Strategy &amp; Business Mentorship</div>
-            <p>At Amplified Skills, we help digital creators, freelancers, and builders transition from low-paying gigs to high-value global consulting opportunities.</p>
-            <p>This playbook is built on real proposals, closing techniques, and negotiation struggles faced by our team and students in the local and global freelance market.</p>
+          <div className="reveal sec-head">
+            <span className="badge badge-white">The Solution</span>
+            <h2 className="h2 t-white" style={{ marginTop: 10 }}>
+              Introducing: <span className="t-gold">The N50K Blueprint</span>
+            </h2>
+            <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,.72)', maxWidth: 520, margin: '12px auto 0', lineHeight: 1.72 }}>
+              A complete, no-fluff, action-first guide to starting a profitable business in Nigeria with N50,000 or less — built specifically for your situation, your city, your budget.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* SOCIAL PROOF */}
-      <section className="section proof" id="reviews">
-        <div className="wrap">
-          <div className="headwrap">
-            <div className="eyebrow">FEEDBACK</div>
-            <h2 style={{ fontSize: '32px', margin: '14px 0' }}>What other service providers say</h2>
-          </div>
-          <div className="tgrid">
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"I was quoting ₦150k for websites. After reading the Value Anchoring chapter, I quoted ₦450k to my next lead. I got a YES without them even flinching. Best money I ever spent!"</p>
-              <div className="tname">Tobi A.</div>
-              <div className="trole">Web Developer, Lagos</div>
-            </div>
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"The objection scripts are absolute gold. A client asked for a 30% discount last week. I used the script on Chapter 4, and they signed the full price proposal within 10 minutes."</p>
-              <div className="tname">Chidi K.</div>
-              <div className="trole">Brand Designer, Port Harcourt</div>
-            </div>
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"I've read a lot of business books, but this is the first one that tells you exactly what to say. No fluff, just direct templates that work."</p>
-              <div className="tname">Halima S.</div>
-              <div className="trole">Social Media Consultant, Abuja</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* OFFER */}
-      <section className="section offer" id="offer">
-        <div className="wrap">
-          <div className="headwrap">
-            <div className="eyebrow on-dark">THE PLAYBOOK</div>
-            <h2 style={{ fontSize: '36px', margin: '14px 0' }}>Secure your copy today</h2>
-          </div>
-          <div className="receipt">
-            <div className="rtitle">INVOICE &amp; RECEIPT</div>
-            <div className="rsub">AMPLIFIED SKILLS DIGITAL STORE</div>
-            
-            <div className="rline">
-              <div>
-                <span className="rname">The Pricing &amp; Negotiation Playbook</span>
-                <span className="rdesc">Digital PDF Guide &amp; Script Bank</span>
+          <div className="reveal grid-3" style={{ transitionDelay: '.1s' }}>
+            {[
+              { icon: '📋', label: '20 Real Business Ideas', desc: 'Proven, working right now in Nigeria' },
+              { icon: '🗺️', label: 'Step-by-Step Plans', desc: 'What to do Day 1, Week 1, Month 1' },
+              { icon: '📣', label: 'Zero-Budget Marketing', desc: 'WhatsApp & Instagram strategies that work' },
+              { icon: '💰', label: 'Funding Sources', desc: 'CBN, grants, TEF, cooperatives — listed' },
+              { icon: '📊', label: 'Money Management', desc: 'Financial system that keeps businesses alive' },
+              { icon: '🏆', label: 'Success Stories', desc: '6 real Nigerians who built from nothing' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,.07)', borderRadius: 'var(--r-lg)', padding: '20px 16px', border: '1px solid rgba(255,255,255,.1)', textAlign: 'center', transition: 'background .25s', cursor: 'default' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.12)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,.07)'}
+              >
+                <div style={{ fontSize: '2rem', marginBottom: 10 }}>{item.icon}</div>
+                <div style={{ fontWeight: 700, color: '#fff', fontSize: '.9rem', marginBottom: 5 }}>{item.label}</div>
+                <div style={{ color: 'rgba(255,255,255,.52)', fontSize: '.8rem', lineHeight: 1.5 }}>{item.desc}</div>
               </div>
-              <span className="rval">{formattedPrice}</span>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            {product?.bonus_ebook_urls && product.bonus_ebook_urls.length > 0 && (
-              <div className="rline">
+      {/* ── WHAT'S INSIDE ───────────────────────────────────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-green">Full Chapter Breakdown</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>
+              Here's Exactly What's Inside<br />Your <span className="t-green">55-Page Blueprint</span>
+            </h2>
+            <p className="sec-sub">Every chapter is actionable. No filler. No fluff. Just the information you need to build.</p>
+          </div>
+
+          <div className="reveal" style={{ transitionDelay: '.1s', background: 'var(--n50)', borderRadius: 'var(--r-xl)', padding: '8px 20px' }}>
+            {CHAPTERS.map((ch, i) => (
+              <div key={i} className="ch-item">
+                <div className="ch-num">{ch.n}</div>
                 <div>
-                  <span className="rname">Included Bonuses</span>
-                  <span className="rdesc">{product.bonus_ebook_urls.map(b => b.name).join(', ')}</span>
+                  <div className="ch-title">{ch.title}</div>
+                  <div className="ch-desc">{ch.desc}</div>
                 </div>
-                <span className="rval" style={{ color: '#10b981' }}>FREE</span>
               </div>
-            )}
+            ))}
+          </div>
 
-            <div className="rtotal">
-              <span className="rtlabel">TOTAL</span>
-              <div>
-                {oldPrice > price && <span className="rtorig">{formattedOldPrice}</span>}
-                <span className="rtval">{formattedPrice}</span>
+          <div className="reveal t-center" style={{ marginTop: 32, transitionDelay: '.15s' }}>
+            <button className="btn-cta" onClick={go} style={{ margin: '0 auto' }}>
+              <span>Get All 15 Chapters Now — {formattedPrice}<span className="sub">Instant PDF · Lifetime Access</span></span>
+              <span className="arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BONUSES ─────────────────────────────────────────────── */}
+      <section className="section section-gray">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-gold">FREE Bonuses — Today Only</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>
+              You Also Get These <span className="t-red">FREE</span><br />When You Order Right Now
+            </h2>
+            <p className="sec-sub">These bonuses disappear when the timer expires. They are only available at this launch price.</p>
+          </div>
+
+          <div className="reveal grid-2" style={{ transitionDelay: '.1s' }}>
+            {[
+              { icon: '📋', title: 'Supplier Directory', val: '₦1,500', desc: 'Every major market in Lagos, Abuja, Kano, and Enugu — categorised by product type. Find wholesale suppliers for any of the 20 business ideas instantly.' },
+              { icon: '📱', title: 'Social Media Caption Pack', val: '₦1,200', desc: '30 ready-to-copy captions for Instagram, Facebook & WhatsApp. Plug in your product name and post immediately. No writing required.' },
+              { icon: '🛠️', title: 'Free Tools Directory', val: '₦800', desc: '14 free tools every Nigerian entrepreneur needs — from invoicing to design to payment collection. All free, all explained, all Nigerian-compatible.' },
+              { icon: '📊', title: '100-Day N100K Action Plan', val: '₦2,000', desc: 'A day-by-day breakdown of exactly what to do in your first 100 days to reach your first ₦100,000 in sales — regardless of which business you pick.' },
+            ].map((b, i) => (
+              <div key={i} className="card card-accent">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                  <div style={{ width: 46, height: 46, borderRadius: 12, background: 'var(--g50)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem' }}>{b.icon}</div>
+                  <span style={{ background: 'var(--gold-l)', color: 'var(--gold-d)', fontWeight: 800, fontSize: '.74rem', padding: '4px 10px', borderRadius: 50 }}>{b.val} VALUE</span>
+                </div>
+                <p style={{ fontWeight: 700, fontSize: '.96rem', marginBottom: 6 }}>{b.title}</p>
+                <p style={{ fontSize: '.87rem', color: 'var(--n500)', lineHeight: 1.65 }}>{b.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Value stack */}
+          <div className="reveal" style={{ marginTop: 24, background: 'var(--g900)', borderRadius: 'var(--r-xl)', padding: '28px 24px', textAlign: 'center', transitionDelay: '.15s' }}>
+            <p style={{ color: 'rgba(255,255,255,.55)', fontSize: '.88rem', marginBottom: 6 }}>Total Real Value of Everything You Get</p>
+            <p style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--n500)', textDecoration: 'line-through', lineHeight: 1 }}>{formattedOldPrice}</p>
+            <p style={{ color: 'rgba(255,255,255,.55)', fontSize: '.82rem', marginTop: 6, marginBottom: 4 }}>Your Price Today</p>
+            <p style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1 }}>{formattedPrice}</p>
+            <p style={{ color: 'rgba(255,255,255,.45)', fontSize: '.8rem', marginTop: 8 }}>You save {formattedSavings} — {discountPercentage}% off</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ────────────────────────────────────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-green">Real Results</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>
+              What Nigerians Are Saying<br />After Reading The Blueprint
+            </h2>
+          </div>
+
+          <div className="reveal grid-2" style={{ transitionDelay: '.1s' }}>
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="testi">
+                <div className="stars">★★★★★</div>
+                <p className="testi-quote">{t.text}</p>
+                <div className="testi-author">
+                  <div className="testi-av">{t.name[0]}</div>
+                  <div>
+                    <div className="testi-name">{t.name}</div>
+                    <div className="testi-role">{t.role}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats */}
+          <div className="reveal" style={{ marginTop: 28, background: 'var(--g900)', borderRadius: 'var(--r-xl)', padding: '24px 20px', transitionDelay: '.15s' }}>
+            <div className="stat-row">
+              {[['1,847+', 'Copies Sold'], ['4.9/5', 'Average Rating'], ['100%', 'Satisfaction Rate']].map(([n, l]) => (
+                <div key={l} className="stat-unit">
+                  <div className="stat-num">{n}</div>
+                  <div className="stat-lbl">{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── AUTHOR ──────────────────────────────────────────────── */}
+      <section className="section section-green">
+        <div className="wrap">
+          <div className="reveal">
+            <span className="badge badge-green">About the Author</span>
+            <div style={{ marginTop: 20, background: '#fff', borderRadius: 'var(--r-xl)', padding: 28, boxShadow: 'var(--sh)', border: '1.5px solid var(--n100)' }}>
+              <img src="/avatar.png" alt="Nnanta Precious" style={{ width: 86, height: 86, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 16px', display: 'block', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
+              <p style={{ textAlign: 'center', fontWeight: 800, fontSize: '1.15rem', marginBottom: 3 }}>Nnanta Precious</p>
+              <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--g700)', fontWeight: 600, marginBottom: 18 }}>Nigerian Entrepreneur & Business Strategist</p>
+              <p style={{ fontSize: '.93rem', color: 'var(--n600)', lineHeight: 1.78, marginBottom: 14 }}>
+                Nnanta Precious is a Nigerian entrepreneur, business educator, and strategist who has spent years studying, testing, and documenting exactly what works in the Nigerian small business ecosystem.
+              </p>
+              <p style={{ fontSize: '.93rem', color: 'var(--n600)', lineHeight: 1.78 }}>
+                After watching thousands of talented Nigerians fail — not from lack of ability but from lack of the right information — he created The N50K Blueprint. The guide is built on a single belief:{' '}
+                <strong style={{ color: 'var(--g800)' }}>Intelligence, determination, and the right information are more powerful than money, connections, or credentials.</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── GUARANTEE ───────────────────────────────────────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal">
+            <div className="guarantee">
+              <div className="guarantee-icon">🛡️</div>
+              <div className="guarantee-title">Your Access Is Locked In — Permanently</div>
+              <p className="guarantee-text">
+                The moment you complete your payment, your copy of the N50K Blueprint is secured to your email address — permanently. You'll always have access to the guide and every future update at no extra charge. Your investment is locked in at today's lowest price, forever.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── COMPARISON ──────────────────────────────────────────── */}
+      <section className="section section-dark pattern-bg">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-white">The Choice Is Simple</span>
+            <h2 className="h2 t-white" style={{ marginTop: 10 }}>
+              The Real Cost of <span className="t-gold">NOT</span> Taking Action
+            </h2>
+          </div>
+
+          <div className="reveal grid-2" style={{ transitionDelay: '.1s', gap: 16 }}>
+            <div style={{ background: 'rgba(220,38,38,.1)', border: '1.5px solid rgba(220,38,38,.25)', borderRadius: 'var(--r-lg)', padding: 22 }}>
+              <p style={{ fontWeight: 800, color: '#FCA5A5', marginBottom: 14, fontSize: '.92rem', textAlign: 'center' }}>❌ Without the Blueprint</p>
+              <ul className="list-x">
+                {['Keep guessing which business to start', 'Waste months (years) figuring it out alone', 'Watch others build while you stay stuck', 'Lose money on the wrong decisions', 'Miss available funding and grants', 'Stay dependent on one income forever'].map((item, i) => (
+                  <li key={i} style={{ color: 'rgba(255,255,255,.62)', fontSize: '.88rem' }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div style={{ background: 'rgba(60,179,113,.1)', border: '1.5px solid rgba(60,179,113,.25)', borderRadius: 'var(--r-lg)', padding: 22 }}>
+              <p style={{ fontWeight: 800, color: '#6EE7A0', marginBottom: 14, fontSize: '.92rem', textAlign: 'center' }}>✅ With the Blueprint</p>
+              <ul className="list-check white">
+                {['Know exactly which business fits you in 1 hour', 'Start with a clear plan — every step mapped out', 'Build something real in your first 30 days', 'Avoid expensive mistakes with proven strategies', 'Apply for grants and loans you didn\'t know existed', 'Create income that doesn\'t depend on any employer'].map((item, i) => (
+                  <li key={i} style={{ fontSize: '.88rem' }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING BOX ─────────────────────────────────────────── */}
+      <section className="section" id="buy">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-red">⏰ Limited Time Offer</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>
+              Get Your Blueprint Before<br />The Price Goes Up
+            </h2>
+            <p className="sec-sub">This is the lowest this guide will ever be priced. The price increases the moment the timer hits zero.</p>
+            <div style={{ marginTop: 20 }}><Countdown /></div>
+          </div>
+
+          <div className="reveal" style={{ transitionDelay: '.12s' }}>
+            <div className="pricing-box">
+              <div className="pricing-inner">
+                {/* Tags */}
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
+                  <span className="badge badge-green">📗 Complete 55-Page Guide</span>
+                  <span className="badge badge-gold">⚡ Instant Download</span>
+                  <span className="badge badge-dark">🔄 Lifetime Updates</span>
+                </div>
+
+                {/* Pricing */}
+                <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                  <div className="price-was">Regular Price: {formattedOldPrice}</div>
+                  <div className="price-now"><sup>₦</sup>{price.toLocaleString()}</div>
+                  <div className="price-save">🔥 YOU SAVE {formattedSavings} TODAY</div>
+                </div>
+
+                {/* Progress bar */}
+                <div style={{ marginBottom: 20 }}>
+                  <ProgressBar pct={73} />
+                </div>
+
+                {/* What you get */}
+                <div style={{ background: 'var(--g50)', borderRadius: 'var(--r-lg)', padding: '16px 20px', marginBottom: 22 }}>
+                  <p style={{ fontWeight: 700, fontSize: '.85rem', color: 'var(--g800)', marginBottom: 10 }}>✅ Everything Included:</p>
+                  <ul className="list-check">
+                    {[
+                      'The N50K Blueprint — Complete 55-Page Guide',
+                      '20 Business Ideas with Step-by-Step Plans',
+                      'Supplier Directory (Every major Nigerian market)',
+                      '30 Ready-to-Post Social Media Captions',
+                      '100-Day ₦100K Action Plan',
+                      '14 Free Business Tools Directory',
+                      'Lifetime Access — All Future Updates FREE',
+                    ].map((item, i) => <li key={i} style={{ fontSize: '.88rem' }}>{item}</li>)}
+                  </ul>
+                </div>
+
+                {/* CTA */}
+                <button className="btn-cta" onClick={go} style={{ maxWidth: '100%', fontSize: '1.1rem', padding: '22px 28px' }}>
+                  <span>
+                    🔓 Yes! Get My Blueprint Now — {formattedPrice}
+                    <span className="sub">Secure Paystack · Instant Lifetime Access</span>
+                  </span>
+                  <span className="arrow">→</span>
+                </button>
+
+                {/* Trust */}
+                <div style={{ marginTop: 16 }}>
+                  <div className="trust-bar">
+                    <span className="trust-item"><span className="trust-icon">🔒</span>Paystack Secured</span>
+                    <span className="trust-item"><span className="trust-icon">⚡</span>Instant Delivery</span>
+                    <span className="trust-item"><span className="trust-icon">🔐</span>Permanent Access</span>
+                    <span className="trust-item"><span className="trust-icon">📱</span>Works on Phone</span>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="rbtn">
-              <button onClick={handleCheckoutRedirect} className="btn btn-primary">
-                Instant Download <span className="arrow">→</span>
+      {/* ── FAQ ─────────────────────────────────────────────────── */}
+      <section className="section section-gray">
+        <div className="wrap">
+          <div className="reveal sec-head">
+            <span className="badge badge-green">FAQ</span>
+            <h2 className="h2" style={{ marginTop: 10 }}>Questions? We Have Answers.</h2>
+            <p className="sec-sub">Every concern you might have — answered honestly.</p>
+          </div>
+          <div className="reveal" style={{ transitionDelay: '.1s' }}>
+            {FAQS.map(([q, a], i) => <FaqItem key={i} q={q} a={a} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ───────────────────────────────────────────── */}
+      <section className="section section-dark pattern-bg" style={{ background: 'linear-gradient(168deg, #052817 0%, #0F4A36 100%)' }}>
+        <div className="wrap t-center">
+          <div className="reveal">
+            <div style={{ fontSize: '3.5rem', marginBottom: 16 }}>⚡</div>
+            <h2 className="h2 t-white" style={{ marginBottom: 14 }}>
+              Nigeria Belongs to Those<br />Who <span className="t-gold">Dare to Build.</span>
+            </h2>
+            <p className="body-lg" style={{ color: 'rgba(255,255,255,.72)', maxWidth: 520, margin: '0 auto 28px', lineHeight: 1.75 }}>
+              Right now, thousands of Nigerians are reading this same page. Some will close the tab and go back to hoping things change on their own. A few will click the button below.{' '}
+              <strong style={{ color: '#fff' }}>Those few will build something real.</strong>{' '}
+              The only question is: which group are you in?
+            </p>
+            <Countdown />
+            <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+              <button className="btn-cta" onClick={go} style={{ fontSize: '1.12rem' }}>
+                <span>
+                  🔓 Get My N50K Blueprint — {formattedPrice}
+                  <span className="sub">Instant Download · Lifetime Access · Secure Payment</span>
+                </span>
+                <span className="arrow">→</span>
               </button>
             </div>
-            
-            <div className="rfoot">⚡ Secure payment via Paystack &middot; Access files instantly</div>
           </div>
         </div>
       </section>
-
-      {/* GUARANTEE */}
-      <section className="section guarantee">
-        <div className="wrap">
-          <div className="gbadge">100%<br />RISK FREE</div>
-          <div>
-            <h3>Our 100% Satisfaction Guarantee</h3>
-            <p>Read the playbook, try the scripts, and test the templates on your next lead. If you don't feel it gives you the confidence and framework to charge at least 10x what you paid for it, send us a WhatsApp message or email within 14 days and we will refund you in full. No questions asked.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="section faq" id="faq">
-        <div className="wrap">
-          <div className="center" style={{ marginBottom: '40px' }}>
-            <div className="eyebrow">QUESTIONS</div>
-            <h2 className="h-lg">Frequently Asked Questions</h2>
-          </div>
-          
-          <div className="fitem" style={{ borderTop: '1px solid var(--hair)' }}>
-            <button className="fq" onClick={() => toggleFaq(0)}>
-              <span>How do I receive the playbook?</span>
-              <span className="plus" style={{ transform: openFaq === 0 ? 'rotate(45deg)' : 'none' }}>+</span>
-            </button>
-            <div className="fa" style={{ maxHeight: openFaq === 0 ? '300px' : '0' }}>
-              <p>Immediately after payment is confirmed (via Paystack or manually verified transfer), you will get an email with your download link, and you can also download it directly from your eBook Downloads dashboard.</p>
-            </div>
-          </div>
-
-          <div className="fitem">
-            <button className="fq" onClick={() => toggleFaq(1)}>
-              <span>Can I pay via Bank Transfer?</span>
-              <span className="plus" style={{ transform: openFaq === 1 ? 'rotate(45deg)' : 'none' }}>+</span>
-            </button>
-            <div className="fa" style={{ maxHeight: openFaq === 1 ? '300px' : '0' }}>
-              <p>Yes, click the download button, choose "Manual Bank Transfer" on the checkout page, make the transfer to the displayed account, and upload your receipt. Our admin team will approve it and activate access in your dashboard.</p>
-            </div>
-          </div>
-
-          <div className="fitem">
-            <button className="fq" onClick={() => toggleFaq(2)}>
-              <span>Is this guide specific to Nigeria?</span>
-              <span className="plus" style={{ transform: openFaq === 2 ? 'rotate(45deg)' : 'none' }}>+</span>
-            </button>
-            <div className="fa" style={{ maxHeight: openFaq === 2 ? '300px' : '0' }}>
-              <p>While the pricing examples mention Naira, the core human psychology, proposal structure, and negotiation scripts work globally for any client in US Dollars, Pounds, Euros, or local currencies.</p>
-            </div>
-          </div>
-
-          <div className="fitem">
-            <button className="fq" onClick={() => toggleFaq(3)}>
-              <span>Do I have lifetime access?</span>
-              <span className="plus" style={{ transform: openFaq === 3 ? 'rotate(45deg)' : 'none' }}>+</span>
-            </button>
-            <div className="fa" style={{ maxHeight: openFaq === 3 ? '300px' : '0' }}>
-              <p>Yes, you buy once and get lifetime access. If we update the playbook with new scripts or frameworks in the future, you will receive the updated PDF file free of charge.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="section final">
-        <div className="wrap">
-          <h2>Stop losing money to silent clients.</h2>
-          <p>Get instant access to the scripts and proposal secrets that close premium contracts today.</p>
-          <a href="#offer" className="btn btn-primary">Grab Your Copy Now <span className="arrow">→</span></a>
-        </div>
-      </section>
-
-      {/* PS */}
-      <section className="section tight ps">
-        <div className="wrap">
-          <p><b>P.S.</b> If you scroll to the bottom, here is the short summary: we are offering the battle-tested <b>Pricing &amp; Negotiation Playbook</b>, outlining exactly how to frame your value so clients accept your quotes without negotiating you down.</p>
-          <p>It's completely risk-free. If you don't like it, we'll give you a full refund within 14 days. Click the button above to secure your copy.</p>
-        </div>
-      </section>
-
-      <footer>
-        <p>&copy; {new Date().getFullYear()} Amplified Skills. All rights reserved.</p>
-      </footer>
-
-      {/* STICKY MOBILE BAR */}
-      <div className={`stickybar ${showStickyBar ? 'show' : ''}`}>
-        <div className="sprice">Price: <b>{formattedPrice}</b></div>
-        <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get The Playbook</button>
-      </div>
-    </div>
+    </>
   )
 }

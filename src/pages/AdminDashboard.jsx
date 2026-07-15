@@ -936,6 +936,8 @@ function AdminProducts() {
     if (!productForm.title.trim() || !productForm.slug.trim()) return
     setSubmitting(true)
 
+    const isFree = !!productForm.is_free
+
     const payload = {
       title: productForm.title.trim(),
       slug: productForm.slug.trim(),
@@ -1209,7 +1211,7 @@ function AdminProducts() {
       {/* Product Modal */}
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
-          <div style={{ background: '#fff', padding: isMobile ? '28px 20px' : '32px 28px', borderRadius: 12, width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="no-scrollbar" style={{ background: '#fff', padding: isMobile ? '28px 20px' : '32px 28px', borderRadius: 12, width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', gap: 20 }}>
             <h3 style={{ fontSize: 17, fontWeight: 600, marginBottom: 20, color: '#1a1f36' }}>
               {editingProduct ? 'Edit Product Details' : 'Register New Product'}
             </h3>
@@ -1243,30 +1245,31 @@ function AdminProducts() {
                 />
               </div>
 
+              <div>
+                <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Type *</label>
+                <select 
+                  value={productForm.type} 
+                  onChange={e => setProductForm({ ...productForm, type: e.target.value })} 
+                  style={{ 
+                    width: '100%', 
+                    padding: '8px 36px 8px 12px', 
+                    borderRadius: 4, 
+                    border: '1px solid #cbd5e1', 
+                    fontSize: 13,
+                    backgroundColor: '#fff',
+                    appearance: 'none',
+                    backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23697386' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 10px center',
+                    backgroundSize: '14px'
+                  }}
+                >
+                  <option value="course">Course</option>
+                  <option value="ebook">eBook</option>
+                </select>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
-                <div>
-                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Type *</label>
-                  <select 
-                    value={productForm.type} 
-                    onChange={e => setProductForm({ ...productForm, type: e.target.value })} 
-                    style={{ 
-                      width: '100%', 
-                      padding: '8px 36px 8px 12px', 
-                      borderRadius: 4, 
-                      border: '1px solid #cbd5e1', 
-                      fontSize: 13,
-                      backgroundColor: '#fff',
-                      appearance: 'none',
-                      backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23697386' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 10px center',
-                      backgroundSize: '14px'
-                    }}
-                  >
-                    <option value="course">Course</option>
-                    <option value="ebook">eBook</option>
-                  </select>
-                </div>
                 <div>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Price (NGN) *</label>
                   <input 
@@ -1278,9 +1281,6 @@ function AdminProducts() {
                     disabled={productForm.is_free}
                   />
                 </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
                 <div>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Compare Price (NGN)</label>
                   <input 
@@ -1291,32 +1291,33 @@ function AdminProducts() {
                     disabled={productForm.is_free}
                   />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Cover Image</label>
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <input 
-                      type="text" 
-                      value={productForm.cover_image} 
-                      onChange={e => setProductForm({ ...productForm, cover_image: e.target.value })} 
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
-                      placeholder="https://... or upload"
-                    />
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      id="cover-uploader" 
-                      onChange={handleImageUpload} 
-                      style={{ display: 'none' }} 
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => document.getElementById('cover-uploader').click()}
-                      disabled={uploadingImage}
-                      style={{ padding: '8px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, cursor: 'pointer', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' }}
-                    >
-                      {uploadingImage ? 'Uploading...' : 'Upload Image'}
-                    </button>
-                  </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Cover Image</label>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <input 
+                    type="text" 
+                    value={productForm.cover_image} 
+                    onChange={e => setProductForm({ ...productForm, cover_image: e.target.value })} 
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
+                    placeholder="https://... or upload"
+                  />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    id="cover-uploader" 
+                    onChange={handleImageUpload} 
+                    style={{ display: 'none' }} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => document.getElementById('cover-uploader').click()}
+                    disabled={uploadingImage}
+                    style={{ padding: '8px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, cursor: 'pointer', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' }}
+                  >
+                    {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                  </button>
                 </div>
               </div>
 
@@ -2149,6 +2150,7 @@ export default function AdminDashboard() {
               <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
                 @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+                .no-scrollbar::-webkit-scrollbar { display: none; }
               `}</style>
             </div>
           </div>

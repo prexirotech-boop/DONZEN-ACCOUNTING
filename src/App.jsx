@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
 import ProductsPage from './pages/ProductsPage'
 import EbookSalesPage from './pages/EbookSalesPage'
+import PlaybookSalesPage from './pages/PlaybookSalesPage'
 import SalesPage from './pages/SalesPage'
 import PaymentPage from './pages/PaymentPage'
 import ThankYouPage from './pages/ThankYouPage'
@@ -131,6 +132,9 @@ function AppLayout() {
         <Route path="/product/:productId" element={<ProductDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/ebook" element={<EbookSalesPage />} />
+        <Route path="/the-n50k-blueprint" element={<EbookSalesPage />} />
+        <Route path="/the-pricing-and-negotiation-playbook" element={<PlaybookSalesPage />} />
+        <Route path="/pricing-negotiation-playbook" element={<PlaybookSalesPage />} />
         <Route path="/course" element={<SalesPage />} />
         <Route path="/checkout" element={<PaymentPage />} />
         <Route path="/success" element={<ThankYouPage />} />
