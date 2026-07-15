@@ -21,7 +21,15 @@ export default function ThankYouPage() {
             {first}, Your Blueprint is Ready!
           </h1>
           <p style={{ color: 'rgba(255,255,255,.72)', fontSize: '1rem', maxWidth: 460, margin: '0 auto' }}>
-            Payment confirmed. Your N50K Blueprint and all bonuses are ready for you right now.
+            {customer?.payment_method === 'bank_transfer' ? (
+              <>
+                Receipt submitted & pending verification. We will activate download access as soon as your transfer is verified (usually within 1-6 hours).
+              </>
+            ) : (
+              <>
+                Payment confirmed. Your N50K Blueprint and all bonuses are ready for you right now.
+              </>
+            )}
           </p>
           {customer?.ref && (
             <p style={{ color: 'rgba(255,255,255,.38)', fontSize: '.76rem', marginTop: 12 }}>
@@ -44,15 +52,21 @@ export default function ThankYouPage() {
             <p style={{ fontSize: '.88rem', color: 'var(--n500)', marginBottom: 6 }}>Complete 55-Page Guide + All 4 Bonuses</p>
             {customer?.email && (
               <p style={{ fontSize: '.82rem', color: 'var(--g600)', fontWeight: 600, background: 'var(--g50)', display: 'inline-block', padding: '4px 14px', borderRadius: 50, marginBottom: 20 }}>
-                📧 Also sent to: {customer.email}
+                📧 {customer?.payment_method === 'bank_transfer' ? 'Updates will be sent to:' : 'Also sent to:'} {customer.email}
               </p>
             )}
-            <a href={CONFIG.PDF_URL} download style={{ display: 'block' }}>
-              <button className="btn-download">
-                <span>⬇️</span>
-                <span>Download Your Blueprint Now</span>
-              </button>
-            </a>
+            {customer?.payment_method === 'bank_transfer' ? (
+              <div style={{ background: 'var(--g50)', border: '1.5px dashed var(--g300)', padding: '16px 20px', borderRadius: 12, color: 'var(--g800)', fontWeight: 600, fontSize: '.9rem', marginTop: 10 }}>
+                ⏳ Transfer Verification Pending... The download button will become active once your receipt is verified by our admin.
+              </div>
+            ) : (
+              <a href={CONFIG.PDF_URL} download style={{ display: 'block' }}>
+                <button className="btn-download">
+                  <span>⬇️</span>
+                  <span>Download Your Blueprint Now</span>
+                </button>
+              </a>
+            )}
           </div>
 
           {/* Next steps */}

@@ -108,6 +108,13 @@ export default function PaymentPage() {
   const [couponErr, setCouponErr] = useState('')
   const [couponOk, setCouponOk] = useState('')
 
+  // Payment method toggle & receipt states
+  const [paymentMethod, setPaymentMethod] = useState('paystack')
+  const [bankAccounts, setBankAccounts] = useState([])
+  const [receiptUrl, setReceiptUrl] = useState('')
+  const [uploadingReceipt, setUploadingReceipt] = useState(false)
+  const [receiptName, setReceiptName] = useState('')
+
   const paidRef = useRef(false)
   const pendingOrderIdRef = useRef(null)
 
@@ -262,6 +269,62 @@ export default function PaymentPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
+  // Load bank transfer accounts configured by admin
+  useEffect(() => {
+    async function fetchBankSettings() {
+      try {
+        const { data } = await supabase.from('settings').select('*').eq('id', 'bank_config').maybeSingle()
+        if (data?.value?.accounts) {
+          setBankAccounts(data.value.accounts)
+        }
+      } catch (err) {
+        console.warn('[PaymentPage] Failed to fetch bank settings:', err)
+      }
+    }
+    fetchBankSettings()
+  }, [])
+
+  const handleReceiptUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingReceipt(true)
+    setReceiptName(file.name)
+
+    const fileExt = file.name.split('.').pop()
+    const fileName = `receipt-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('payment-receipts')
+        .upload(fileName, file)
+
+      if (error) {
+        console.warn('[PaymentPage] bucket upload failed, using base64 fallback:', error.message)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          setReceiptUrl(reader.result)
+          setUploadingReceipt(false)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        const { data: { publicUrl } } = supabase.storage
+          .from('payment-receipts')
+          .getPublicUrl(fileName)
+        setReceiptUrl(publicUrl)
+        setUploadingReceipt(false)
+      }
+    } catch (err) {
+      console.error('[PaymentPage] receipt upload error:', err)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setReceiptUrl(reader.result)
+        setUploadingReceipt(false)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   // Auto-detect email existence to toggle login/register forms
   useEffect(() => {
     if (!form.email || user) { setEmailExists(false); return }
@@ -319,9 +382,17 @@ export default function PaymentPage() {
 
   const pay = async () => {
     if (!validate()) return
-    if (!psReady || !window.PaystackPop) {
-      alert('Payment service is loading. Please wait a moment and try again.')
-      return
+
+    if (paymentMethod === 'bank_transfer') {
+      if (!receiptUrl) {
+        alert('Please upload your bank payment receipt first.')
+        return
+      }
+    } else {
+      if (!psReady || !window.PaystackPop) {
+        alert('Payment service is loading. Please wait a moment and try again.')
+        return
+      }
     }
 
     const name  = form.name.trim()
@@ -364,7 +435,9 @@ export default function PaymentPage() {
       setErrors({ email: 'Could not set up account. Please try again.' }); setLoading(false); return
     }
 
-    const ref = `n50k_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+    const ref = paymentMethod === 'bank_transfer'
+      ? `bank_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+      : `n50k_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
     const affId = affiliateData?.id || null
     const affCode = affiliateData?.affiliate_code || null
 
@@ -374,6 +447,8 @@ export default function PaymentPage() {
       amount: discountedPrice,
       affiliateCode: affCode,
       affiliateId: affId,
+      paymentMethod,
+      bankReceiptUrl: paymentMethod === 'bank_transfer' ? receiptUrl : null,
     })
     pendingOrderIdRef.current = orderId
 
@@ -393,6 +468,8 @@ export default function PaymentPage() {
         amount: bumpPrice,
         affiliateCode: affCode,
         affiliateId: affId,
+        paymentMethod,
+        bankReceiptUrl: paymentMethod === 'bank_transfer' ? receiptUrl : null,
       })
     }
 
@@ -406,6 +483,67 @@ export default function PaymentPage() {
       name,
       phone
     })
+
+    if (paymentMethod === 'bank_transfer') {
+      // Track purchase event in DB and Meta immediately for manual bank transfer submissions
+      trackEvent('purchase', {
+        value: finalTotal,
+        currency: 'NGN',
+        content_name: productTitle,
+        product_id: product?.id,
+        email,
+        name,
+        phone,
+        reference: ref
+      })
+
+      localStorage.setItem('paid_customer', JSON.stringify({
+        name, email, phone, ref,
+        product_id: product?.id,
+        product_type: product?.type,
+        product_title: productTitle,
+        payment_method: 'bank_transfer'
+      }))
+
+      // Clear saved checkout fields on successful submission
+      localStorage.removeItem('checkout_name')
+      localStorage.removeItem('checkout_email')
+      localStorage.removeItem('checkout_phone')
+
+      // Fire pending confirmation email notification edge function (non-blocking)
+      supabase.functions
+        .invoke('send-confirmation', {
+          body: {
+            record: {
+              reference: ref,
+              customer_name: name,
+              customer_phone: phone,
+              product_id: product?.id,
+              payment_method: 'bank_transfer'
+            }
+          }
+        })
+        .catch(() => { /* Email notification is optional — silently skip on failure */ })
+
+      setLoading(false)
+
+      if (isEbook) {
+        navigate('/success')
+        return
+      }
+
+      let hasSession = false
+      if (userId) {
+        for (let i = 0; i < 5; i++) {
+          const { data } = await supabase.auth.getSession()
+          if (data?.session?.user) { hasSession = true; break }
+          await new Promise(r => setTimeout(r, 500))
+        }
+      }
+
+      navigate(hasSession ? '/dashboard' : '/setup-account')
+      return
+    }
 
     setLoading(false)
     paidRef.current = false
@@ -1585,22 +1723,119 @@ export default function PaymentPage() {
             {/* Payment Section */}
             <div className="sp-form-card">
               <h3 className="sp-section-title">Payment Method</h3>
-              <div className="sp-payment-container">
-                <div className="sp-payment-header">
-                  <div className="sp-payment-header-left">
-                    <input type="radio" checked readOnly style={{ accentColor: '#1a1a1a', cursor: 'pointer' }} />
-                    <span>Secure Paystack Gateway</span>
-                  </div>
-                  <div className="sp-payment-header-right">
-                    <span style={{ fontSize: '11px', color: '#707070' }}>CARDS &bull; BANK TRANSFER &bull; USSD</span>
-                  </div>
-                </div>
-                
-                <div className="sp-payment-body">
-                  <p>After clicking "Complete Payment", you will be redirected to the secure Paystack checkout pop-up to authorize your payment using card, transfer, app, or USSD.</p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {/* Paystack Gateway Option */}
+                <div className="sp-payment-container" style={{ border: paymentMethod === 'paystack' ? '2.5px solid var(--g800)' : '1px solid #cbd5e1', borderRadius: '8px', overflow: 'hidden' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', cursor: 'pointer', margin: 0, width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <input 
+                        type="radio" 
+                        name="payment_method"
+                        checked={paymentMethod === 'paystack'} 
+                        onChange={() => setPaymentMethod('paystack')}
+                        style={{ accentColor: 'var(--g800)', cursor: 'pointer', width: 16, height: 16 }} 
+                      />
+                      <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#1f2937' }}>Secure Paystack Gateway</span>
+                    </div>
+                    <span style={{ fontSize: '11px', color: '#707070', fontWeight: 500 }}>CARDS &bull; TRANSFER &bull; USSD</span>
+                  </label>
+                  
+                  {paymentMethod === 'paystack' && (
+                    <div className="sp-payment-body" style={{ background: '#f8fafc', padding: '14px 16px', borderTop: '1px solid #cbd5e1' }}>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.5' }}>After clicking "Complete Payment", you will be redirected to the secure Paystack checkout pop-up to authorize your payment using card, transfer, app, or USSD.</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="sp-payment-footer">
+                {/* Bank Transfer Option */}
+                <div className="sp-payment-container" style={{ border: paymentMethod === 'bank_transfer' ? '2.5px solid var(--g800)' : '1px solid #cbd5e1', borderRadius: '8px', overflow: 'hidden' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', cursor: 'pointer', margin: 0, width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <input 
+                        type="radio" 
+                        name="payment_method"
+                        checked={paymentMethod === 'bank_transfer'} 
+                        onChange={() => setPaymentMethod('bank_transfer')}
+                        style={{ accentColor: 'var(--g800)', cursor: 'pointer', width: 16, height: 16 }} 
+                      />
+                      <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#1f2937' }}>Manual Bank Transfer (Direct Upload)</span>
+                    </div>
+                    <span style={{ fontSize: '11px', color: '#707070', fontWeight: 500 }}>BANK UPLOAD &bull; MANUAL REVIEW</span>
+                  </label>
+                  
+                  {paymentMethod === 'bank_transfer' && (
+                    <div className="sp-payment-body" style={{ background: '#f8fafc', padding: '14px 16px', borderTop: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.5' }}>
+                        Please make a transfer of <strong style={{ color: '#0f172a' }}>₦{finalTotal.toLocaleString()}</strong> to any of the bank accounts listed below, then upload a clear screenshot of your payment receipt.
+                      </p>
+
+                      {/* Bank list */}
+                      {bankAccounts.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: '#fff', border: '1px solid #cbd5e1', borderRadius: 8, padding: '12px 14px' }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.4 }}>Our Bank Accounts</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            {bankAccounts.map((acc, idx) => (
+                              <div key={idx} style={{ paddingBottom: idx < bankAccounts.length - 1 ? 10 : 0, borderBottom: idx < bankAccounts.length - 1 ? '1px dashed #cbd5e1' : 'none' }}>
+                                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--g700)' }}>{acc.bank_name}</div>
+                                <div style={{ fontSize: 12.5, color: '#334155', marginTop: 2 }}>
+                                  Account Number: <strong style={{ color: '#0f172a', fontSize: '13px' }}>{acc.account_number}</strong>
+                                </div>
+                                <div style={{ fontSize: 11.5, color: '#64748b', marginTop: 1 }}>Account Name: {acc.account_name}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ padding: '12px', background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: 6, color: '#b91c1c', fontSize: 12.5, fontWeight: 500 }}>
+                          ⚠️ Direct bank transfer details are not configured by the admin yet. Please check back later or use Paystack.
+                        </div>
+                      )}
+
+                      {/* File Upload Input */}
+                      {bankAccounts.length > 0 && (
+                        <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 14 }}>
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#3c4257', marginBottom: 6 }}>Upload Payment Receipt (Screenshot/Receipt Image) *</label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <input 
+                              type="file" 
+                              accept="image/*,application/pdf" 
+                              onChange={handleReceiptUpload} 
+                              id="receipt-uploader" 
+                              style={{ display: 'none' }} 
+                            />
+                            <button 
+                              type="button" 
+                              onClick={() => document.getElementById('receipt-uploader').click()}
+                              disabled={uploadingReceipt}
+                              style={{
+                                padding: '8px 14px',
+                                background: '#fff',
+                                border: '1px solid #cbd5e1',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                color: '#1e293b',
+                                transition: 'all 0.15s'
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                              onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                            >
+                              {uploadingReceipt ? 'Uploading...' : 'Choose File'}
+                            </button>
+                            <span style={{ fontSize: '12px', color: receiptUrl ? '#16a34a' : '#64748b', fontWeight: receiptUrl ? 600 : 400 }}>
+                              {uploadingReceipt ? 'Uploading receipt...' : receiptUrl ? `✓ Receipt uploaded: ${receiptName || 'File'}` : 'No file selected'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit button footer area */}
+                <div style={{ marginTop: 6 }}>
                   {emailExists && !user && (
                     <p style={{ fontSize: '12.5px', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '10px 12px', marginBottom: 14 }}>
                       ⚠️ Please fill in your account password above to authorize payment processing.
@@ -1609,16 +1844,25 @@ export default function PaymentPage() {
                   
                   <button
                     type="submit" 
-                    disabled={loading || (emailExists && !user && !loginPassword)}
+                    disabled={loading || (emailExists && !user && !loginPassword) || (paymentMethod === 'bank_transfer' && !receiptUrl)}
                     className="sp-submit-btn"
+                    style={{
+                      cursor: (loading || (paymentMethod === 'bank_transfer' && !receiptUrl)) ? 'not-allowed' : 'pointer',
+                      opacity: (paymentMethod === 'bank_transfer' && !receiptUrl) ? 0.6 : 1
+                    }}
                   >
                     {loading ? (
                       <>
                         <span className="sp-spinner" />
-                        <span>Securing Connection...</span>
+                        <span>{paymentMethod === 'bank_transfer' ? 'Submitting Receipt...' : 'Securing Connection...'}</span>
                       </>
                     ) : (
-                      <span>Complete Payment — ₦{finalTotal.toLocaleString()}</span>
+                      <span>
+                        {paymentMethod === 'bank_transfer' 
+                          ? `Submit Bank Receipt — ₦${finalTotal.toLocaleString()}`
+                          : `Complete Payment — ₦${finalTotal.toLocaleString()}`
+                        }
+                      </span>
                     )}
                   </button>
                 </div>

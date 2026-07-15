@@ -32,6 +32,8 @@ export async function createPendingOrder({
   amount,
   affiliateCode,
   affiliateId,
+  paymentMethod = 'paystack',
+  bankReceiptUrl = null,
 }) {
   try {
     const cleanEmail = (email || '').trim().toLowerCase()
@@ -46,7 +48,8 @@ export async function createPendingOrder({
         product_id: productId || null,
         amount: amount || 0,
         status: 'pending',
-        payment_method: 'paystack',
+        payment_method: paymentMethod,
+        bank_receipt_url: bankReceiptUrl,
         currency: 'NGN',
         affiliate_code: affiliateCode || null,
         affiliate_id: affiliateId || null,

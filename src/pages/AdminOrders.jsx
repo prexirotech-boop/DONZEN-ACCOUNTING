@@ -14,7 +14,7 @@ const STATUS = {
   failed:    { label: 'Failed',    bg: 'rgba(249,115,22,0.09)', color: '#c2410c', border: 'rgba(249,115,22,0.2)',  dot: '#f97316',  icon: '!' },
 }
 
-const PAY_METHODS = { paystack: 'Paystack', manual: 'Manual', bank: 'Bank Transfer', cash: 'Cash' }
+const PAY_METHODS = { paystack: 'Paystack', manual: 'Manual', bank: 'Bank Transfer', bank_transfer: 'Direct Bank Transfer', cash: 'Cash' }
 
 const fmt    = n  => `₦${Number(n || 0).toLocaleString('en-NG')}`
 const fmtD   = d  => d ? new Date(d).toLocaleDateString('en-NG',  { day:'2-digit', month:'short', year:'numeric' }) : '—'
@@ -362,6 +362,50 @@ function OrderDrawer({ order, onClose, onStatusChange, onEnroll }) {
             <DRow label="Order ID"  value={idStr(order.id)} mono />
           </DSection>
 
+          {order.payment_method === 'bank_transfer' && order.bank_receipt_url && (
+            <DSection title="Bank Payment Receipt">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <a
+                  href={order.bank_receipt_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    padding: '8px 12px',
+                    background: '#f1f5f9',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '6px',
+                    color: '#334155',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                  }}
+                >
+                  View Uploaded Receipt ↗
+                </a>
+                {(order.bank_receipt_url.startsWith('data:image') || order.bank_receipt_url.match(/\.(jpeg|jpg|gif|png|webp)/i) || !order.bank_receipt_url.includes('.')) && (
+                  <img
+                    src={order.bank_receipt_url}
+                    alt="Payment Receipt"
+                    style={{
+                      width: '100%',
+                      maxHeight: '260px',
+                      objectFit: 'contain',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      background: '#fafafa',
+                      padding: 4,
+                    }}
+                  />
+                )}
+              </div>
+            </DSection>
+          )}
+
           <DSection title="Actions">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {(order.status === 'pending' || order.status === 'abandoned' || order.status === 'cancelled') &&
@@ -548,7 +592,7 @@ export default function AdminOrders() {
       const [{ data: ords }, { data: prods }] = await Promise.all([
         supabase.from('orders').select(`
           id, reference, customer_email, customer_name, customer_phone,
-          amount, currency, status, payment_method, product_id, created_at,
+          amount, currency, status, payment_method, bank_receipt_url, product_id, created_at,
           products ( id, title, type )
         `).order('created_at', { ascending: false }),
         supabase.from('products').select('id, title, price, type'),
