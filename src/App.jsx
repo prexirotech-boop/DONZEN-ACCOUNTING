@@ -87,7 +87,6 @@ function AppLayout() {
 
   // Affiliate referral tracking disabled for now
   
-  // Hide global Header and Footer on admin, student portal, course player, landing, and auth paths
   const hideHeaderFooter = 
     location.pathname.startsWith('/admin') || 
     location.pathname.startsWith('/dashboard') || 
@@ -96,6 +95,8 @@ function AppLayout() {
     location.pathname.startsWith('/free-training') ||
     location.pathname.startsWith('/freelance-web-design-lander') ||
     location.pathname.startsWith('/webinar') ||
+    location.pathname.startsWith('/the-pricing-and-negotiation-playbook') ||
+    location.pathname.startsWith('/pricing-negotiation-playbook') ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
     location.pathname === '/forgot-password' ||
@@ -164,7 +165,7 @@ function AppLayout() {
             '/about', '/ebook', '/course', '/checkout', '/success', '/setup-account', '/login',
             '/register', '/forgot-password', '/reset-password', '/dashboard', '/course/:courseId',
             '/course/:courseId/:lessonId', '/account', '/admin/*', '/terms', '/privacy', '/refund',
-            '/contact', '/blog', '/faq'
+            '/contact', '/blog', '/faq', '/the-n50k-blueprint', '/the-pricing-and-negotiation-playbook', '/pricing-negotiation-playbook'
           ]
           if (staticPaths.includes(page.path)) return null;
           return <Route key={page.path} path={page.path} element={<page.component />} />

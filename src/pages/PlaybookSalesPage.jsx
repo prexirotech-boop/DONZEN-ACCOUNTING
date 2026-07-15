@@ -9,10 +9,12 @@ export default function PlaybookSalesPage() {
   const [product, setProduct] = useState(null)
   const [openFaq, setOpenFaq] = useState(null)
   const [showStickyBar, setShowStickyBar] = useState(false)
+  const [activeNotification, setActiveNotification] = useState(null)
 
   // Call useToasts hook to trigger periodic customer purchase toasts
   useToasts()
 
+  // Load product data dynamically from Supabase database
   useEffect(() => {
     async function loadProduct() {
       try {
@@ -43,6 +45,7 @@ export default function PlaybookSalesPage() {
     loadProduct()
   }, [])
 
+  // Listen to window scroll to show or hide sticky mobile bar
   useEffect(() => {
     const handleScroll = () => {
       const heroHeight = 500
@@ -56,14 +59,70 @@ export default function PlaybookSalesPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const price = product?.price || 2500
-  const oldPrice = product?.old_price || 9000
+  // Live Sales Notification Popup Logic
+  useEffect(() => {
+    const names = [
+      'Tobi from Lagos', 'Chidi from Port Harcourt', 'Halima from Abuja', 
+      'Emeka from Enugu', 'Aminat from Ibadan', 'Kelechi from Lagos',
+      'Toyin from Akure', 'Jude from Asaba', 'Nkechi from Owerri', 
+      'Segun from Abeokuta', 'Fatima from Kaduna', 'Ogechi from Umuahia',
+      'Yusuf from Kano', 'Ifeoma from Awka', 'Ibrahim from Lokoja',
+      'Damilola from Lagos', 'Chioma from Akwa Ibom', 'Kunle from Jos'
+    ]
+    const products = [
+      'purchased the Playbook', 'downloaded the Pricing Scripts',
+      'purchased the Playbook + Bonuses', 'unlocked the Value Proposal Vault'
+    ]
+    const times = [
+      '2 minutes ago', '5 minutes ago', '12 minutes ago', '15 minutes ago',
+      '1 minute ago', '7 minutes ago', '10 minutes ago', '20 minutes ago'
+    ]
+
+    const interval = setInterval(() => {
+      const randomName = names[Math.floor(Math.random() * names.length)]
+      const randomProduct = products[Math.floor(Math.random() * products.length)]
+      const randomTime = times[Math.floor(Math.random() * times.length)]
+      
+      setActiveNotification({
+        name: randomName,
+        action: randomProduct,
+        time: randomTime
+      })
+
+      const hideTimer = setTimeout(() => {
+        setActiveNotification(null)
+      }, 6000)
+
+      return () => clearTimeout(hideTimer)
+    }, 18000) // Show every 18 seconds
+
+    // Initial popup trigger
+    const initialTimer = setTimeout(() => {
+      setActiveNotification({
+        name: 'Tobi from Lagos',
+        action: 'purchased the Playbook + Bonuses',
+        time: 'Just now'
+      })
+      const hideTimer = setTimeout(() => {
+        setActiveNotification(null)
+      }, 6000)
+      return () => clearTimeout(hideTimer)
+    }, 4000)
+
+    return () => {
+      clearInterval(interval)
+      clearTimeout(initialTimer)
+    }
+  }, [])
+
+  const price = product?.price || 9999
+  const oldPrice = product?.old_price || 25000
   const savings = Math.max(0, oldPrice - price)
   const formattedPrice = `₦${price.toLocaleString()}`
   const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
-  const discountPercentage = oldPrice > 0 ? Math.round((savings / oldPrice) * 100) : 0
 
-  const handleCheckoutRedirect = () => {
+  const handleCheckoutRedirect = (e) => {
+    if (e) e.preventDefault()
     if (product) {
       navigate(`/checkout?product=${product.slug}`)
     } else {
@@ -77,7 +136,7 @@ export default function PlaybookSalesPage() {
 
   return (
     <div style={{ backgroundColor: '#FBF8F2', color: '#262220', fontFamily: "'Lora', serif", fontSize: '17px', lineHeight: 1.65 }}>
-      {/* Dynamic Style Tags */}
+      {/* Page specific inline CSS stylings */}
       <style dangerouslySetInnerHTML={{ __html: `
         :root {
           --dark: #171512; --dark2: #1B2E29; --dark3: #12100D;
@@ -136,22 +195,6 @@ export default function PlaybookSalesPage() {
         .hero .sub { font-family: 'Lora', serif; font-size: 18px; color: #D8CBAE; max-width: 520px; margin-bottom: 30px; line-height: 1.6; }
         .hero-ctarow { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
 
-        /* invoice mock cards */
-        .quotes { position: relative; height: 430px; }
-        .qcard { position: absolute; width: 290px; background: var(--cream); color: var(--ink); border-radius: 10px; padding: 22px 22px 26px; box-shadow: 0 30px 60px rgba(0,0,0,0.45); font-family: 'Poppins', sans-serif; }
-        .qcard .qhead { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #9A917C; border-bottom: 1px dashed var(--hair); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; }
-        .qcard .qname { font-size: 13.5px; font-weight: 700; color: var(--dark); margin-bottom: 2px; }
-        .qcard .qservice { font-size: 11.5px; color: #7A7261; font-family: 'Lora', serif; font-style: italic; margin-bottom: 16px; }
-        .qcard .qline { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-soft); padding: 5px 0; border-bottom: 1px dotted #E4DBC5; }
-        .qcard .qtotal { display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: var(--dark); margin-top: 12px; padding-top: 10px; border-top: 1.5px solid var(--dark); }
-        .qcard.declined { top: 0; left: 0; transform: rotate(-6deg); z-index: 1; }
-        .qcard.accepted { bottom: 0; right: 0; transform: rotate(4deg); z-index: 2; }
-        .stamp { position: absolute; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 1.5px; padding: 7px 14px; border-radius: 6px; border: 2.5px solid; opacity: 0.94; text-transform: uppercase; }
-        .stamp.no { color: var(--rust); border-color: var(--rust); transform: rotate(-11deg); top: 64px; right: 18px; background: rgba(154,59,44,0.06); }
-        .stamp.yes { color: var(--teal); border-color: var(--teal); transform: rotate(8deg); bottom: 70px; left: 20px; background: rgba(31,81,72,0.06); }
-        @media(max-width:900px) { .quotes { height: 400px; max-width: 420px; margin: 0 auto; } .qcard { width: 250px; } }
-        @media(max-width:480px) { .quotes { transform: scale(0.86); height: 360px; } }
-
         /* ---------- HOOK ---------- */
         .hook { padding: 80px 0 40px; }
         .hook .wrap { max-width: 700px; }
@@ -173,7 +216,6 @@ export default function PlaybookSalesPage() {
         .solution .wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; align-items: center; }
         @media(max-width:860px) { .solution .wrap { grid-template-columns: 1fr; gap: 36px; } }
         .bookmock { perspective: 1400px; display: flex; justify-content: center; }
-        .bookmock-card:hover { transform: rotateY(-8deg) rotateX(1deg) scale(1.02); }
         .solution h2 { margin-top: 10px; }
         .solution ul { padding-left: 0; list-style: none; margin-top: 22px; }
         .solution li { display: flex; gap: 12px; margin-bottom: 14px; font-size: 16px; color: var(--ink-soft); }
@@ -287,12 +329,19 @@ export default function PlaybookSalesPage() {
         .stickybar .sprice b { color: var(--gold-light); font-size: 17px; }
         .stickybar .btn { padding: 12px 22px; font-size: 14px; }
         @media(max-width:780px) { .stickybar { display: flex; } }
+
+        /* Slide-up keyframe animation for sales notifications */
+        @keyframes slideUp {
+          from { transform: translateY(100px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
       ` }} />
 
+      {/* LOCAL HEADER (No global website header is loaded) */}
       <header className="nav">
         <div className="navrow">
-          <div className="logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-            AMPLIFIED <span>SKILLS</span>
+          <div className="logo" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => navigate('/')}>
+            <img src="/logo.png" alt="Amplified Skills" style={{ height: '36px', width: 'auto', filter: 'brightness(0.1)' }} />
           </div>
           <nav className="navlinks">
             <a href="#inside">What's Inside</a>
@@ -311,29 +360,13 @@ export default function PlaybookSalesPage() {
             <h1>Your price isn't the problem.<br />Your <em>pitch</em> is.</h1>
             <p className="sub">The Pricing &amp; Negotiation Playbook shows you exactly why clients say "too expensive" — and gives you the scripts, frameworks, and mindset shifts to stop hearing it.</p>
             <div className="hero-ctarow">
-              <a href="#offer" className="btn btn-primary">Get The Playbook Now <span className="arrow">→</span></a>
-              <div className="microtrust">⚡ Instant download &nbsp;·&nbsp; 📖 Read tonight &nbsp;·&nbsp; ✅ Use on your next quote</div>
+              <button onClick={handleCheckoutRedirect} className="btn btn-primary">
+                Get The Playbook Now <span className="arrow">→</span>
+              </button>
             </div>
           </div>
-          <div className="quotes">
-            <div className="qcard declined">
-              <div className="qhead"><span>QUOTE #0214</span><span>DESIGNER A</span></div>
-              <div className="qname">5-Page Business Website</div>
-              <div className="qservice">"the package is ₦250,000"</div>
-              <div className="qline"><span>Design + Build</span><span>₦180,000</span></div>
-              <div className="qline"><span>Revisions</span><span>₦70,000</span></div>
-              <div className="qtotal"><span>Total</span><span>₦250,000</span></div>
-              <div className="stamp no">Too Expensive</div>
-            </div>
-            <div className="qcard accepted">
-              <div className="qhead"><span>QUOTE #0215</span><span>DESIGNER B</span></div>
-              <div className="qname">5-Page Business Website</div>
-              <div className="qservice">"here's what changes for your business"</div>
-              <div className="qline"><span>Strategy + Build</span><span>₦420,000</span></div>
-              <div className="qline"><span>Launch Support</span><span>₦180,000</span></div>
-              <div className="qtotal"><span>Total</span><span>₦600,000</span></div>
-              <div className="stamp yes">Paid — 50% Deposit</div>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/playbook_cover_upright.png" alt="The Pricing &amp; Negotiation Playbook 3D Cover Mockup" style={{ width: '100%', maxWidth: '340px', filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.45))' }} />
           </div>
         </div>
       </section>
@@ -374,48 +407,18 @@ export default function PlaybookSalesPage() {
       <section className="section solution" id="inside-preview">
         <div className="wrap">
           <div className="bookmock">
-            <div className="bookmock-card" style={{
-              width: '100%',
-              maxWidth: '300px',
-              height: '420px',
-              background: 'linear-gradient(135deg, var(--teal-deep) 0%, var(--dark3) 100%)',
-              borderRadius: '8px',
-              boxShadow: '0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2)',
-              border: '2px solid var(--gold-light)',
-              padding: '40px 20px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              transform: 'rotateY(-18deg) rotateX(2deg)',
-              transition: 'transform .4s ease',
-              cursor: 'pointer'
-            }}>
-              <div>
-                <div style={{ color: 'var(--gold-light)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '20px', textAlign: 'center' }}>
-                  AMPLIFIED SKILLS PLAYBOOK
-                </div>
-                <div style={{ color: 'var(--cream)', fontFamily: "'Poppins', sans-serif", fontSize: '24px', fontWeight: 800, lineHeight: '1.2', textAlign: 'center', marginTop: '20px' }}>
-                  The Pricing &amp;<br />Negotiation<br />Playbook
-                </div>
-                <div style={{ color: '#A79C82', fontSize: '13px', textAlign: 'center', marginTop: '10px', fontStyle: 'italic' }}>
-                  Charge what you are worth. Stop hearing "too expensive".
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--gold-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#12100D', fontWeight: 900, fontSize: '12px' }}>AS</div>
-                <span style={{ color: 'var(--gold-light)', fontSize: '12px', fontWeight: 600, letterSpacing: '1px' }}>AMPLIFIED SKILLS</span>
-              </div>
-            </div>
+            <img src="/playbook_cover_flat.png" alt="The Pricing &amp; Negotiation Playbook Ebook Cover" style={{ width: '100%', maxWidth: '320px', borderRadius: '4px', boxShadow: '0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2)' }} />
           </div>
           <div>
-            <div className="eyebrow">THE PLAYBOOK SOLUTION</div>
+            <div className="eyebrow">INTRODUCING</div>
             <h2 className="h-lg">The Pricing &amp; Negotiation Playbook</h2>
-            <p className="lead">Stop guessing your value. Control the narrative and command your worth with battle-tested frameworks.</p>
+            <p className="lead">A working playbook — not a pep talk. The psychology behind price objections, the call structure that handles them before they form, and the exact scripts you can copy into your next email today.</p>
             <ul>
-              <li><span className="ic">✓</span> <span><b>The Value Anchor Template:</b> How to show the cost of the problem before you pitch the solution.</span></li>
-              <li><span className="ic">✓</span> <span><b>Objection Scripts:</b> Word-for-word copy you can copy/paste when clients say "too expensive" or "what's your discount?".</span></li>
-              <li><span className="ic">✓</span> <span><b>Premium Tiering Framework:</b> How to present 3 options so the client chooses you, not the cheaper alternative.</span></li>
-              <li><span className="ic">✓</span> <span><b>Retainer Conversion Guide:</b> Convert one-time projects into monthly recurring support contracts.</span></li>
+              <li><span className="ic">✓</span> Why clients say "too expensive" — and what they actually mean by it</li>
+              <li><span className="ic">✓</span> How to price by value instead of by the hour</li>
+              <li><span className="ic">✓</span> A discovery call framework built to prevent the objection</li>
+              <li><span className="ic">✓</span> Negotiation tactics that protect your rate under pressure</li>
+              <li><span className="ic">✓</span> A full vault of ready-to-use scripts and email templates</li>
             </ul>
           </div>
         </div>
@@ -425,16 +428,16 @@ export default function PlaybookSalesPage() {
       <section className="section whofor">
         <div className="wrap">
           <div className="whocard yes">
-            <h3><span className="tag">✓</span> Who This Playbook Is For</h3>
-            <p>• Freelance designers, developers, copywriters, and marketers tired of getting lowballed.</p>
-            <p>• Consultants and service providers who want to switch from hourly rates to value pricing.</p>
-            <p>• Creative professionals ready to stop writing quotes that lead to ghosting.</p>
+            <h3><span className="tag">✓</span> This is for you if…</h3>
+            <p>You're a freelancer, consultant, coach, designer, developer, or service provider who has underpriced a project out of fear of hearing no.</p>
+            <p>You've discounted just to keep a deal alive, and felt smaller for doing it.</p>
+            <p>You know your work is good — but you're tired of watching cheaper competitors win the client anyway.</p>
           </div>
           <div className="whocard no">
-            <h3><span className="tag">✗</span> Who This Is NOT For</h3>
-            <p>• Anyone looking for generic motivational quotes instead of concrete action steps.</p>
-            <p>• People expecting client relationships to magically fix themselves without changing their pitch.</p>
-            <p>• Freelancers who want to compete solely on being the cheapest option on Fiverr/Upwork.</p>
+            <h3><span className="tag">✕</span> This isn't for you if…</h3>
+            <p>You're looking for a way to manipulate people into paying more than your work is worth. That's not what's in here.</p>
+            <p>You want a magic script with no willingness to actually change how you run your sales conversations.</p>
+            <p>You're not currently selling any kind of service to clients.</p>
           </div>
         </div>
       </section>
@@ -443,138 +446,100 @@ export default function PlaybookSalesPage() {
       <section className="section inside" id="inside">
         <div className="wrap">
           <div className="headwrap">
-            <div className="eyebrow on-dark">THE OUTLINE</div>
-            <h2 style={{ fontSize: '32px', margin: '14px 0' }}>What you'll learn inside the Playbook</h2>
-            <p className="sub">12 actionable, no-fluff chapters written to be read tonight and used on your very next quote.</p>
+            <div className="eyebrow on-dark">ELEVEN CHAPTERS. ZERO FILLER.</div>
+            <h2 className="h-lg" style={{ color: 'var(--cream)' }}>What's Inside</h2>
+            <p className="sub">Every chapter builds on the last — from the psychology of price to a 7-day plan to put it all to work.</p>
           </div>
           <div className="chgrid">
-            <div className="chitem">
-              <div className="chnum">01</div>
-              <div>
-                <h4>Diagnosing the Lead</h4>
-                <p>How to qualify clients before you spend hours on a proposal, filtering out low budgets early.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">02</div>
-              <div>
-                <h4>Value Anchoring</h4>
-                <p>The exact strategy to frame the cost of the problem first, so your rate looks tiny in comparison.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">03</div>
-              <div>
-                <h4>The Three-Tier Proposal</h4>
-                <p>How to structure options so they choose the middle tier, upgrading their purchase naturally.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">04</div>
-              <div>
-                <h4>The "Too Expensive" Script</h4>
-                <p>Word-for-word response to the budget objection that shifts the conversation back to value.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">05</div>
-              <div>
-                <h4>The "What's Your Price" Trap</h4>
-                <p>How to handle early pricing requests from leads without giving away your leverage.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">06</div>
-              <div>
-                <h4>Retainer Conversions</h4>
-                <p>How to pitch monthly recurring retainer contracts that get accepted, building predictable revenue.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">07</div>
-              <div>
-                <h4>Scope Creep Killers</h4>
-                <p>Scripts to charge for extra requests and modifications without sounding defensive or confrontational.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">08</div>
-              <div>
-                <h4>The Pitch Presentation</h4>
-                <p>How to present and walk through a proposal live, securing the yes on the call.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">09</div>
-              <div>
-                <h4>The 48-Hour Close</h4>
-                <p>The gentle follow-up sequence that gets deposit payments paid fast without appearing desperate.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">10</div>
-              <div>
-                <h4>Doubling Your Rates</h4>
-                <p>The 90-day transition playbook to confidently raise your prices and charge global premium rates.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">11</div>
-              <div>
-                <h4>CAC &amp; Legal Protections</h4>
-                <p>Simple contract guidelines and payment terms that guarantee you get paid on time, every time.</p>
-              </div>
-            </div>
-            <div className="chitem">
-              <div className="chnum">12</div>
-              <div>
-                <h4>Negotiation Red Lines</h4>
-                <p>How to spot toxic client behavior and walk away cleanly without burning bridges.</p>
-              </div>
-            </div>
+            <div className="chitem"><div className="chnum">01</div><div><h4>The Psychology of Price</h4><p>Why people don't buy what things cost — they buy what they believe things are worth.</p></div></div>
+            <div className="chitem"><div class="chnum">02</div><div><h4>Value-Based Pricing</h4><p>The three-part formula for finding your real number, and why hourly rates cap your income.</p></div></div>
+            <div className="chitem"><div class="chnum">03</div><div><h4>Position Before You Price</h4><p>How to become the obvious choice — so clients stop shopping you against the lowest bidder.</p></div></div>
+            <div className="chitem"><div class="chnum">04</div><div><h4>Decoding "Too Expensive"</h4><p>The five real meanings behind the objection, and how to respond to each one.</p></div></div>
+            <div className="chitem"><div class="chnum">05</div><div><h4>The Discovery Call Framework</h4><p>A five-step structure that gets the objection handled before it ever forms.</p></div></div>
+            <div className="chitem"><div class="chnum">06</div><div><h4>Negotiation Tactics</h4><p>How to hold your price under pressure — without losing the client or your margin.</p></div></div>
+            <div className="chitem"><div class="chnum">07</div><div><h4>Packaging &amp; Tiering</h4><p>Good, better, best — and why the middle option does most of the selling for you.</p></div></div>
+            <div className="chitem"><div class="chnum">08</div><div><h4>Raising Your Prices</h4><p>The script for increasing your rate on existing clients without the dreaded conversation.</p></div></div>
+            <div className="chitem"><div class="chnum">09</div><div><h4>Ten Pricing Mistakes</h4><p>The quiet habits costing you income — and the fix for each one.</p></div></div>
+            <div className="chitem"><div class="chnum">10</div><div><h4>Scripts &amp; Templates Vault</h4><p>Copy-paste discovery questions, objection responses, and price-increase emails.</p></div></div>
+            <div className="chitem" style={{ gridColumn: '1 / -1' }}><div className="chnum">11</div><div><h4>The 7-Day Pricing Reset</h4><p>A day-by-day action plan to put the whole book to work this week.</p></div></div>
           </div>
         </div>
       </section>
 
       {/* AUTHOR */}
-      <section className="author">
+      <section className="section author">
         <div className="wrap">
-          <div className="avatar">AS</div>
+          <img src="/my_bp.jpeg" alt="Nnanta Precious" className="avatar" style={{ width: '170px', height: '170px', borderRadius: '50%', objectFit: 'cover' }} />
           <div>
-            <div className="eyebrow">THE MENTOR</div>
-            <h3>Amplified Skills Team</h3>
-            <div className="role">Freelance Strategy &amp; Business Mentorship</div>
-            <p>At Amplified Skills, we help digital creators, freelancers, and builders transition from low-paying gigs to high-value global consulting opportunities.</p>
-            <p>This playbook is built on real proposals, closing techniques, and negotiation struggles faced by our team and students in the local and global freelance market.</p>
+            <div className="eyebrow">WHO'S TEACHING THIS</div>
+            <h3>Nnanta Precious</h3>
+            <div className="role">FOUNDER, AMPLIFIED SKILLS</div>
+            <p>I've spent years running my own web design agency and coaching freelancers through the Freelance Web Design Blueprint — and if there's one conversation I've watched derail more good freelancers than any other single thing, it's the pricing conversation.</p>
+            <p>Not because they weren't skilled. Because nobody ever taught them what's actually happening in a client's head between "here's my price" and "that's too expensive." I built this playbook because I got tired of watching talented people undercharge, over-explain, and quietly resent clients who were only ever responding to a pitch that hadn't done its job yet.</p>
           </div>
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
+      {/* SOCIAL PROOF / TESTIMONIALS */}
       <section className="section proof" id="reviews">
         <div className="wrap">
-          <div className="headwrap">
-            <div className="eyebrow">FEEDBACK</div>
-            <h2 style={{ fontSize: '32px', margin: '14px 0' }}>What other service providers say</h2>
+          <div className="headwrap" style={{ textAlign: 'center', marginBottom: '46px' }}>
+            <div className="eyebrow">READER RESULTS</div>
+            <h2 className="h-lg">What happens when the pitch changes</h2>
           </div>
-          <div className="tgrid">
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"I was quoting ₦150k for websites. After reading the Value Anchoring chapter, I quoted ₦450k to my next lead. I got a YES without them even flinching. Best money I ever spent!"</p>
-              <div className="tname">Tobi A.</div>
-              <div className="trole">Web Developer, Lagos</div>
+          <div className="tgrid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "I was quoting ₦150k for web design projects. After reading the Value Anchoring chapter, I quoted ₦450k to my next lead. I got a YES without them even flinching. Best money I ever spent!"
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Tobi A.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Web Designer, Lagos</div>
             </div>
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"The objection scripts are absolute gold. A client asked for a 30% discount last week. I used the script on Chapter 4, and they signed the full price proposal within 10 minutes."</p>
-              <div className="tname">Chidi K.</div>
-              <div className="trole">Brand Designer, Port Harcourt</div>
+
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "The objection scripts are absolute gold. A client asked for a 30% discount last week. I used the script on Chapter 4, and they signed the full price proposal within 10 minutes."
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Chidi K.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Brand Consultant, Port Harcourt</div>
             </div>
-            <div className="tcard">
-              <div className="stars">★★★★★</div>
-              <p>"I've read a lot of business books, but this is the first one that tells you exactly what to say. No fluff, just direct templates that work."</p>
-              <div className="tname">Halima S.</div>
-              <div className="trole">Social Media Consultant, Abuja</div>
+
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "I've read a lot of business books, but this is the first one that tells you exactly what to say. No fluff, just direct templates that work."
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Halima S.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Content Strategy, Abuja</div>
+            </div>
+
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "Before the playbook, I was pricing by the hour and capped my income. Changing to value packaging allowed me to close a ₦1.2m project last week."
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Emeka O.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Software Developer, Enugu</div>
+            </div>
+
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "The Discovery Call Framework completely changed how I qualify leads. I no longer waste hours writing proposals for clients who can't afford me."
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Aminat Y.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Copywriter, Ibadan</div>
+            </div>
+
+            <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
+              <div className="stars" style={{ color: 'var(--gold)', fontSize: '14px', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+              <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
+                "The three-tier proposal structure is a game changer. I presented three options to a local tech company, and they immediately upgraded to the middle option."
+              </p>
+              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Kelechi J.</div>
+              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>UI/UX Designer, Lagos</div>
             </div>
           </div>
         </div>
@@ -583,23 +548,23 @@ export default function PlaybookSalesPage() {
       {/* OFFER */}
       <section className="section offer" id="offer">
         <div className="wrap">
-          <div className="headwrap">
-            <div className="eyebrow on-dark">THE PLAYBOOK</div>
-            <h2 style={{ fontSize: '36px', margin: '14px 0' }}>Secure your copy today</h2>
+          <div className="headwrap" style={{ textAlign: 'center', marginBottom: '46px' }}>
+            <div className="eyebrow on-dark">THE OFFER</div>
+            <h2 className="h-lg" style={{ color: 'var(--cream)' }}>Everything you get today</h2>
           </div>
           <div className="receipt">
-            <div className="rtitle">INVOICE &amp; RECEIPT</div>
-            <div className="rsub">AMPLIFIED SKILLS DIGITAL STORE</div>
+            <div className="rtitle">Amplified Skills</div>
+            <div className="rsub">ORDER SUMMARY</div>
             
             <div className="rline">
-              <div>
-                <span className="rname">The Pricing &amp; Negotiation Playbook</span>
-                <span className="rdesc">Digital PDF Guide &amp; Script Bank</span>
+              <div className="rname">
+                The Pricing &amp; Negotiation Playbook
+                <span className="rdesc">Full ebook · 11 chapters · scripts &amp; templates vault</span>
               </div>
               <span className="rval">{formattedPrice}</span>
             </div>
 
-            {product?.bonus_ebook_urls && product.bonus_ebook_urls.length > 0 && (
+            {product?.bonus_ebook_urls && product.bonus_ebook_urls.length > 0 ? (
               <div className="rline">
                 <div>
                   <span className="rname">Included Bonuses</span>
@@ -607,83 +572,111 @@ export default function PlaybookSalesPage() {
                 </div>
                 <span className="rval" style={{ color: '#10b981' }}>FREE</span>
               </div>
+            ) : (
+              <>
+                <div className="rline">
+                  <div className="rname">
+                    Bonus: Pricing Cheat Sheet
+                    <span className="rdesc">One-page framework summary for your next call</span>
+                  </div>
+                  <span className="rval" style={{ color: '#10b981' }}>FREE</span>
+                </div>
+                <div className="rline">
+                  <div className="rname">
+                    Bonus: Fill-In Quote Template
+                    <span className="rdesc">Built around the value-based pricing formula</span>
+                  </div>
+                  <span className="rval" style={{ color: '#10b981' }}>FREE</span>
+                </div>
+              </>
             )}
 
             <div className="rtotal">
-              <span className="rtlabel">TOTAL</span>
+              <div className="rtlabel">Total Due Today</div>
               <div>
-                {oldPrice > price && <span className="rtorig">{formattedOldPrice}</span>}
-                <span className="rtval">{formattedPrice}</span>
+                {oldPrice > price && <span className="rtorig" style={{ marginRight: '8px', textDecoration: 'line-through', color: '#B0A78F' }}>{formattedOldPrice}</span>}
+                <span className="rtval" style={{ fontWeight: 800, fontSize: '32px', color: 'var(--gold-deep)' }}>{formattedPrice}</span>
               </div>
             </div>
 
             <div className="rbtn">
-              <button onClick={handleCheckoutRedirect} className="btn btn-primary">
-                Instant Download <span className="arrow">→</span>
+              <button onClick={handleCheckoutRedirect} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                Get Instant Access <span className="arrow">→</span>
               </button>
             </div>
             
-            <div className="rfoot">⚡ Secure payment via Paystack &middot; Access files instantly</div>
+            <div className="rfoot">🔒 Secure checkout · Instant digital delivery</div>
           </div>
         </div>
       </section>
 
       {/* GUARANTEE */}
-      <section className="section guarantee">
+      <section className="section tight guarantee">
         <div className="wrap">
-          <div className="gbadge">100%<br />RISK FREE</div>
+          <div className="gbadge">DIGITAL<br />ACCESS</div>
           <div>
-            <h3>Our 100% Satisfaction Guarantee</h3>
-            <p>Read the playbook, try the scripts, and test the templates on your next lead. If you don't feel it gives you the confidence and framework to charge at least 10x what you paid for it, send us a WhatsApp message or email within 14 days and we will refund you in full. No questions asked.</p>
+            <h3>Our Digital Satisfaction Guarantee</h3>
+            <p>Since this is a digital eBook product, you get immediate download access right after payment. We stand behind the value of this playbook. Read it, apply the scripts to your next proposal, and if you don't feel it gives you the tools to command higher fees and win better clients, send us a message within 14 days and we will gladly refund your payment under our digital satisfaction guarantee.</p>
           </div>
         </div>
       </section>
 
+      {/* URGENCY */}
+      <div className="urgency">Launch price ends soon — after that, price returns to <b>{formattedOldPrice}</b>.</div>
+
       {/* FAQ */}
       <section className="section faq" id="faq">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: '40px' }}>
-            <div className="eyebrow">QUESTIONS</div>
-            <h2 className="h-lg">Frequently Asked Questions</h2>
-          </div>
+          <div className="eyebrow">QUESTIONS</div>
+          <h2 className="h-lg">Before you go</h2>
           
           <div className="fitem" style={{ borderTop: '1px solid var(--hair)' }}>
             <button className="fq" onClick={() => toggleFaq(0)}>
-              <span>How do I receive the playbook?</span>
+              <span>I've bought pricing guides before and nothing changed. Why would this be different?</span>
               <span className="plus" style={{ transform: openFaq === 0 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 0 ? '300px' : '0' }}>
-              <p>Immediately after payment is confirmed (via Paystack or manually verified transfer), you will get an email with your download link, and you can also download it directly from your eBook Downloads dashboard.</p>
+              <p>Most pricing content stops at "know your worth." This one gives you the actual conversation structure and word-for-word scripts to use on your next call — not just a mindset shift, but something you can act on today.</p>
             </div>
           </div>
 
           <div className="fitem">
             <button className="fq" onClick={() => toggleFaq(1)}>
-              <span>Can I pay via Bank Transfer?</span>
+              <span>I'm not a web designer — does this still apply to me?</span>
               <span className="plus" style={{ transform: openFaq === 1 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 1 ? '300px' : '0' }}>
-              <p>Yes, click the download button, choose "Manual Bank Transfer" on the checkout page, make the transfer to the displayed account, and upload your receipt. Our admin team will approve it and activate access in your dashboard.</p>
+              <p>Yes. The frameworks are built around the psychology of pricing and negotiation, not any one industry. Examples span design, copywriting, consulting, and social media management, and the principles apply to any service you sell one-to-one.</p>
             </div>
           </div>
 
           <div className="fitem">
             <button className="fq" onClick={() => toggleFaq(2)}>
-              <span>Is this guide specific to Nigeria?</span>
+              <span>I'm just starting out. Is this too advanced for me?</span>
               <span className="plus" style={{ transform: openFaq === 2 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 2 ? '300px' : '0' }}>
-              <p>While the pricing examples mention Naira, the core human psychology, proposal structure, and negotiation scripts work globally for any client in US Dollars, Pounds, Euros, or local currencies.</p>
+              <p>This is arguably more useful early — the pricing habits you build in your first year are the hardest to break later. Better to build the right ones from the start.</p>
             </div>
           </div>
 
           <div className="fitem">
             <button className="fq" onClick={() => toggleFaq(3)}>
-              <span>Do I have lifetime access?</span>
+              <span>What format is it, and how long is it?</span>
               <span className="plus" style={{ transform: openFaq === 3 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 3 ? '300px' : '0' }}>
-              <p>Yes, you buy once and get lifetime access. If we update the playbook with new scripts or frameworks in the future, you will receive the updated PDF file free of charge.</p>
+              <p>A digital ebook, professionally designed, ready to read in under an hour and reference for years. No fluff, no filler chapters.</p>
+            </div>
+          </div>
+
+          <div className="fitem">
+            <button className="fq" onClick={() => toggleFaq(4)}>
+              <span>What if I want a refund?</span>
+              <span className="plus" style={{ transform: openFaq === 4 ? 'rotate(45deg)' : 'none' }}>+</span>
+            </button>
+            <div className="fa" style={{ maxHeight: openFaq === 4 ? '300px' : '0' }}>
+              <p>Email within 14 days and you'll get one — see our digital satisfaction guarantee details above.</p>
             </div>
           </div>
         </div>
@@ -692,29 +685,74 @@ export default function PlaybookSalesPage() {
       {/* FINAL CTA */}
       <section className="section final">
         <div className="wrap">
-          <h2>Stop losing money to silent clients.</h2>
-          <p>Get instant access to the scripts and proposal secrets that close premium contracts today.</p>
-          <a href="#offer" className="btn btn-primary">Grab Your Copy Now <span className="arrow">→</span></a>
+          <h2>You already do good work.</h2>
+          <p>The only thing standing between you and being paid properly for it is a handful of conversations you haven't been taught how to run yet. This book is that training.</p>
+          <button onClick={handleCheckoutRedirect} className="btn btn-primary">
+            Get The Pricing &amp; Negotiation Playbook <span className="arrow">→</span>
+          </button>
+          <div className="microtrust" style={{ color: '#B7AC92' }}>14-day digital guarantee · Instant download · {formattedPrice}</div>
         </div>
       </section>
 
       {/* PS */}
       <section className="section tight ps">
         <div className="wrap">
-          <p><b>P.S.</b> If you scroll to the bottom, here is the short summary: we are offering the battle-tested <b>Pricing &amp; Negotiation Playbook</b>, outlining exactly how to frame your value so clients accept your quotes without negotiating you down.</p>
-          <p>It's completely risk-free. If you don't like it, we'll give you a full refund within 14 days. Click the button above to secure your copy.</p>
+          <p><b>P.S.</b> Every day you don't fix this pricing conversation is another quote that might come back with "too expensive" attached to it — and another client you were actually the right fit for, gone.</p>
+          <p><b>P.S.2</b> This comes with a full 14-day digital refund guarantee. The only risk here is staying exactly where you are.</p>
         </div>
       </section>
 
+      {/* FOOTER with Meta and Google Ads disclaimers */}
       <footer>
-        <p>&copy; {new Date().getFullYear()} Amplified Skills. All rights reserved.</p>
+        <div>
+          <p>&copy; {new Date().getFullYear()} Amplified Skills · Nnanta Precious</p>
+          <div style={{ marginTop: '24px', fontSize: '11px', color: '#6A6252', lineHeight: '1.5', maxWidth: '800px', margin: '24px auto 0', padding: '0 20px', textAlign: 'center' }}>
+            <p>Disclaimer: This site is not a part of the Meta website, Facebook Inc., Google LLC, or Alphabet Inc. Additionally, this site is NOT endorsed by Meta, Facebook, Google, or Alphabet in any way. Facebook and Google are trademarks of their respective owners.</p>
+            <p style={{ marginTop: '8px' }}>Any financial representations or earnings referenced here are illustrative of potential outcomes and should not be considered guarantees of actual performance. Succeeding as a service provider depends on individual effort, skill, market factors, and economic conditions.</p>
+          </div>
+        </div>
       </footer>
 
       {/* STICKY MOBILE BAR */}
       <div className={`stickybar ${showStickyBar ? 'show' : ''}`}>
-        <div className="sprice">Price: <b>{formattedPrice}</b></div>
-        <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get The Playbook</button>
+        <div className="sprice">Get the Playbook<br /><b>{formattedPrice}</b></div>
+        <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get Access →</button>
       </div>
+
+      {/* Live Sales Notification Widget */}
+      {activeNotification && (
+        <div style={{
+          position: 'fixed',
+          bottom: '84px', // fits above mobile sticky bar
+          left: '20px',
+          zIndex: 9999,
+          background: '#1B2E29', // dark teal matching color scheme
+          color: '#FBF8F2', // cream text
+          padding: '12px 18px',
+          borderRadius: '8px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          borderLeft: '4px solid #D8B463', // gold accent border
+          fontFamily: "'Poppins', sans-serif",
+          fontSize: '12.5px',
+          animation: 'slideUp 0.5s ease-out'
+        }}>
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: '#10b981', // pulsing green dot
+            boxShadow: '0 0 8px #10b981'
+          }} />
+          <div>
+            <span style={{ fontWeight: 700, color: '#D8B463' }}>{activeNotification.name}</span>{' '}
+            <span>{activeNotification.action}</span>
+            <div style={{ fontSize: '10px', color: '#A79C82', marginTop: '2px' }}>{activeNotification.time}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
