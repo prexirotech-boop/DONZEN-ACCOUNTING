@@ -62,7 +62,7 @@ export default function AdminPages() {
 
             <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
               <a
-                href={`http://localhost:3000${page.path}`}
+                href={`${window.location.origin}${page.path}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{

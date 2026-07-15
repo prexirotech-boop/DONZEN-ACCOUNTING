@@ -248,7 +248,7 @@ function EbooksTab({ user }) {
               
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
                 {ebook.ebook_url ? (
-                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', background: '#10b981', textAlign: 'center', display: 'block' }}>
+                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', textAlign: 'center', display: 'block' }}>
                     ⬇_ Download Ebook (PDF)
                   </a>
                 ) : (

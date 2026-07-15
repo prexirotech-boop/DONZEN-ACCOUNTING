@@ -531,7 +531,7 @@ export default function PlaybookSalesPage() {
       {/* LOCAL HEADER (No global website header is loaded) */}
       <header className="nav">
         <div className="navrow">
-          <div className="logo" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => navigate('/')}>
+          <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/logo.png" alt="Amplified Skills" style={{ height: '36px', width: 'auto', filter: 'brightness(0.1)' }} />
           </div>
           <nav className="navlinks">
