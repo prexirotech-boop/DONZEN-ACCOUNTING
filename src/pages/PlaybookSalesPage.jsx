@@ -10,6 +10,17 @@ export default function PlaybookSalesPage() {
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [activeNotification, setActiveNotification] = useState(null)
 
+  // Target roles for dynamic fading/typing text in the proof banner
+  const targetRoles = ['freelancers', 'consultants', 'designers', 'developers', 'copywriters', 'service providers']
+  const [currentRoleIdx, setCurrentRoleIdx] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRoleIdx((prev) => (prev + 1) % targetRoles.length)
+    }, 2500)
+    return () => clearInterval(interval)
+  }, [])
+
   // Evergreen countdown timer (15 minutes)
   const [timeLeft, setTimeLeft] = useState(() => {
     const saved = localStorage.getItem('playbook_timer')
@@ -99,8 +110,8 @@ export default function PlaybookSalesPage() {
       'purchased the Playbook + Bonuses', 'unlocked the Value Proposal Vault'
     ]
     const times = [
-      '2 minutes ago', '5 minutes ago', '12 minutes ago', '15 minutes ago',
-      '1 minute ago', '7 minutes ago', '10 minutes ago', '20 minutes ago'
+      '2 mins ago', '5 mins ago', '12 mins ago', '15 mins ago',
+      '1 min ago', '7 mins ago', '10 mins ago', '20 mins ago'
     ]
 
     const triggerNotification = () => {
@@ -164,7 +175,7 @@ export default function PlaybookSalesPage() {
     <div className="playbook-page-root" style={{ backgroundColor: '#FBF8F2', color: '#262220', fontSize: '17px', lineHeight: 1.65 }}>
       {/* Page specific inline CSS stylings with forced font overrides to override global.css */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
           --dark: #171512; --dark2: #1B2E29; --dark3: #12100D;
@@ -215,13 +226,45 @@ export default function PlaybookSalesPage() {
         .playbook-page-root .urgency, 
         .playbook-page-root .stickybar, 
         .playbook-page-root .gbadge, 
-        .playbook-page-root .toast-title,
-        .playbook-page-root .toast-body,
-        .playbook-page-root button,
-        .playbook-page-root select,
-        .playbook-page-root input,
+        .playbook-page-root button, 
+        .playbook-page-root select, 
+        .playbook-page-root input, 
         .playbook-page-root label {
           font-family: 'Poppins', sans-serif !important;
+        }
+
+        /* Hover scale animation on all images except book covers which use rotation animation */
+        .playbook-page-root img:not(.rotate-anim) {
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .playbook-page-root img:not(.rotate-anim):hover {
+          transform: scale(1.03) !important;
+        }
+
+        /* Gentle rotate animation for book covers */
+        @keyframes gentleTilt {
+          0% { transform: rotate(0deg); }
+          50% { transform: rotate(1.5deg); }
+          100% { transform: rotate(0deg); }
+        }
+        @keyframes gentleTiltReverse {
+          0% { transform: rotate(0deg); }
+          50% { transform: rotate(-1.5deg); }
+          100% { transform: rotate(0deg); }
+        }
+        .rotate-anim-upright {
+          animation: gentleTilt 8s ease-in-out infinite;
+          transition: transform 0.3s ease !important;
+        }
+        .rotate-anim-upright:hover {
+          transform: scale(1.03) rotate(2deg) !important;
+        }
+        .rotate-anim-flat {
+          animation: gentleTiltReverse 9s ease-in-out infinite;
+          transition: transform 0.3s ease !important;
+        }
+        .rotate-anim-flat:hover {
+          transform: scale(1.03) rotate(-2deg) !important;
         }
 
         .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
@@ -362,12 +405,13 @@ export default function PlaybookSalesPage() {
         .receipt .rbtn .btn { width: 100%; justify-content: center; }
         .receipt .rfoot { text-align: center; font-size: 11px; color: #9A917C; margin-top: 14px; }
 
-        /* ---------- GUARANTEE ---------- */
-        .guarantee .wrap { display: flex; gap: 40px; align-items: center; max-width: 800px; margin: 0 auto; }
-        @media(max-width:640px) { .guarantee .wrap { flex-direction: column; text-align: center; gap: 20px; } }
+        /* ---------- PLAYBOOK GUARANTEE (Isolated to prevent global.css blue border override) ---------- */
+        .playbook-guarantee { background: transparent !important; border: none !important; border-radius: 0 !important; padding: 70px 0 !important; }
+        .playbook-guarantee .wrap { display: flex; gap: 40px; align-items: center; max-width: 800px; margin: 0 auto; background: transparent !important; }
+        @media(max-width:640px) { .playbook-guarantee .wrap { flex-direction: column; text-align: center; gap: 20px; } }
         .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.2; padding: 10px; }
-        .guarantee h3 { margin: 0 0 10px; font-size: 21px; color: var(--dark); }
-        .guarantee p { color: var(--ink-soft); font-size: 15.5px; margin: 0; }
+        .playbook-guarantee h3 { margin: 0 0 10px; font-size: 21px; color: var(--dark); }
+        .playbook-guarantee p { color: var(--ink-soft); font-size: 15.5px; margin: 0; }
 
         /* ---------- URGENCY ---------- */
         .urgency { background: var(--rust); color: #FBEDE8; text-align: center; padding: 18px 20px; font-weight: 600; font-size: 14.5px; }
@@ -419,13 +463,14 @@ export default function PlaybookSalesPage() {
           align-items: center !important;
           gap: 16px !important;
           z-index: 10000 !important;
-          max-width: 360px !important;
+          max-width: 380px !important;
           backdrop-filter: blur(8px) !important;
           animation: toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          font-family: 'Inter', sans-serif !important; /* same font as webinar sales notification */
         }
         .toast-border-accent {
           width: 4px !important;
-          height: 36px !important;
+          height: 42px !important;
           background: #B8862F !important; /* gold/brown accent line */
           border-radius: 4px !important;
           flex-shrink: 0 !important;
@@ -434,25 +479,34 @@ export default function PlaybookSalesPage() {
           display: flex !important;
           flex-direction: column !important;
           gap: 4px !important;
+          font-family: 'Inter', sans-serif !important; /* same font as webinar sales notification */
+          flex: 1 !important;
         }
         .toast-title {
           margin: 0 !important;
-          font-size: 10.5px !important;
+          font-size: 10px !important;
           font-weight: 900 !important;
           text-transform: uppercase !important;
           letter-spacing: 0.8px !important;
           color: #8C6420 !important; /* dark brown */
+          font-family: 'Inter', sans-serif !important;
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          gap: 12px !important;
         }
         .toast-body {
           margin: 0 !important;
-          font-size: 13px !important;
+          font-size: 12.5px !important;
           color: #4A4438 !important; /* soft dark brown */
           font-weight: 500 !important;
-          line-height: 1.4 !important;
+          line-height: 1.45 !important;
+          font-family: 'Inter', sans-serif !important;
         }
         .toast-body strong {
           color: #8C6420 !important; /* dark brown color for username and product */
           font-weight: 700 !important;
+          font-family: 'Inter', sans-serif !important;
         }
         .toast-course-image {
           width: 45px !important;
@@ -515,7 +569,7 @@ export default function PlaybookSalesPage() {
 
             <div className="hero-ctarow">
               <button onClick={handleCheckoutRedirect} className="btn btn-primary">
-                Get The Playbook Now <span className="arrow">→</span>
+                Get The Playbook Now — {formattedPrice} <span className="arrow">→</span>
               </button>
               <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px', width: '100%' }}>
                 ⚡ Instant PDF · Lifetime Access
@@ -523,10 +577,59 @@ export default function PlaybookSalesPage() {
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img src="/playbook_cover_upright.png" alt="The Pricing &amp; Negotiation Playbook 3D Cover Mockup" style={{ width: '100%', maxWidth: '340px', filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.45))' }} />
+            <img src="/playbook_cover_upright.png" alt="The Pricing &amp; Negotiation Playbook 3D Cover Mockup" className="rotate-anim rotate-anim-upright" style={{ width: '100%', maxWidth: '340px', filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.45))' }} />
           </div>
         </div>
       </section>
+
+      {/* Premium overlapping avatars stack banner using exact N50K blueprint seeds, center on mobile, introducing section background color */}
+      <div style={{ background: 'var(--paper)', padding: '20px 0', borderBottom: '1px solid var(--hair)' }}>
+        <div className="wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {[
+              { seed: 'Chioma', bg: '5c3d2e' },
+              { seed: 'Emeka', bg: '3e2723' },
+              { seed: 'Aisha', bg: '4a2c0a' },
+              { seed: 'Fatima', bg: '3b1f0e' },
+              { seed: 'Bello', bg: '2e1503' },
+              { seed: 'Ngozi', bg: '4a2c0a' }
+            ].map(({ seed, bg }, i) => (
+              <span key={i} style={{ 
+                padding: 0, 
+                overflow: 'hidden', 
+                background: 'none', 
+                width: '34px', 
+                height: '34px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                borderRadius: '50%',
+                border: '2px solid var(--paper)',
+                marginLeft: i === 0 ? '0' : '-10px',
+                zIndex: 10 - i
+              }}>
+                <img
+                  src={`/avatars/${seed.toLowerCase()}.png`}
+                  alt={seed}
+                  width={34}
+                  height={34}
+                  style={{ borderRadius: '50%', display: 'block', objectFit: 'cover' }}
+                  onError={e => { 
+                    e.currentTarget.style.display = 'none'; 
+                    e.currentTarget.parentElement.style.backgroundColor = `#${bg}`; 
+                    e.currentTarget.parentElement.textContent = seed[0]; 
+                    e.currentTarget.parentElement.style.color = '#fff';
+                    e.currentTarget.parentElement.style.fontWeight = 'bold';
+                  }}
+                />
+              </span>
+            ))}
+          </div>
+          <div style={{ fontSize: '15px', color: 'var(--ink)', fontWeight: 500, width: 'auto' }}>
+            <span style={{ color: 'var(--gold-deep)', fontWeight: 700 }}>1,847+ {targetRoles[currentRoleIdx]}</span> already commanding their worth with the Playbook
+          </div>
+        </div>
+      </div>
 
       {/* HOOK */}
       <section className="hook">
@@ -564,7 +667,7 @@ export default function PlaybookSalesPage() {
       <section className="section solution" id="inside-preview">
         <div className="wrap">
           <div className="bookmock">
-            <img src="/playbook_cover_flat.png" alt="The Pricing &amp; Negotiation Playbook Ebook Cover" style={{ width: '100%', maxWidth: '320px', borderRadius: '4px', boxShadow: '0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2)' }} />
+            <img src="/playbook_cover_flat.png" alt="The Pricing &amp; Negotiation Playbook Ebook Cover" className="rotate-anim rotate-anim-flat" style={{ width: '100%', maxWidth: '320px', borderRadius: '4px', boxShadow: '0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2)' }} />
           </div>
           <div>
             <div className="eyebrow">INTRODUCING</div>
@@ -726,7 +829,7 @@ export default function PlaybookSalesPage() {
           </div>
           <div style={{ marginTop: '40px' }}>
             <button onClick={handleCheckoutRedirect} className="btn btn-primary">
-              Get The Playbook Now <span className="arrow">→</span>
+              Get The Playbook Now — {formattedPrice} <span className="arrow">→</span>
             </button>
             <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px' }}>
               ⚡ Instant PDF · Lifetime Access
@@ -794,6 +897,7 @@ export default function PlaybookSalesPage() {
             </div>
 
             <div className="rbtn">
+              {/* Removed the price from this button as the price is already clearly shown in the card total above */}
               <button onClick={handleCheckoutRedirect} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
                 Get Instant Access <span className="arrow">→</span>
               </button>
@@ -807,16 +911,16 @@ export default function PlaybookSalesPage() {
         </div>
       </section>
 
-      {/* GUARANTEE */}
-      <section className="section tight guarantee" style={{ background: 'transparent' }}>
+      {/* GUARANTEE - Renamed to playbook-guarantee wrapper to prevent global style conflict and blue border */}
+      <section className="section tight playbook-guarantee" style={{ background: 'transparent' }}>
         <div className="wrap">
           <div className="gbadge">
-            <div style={{ fontWeight: 800, letterSpacing: '1px' }}>30 DAY</div>
-            <div style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '11px' }}>GUARANTEE</div>
+            <div style={{ fontWeight: 800, letterSpacing: '1px' }}>INSTANT</div>
+            <div style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '11px' }}>PDF</div>
           </div>
           <div>
             <h3>Read it. Use one script on your next quote.</h3>
-            <p>If it doesn't change how that conversation goes, email within 30 days and get a full refund — no argument, no hoops. I'd rather give your money back than have you sitting on a book that isn't earning its place on your shelf.</p>
+            <p>Since this is an instantly downloadable digital product, all sales are final. However, the value inside is built to deliver immediate returns. Read it, copy just one script for your next client proposal, and watch it pay for itself instantly. You get lifetime access to all files and future updates.</p>
           </div>
         </div>
       </section>
@@ -874,11 +978,11 @@ export default function PlaybookSalesPage() {
 
           <div className="fitem">
             <button className="fq" onClick={() => toggleFaq(4)}>
-              <span>What if I want a refund?</span>
+              <span>Is there a refund policy?</span>
               <span className="plus" style={{ transform: openFaq === 4 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 4 ? '300px' : '0' }}>
-              <p>Email within 30 days and you'll get one — see our 30-day satisfaction guarantee details above.</p>
+              <p>Because this is an instantly downloadable digital eBook, all sales are final. However, if you have any questions or need help applying the concepts, you can always reach out to our support team.</p>
             </div>
           </div>
         </div>
@@ -890,12 +994,12 @@ export default function PlaybookSalesPage() {
           <h2>You already do good work.</h2>
           <p>The only thing standing between you and being paid properly for it is a handful of conversations you haven't been taught how to run yet. This book is that training.</p>
           <button onClick={handleCheckoutRedirect} className="btn btn-primary">
-            Get The Pricing &amp; Negotiation Playbook <span className="arrow">→</span>
+            Get The Pricing &amp; Negotiation Playbook — {formattedPrice} <span className="arrow">→</span>
           </button>
           <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px' }}>
             ⚡ Instant PDF · Lifetime Access
           </div>
-          <div className="microtrust" style={{ color: '#B7AC92', marginTop: '16px' }}>30-day guarantee · Instant download · {formattedPrice}</div>
+          {/* Removed the extra duplicate microtrust line containing price here as requested */}
         </div>
       </section>
 
@@ -903,7 +1007,7 @@ export default function PlaybookSalesPage() {
       <section className="section tight ps">
         <div className="wrap">
           <p><b>P.S.</b> Every day you don't fix this pricing conversation is another quote that might come back with "too expensive" attached to it — and another client you were actually the right fit for, gone.</p>
-          <p><b>P.S.2</b> This comes with a full 30-day refund guarantee. The only risk here is staying exactly where you are.</p>
+          <p><b>P.S.2</b> Since this is an instantly downloadable digital product, all sales are final. The only real risk is continuing to underprice your work and leaving money on the table.</p>
         </div>
       </section>
 
@@ -921,7 +1025,7 @@ export default function PlaybookSalesPage() {
       {/* STICKY MOBILE BAR */}
       <div className={`stickybar ${showStickyBar ? 'show' : ''}`}>
         <div className="sprice">Get the Playbook<br /><b>{formattedPrice}</b></div>
-        <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get Access →</button>
+        <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get Access — {formattedPrice} →</button>
       </div>
 
       {/* Live Sales Notification Widget matching WebinarPage style exactly in cream/brown custom colors */}
@@ -934,7 +1038,10 @@ export default function PlaybookSalesPage() {
             className="toast-course-image"
           />
           <div className="toast-content">
-            <p className="toast-title">VERIFIED PAYMENT</p>
+            <p className="toast-title">
+              <span>VERIFIED PAYMENT</span>
+              <span style={{ fontSize: '9px', fontWeight: 500, color: 'var(--gold-deep)', textTransform: 'lowercase', opacity: 0.8 }}>{activeNotification.time}</span>
+            </p>
             <p className="toast-body">
               <strong>{activeNotification.name}</strong> just purchased <strong>The Pricing &amp; Negotiation Playbook</strong>!
             </p>
