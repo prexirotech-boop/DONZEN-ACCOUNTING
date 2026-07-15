@@ -238,9 +238,6 @@ function EbooksTab({ user }) {
           <div key={ebook.id} className="ud-course-card" style={{ display: 'flex', flexDirection: 'column' }}>
             <div className="ud-course-card-img">
               <img src={ebook.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={ebook.title.replace(/\s+slug$/i, '')} />
-              <div className="ud-card-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '2.5rem' }}>📗</span>
-              </div>
             </div>
             <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <h3 className="ud-course-card-title">{ebook.title.replace(/\s+slug$/i, '')}</h3>
@@ -248,8 +245,13 @@ function EbooksTab({ user }) {
               
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
                 {ebook.ebook_url ? (
-                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', textAlign: 'center', display: 'block' }}>
-                    ⬇_ Download Ebook (PDF)
+                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download Ebook (PDF)
                   </a>
                 ) : (
                   <div style={{ padding: 10, background: '#f1f5f9', borderRadius: 6, fontSize: 12.5, color: '#64748b', textAlign: 'center' }}>No PDF file uploaded yet</div>
