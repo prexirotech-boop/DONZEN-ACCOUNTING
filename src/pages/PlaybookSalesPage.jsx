@@ -173,8 +173,7 @@ export default function PlaybookSalesPage() {
         .solution .wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; align-items: center; }
         @media(max-width:860px) { .solution .wrap { grid-template-columns: 1fr; gap: 36px; } }
         .bookmock { perspective: 1400px; display: flex; justify-content: center; }
-        .bookmock img { width: 100%; max-width: 320px; border-radius: 4px; box-shadow: 0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2); transform: rotateY(-18deg) rotateX(2deg); transition: transform .4s ease; }
-        .bookmock:hover img { transform: rotateY(-8deg) rotateX(1deg); }
+        .bookmock-card:hover { transform: rotateY(-8deg) rotateX(1deg) scale(1.02); }
         .solution h2 { margin-top: 10px; }
         .solution ul { padding-left: 0; list-style: none; margin-top: 22px; }
         .solution li { display: flex; gap: 12px; margin-bottom: 14px; font-size: 16px; color: var(--ink-soft); }
@@ -375,7 +374,38 @@ export default function PlaybookSalesPage() {
       <section className="section solution" id="inside-preview">
         <div className="wrap">
           <div className="bookmock">
-            <img src={product?.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800'} alt="The Pricing &amp; Negotiation Playbook" />
+            <div className="bookmock-card" style={{
+              width: '100%',
+              maxWidth: '300px',
+              height: '420px',
+              background: 'linear-gradient(135deg, var(--teal-deep) 0%, var(--dark3) 100%)',
+              borderRadius: '8px',
+              boxShadow: '0 40px 70px rgba(23,21,18,0.35), 0 10px 20px rgba(23,21,18,0.2)',
+              border: '2px solid var(--gold-light)',
+              padding: '40px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transform: 'rotateY(-18deg) rotateX(2deg)',
+              transition: 'transform .4s ease',
+              cursor: 'pointer'
+            }}>
+              <div>
+                <div style={{ color: 'var(--gold-light)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '20px', textAlign: 'center' }}>
+                  AMPLIFIED SKILLS PLAYBOOK
+                </div>
+                <div style={{ color: 'var(--cream)', fontFamily: "'Poppins', sans-serif", fontSize: '24px', fontWeight: 800, lineHeight: '1.2', textAlign: 'center', marginTop: '20px' }}>
+                  The Pricing &amp;<br />Negotiation<br />Playbook
+                </div>
+                <div style={{ color: '#A79C82', fontSize: '13px', textAlign: 'center', marginTop: '10px', fontStyle: 'italic' }}>
+                  Charge what you are worth. Stop hearing "too expensive".
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--gold-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#12100D', fontWeight: 900, fontSize: '12px' }}>AS</div>
+                <span style={{ color: 'var(--gold-light)', fontSize: '12px', fontWeight: 600, letterSpacing: '1px' }}>AMPLIFIED SKILLS</span>
+              </div>
+            </div>
           </div>
           <div>
             <div className="eyebrow">THE PLAYBOOK SOLUTION</div>
@@ -415,42 +445,91 @@ export default function PlaybookSalesPage() {
           <div className="headwrap">
             <div className="eyebrow on-dark">THE OUTLINE</div>
             <h2 style={{ fontSize: '32px', margin: '14px 0' }}>What you'll learn inside the Playbook</h2>
-            <p className="sub">5 actionable, no-fluff chapters written to be read tonight and used on your very next quote.</p>
+            <p className="sub">12 actionable, no-fluff chapters written to be read tonight and used on your very next quote.</p>
           </div>
           <div className="chgrid">
             <div className="chitem">
               <div className="chnum">01</div>
               <div>
-                <h4>The "Too Expensive" Myth</h4>
-                <p>Why clients say "too expensive" even when they have the budget — and how to diagnose the real objection instantly.</p>
+                <h4>Diagnosing the Lead</h4>
+                <p>How to qualify clients before you spend hours on a proposal, filtering out low budgets early.</p>
               </div>
             </div>
             <div className="chitem">
               <div className="chnum">02</div>
               <div>
-                <h4>Framing &amp; Value Anchoring</h4>
-                <p>How to align your pricing to the client's business goals so your price looks tiny compared to the value they get.</p>
+                <h4>Value Anchoring</h4>
+                <p>The exact strategy to frame the cost of the problem first, so your rate looks tiny in comparison.</p>
               </div>
             </div>
             <div className="chitem">
               <div className="chnum">03</div>
               <div>
-                <h4>The Three-Tier Pricing Model</h4>
-                <p>Structure your proposal so the client's decision shifts from "should we hire them?" to "how should we work with them?".</p>
+                <h4>The Three-Tier Proposal</h4>
+                <p>How to structure options so they choose the middle tier, upgrading their purchase naturally.</p>
               </div>
             </div>
             <div className="chitem">
               <div className="chnum">04</div>
               <div>
-                <h4>Objection Scripts &amp; Rebuttals</h4>
-                <p>Exact scripts to handle requests for discounts, competitive comparisons, and "we don't have the budget right now" lines.</p>
+                <h4>The "Too Expensive" Script</h4>
+                <p>Word-for-word response to the budget objection that shifts the conversation back to value.</p>
               </div>
             </div>
             <div className="chitem">
               <div className="chnum">05</div>
               <div>
-                <h4>Closing the Deal</h4>
-                <p>The step-by-step proposal walkthrough and follow-up sequences that get the deposit paid without awkward back-and-forth.</p>
+                <h4>The "What's Your Price" Trap</h4>
+                <p>How to handle early pricing requests from leads without giving away your leverage.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">06</div>
+              <div>
+                <h4>Retainer Conversions</h4>
+                <p>How to pitch monthly recurring retainer contracts that get accepted, building predictable revenue.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">07</div>
+              <div>
+                <h4>Scope Creep Killers</h4>
+                <p>Scripts to charge for extra requests and modifications without sounding defensive or confrontational.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">08</div>
+              <div>
+                <h4>The Pitch Presentation</h4>
+                <p>How to present and walk through a proposal live, securing the yes on the call.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">09</div>
+              <div>
+                <h4>The 48-Hour Close</h4>
+                <p>The gentle follow-up sequence that gets deposit payments paid fast without appearing desperate.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">10</div>
+              <div>
+                <h4>Doubling Your Rates</h4>
+                <p>The 90-day transition playbook to confidently raise your prices and charge global premium rates.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">11</div>
+              <div>
+                <h4>CAC &amp; Legal Protections</h4>
+                <p>Simple contract guidelines and payment terms that guarantee you get paid on time, every time.</p>
+              </div>
+            </div>
+            <div className="chitem">
+              <div className="chnum">12</div>
+              <div>
+                <h4>Negotiation Red Lines</h4>
+                <p>How to spot toxic client behavior and walk away cleanly without burning bridges.</p>
               </div>
             </div>
           </div>
