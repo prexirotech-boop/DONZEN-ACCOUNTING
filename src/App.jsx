@@ -38,6 +38,7 @@ import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { AuthProvider } from './context/AuthContext'
+import { CurrencyProvider } from './context/CurrencyContext'
 import { trackEvent } from './lib/analytics'
 import { getPages } from './lib/pagesScanner'
 
@@ -184,9 +185,11 @@ function AppLayout() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppLayout />
-      </BrowserRouter>
+      <CurrencyProvider>
+        <BrowserRouter>
+          <AppLayout />
+        </BrowserRouter>
+      </CurrencyProvider>
     </AuthProvider>
   )
 }

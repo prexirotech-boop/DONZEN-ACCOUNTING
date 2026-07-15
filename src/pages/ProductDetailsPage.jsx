@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { useCurrency } from '../context/CurrencyContext'
 import UpsellWidget from '../components/UpsellWidget'
 
 const StarRating = ({ rating = 0, count = 0 }) => {
@@ -51,6 +52,7 @@ export default function ProductDetailsPage() {
   const { productId } = useParams()
   const navigate = useNavigate()
   const { user, profile } = useAuth()
+  const { formatPrice } = useCurrency()
   const [product, setProduct] = useState(null)
   const [courseData, setCourseData] = useState(null)
   const [modules, setModules] = useState([])
@@ -274,8 +276,8 @@ export default function ProductDetailsPage() {
   const whoIsFor = Array.isArray(courseData?.who_is_for) ? courseData.who_is_for : []
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0)
 
-  const priceDisplay = isFree ? 'FREE' : `₦${product.price?.toLocaleString()}`
-  const oldPriceDisplay = product.old_price ? `₦${product.old_price?.toLocaleString()}` : null
+  const priceDisplay = isFree ? 'FREE' : formatPrice(product.price)
+  const oldPriceDisplay = product.old_price ? formatPrice(product.old_price) : null
 
   const ctaLabel = isEnrolled
     ? 'Continue Learning →'
@@ -545,7 +547,7 @@ export default function ProductDetailsPage() {
                     <span className="pd-price-free">FREE</span>
                   ) : (
                     <>
-                      <span className="pd-price-main">₦{product.price?.toLocaleString()}</span>
+                      <span className="pd-price-main">{formatPrice(product.price)}</span>
                       {oldPriceDisplay && <span className="pd-price-old">{oldPriceDisplay}</span>}
                       {oldPriceDisplay && (
                         <span className="pd-discount-tag">
@@ -665,7 +667,7 @@ export default function ProductDetailsPage() {
               <span className="pd-price-free">FREE</span>
             ) : (
               <div className="pd-price-mobile-row">
-                <span className="pd-price-main-mobile">₦{product.price?.toLocaleString()}</span>
+                <span className="pd-price-main-mobile">{formatPrice(product.price)}</span>
                 {oldPriceDisplay && <span className="pd-price-old-mobile">{oldPriceDisplay}</span>}
               </div>
             )}

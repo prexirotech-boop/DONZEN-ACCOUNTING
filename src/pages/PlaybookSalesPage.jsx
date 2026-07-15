@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useCurrency } from '../context/CurrencyContext'
 
 export default function PlaybookSalesPage() {
   const navigate = useNavigate()
+  const { formatPrice } = useCurrency()
   const [searchParams] = useSearchParams()
   const [product, setProduct] = useState(null)
   const [openFaq, setOpenFaq] = useState(null)
@@ -156,8 +158,8 @@ export default function PlaybookSalesPage() {
   const price = product?.price || 9999
   const oldPrice = product?.old_price || 25000
   const savings = Math.max(0, oldPrice - price)
-  const formattedPrice = `₦${price.toLocaleString()}`
-  const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
+  const formattedPrice = formatPrice(price)
+  const formattedOldPrice = formatPrice(oldPrice)
 
   const handleCheckoutRedirect = (e) => {
     if (e) e.preventDefault()

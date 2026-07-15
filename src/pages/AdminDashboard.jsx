@@ -931,6 +931,19 @@ function AdminProducts() {
     }
   }
 
+  const handleTogglePublish = async (p) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ is_published: !p.is_published })
+        .eq('id', p.id)
+      if (error) throw error
+      loadProducts()
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   const handleSaveProduct = async (e) => {
     e.preventDefault()
     if (!productForm.title.trim() || !productForm.slug.trim()) return
@@ -1126,6 +1139,12 @@ function AdminProducts() {
                     </button>
                   )}
                   <button 
+                    onClick={() => handleTogglePublish(p)}
+                    style={{ background: 'none', border: 'none', color: p.is_published ? '#ea580c' : '#16a34a', fontWeight: 500, fontSize: 13, cursor: 'pointer' }}
+                  >
+                    {p.is_published ? 'Unpublish' : 'Publish'}
+                  </button>
+                  <button 
                     onClick={() => handleOpenEdit(p)}
                     style={{ background: 'none', border: 'none', color: '#4f566b', fontWeight: 500, fontSize: 13, cursor: 'pointer' }}
                   >
@@ -1185,6 +1204,12 @@ function AdminProducts() {
                               Curriculum
                             </button>
                           )}
+                          <button 
+                            onClick={() => handleTogglePublish(p)}
+                            style={{ background: 'none', border: 'none', color: p.is_published ? '#ea580c' : '#16a34a', fontWeight: 500, cursor: 'pointer', fontSize: 13 }}
+                          >
+                            {p.is_published ? 'Unpublish' : 'Publish'}
+                          </button>
                           <button 
                             onClick={() => handleOpenEdit(p)}
                             style={{ background: 'none', border: 'none', color: '#4f566b', fontWeight: 500, cursor: 'pointer', fontSize: 13 }}

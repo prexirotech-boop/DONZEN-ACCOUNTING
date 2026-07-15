@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { CONFIG } from '../lib/config'
+import { useCurrency } from '../context/CurrencyContext'
 import { supabase, createPendingOrder, completeOrder } from '../lib/supabase'
 import { trackEvent } from '../lib/analytics'
 import OrderBump from '../components/OrderBump'
@@ -74,6 +75,7 @@ export default function PaymentPage() {
   const [searchParams] = useSearchParams()
   const productIdParam = searchParams.get('product')
   const { user } = useAuth()
+  const { formatPrice, currency } = useCurrency()
 
   // Product data
   const [product, setProduct] = useState(null)
@@ -384,7 +386,7 @@ export default function PaymentPage() {
       if (data.usage_limit && data.usage_count >= data.usage_limit) { setCouponErr('This coupon has reached its usage limit.'); return }
       if (data.expires_at && new Date(data.expires_at) < new Date()) { setCouponErr('This coupon has expired.'); return }
       setAppliedCoupon(data)
-      setCouponOk(`Coupon applied — you save ${data.type === 'percentage' ? `${data.value}%` : `₦${data.value.toLocaleString()}`}`)
+      setCouponOk(`Coupon applied — you save ${data.type === 'percentage' ? `${data.value}%` : formatPrice(data.value)}`)
     } catch { 
       setCouponErr('Could not validate coupon. Please try again.')
     } finally { 
@@ -682,7 +684,7 @@ export default function PaymentPage() {
           </span>
         </div>
         <div className="shopify-product-price-col">
-          <span className="shopify-item-price">₦{basePrice.toLocaleString()}</span>
+          <span className="shopify-item-price">{formatPrice(basePrice)}</span>
         </div>
       </div>
 
@@ -711,7 +713,7 @@ export default function PaymentPage() {
               <span className="shopify-product-desc" style={{ fontSize: 11 }}>⚡ One-time Addon</span>
             </div>
             <div className="shopify-product-price-col" style={{ fontSize: 13 }}>
-              <span>₦{bumpPrice.toLocaleString()}</span>
+              <span>{formatPrice(bumpPrice)}</span>
             </div>
           </div>
         )
@@ -788,18 +790,18 @@ export default function PaymentPage() {
       <div className="shopify-calculations-block">
         <div className="shopify-calc-row">
           <span>Subtotal</span>
-          <span className="calc-value">₦{basePrice.toLocaleString()}</span>
+          <span className="calc-value">{formatPrice(basePrice)}</span>
         </div>
         {appliedCoupon && (
           <div className="shopify-calc-row highlight-green">
             <span>Discount</span>
-            <span className="calc-value">-{appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : `₦${appliedCoupon.value.toLocaleString()}`}</span>
+            <span className="calc-value">-{appliedCoupon.type === 'percentage' ? `${appliedCoupon.value}%` : formatPrice(appliedCoupon.value)}</span>
           </div>
         )}
         {selectedBumps.length > 0 && (
           <div className="shopify-calc-row">
             <span>Add-ons</span>
-            <span className="calc-value">₦{bumpsTotal.toLocaleString()}</span>
+            <span className="calc-value">{formatPrice(bumpsTotal)}</span>
           </div>
         )}
 
@@ -807,8 +809,8 @@ export default function PaymentPage() {
         <div className="shopify-total-row">
           <span className="total-label">Total</span>
           <div className="total-price-wrapper">
-            <span className="total-currency">NGN</span>
-            <span className="total-amount">₦{finalTotal.toLocaleString()}</span>
+            <span className="total-currency">{currency}</span>
+            <span className="total-amount">{formatPrice(finalTotal)}</span>
           </div>
         </div>
       </div>
@@ -1608,7 +1610,7 @@ export default function PaymentPage() {
           <span>{summaryOpen ? 'Hide order summary' : 'Show order summary'}</span>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: summaryOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <span className="sp-mobile-summary-bar-price">₦{finalTotal.toLocaleString()}</span>
+        <span className="sp-mobile-summary-bar-price">{formatPrice(finalTotal)}</span>
       </div>
       
       {/* Mobile dropdown cart details */}
@@ -1784,7 +1786,7 @@ export default function PaymentPage() {
                   {paymentMethod === 'bank_transfer' && (
                     <div className="sp-payment-body" style={{ background: '#f8fafc', padding: '14px 16px', borderTop: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: 14 }}>
                       <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.5' }}>
-                        Please make a transfer of <strong style={{ color: '#0f172a' }}>₦{finalTotal.toLocaleString()}</strong> to any of the bank accounts listed below, then upload a clear screenshot of your payment receipt.
+                        Please make a transfer of <strong style={{ color: '#0f172a' }}>₦{finalTotal.toLocaleString()}{currency !== 'NGN' ? ` (approx. ${formatPrice(finalTotal)})` : ''}</strong> to any of the bank accounts listed below, then upload a clear screenshot of your payment receipt.
                       </p>
 
                       {/* Bank list */}
@@ -1880,8 +1882,8 @@ export default function PaymentPage() {
                     ) : (
                       <span>
                         {paymentMethod === 'bank_transfer' 
-                          ? `Submit Bank Receipt — ₦${finalTotal.toLocaleString()}`
-                          : `Complete Payment — ₦${finalTotal.toLocaleString()}`
+                          ? `Submit Bank Receipt — ${formatPrice(finalTotal)}`
+                          : `Complete Payment — ${formatPrice(finalTotal)}`
                         }
                       </span>
                     )}

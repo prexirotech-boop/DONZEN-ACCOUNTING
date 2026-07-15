@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { getShortDesc } from './ProductsPage'
+import { useCurrency } from '../context/CurrencyContext'
 import UpsellWidget from '../components/UpsellWidget'
 
 const SLIDES = [
@@ -11,6 +12,7 @@ const SLIDES = [
 ]
 
 export default function HomePage() {
+  const { formatPrice } = useCurrency()
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeSlide, setActiveSlide] = useState(0)
@@ -191,8 +193,8 @@ export default function HomePage() {
                     
                     <div className="product-footer-area">
                       <div className="price-box">
-                        {product.old_price && <span className="old-price">₦{product.old_price.toLocaleString()}</span>}
-                        <span className="price-tag">₦{product.price.toLocaleString()}</span>
+                        {product.old_price && <span className="old-price">{formatPrice(product.old_price)}</span>}
+                        <span className="price-tag">{formatPrice(product.price)}</span>
                       </div>
                       <span className="premium-card-btn">
                         {isCourse ? 'Enroll Now' : 'Get E-Book'} →

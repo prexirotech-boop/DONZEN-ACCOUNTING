@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import UserMenu from './UserMenu'
 import { supabase } from '../lib/supabase'
+import { useCurrency } from '../context/CurrencyContext'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -13,6 +14,10 @@ export default function Header() {
   const location = useLocation()
   const { user } = useAuth()
   const dropdownRef = useRef(null)
+  
+  const { currency, isEnabled: isCurrencyEnabled, setCurrency } = useCurrency()
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false)
+  const currencyMenuRef = useRef(null)
 
   const [cartItems, setCartItems] = useState([])
   const [showCartDrawer, setShowCartDrawer] = useState(false)
@@ -83,6 +88,17 @@ export default function Header() {
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Handle click outside to close currency dropdown
+  useEffect(() => {
+    function handleClickOutsideCurrency(event) {
+      if (currencyMenuRef.current && !currencyMenuRef.current.contains(event.target)) {
+        setShowCurrencyDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutsideCurrency)
+    return () => document.removeEventListener('mousedown', handleClickOutsideCurrency)
   }, [])
 
   // Filter products based on search query
@@ -212,6 +228,112 @@ export default function Header() {
         </nav>
 
         <div className="header-actions">
+          {/* Custom Currency Selector Dropdown */}
+          {isCurrencyEnabled && (
+            <div ref={currencyMenuRef} style={{ position: 'relative', marginRight: '6px', display: 'flex', alignItems: 'center' }}>
+              <button
+                onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '20px',
+                  padding: '5px 10px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  color: 'var(--brand-primary, #2563eb)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                  outline: 'none',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                  transition: 'all 0.15s ease',
+                  userSelect: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'var(--brand-primary, #2563eb)'
+                  e.currentTarget.style.background = '#fcfdfd'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                  e.currentTarget.style.background = '#ffffff'
+                }}
+              >
+                <span>{currency}</span>
+                <span style={{ fontSize: '8px', color: '#64748b', transform: showCurrencyDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▼</span>
+              </button>
+
+              {showCurrencyDropdown && (
+                <div
+                  className="currency-dropdown-menu"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 4px)',
+                    right: 0,
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '8px',
+                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+                    padding: '4px',
+                    zIndex: 9999,
+                    minWidth: '95px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    animation: 'fadeInUp 0.15s ease-out'
+                  }}
+                >
+                  {[
+                    { code: 'NGN', symbol: '₦' },
+                    { code: 'USD', symbol: '$' },
+                    { code: 'EUR', symbol: '€' },
+                    { code: 'GBP', symbol: '£' }
+                  ].map((opt) => (
+                    <button
+                      key={opt.code}
+                      onClick={() => {
+                        setCurrency(opt.code)
+                        setShowCurrencyDropdown(false)
+                      }}
+                      style={{
+                        background: currency === opt.code ? 'rgba(37, 99, 235, 0.06)' : 'none',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '6px 10px',
+                        fontSize: '11px',
+                        fontWeight: currency === opt.code ? 800 : 600,
+                        color: currency === opt.code ? 'var(--brand-primary, #2563eb)' : '#334155',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        width: '100%',
+                        transition: 'all 0.1s ease',
+                        outline: 'none',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                      onMouseEnter={e => {
+                        if (currency !== opt.code) {
+                          e.currentTarget.style.background = '#f1f5f9'
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (currency !== opt.code) {
+                          e.currentTarget.style.background = 'none'
+                        }
+                      }}
+                    >
+                      <span>{opt.code}</span>
+                      <span style={{ opacity: 0.6, fontSize: '10px' }}>{opt.symbol}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Cart Toggle Button */}
           <button 
             onClick={() => setShowCartDrawer(true)} 

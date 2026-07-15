@@ -7,6 +7,7 @@ import BookCover from '../components/BookCover'
 import { useReveal } from '../hooks/useReveal'
 import { useToasts } from '../hooks/useToasts'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useCurrency } from '../context/CurrencyContext'
 
 const CHAPTERS = [
   { n: '01', title: "The Nigerian Entrepreneur's Mindset", desc: "7 mindset shifts that separate businesses that survive from those that don't. Start here." },
@@ -56,6 +57,7 @@ const FAQS = [
 
 export default function EbookSalesPage() {
   const navigate = useNavigate()
+  const { formatPrice } = useCurrency()
   const [searchParams] = useSearchParams()
   const productId = searchParams.get('product')
   const [product, setProduct] = useState(null)
@@ -94,9 +96,9 @@ export default function EbookSalesPage() {
   const price = product?.price || 2500
   const oldPrice = product?.old_price || 9000
   const savings = Math.max(0, oldPrice - price)
-  const formattedPrice = `₦${price.toLocaleString()}`
-  const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
-  const formattedSavings = `₦${savings.toLocaleString()}`
+  const formattedPrice = formatPrice(price)
+  const formattedOldPrice = formatPrice(oldPrice)
+  const formattedSavings = formatPrice(savings)
   const discountPercentage = oldPrice > 0 ? Math.round((savings / oldPrice) * 100) : 0
 
   const go = () => { 
@@ -485,7 +487,7 @@ export default function EbookSalesPage() {
                 {/* Pricing */}
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
                   <div className="price-was">Regular Price: {formattedOldPrice}</div>
-                  <div className="price-now"><sup>₦</sup>{price.toLocaleString()}</div>
+                  <div className="price-now">{formatPrice(price)}</div>
                   <div className="price-save">🔥 YOU SAVE {formattedSavings} TODAY</div>
                 </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { useCurrency } from '../context/CurrencyContext'
 
 const StarRating = ({ rating = 4.8 }) => (
   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
@@ -40,6 +41,7 @@ export function getShortDesc(product) {
 
 export default function ProductsPage() {
   const { user } = useAuth()
+  const { formatPrice } = useCurrency()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [products, setProducts] = useState([])
@@ -297,9 +299,9 @@ export default function ProductsPage() {
                         <span className="lib-price-free">FREE</span>
                       ) : (
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
-                          <span className="lib-price-current">₦{product.price?.toLocaleString()}</span>
+                          <span className="lib-price-current">{formatPrice(product.price)}</span>
                           {product.old_price && (
-                            <span className="lib-price-old">₦{product.old_price?.toLocaleString()}</span>
+                            <span className="lib-price-old">{formatPrice(product.old_price)}</span>
                           )}
                         </div>
                       )}
