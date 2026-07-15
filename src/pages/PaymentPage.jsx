@@ -437,7 +437,7 @@ export default function PaymentPage() {
 
     const ref = paymentMethod === 'bank_transfer'
       ? `bank_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
-      : `n50k_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+      : `AS_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
     const affId = affiliateData?.id || null
     const affCode = affiliateData?.affiliate_code || null
 

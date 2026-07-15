@@ -31,18 +31,40 @@ export function getShortDesc(product) {
 
 function MyLearningTab({ user }) {
   const [enrollments, setEnrollments] = useState([])
+  const [ebooks, setEbooks] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchEnrollments() {
+    async function fetchLearningData() {
       if (!user) return
       try {
+        // 1. Fetch course enrollments
         const { data: enrData, error: enrError } = await supabase
           .from('enrollments')
           .select('course_id, progress')
           .eq('user_id', user.id)
 
         if (enrError) throw enrError
+
+        // 2. Fetch paid orders to scan for ebooks
+        const { data: ordersData } = await supabase
+          .from('orders')
+          .select(`
+            id, product_id, reference, status,
+            products ( id, title, type, cover_image, ebook_url, bonus_ebook_urls )
+          `)
+          .eq('customer_email', user.email)
+          .eq('status', 'paid')
+
+        const ebookMap = {}
+        if (ordersData) {
+          ordersData.forEach(o => {
+            if (o.products && o.products.type === 'ebook') {
+              ebookMap[o.products.id] = o.products
+            }
+          })
+        }
+        setEbooks(Object.values(ebookMap))
 
         const courseIds = (enrData || []).map(e => e.course_id).filter(Boolean)
 
@@ -102,73 +124,145 @@ function MyLearningTab({ user }) {
 
         setEnrollments(enhanced.filter(Boolean))
       } catch (err) {
-        console.error('Error fetching enrollments:', err)
+        console.error('Error fetching learning data:', err)
       } finally {
         setLoading(false)
       }
     }
-    fetchEnrollments()
+    fetchLearningData()
   }, [user])
 
   if (loading) {
     return <div style={{ padding: '40px 0', color: '#64748b', fontWeight: 600 }}>Loading courses...</div>
   }
 
-  if (enrollments.length === 0) {
+  if (enrollments.length === 0 && ebooks.length === 0) {
     return (
       <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
         <svg style={{ width: 64, height: 64, color: '#64748b', margin: '0 auto 20px', display: 'block' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No Courses Found</h2>
-        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't enrolled in any training programs yet. Start learning today!</p>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No Products Found</h2>
+        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't purchased any items yet. Start learning today!</p>
         <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse Products</Link>
       </div>
     )
   }
 
   return (
-    <div className="ud-course-grid">
-      {enrollments.map((enr) => {
-        const course = enr.courses
-        const product = course?.products
-        if (!product) return null
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+      {/* Courses Section */}
+      {enrollments.length > 0 && (
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My Courses</h3>
+          <div className="ud-course-grid">
+            {enrollments.map((enr) => {
+              const course = enr.courses
+              const product = course?.products
+              if (!product) return null
 
-        const progressArr = enr.progress || []
-        const total = enr.totalLessons || 1
-        const percentComplete = Math.min(100, Math.round((progressArr.length / total) * 100))
-        const nextLessonLink = `/course/${course.id}`
+              const progressArr = enr.progress || []
+              const total = enr.totalLessons || 1
+              const percentComplete = Math.min(100, Math.round((progressArr.length / total) * 100))
+              const nextLessonLink = `/course/${course.id}`
 
-        return (
-          <div key={course.id} className="ud-course-card">
-            <div className="ud-course-card-img">
-              <img src={product.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={product.title.replace(/\s+slug$/i, '')} />
-              <div className="ud-card-overlay">
-                <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
-              </div>
-            </div>
-            <div className="ud-course-card-body">
-              <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
-              <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
-              
-              <div className="ud-progress-container">
-                <div className="ud-progress-bar-bg">
-                  <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
+              return (
+                <div key={course.id} className="ud-course-card">
+                  <div className="ud-course-card-img">
+                    <img src={product.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={product.title.replace(/\s+slug$/i, '')} />
+                    <div className="ud-card-overlay">
+                      <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
+                    </div>
+                  </div>
+                  <div className="ud-course-card-body">
+                    <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
+                    <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
+                    
+                    <div className="ud-progress-container">
+                      <div className="ud-progress-bar-bg">
+                        <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
+                      </div>
+                      <div className="ud-progress-info">
+                        <span className="ud-progress-text">{percentComplete}% complete</span>
+                        <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
+                      </div>
+                    </div>
+                    
+                    <Link to={nextLessonLink} className="ud-card-btn">
+                      {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
+                    </Link>
+                  </div>
                 </div>
-                <div className="ud-progress-info">
-                  <span className="ud-progress-text">{percentComplete}% complete</span>
-                  <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
-                </div>
-              </div>
-              
-              <Link to={nextLessonLink} className="ud-card-btn">
-                {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
-              </Link>
-            </div>
+              )
+            })}
           </div>
-        )
-      })}
+        </div>
+      )}
+
+      {/* eBooks Section */}
+      {ebooks.length > 0 && (
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My eBooks & Blueprints</h3>
+          <div className="ud-course-grid">
+            {ebooks.map((ebook) => (
+              <div key={ebook.id} className="ud-course-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="ud-course-card-img">
+                  <img src={ebook.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={ebook.title.replace(/\s+slug$/i, '')} />
+                  <div className="ud-card-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: '2.5rem' }}>📗</span>
+                  </div>
+                </div>
+                <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <h3 className="ud-course-card-title">{ebook.title.replace(/\s+slug$/i, '')}</h3>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: 10, display: 'inline-block' }}>eBook Product</span>
+                  
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
+                    {ebook.ebook_url ? (
+                      <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', background: '#10b981', textAlign: 'center', display: 'block' }}>
+                        ⬇️ Download Ebook (PDF)
+                      </a>
+                    ) : (
+                      <div style={{ padding: 10, background: '#f1f5f9', borderRadius: 6, fontSize: 12.5, color: '#64748b', textAlign: 'center' }}>No PDF file uploaded yet</div>
+                    )}
+
+                    {/* Bonus downloads list */}
+                    {ebook.bonus_ebook_urls && ebook.bonus_ebook_urls.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>🎁 Included Bonuses:</span>
+                        {ebook.bonus_ebook_urls.map((bonus, idx) => (
+                          <a 
+                            key={idx} 
+                            href={bonus.url} 
+                            download 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: 6, 
+                              fontSize: 12.5, 
+                              color: '#2563eb', 
+                              textDecoration: 'none',
+                              fontWeight: 600,
+                              padding: '8px 10px',
+                              background: '#eff6ff',
+                              borderRadius: 6,
+                              border: '1px solid #bfdbfe'
+                            }}
+                          >
+                            ⬇️ {bonus.name || `Bonus #${idx + 1}`}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

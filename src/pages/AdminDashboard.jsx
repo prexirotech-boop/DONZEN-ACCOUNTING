@@ -18,6 +18,7 @@ import AdminPayouts from './AdminPayouts'
 import AdminUpsells from './AdminUpsells'
 import AdminAnalytics from './AdminAnalytics'
 import AdminPlatformAnalytics from './AdminPlatformAnalytics'
+import { getPages } from '../lib/pagesScanner'
 
 function AdminOverview() {
   const [stats, setStats] = useState({ users: 0, orders: 0, revenue: 0, productsCount: 0, conversionRate: 0, courseStats: [], unansweredQna: 0 })
@@ -753,8 +754,111 @@ function AdminProducts() {
     cover_image: '',
     features: '',
     is_published: false,
-    is_free: false
+    is_free: false,
+    ebook_url: '',
+    bonus_ebook_urls: [],
+    sales_page_path: ''
   })
+
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadingEbook, setUploadingEbook] = useState(false)
+  const [uploadingBonus, setUploadingBonus] = useState(false)
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `product-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file)
+
+      if (error) {
+        alert('Image upload failed: ' + error.message)
+      } else {
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(fileName)
+        setProductForm(prev => ({ ...prev, cover_image: publicUrl }))
+      }
+    } catch (err) {
+      alert('Upload error: ' + err.message)
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const handleEbookUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingEbook(true)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `ebook-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('ebook-files')
+        .upload(fileName, file)
+
+      if (error) {
+        alert('Ebook upload failed: ' + error.message)
+      } else {
+        const { data: { publicUrl } } = supabase.storage
+          .from('ebook-files')
+          .getPublicUrl(fileName)
+        setProductForm(prev => ({ ...prev, ebook_url: publicUrl }))
+      }
+    } catch (err) {
+      alert('Upload error: ' + err.message)
+    } finally {
+      setUploadingEbook(false)
+    }
+  }
+
+  const handleBonusUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingBonus(true)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `bonus-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('ebook-files')
+        .upload(fileName, file)
+
+      if (error) {
+        alert('Bonus upload failed: ' + error.message)
+      } else {
+        const { data: { publicUrl } } = supabase.storage
+          .from('ebook-files')
+          .getPublicUrl(fileName)
+        
+        const newBonus = { name: file.name, url: publicUrl }
+        setProductForm(prev => ({
+          ...prev,
+          bonus_ebook_urls: [...(prev.bonus_ebook_urls || []), newBonus]
+        }))
+      }
+    } catch (err) {
+      alert('Upload error: ' + err.message)
+    } finally {
+      setUploadingBonus(false)
+    }
+  }
+
+  const handleRemoveBonus = (idx) => {
+    setProductForm(prev => ({
+      ...prev,
+      bonus_ebook_urls: (prev.bonus_ebook_urls || []).filter((_, i) => i !== idx)
+    }))
+  }
 
   const loadProducts = async () => {
     setLoading(true)
@@ -788,7 +892,10 @@ function AdminProducts() {
       cover_image: '',
       features: '',
       is_published: false,
-      is_free: false
+      is_free: false,
+      ebook_url: '',
+      bonus_ebook_urls: [],
+      sales_page_path: ''
     })
     setShowModal(true)
   }
@@ -805,7 +912,10 @@ function AdminProducts() {
       cover_image: p.cover_image || '',
       features: Array.isArray(p.features) ? p.features.join('\n') : '',
       is_published: p.is_published || false,
-      is_free: p.is_free || false
+      is_free: p.is_free || false,
+      ebook_url: p.ebook_url || '',
+      bonus_ebook_urls: p.bonus_ebook_urls || [],
+      sales_page_path: p.sales_page_path || ''
     })
     setShowModal(true)
   }
@@ -826,7 +936,6 @@ function AdminProducts() {
     if (!productForm.title.trim() || !productForm.slug.trim()) return
     setSubmitting(true)
 
-    const isFree = productForm.is_free
     const payload = {
       title: productForm.title.trim(),
       slug: productForm.slug.trim(),
@@ -837,7 +946,10 @@ function AdminProducts() {
       cover_image: productForm.cover_image.trim() || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800',
       features: productForm.features.split('\n').map(f => f.trim()).filter(Boolean),
       is_published: productForm.is_published,
-      is_free: isFree
+      is_free: isFree,
+      ebook_url: productForm.type === 'ebook' ? (productForm.ebook_url || null) : null,
+      bonus_ebook_urls: productForm.type === 'ebook' ? (productForm.bonus_ebook_urls || []) : [],
+      sales_page_path: productForm.sales_page_path || null
     }
 
     try {
@@ -1180,16 +1292,127 @@ function AdminProducts() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Cover Image URL</label>
-                  <input 
-                    type="url" 
-                    value={productForm.cover_image} 
-                    onChange={e => setProductForm({ ...productForm, cover_image: e.target.value })} 
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
-                    placeholder="https://..."
-                  />
+                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Cover Image</label>
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <input 
+                      type="text" 
+                      value={productForm.cover_image} 
+                      onChange={e => setProductForm({ ...productForm, cover_image: e.target.value })} 
+                      style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
+                      placeholder="https://... or upload"
+                    />
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      id="cover-uploader" 
+                      onChange={handleImageUpload} 
+                      style={{ display: 'none' }} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => document.getElementById('cover-uploader').click()}
+                      disabled={uploadingImage}
+                      style={{ padding: '8px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, cursor: 'pointer', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' }}
+                    >
+                      {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              {/* eBook specific fields */}
+              {productForm.type === 'ebook' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14, borderTop: '1px solid #e2e8f0', paddingTop: 14, marginTop: 4 }}>
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Upload Ebook PDF *</label>
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                      <input 
+                        type="text" 
+                        value={productForm.ebook_url || ''} 
+                        onChange={e => setProductForm({ ...productForm, ebook_url: e.target.value })} 
+                        style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
+                        placeholder="https://... or upload PDF"
+                        required
+                      />
+                      <input 
+                        type="file" 
+                        accept="application/pdf" 
+                        id="ebook-uploader" 
+                        onChange={handleEbookUpload} 
+                        style={{ display: 'none' }} 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => document.getElementById('ebook-uploader').click()}
+                        disabled={uploadingEbook}
+                        style={{ padding: '8px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, cursor: 'pointer', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' }}
+                      >
+                        {uploadingEbook ? 'Uploading...' : 'Upload PDF'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Sales Landing Page Route *</label>
+                    <select
+                      value={productForm.sales_page_path || ''}
+                      onChange={e => setProductForm({ ...productForm, sales_page_path: e.target.value })}
+                      style={{ 
+                        width: '100%', 
+                        padding: '8px 12px', 
+                        borderRadius: 4, 
+                        border: '1px solid #cbd5e1', 
+                        fontSize: 13,
+                        backgroundColor: '#fff',
+                        cursor: 'pointer'
+                      }}
+                      required
+                    >
+                      <option value="">-- Select Sales Page --</option>
+                      {getPages().filter(p => !p.isDynamic).map(p => (
+                        <option key={p.id} value={p.path}>{p.label} ({p.path})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Upload Bonus Ebooks</label>
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
+                      <input 
+                        type="file" 
+                        accept="application/pdf" 
+                        id="bonus-uploader" 
+                        onChange={handleBonusUpload} 
+                        style={{ display: 'none' }} 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => document.getElementById('bonus-uploader').click()}
+                        disabled={uploadingBonus}
+                        style={{ padding: '8px 14px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, cursor: 'pointer', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' }}
+                      >
+                        {uploadingBonus ? 'Uploading...' : '+ Upload Bonus PDF'}
+                      </button>
+                    </div>
+                    {productForm.bonus_ebook_urls && productForm.bonus_ebook_urls.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: '#f8fafc', padding: 10, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        {productForm.bonus_ebook_urls.map((bonus, idx) => (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12.5, color: '#475569' }}>
+                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '80%' }}>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
+                            <button 
+                              type="button" 
+                              onClick={() => handleRemoveBonus(idx)}
+                              style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 12, fontWeight: 500 }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Description</label>

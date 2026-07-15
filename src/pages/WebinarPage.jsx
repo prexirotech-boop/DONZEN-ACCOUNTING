@@ -99,11 +99,21 @@ export default function WebinarPage() {
   useEffect(() => {
     async function loadProduct() {
       try {
-        const { data, error } = await supabase
+        let { data, error } = await supabase
           .from('products')
           .select('*')
-          .eq('slug', 'freelance-web-design-blueprint')
+          .eq('sales_page_path', '/webinar')
           .maybeSingle()
+
+        if (!data) {
+          const res = await supabase
+            .from('products')
+            .select('*')
+            .eq('slug', 'freelance-web-design-blueprint')
+            .maybeSingle()
+          data = res.data
+        }
+
         if (data) {
           setProduct(data)
         }

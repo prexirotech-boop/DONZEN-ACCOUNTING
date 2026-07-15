@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 import Countdown from '../components/Countdown'
 import FaqItem from '../components/FaqItem'
 import ProgressBar from '../components/ProgressBar'
@@ -56,10 +58,49 @@ export default function EbookSalesPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const productId = searchParams.get('product')
+  const [product, setProduct] = useState(null)
+  
   useReveal()
   useToasts()
+
+  useEffect(() => {
+    async function loadProduct() {
+      try {
+        let { data } = await supabase
+          .from('products')
+          .select('*')
+          .eq('sales_page_path', '/ebook')
+          .maybeSingle()
+
+        if (!data) {
+          const res = await supabase
+            .from('products')
+            .select('*')
+            .eq('slug', 'freelance-web-design-blueprint')
+            .maybeSingle()
+          data = res.data
+        }
+
+        if (data) {
+          setProduct(data)
+        }
+      } catch (err) {
+        console.error('Error loading product:', err)
+      }
+    }
+    loadProduct()
+  }, [])
+
+  const price = product?.price || 2500
+  const oldPrice = product?.old_price || 9000
+  const savings = Math.max(0, oldPrice - price)
+  const formattedPrice = `₦${price.toLocaleString()}`
+  const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
+  const formattedSavings = `₦${savings.toLocaleString()}`
+  const discountPercentage = oldPrice > 0 ? Math.round((savings / oldPrice) * 100) : 0
+
   const go = () => { 
-    const target = productId ? `/checkout?product=${productId}` : '/checkout?product=ebook'
+    const target = productId ? `/checkout?product=${productId}` : (product ? `/checkout?product=${product.id}` : '/checkout?product=ebook')
     navigate(target)
     window.scrollTo({ top: 0, behavior: 'smooth' }) 
   }
@@ -68,7 +109,7 @@ export default function EbookSalesPage() {
     <>
       {/* ── URGENCY BAR ─────────────────────────────────────────── */}
       <div className="urg-bar">
-        ⏰ Special Launch Price Ending Soon — Save <span>₦6,500</span> Today Only!
+        ⏰ Special Launch Price Ending Soon — Save <span>{formattedSavings}</span> Today Only!
       </div>
 
       {/* ── HERO ────────────────────────────────────────────────── */}
@@ -135,7 +176,7 @@ export default function EbookSalesPage() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
             <button className="btn-cta" onClick={go}>
               <span>
-                YES! I Want My Blueprint — ₦2,500
+                YES! I Want My Blueprint — {formattedPrice}
                 <span className="sub">Instant Digital Download · Permanent Access</span>
               </span>
               <span className="arrow">→</span>
@@ -265,7 +306,7 @@ export default function EbookSalesPage() {
 
           <div className="reveal t-center" style={{ marginTop: 32, transitionDelay: '.15s' }}>
             <button className="btn-cta" onClick={go} style={{ margin: '0 auto' }}>
-              <span>Get All 15 Chapters Now — ₦2,500<span className="sub">Instant PDF · Lifetime Access</span></span>
+              <span>Get All 15 Chapters Now — {formattedPrice}<span className="sub">Instant PDF · Lifetime Access</span></span>
               <span className="arrow">→</span>
             </button>
           </div>
@@ -304,10 +345,10 @@ export default function EbookSalesPage() {
           {/* Value stack */}
           <div className="reveal" style={{ marginTop: 24, background: 'var(--g900)', borderRadius: 'var(--r-xl)', padding: '28px 24px', textAlign: 'center', transitionDelay: '.15s' }}>
             <p style={{ color: 'rgba(255,255,255,.55)', fontSize: '.88rem', marginBottom: 6 }}>Total Real Value of Everything You Get</p>
-            <p style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--n500)', textDecoration: 'line-through', lineHeight: 1 }}>₦9,000</p>
+            <p style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--n500)', textDecoration: 'line-through', lineHeight: 1 }}>{formattedOldPrice}</p>
             <p style={{ color: 'rgba(255,255,255,.55)', fontSize: '.82rem', marginTop: 6, marginBottom: 4 }}>Your Price Today</p>
-            <p style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1 }}>₦2,500</p>
-            <p style={{ color: 'rgba(255,255,255,.45)', fontSize: '.8rem', marginTop: 8 }}>You save ₦6,500 — 72% off</p>
+            <p style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1 }}>{formattedPrice}</p>
+            <p style={{ color: 'rgba(255,255,255,.45)', fontSize: '.8rem', marginTop: 8 }}>You save {formattedSavings} — {discountPercentage}% off</p>
           </div>
         </div>
       </section>
@@ -443,9 +484,9 @@ export default function EbookSalesPage() {
 
                 {/* Pricing */}
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                  <div className="price-was">Regular Price: ₦9,000</div>
-                  <div className="price-now"><sup>₦</sup>2,500</div>
-                  <div className="price-save">🔥 YOU SAVE ₦6,500 TODAY</div>
+                  <div className="price-was">Regular Price: {formattedOldPrice}</div>
+                  <div className="price-now"><sup>₦</sup>{price.toLocaleString()}</div>
+                  <div className="price-save">🔥 YOU SAVE {formattedSavings} TODAY</div>
                 </div>
 
                 {/* Progress bar */}
@@ -472,7 +513,7 @@ export default function EbookSalesPage() {
                 {/* CTA */}
                 <button className="btn-cta" onClick={go} style={{ maxWidth: '100%', fontSize: '1.1rem', padding: '22px 28px' }}>
                   <span>
-                    🔓 Yes! Get My Blueprint Now — ₦2,500
+                    🔓 Yes! Get My Blueprint Now — {formattedPrice}
                     <span className="sub">Secure Paystack · Instant Lifetime Access</span>
                   </span>
                   <span className="arrow">→</span>
@@ -524,7 +565,7 @@ export default function EbookSalesPage() {
             <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
               <button className="btn-cta" onClick={go} style={{ fontSize: '1.12rem' }}>
                 <span>
-                  🔓 Get My N50K Blueprint — ₦2,500
+                  🔓 Get My N50K Blueprint — {formattedPrice}
                   <span className="sub">Instant Download · Lifetime Access · Secure Payment</span>
                 </span>
                 <span className="arrow">→</span>

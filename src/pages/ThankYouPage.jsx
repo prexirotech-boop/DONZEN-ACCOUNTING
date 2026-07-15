@@ -1,13 +1,28 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { CONFIG } from '../lib/config'
 import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 import UpsellWidget from '../components/UpsellWidget'
 
 export default function ThankYouPage() {
   const { user } = useAuth()
   const customer = JSON.parse(localStorage.getItem('paid_customer') || '{}')
+  const [product, setProduct] = useState(null)
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, [])
+
+  useEffect(() => {
+    async function loadPurchasedProduct() {
+      if (customer?.product_id) {
+        const { data } = await supabase.from('products').select('*').eq('id', customer.product_id).maybeSingle()
+        if (data) setProduct(data)
+      } else {
+        const { data } = await supabase.from('products').select('*').eq('slug', 'freelance-web-design-blueprint').maybeSingle()
+        if (data) setProduct(data)
+      }
+    }
+    loadPurchasedProduct()
+  }, [customer?.product_id])
 
   const first = (customer?.name || 'Champion').split(' ')[0]
 
@@ -48,8 +63,8 @@ export default function ThankYouPage() {
           <div style={{ background: '#fff', borderRadius: 'var(--r-2xl)', padding: 32, textAlign: 'center', boxShadow: 'var(--sh-xl)', border: '2px solid var(--g200)', marginBottom: 20, position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 5, background: 'linear-gradient(90deg, var(--g700), var(--gold), var(--g600))' }} />
             <div style={{ fontSize: '3.5rem', marginBottom: 10 }}>📗</div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: 5 }}>The N50K Blueprint</h2>
-            <p style={{ fontSize: '.88rem', color: 'var(--n500)', marginBottom: 6 }}>Complete 55-Page Guide + All 4 Bonuses</p>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: 5 }}>{product?.title || 'The N50K Blueprint'}</h2>
+            <p style={{ fontSize: '.88rem', color: 'var(--n500)', marginBottom: 6 }}>Complete E-Book Guide + Included Bonuses</p>
             {customer?.email && (
               <p style={{ fontSize: '.82rem', color: 'var(--g600)', fontWeight: 600, background: 'var(--g50)', display: 'inline-block', padding: '4px 14px', borderRadius: 50, marginBottom: 20 }}>
                 📧 {customer?.payment_method === 'bank_transfer' ? 'Updates will be sent to:' : 'Also sent to:'} {customer.email}
@@ -60,12 +75,47 @@ export default function ThankYouPage() {
                 ⏳ Transfer Verification Pending... The download button will become active once your receipt is verified by our admin.
               </div>
             ) : (
-              <a href={CONFIG.PDF_URL} download style={{ display: 'block' }}>
-                <button className="btn-download">
-                  <span>⬇️</span>
-                  <span>Download Your Blueprint Now</span>
-                </button>
-              </a>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <a href={product?.ebook_url || CONFIG.PDF_URL} download target="_blank" rel="noreferrer" style={{ display: 'block' }}>
+                  <button className="btn-download">
+                    <span>⬇️</span>
+                    <span>Download Ebook (PDF)</span>
+                  </button>
+                </a>
+
+                {product?.bonus_ebook_urls && product.bonus_ebook_urls.length > 0 && (
+                  <div style={{ marginTop: 12, borderTop: '1px solid #e2e8f0', paddingTop: 14, textAlign: 'left' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--g800)', textTransform: 'uppercase', display: 'block', marginBottom: 10 }}>🎁 Your Included Bonuses:</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {product.bonus_ebook_urls.map((bonus, idx) => (
+                        <a 
+                          key={idx} 
+                          href={bonus.url} 
+                          download 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '10px 14px',
+                            background: '#eff6ff',
+                            borderRadius: '8px',
+                            border: '1px solid #bfdbfe',
+                            color: '#2563eb',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            fontSize: '13px'
+                          }}
+                        >
+                          <span>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
+                          <span style={{ fontSize: '11px', background: '#2563eb', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>Download</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 

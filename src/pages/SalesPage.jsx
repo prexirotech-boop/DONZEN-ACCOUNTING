@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase'
 import Countdown from '../components/Countdown'
 import FaqItem from '../components/FaqItem'
 import ProgressBar from '../components/ProgressBar'
@@ -26,10 +28,46 @@ export default function SalesPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const productId = searchParams.get('product')
+  const [product, setProduct] = useState(null)
+  
   useReveal()
   useToasts()
+
+  useEffect(() => {
+    async function loadProduct() {
+      try {
+        let { data } = await supabase
+          .from('products')
+          .select('*')
+          .eq('sales_page_path', '/course')
+          .maybeSingle()
+
+        if (!data) {
+          const res = await supabase
+            .from('products')
+            .select('*')
+            .eq('type', 'course')
+            .maybeSingle()
+          data = res.data
+        }
+
+        if (data) {
+          setProduct(data)
+        }
+      } catch (err) {
+        console.error('Error loading product:', err)
+      }
+    }
+    loadProduct()
+  }, [])
+
+  const price = product?.price || CONFIG.PRICE_NAIRA || 10000
+  const oldPrice = product?.old_price || 50000
+  const formattedPrice = `₦${price.toLocaleString()}`
+  const formattedOldPrice = `₦${oldPrice.toLocaleString()}`
+
   const go = () => { 
-    const target = productId ? `/checkout?product=${productId}` : '/checkout'
+    const target = productId ? `/checkout?product=${productId}` : (product ? `/checkout?product=${product.id}` : '/checkout')
     navigate(target)
     window.scrollTo({ top: 0, behavior: 'smooth' }) 
   }
@@ -39,7 +77,7 @@ export default function SalesPage() {
       
       {/* ── URGENCY BAR ─────────────────────────────────────────── */}
       <div style={{ background: 'var(--red)', color: '#fff', textAlign: 'center', padding: '10px 15px', fontSize: '.85rem', fontWeight: 700, position: 'sticky', top: 0, zIndex: 100, letterSpacing: '.5px' }}>
-        🚨 WARNING: ONLY 37 SPOTS LEFT AT {CONFIG.PRICE_DISPLAY} (PRICE INCREASES TO {CONFIG.ORIGINAL_PRICE} SOON)
+        🚨 WARNING: ONLY 37 SPOTS LEFT AT {formattedPrice} (PRICE INCREASES TO {formattedOldPrice} SOON)
       </div>
 
       {/* ── HERO ────────────────────────────────────────────────── */}
@@ -338,8 +376,8 @@ export default function SalesPage() {
           <div style={{ maxWidth: 600, margin: '0 auto', background: 'linear-gradient(180deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,1) 100%)', border: '2px solid var(--gold)', borderRadius: 24, padding: 40, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 20, right: -40, background: 'var(--red)', color: '#fff', padding: '5px 40px', transform: 'rotate(45deg)', fontWeight: 800, fontSize: '.8rem', letterSpacing: 1 }}>90% OFF</div>
             
-            <p style={{ color: '#ccc', textDecoration: 'line-through', fontSize: '1.2rem', marginBottom: 8 }}>Regular Price: {CONFIG.ORIGINAL_PRICE}</p>
-            <div style={{ fontSize: '4.5rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1, marginBottom: 24 }}>{CONFIG.PRICE_DISPLAY}</div>
+            <p style={{ color: '#ccc', textDecoration: 'line-through', fontSize: '1.2rem', marginBottom: 8 }}>Regular Price: {formattedOldPrice}</p>
+            <div style={{ fontSize: '4.5rem', fontWeight: 900, color: 'var(--gold)', lineHeight: 1, marginBottom: 24 }}>{formattedPrice}</div>
             
             <p style={{ fontSize: '1.1rem', color: '#fff', marginBottom: 30, lineHeight: 1.6 }}>
               <strong>"Why So Low?"</strong><br/>
