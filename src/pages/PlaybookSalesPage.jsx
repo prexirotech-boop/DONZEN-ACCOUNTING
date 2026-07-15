@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { useToasts } from '../hooks/useToasts'
 
 export default function PlaybookSalesPage() {
   const navigate = useNavigate()
@@ -10,9 +9,6 @@ export default function PlaybookSalesPage() {
   const [openFaq, setOpenFaq] = useState(null)
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [activeNotification, setActiveNotification] = useState(null)
-
-  // Call useToasts hook to trigger periodic customer purchase toasts
-  useToasts()
 
   // Load product data dynamically from Supabase database
   useEffect(() => {
@@ -59,7 +55,7 @@ export default function PlaybookSalesPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Live Sales Notification Popup Logic
+  // Live Sales Notification Popup Logic matching WebinarPage
   useEffect(() => {
     const names = [
       'Tobi from Lagos', 'Chidi from Port Harcourt', 'Halima from Abuja', 
@@ -78,36 +74,40 @@ export default function PlaybookSalesPage() {
       '1 minute ago', '7 minutes ago', '10 minutes ago', '20 minutes ago'
     ]
 
-    const interval = setInterval(() => {
+    const triggerNotification = () => {
       const randomName = names[Math.floor(Math.random() * names.length)]
       const randomProduct = products[Math.floor(Math.random() * products.length)]
       const randomTime = times[Math.floor(Math.random() * times.length)]
       
       setActiveNotification({
-        name: randomName,
+        name: randomName.split(' secured ')[0].split(' just ')[0],
         action: randomProduct,
         time: randomTime
       })
 
+      // Hide after 5 seconds matching WebinarPage setTimeout
       const hideTimer = setTimeout(() => {
         setActiveNotification(null)
-      }, 6000)
+      }, 5000)
 
       return () => clearTimeout(hideTimer)
-    }, 18000) // Show every 18 seconds
+    }
 
-    // Initial popup trigger
+    // Trigger initial notification after 4 seconds
     const initialTimer = setTimeout(() => {
       setActiveNotification({
-        name: 'Tobi from Lagos',
+        name: 'Tobi',
         action: 'purchased the Playbook + Bonuses',
         time: 'Just now'
       })
       const hideTimer = setTimeout(() => {
         setActiveNotification(null)
-      }, 6000)
+      }, 5000)
       return () => clearTimeout(hideTimer)
     }, 4000)
+
+    // Repeat every 18 seconds matching WebinarPage setInterval
+    const interval = setInterval(triggerNotification, 18000)
 
     return () => {
       clearInterval(interval)
@@ -136,7 +136,7 @@ export default function PlaybookSalesPage() {
 
   return (
     <div style={{ backgroundColor: '#FBF8F2', color: '#262220', fontFamily: "'Lora', serif", fontSize: '17px', lineHeight: 1.65 }}>
-      {/* Page specific inline CSS stylings */}
+      {/* Page specific inline CSS stylings with forced font overrides to override global.css */}
       <style dangerouslySetInnerHTML={{ __html: `
         :root {
           --dark: #171512; --dark2: #1B2E29; --dark3: #12100D;
@@ -148,9 +148,17 @@ export default function PlaybookSalesPage() {
           --maxw: 1120px;
         }
         * { box-sizing: border-box; }
-        h1, h2, h3, h4, .disp { font-family: 'Poppins', sans-serif; }
+        
+        /* Font Family overrides to force correct custom typography matching the replicated design */
+        body, p, li, .sub, .lead, .pull, .role, .rdesc, .fa p {
+          font-family: 'Lora', serif !important;
+        }
+        h1, h2, h3, h4, .disp, .eyebrow, .btn, .navlinks, .nav-cta, .logo, .chnum, .tname, .trole, .rtitle, .rsub, .rval, .rtorig, .rtval, .rtlabel, .rfoot, .fq, .urgency, .stickybar, .gbadge, .toast-title, .toast-body {
+          font-family: 'Poppins', sans-serif !important;
+        }
+
         .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
-        .eyebrow { font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-deep); }
+        .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-deep); }
         .eyebrow.on-dark { color: var(--gold-light); }
         .section { padding: 90px 0; }
         .section.tight { padding: 70px 0; }
@@ -159,7 +167,7 @@ export default function PlaybookSalesPage() {
         p.lead { font-size: 19px; color: var(--ink-soft); }
         .center { text-align: center; }
         .btn {
-          display: inline-flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; font-weight: 700;
+          display: inline-flex; align-items: center; gap: 10px; font-weight: 700;
           font-size: 16px; letter-spacing: 0.2px; padding: 18px 34px; border-radius: 8px; text-decoration: none;
           border: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
         }
@@ -169,7 +177,7 @@ export default function PlaybookSalesPage() {
         .btn-primary .arrow { transition: transform .15s ease; }
         .btn-primary:hover .arrow { transform: translateX(3px); }
         .btn-ghost { background: transparent; border: 1.5px solid rgba(244,239,228,0.4); color: var(--cream); }
-        .microtrust { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+        .microtrust { font-size: 12.5px; color: var(--ink-soft); margin-top: 14px; display: flex; gap: 8px; align-items: center; justify-content: center; }
 
         /* ---------- NAV ---------- */
         header.nav {
@@ -177,12 +185,12 @@ export default function PlaybookSalesPage() {
           border-bottom: 1px solid var(--hair);
         }
         .navrow { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; max-width: var(--maxw); margin: 0 auto; }
-        .logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: 0.5px; color: var(--dark); }
+        .logo { font-weight: 800; font-size: 15px; letter-spacing: 0.5px; color: var(--dark); }
         .logo span { color: var(--gold-deep); }
-        .navlinks { display: flex; gap: 28px; font-family: 'Poppins', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
+        .navlinks { display: flex; gap: 28px; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
         .navlinks a { text-decoration: none; }
         .navlinks a:hover { color: var(--gold-deep); }
-        .nav-cta { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; background: var(--dark); color: var(--cream); padding: 10px 20px; border-radius: 7px; text-decoration: none; white-space: nowrap; }
+        .nav-cta { font-weight: 700; font-size: 13px; background: var(--dark); color: var(--cream); padding: 10px 20px; border-radius: 7px; text-decoration: none; white-space: nowrap; }
         @media(max-width:780px) { .navlinks { display: none; } }
 
         /* ---------- HERO ---------- */
@@ -192,7 +200,7 @@ export default function PlaybookSalesPage() {
         .hero h1 { font-size: 46px; font-weight: 800; line-height: 1.12; margin: 16px 0 20px; color: var(--cream); }
         .hero h1 em { font-style: normal; color: var(--gold-light); }
         @media(max-width:640px) { .hero h1 { font-size: 32px; } }
-        .hero .sub { font-family: 'Lora', serif; font-size: 18px; color: #D8CBAE; max-width: 520px; margin-bottom: 30px; line-height: 1.6; }
+        .hero .sub { font-size: 18px; color: #D8CBAE; max-width: 520px; margin-bottom: 30px; line-height: 1.6; }
         .hero-ctarow { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
 
         /* ---------- HOOK ---------- */
@@ -205,7 +213,7 @@ export default function PlaybookSalesPage() {
         .agitate { background: var(--teal-deep); color: var(--teal-pale); }
         .agitate .wrap { max-width: 720px; }
         .agitate p { font-size: 18.5px; margin-bottom: 18px; color: #DCEAE5; }
-        .agitate .pull { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 23px; color: var(--cream); line-height: 1.4; border-left: 3px solid var(--gold-light); padding-left: 22px; margin: 32px 0; }
+        .agitate .pull { font-weight: 600; font-size: 23px; color: var(--cream); line-height: 1.4; border-left: 3px solid var(--gold-light); padding-left: 22px; margin: 32px 0; }
 
         /* ---------- PROBLEM ---------- */
         .problem .wrap { max-width: 720px; }
@@ -240,7 +248,7 @@ export default function PlaybookSalesPage() {
         .chgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: rgba(244,239,228,0.12); border-radius: 14px; overflow: hidden; }
         @media(max-width:760px) { .chgrid { grid-template-columns: 1fr; } }
         .chitem { background: var(--dark3); padding: 26px 28px; display: flex; gap: 18px; }
-        .chnum { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 26px; color: var(--gold-light); opacity: 0.55; flex-shrink: 0; width: 36px; }
+        .chnum { font-weight: 800; font-size: 26px; color: var(--gold-light); opacity: 0.55; flex-shrink: 0; width: 36px; }
         .chitem h4 { font-size: 15.5px; margin: 0 0 6px; color: var(--cream); }
         .chitem p { font-size: 13.5px; color: #A79C82; margin: 0; line-height: 1.55; }
 
@@ -248,9 +256,9 @@ export default function PlaybookSalesPage() {
         .author { padding: 90px 0; background: var(--cream); }
         .author .wrap { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
         @media(max-width:640px) { .author .wrap { grid-template-columns: 1fr; text-align: center; } .author .wrap .avatar { margin: 0 auto; } }
-        .avatar { width: 170px; height: 170px; border-radius: 50%; background: linear-gradient(155deg,var(--teal) 0%, var(--teal-deep) 100%); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 52px; color: var(--gold-light); flex-shrink: 0; }
+        .avatar { width: 170px; height: 170px; border-radius: 50%; background: linear-gradient(155deg,var(--teal) 0%, var(--teal-deep) 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 52px; color: var(--gold-light); flex-shrink: 0; }
         .author h3 { font-size: 22px; margin: 0 0 4px; color: var(--dark); }
-        .author .role { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--gold-deep); font-weight: 700; margin-bottom: 16px; }
+        .author .role { font-size: 13px; color: var(--gold-deep); font-weight: 700; margin-bottom: 16px; }
         .author p { color: var(--ink-soft); font-size: 16px; margin-bottom: 14px; }
 
         /* ---------- SOCIAL PROOF ---------- */
@@ -261,8 +269,8 @@ export default function PlaybookSalesPage() {
         .tcard { background: var(--cream); border-radius: 12px; padding: 26px 24px; border: 1px solid var(--hair); }
         .tcard .stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; letter-spacing: 2px; }
         .tcard p { font-size: 14.5px; color: var(--ink-soft); font-style: italic; margin-bottom: 16px; }
-        .tcard .tname { font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--dark); }
-        .tcard .trole { font-family: 'Poppins', sans-serif; font-size: 11px; color: #8A8272; }
+        .tcard .tname { font-size: 12.5px; font-weight: 700; color: var(--dark); }
+        .tcard .trole { font-size: 11px; color: #8A8272; }
 
         /* ---------- OFFER (receipt style) ---------- */
         .offer { background: linear-gradient(155deg, var(--dark3) 0%, var(--dark2) 100%); color: var(--cream); }
@@ -272,36 +280,36 @@ export default function PlaybookSalesPage() {
             linear-gradient(135deg, transparent 50%, var(--cream) 50%) 0 0 / 16px 16px repeat-x; }
         .receipt:before { top: -13px; transform: rotate(180deg); }
         .receipt:after { bottom: -13px; }
-        .receipt .rtitle { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; text-align: center; color: var(--dark); margin-bottom: 4px; }
-        .receipt .rsub { text-align: center; font-family: 'Poppins', sans-serif; font-size: 11px; color: #9A917C; margin-bottom: 20px; letter-spacing: 0.5px; }
+        .receipt .rtitle { font-weight: 800; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; text-align: center; color: var(--dark); margin-bottom: 4px; }
+        .receipt .rsub { text-align: center; font-size: 11px; color: #9A917C; margin-bottom: 20px; letter-spacing: 0.5px; }
         .rline { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--hair); font-size: 14.5px; }
         .rline .rname { color: var(--ink); font-weight: 500; }
-        .rline .rdesc { display: block; font-size: 12px; color: #9A917C; font-family: 'Lora', serif; font-style: italic; margin-top: 2px; }
-        .rline .rval { font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+        .rline .rdesc { display: block; font-size: 12px; color: #9A917C; font-style: italic; margin-top: 2px; }
+        .rline .rval { font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
         .rline.strike .rval { text-decoration: line-through; color: #B0A78F; }
         .rtotal { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; margin-top: 6px; }
-        .rtotal .rtlabel { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px; color: var(--dark); }
-        .rtotal .rtval { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 32px; color: var(--gold-deep); }
-        .rtotal .rtorig { font-size: 14px; color: #B0A78F; text-decoration: line-through; margin-right: 8px; font-family: 'Poppins', sans-serif; }
+        .rtotal .rtlabel { font-weight: 700; font-size: 14px; color: var(--dark); }
+        .rtotal .rtval { font-weight: 800; font-size: 32px; color: var(--gold-deep); }
+        .rtotal .rtorig { font-size: 14px; color: #B0A78F; text-decoration: line-through; margin-right: 8px; }
         .receipt .rbtn { display: block; text-align: center; margin-top: 22px; }
         .receipt .rbtn .btn { width: 100%; justify-content: center; }
-        .receipt .rfoot { text-align: center; font-size: 11px; color: #9A917C; margin-top: 14px; font-family: 'Poppins', sans-serif; }
+        .receipt .rfoot { text-align: center; font-size: 11px; color: #9A917C; margin-top: 14px; }
 
         /* ---------- GUARANTEE ---------- */
         .guarantee .wrap { display: flex; gap: 30px; align-items: center; max-width: 780px; }
         @media(max-width:640px) { .guarantee .wrap { flex-direction: column; text-align: center; } }
-        .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Poppins', sans-serif; font-weight: 800; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.3; padding: 10px; }
+        .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.3; padding: 10px; }
         .guarantee h3 { margin: 0 0 10px; font-size: 21px; color: var(--dark); }
         .guarantee p { color: var(--ink-soft); font-size: 15.5px; margin: 0; }
 
         /* ---------- URGENCY ---------- */
-        .urgency { background: var(--rust); color: #FBEDE8; text-align: center; padding: 18px 20px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14.5px; }
+        .urgency { background: var(--rust); color: #FBEDE8; text-align: center; padding: 18px 20px; font-weight: 600; font-size: 14.5px; }
         .urgency b { color: #fff; }
 
         /* ---------- FAQ ---------- */
         .faq .wrap { max-width: 760px; }
         .fitem { border-bottom: 1px solid var(--hair); }
-        .fq { width: 100%; text-align: left; background: none; border: none; padding: 22px 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; color: var(--dark); display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 20px; }
+        .fq { width: 100%; text-align: left; background: none; border: none; padding: 22px 0; font-weight: 600; font-size: 16px; color: var(--dark); display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 20px; }
         .fq .plus { font-size: 20px; color: var(--gold-deep); transition: transform .2s ease; flex-shrink: 0; }
         .fitem.open .fq .plus { transform: rotate(45deg); }
         .fa { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
@@ -319,21 +327,74 @@ export default function PlaybookSalesPage() {
         .ps .wrap { max-width: 700px; }
         .ps p { font-size: 14.5px; color: var(--ink-soft); margin-bottom: 12px; }
         .ps b { color: var(--dark); }
-        footer { background: var(--dark3); color: #8A8272; text-align: center; padding: 36px 20px; font-family: 'Poppins', sans-serif; font-size: 12.5px; }
+        footer { background: var(--dark3); color: #8A8272; text-align: center; padding: 36px 20px; font-size: 12.5px; }
         footer a { color: var(--gold-light); text-decoration: none; }
 
         /* ---------- STICKY MOBILE BAR ---------- */
         .stickybar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: var(--dark3); border-top: 1px solid rgba(244,239,228,0.15); padding: 12px 18px; display: none; align-items: center; justify-content: space-between; gap: 14px; transform: translateY(100%); transition: transform .3s ease; }
         .stickybar.show { transform: translateY(0); }
-        .stickybar .sprice { font-family: 'Poppins', sans-serif; color: var(--cream); font-size: 14px; }
+        .stickybar .sprice { color: var(--cream); font-size: 14px; }
         .stickybar .sprice b { color: var(--gold-light); font-size: 17px; }
         .stickybar .btn { padding: 12px 22px; font-size: 14px; }
         @media(max-width:780px) { .stickybar { display: flex; } }
 
-        /* Slide-up keyframe animation for sales notifications */
-        @keyframes slideUp {
-          from { transform: translateY(100px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+        /* ---------- WEBINAR PAGE SALES TOAST DESIGN ---------- */
+        .wb-sales-toast {
+          position: fixed;
+          bottom: 84px; /* so it stays above the mobile sticky cta bar */
+          left: 24px;
+          background: #0b1329 !important;
+          border: 1px solid #1e3a8a !important;
+          border-radius: 12px !important;
+          padding: 16px 20px !important;
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5) !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 16px !important;
+          z-index: 10000 !important;
+          max-width: 360px !important;
+          backdrop-filter: blur(8px) !important;
+          animation: toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .toast-border-accent {
+          width: 4px !important;
+          height: 36px !important;
+          background: var(--gold) !important;
+          border-radius: 4px !important;
+          flex-shrink: 0 !important;
+        }
+        .toast-content {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 4px !important;
+        }
+        .toast-title {
+          margin: 0 !important;
+          font-size: 10.5px !important;
+          font-weight: 900 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.8px !important;
+          color: var(--gold) !important;
+        }
+        .toast-body {
+          margin: 0 !important;
+          font-size: 13px !important;
+          color: #ffffff !important;
+          font-weight: 500 !important;
+          line-height: 1.4 !important;
+        }
+        .toast-course-image {
+          width: 45px !important;
+          height: 45px !important;
+          border-radius: 6px !important;
+          object-fit: cover !important;
+          flex-shrink: 0 !important;
+          align-self: center !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        @keyframes toastSlideIn {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       ` }} />
 
@@ -452,15 +513,15 @@ export default function PlaybookSalesPage() {
           </div>
           <div className="chgrid">
             <div className="chitem"><div className="chnum">01</div><div><h4>The Psychology of Price</h4><p>Why people don't buy what things cost — they buy what they believe things are worth.</p></div></div>
-            <div className="chitem"><div class="chnum">02</div><div><h4>Value-Based Pricing</h4><p>The three-part formula for finding your real number, and why hourly rates cap your income.</p></div></div>
-            <div className="chitem"><div class="chnum">03</div><div><h4>Position Before You Price</h4><p>How to become the obvious choice — so clients stop shopping you against the lowest bidder.</p></div></div>
-            <div className="chitem"><div class="chnum">04</div><div><h4>Decoding "Too Expensive"</h4><p>The five real meanings behind the objection, and how to respond to each one.</p></div></div>
-            <div className="chitem"><div class="chnum">05</div><div><h4>The Discovery Call Framework</h4><p>A five-step structure that gets the objection handled before it ever forms.</p></div></div>
-            <div className="chitem"><div class="chnum">06</div><div><h4>Negotiation Tactics</h4><p>How to hold your price under pressure — without losing the client or your margin.</p></div></div>
-            <div className="chitem"><div class="chnum">07</div><div><h4>Packaging &amp; Tiering</h4><p>Good, better, best — and why the middle option does most of the selling for you.</p></div></div>
-            <div className="chitem"><div class="chnum">08</div><div><h4>Raising Your Prices</h4><p>The script for increasing your rate on existing clients without the dreaded conversation.</p></div></div>
-            <div className="chitem"><div class="chnum">09</div><div><h4>Ten Pricing Mistakes</h4><p>The quiet habits costing you income — and the fix for each one.</p></div></div>
-            <div className="chitem"><div class="chnum">10</div><div><h4>Scripts &amp; Templates Vault</h4><p>Copy-paste discovery questions, objection responses, and price-increase emails.</p></div></div>
+            <div className="chitem"><div className="chnum">02</div><div><h4>Value-Based Pricing</h4><p>The three-part formula for finding your real number, and why hourly rates cap your income.</p></div></div>
+            <div className="chitem"><div className="chnum">03</div><div><h4>Position Before You Price</h4><p>How to become the obvious choice — so clients stop shopping you against the lowest bidder.</p></div></div>
+            <div className="chitem"><div className="chnum">04</div><div><h4>Decoding "Too Expensive"</h4><p>The five real meanings behind the objection, and how to respond to each one.</p></div></div>
+            <div className="chitem"><div className="chnum">05</div><div><h4>The Discovery Call Framework</h4><p>A five-step structure that gets the objection handled before it ever forms.</p></div></div>
+            <div className="chitem"><div className="chnum">06</div><div><h4>Negotiation Tactics</h4><p>How to hold your price under pressure — without losing the client or your margin.</p></div></div>
+            <div className="chitem"><div className="chnum">07</div><div><h4>Packaging &amp; Tiering</h4><p>Good, better, best — and why the middle option does most of the selling for you.</p></div></div>
+            <div className="chitem"><div className="chnum">08</div><div><h4>Raising Your Prices</h4><p>The script for increasing your rate on existing clients without the dreaded conversation.</p></div></div>
+            <div className="chitem"><div className="chnum">09</div><div><h4>Ten Pricing Mistakes</h4><p>The quiet habits costing you income — and the fix for each one.</p></div></div>
+            <div className="chitem"><div className="chnum">10</div><div><h4>Scripts &amp; Templates Vault</h4><p>Copy-paste discovery questions, objection responses, and price-increase emails.</p></div></div>
             <div className="chitem" style={{ gridColumn: '1 / -1' }}><div className="chnum">11</div><div><h4>The 7-Day Pricing Reset</h4><p>A day-by-day action plan to put the whole book to work this week.</p></div></div>
           </div>
         </div>
@@ -493,8 +554,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "I was quoting ₦150k for web design projects. After reading the Value Anchoring chapter, I quoted ₦450k to my next lead. I got a YES without them even flinching. Best money I ever spent!"
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Tobi A.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Web Designer, Lagos</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Tobi A.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>Web Designer, Lagos</div>
             </div>
 
             <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
@@ -502,8 +563,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "The objection scripts are absolute gold. A client asked for a 30% discount last week. I used the script on Chapter 4, and they signed the full price proposal within 10 minutes."
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Chidi K.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Brand Consultant, Port Harcourt</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Chidi K.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>Brand Consultant, Port Harcourt</div>
             </div>
 
             <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
@@ -511,8 +572,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "I've read a lot of business books, but this is the first one that tells you exactly what to say. No fluff, just direct templates that work."
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Halima S.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Content Strategy, Abuja</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Halima S.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>Content Strategy, Abuja</div>
             </div>
 
             <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
@@ -520,8 +581,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "Before the playbook, I was pricing by the hour and capped my income. Changing to value packaging allowed me to close a ₦1.2m project last week."
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Emeka O.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Software Developer, Enugu</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Emeka O.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>Software Developer, Enugu</div>
             </div>
 
             <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
@@ -529,8 +590,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "The Discovery Call Framework completely changed how I qualify leads. I no longer waste hours writing proposals for clients who can't afford me."
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Aminat Y.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>Copywriter, Ibadan</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Aminat Y.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>Copywriter, Ibadan</div>
             </div>
 
             <div className="tcard" style={{ background: 'var(--cream)', borderRadius: '12px', padding: '26px 24px', border: '1px solid var(--hair)' }}>
@@ -538,8 +599,8 @@ export default function PlaybookSalesPage() {
               <p style={{ fontSize: '14.5px', color: 'var(--ink-soft)', fontStyle: 'italic', marginBottom: '16px' }}>
                 "The three-tier proposal structure is a game changer. I presented three options to a local tech company, and they immediately upgraded to the middle option."
               </p>
-              <div className="tname" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Kelechi J.</div>
-              <div className="trole" style={{ fontFamily: "'Poppins', sans-serif", fontSize: '11px', color: '#8A8272' }}>UI/UX Designer, Lagos</div>
+              <div className="tname" style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--dark)' }}>Kelechi J.</div>
+              <div className="trole" style={{ fontSize: '11px', color: '#8A8272' }}>UI/UX Designer, Lagos</div>
             </div>
           </div>
         </div>
@@ -613,9 +674,9 @@ export default function PlaybookSalesPage() {
       {/* GUARANTEE */}
       <section className="section tight guarantee">
         <div className="wrap">
-          <div className="gbadge">DIGITAL<br />ACCESS</div>
+          <div className="gbadge">30 DAY<br />GUARANTEE</div>
           <div>
-            <h3>Our Digital Satisfaction Guarantee</h3>
+            <h3>Read it. Use one script on your next quote.</h3>
             <p>Since this is a digital eBook product, you get immediate download access right after payment. We stand behind the value of this playbook. Read it, apply the scripts to your next proposal, and if you don't feel it gives you the tools to command higher fees and win better clients, send us a message within 14 days and we will gladly refund your payment under our digital satisfaction guarantee.</p>
           </div>
         </div>
@@ -719,37 +780,20 @@ export default function PlaybookSalesPage() {
         <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get Access →</button>
       </div>
 
-      {/* Live Sales Notification Widget */}
+      {/* Live Sales Notification Widget matching WebinarPage style exactly */}
       {activeNotification && (
-        <div style={{
-          position: 'fixed',
-          bottom: '84px', // fits above mobile sticky bar
-          left: '20px',
-          zIndex: 9999,
-          background: '#1B2E29', // dark teal matching color scheme
-          color: '#FBF8F2', // cream text
-          padding: '12px 18px',
-          borderRadius: '8px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          borderLeft: '4px solid #D8B463', // gold accent border
-          fontFamily: "'Poppins', sans-serif",
-          fontSize: '12.5px',
-          animation: 'slideUp 0.5s ease-out'
-        }}>
-          <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            background: '#10b981', // pulsing green dot
-            boxShadow: '0 0 8px #10b981'
-          }} />
-          <div>
-            <span style={{ fontWeight: 700, color: '#D8B463' }}>{activeNotification.name}</span>{' '}
-            <span>{activeNotification.action}</span>
-            <div style={{ fontSize: '10px', color: '#A79C82', marginTop: '2px' }}>{activeNotification.time}</div>
+        <div className="wb-sales-toast">
+          <div className="toast-border-accent"></div>
+          <img 
+            src="/playbook_cover_flat.png" 
+            alt="The Pricing &amp; Negotiation Playbook" 
+            className="toast-course-image"
+          />
+          <div className="toast-content">
+            <p className="toast-title">VERIFIED PAYMENT</p>
+            <p className="toast-body">
+              <strong>{activeNotification.name}</strong> just purchased <strong>The Pricing &amp; Negotiation Playbook</strong>!
+            </p>
           </div>
         </div>
       )}
