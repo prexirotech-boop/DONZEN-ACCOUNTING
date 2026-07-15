@@ -21,23 +21,23 @@ export default function PlaybookSalesPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // Evergreen countdown timer (15 minutes)
+  // Evergreen countdown timer (2 hours)
   const [timeLeft, setTimeLeft] = useState(() => {
     const saved = localStorage.getItem('playbook_timer')
     if (saved) {
       const remaining = parseInt(saved) - Date.now()
       if (remaining > 0) return Math.floor(remaining / 1000)
     }
-    const expiry = Date.now() + 15 * 60 * 1000
+    const expiry = Date.now() + 2 * 60 * 60 * 1000
     localStorage.setItem('playbook_timer', expiry.toString())
-    return 15 * 60
+    return 2 * 60 * 60
   })
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      const expiry = Date.now() + 15 * 60 * 1000
+      const expiry = Date.now() + 2 * 60 * 60 * 1000
       localStorage.setItem('playbook_timer', expiry.toString())
-      setTimeLeft(15 * 60)
+      setTimeLeft(2 * 60 * 60)
       return
     }
     const timer = setTimeout(() => {
@@ -47,9 +47,10 @@ export default function PlaybookSalesPage() {
   }, [timeLeft])
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
+    const hrs = Math.floor(seconds / 3600)
+    const mins = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
   // Load product data dynamically from Supabase database
@@ -199,6 +200,7 @@ export default function PlaybookSalesPage() {
         .playbook-page-root .rdesc, 
         .playbook-page-root .fa p {
           font-family: 'Lora', serif !important;
+          touch-action: manipulation !important;
         }
         .playbook-page-root h1, 
         .playbook-page-root h2, 
