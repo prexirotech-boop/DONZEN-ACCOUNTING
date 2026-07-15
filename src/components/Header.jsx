@@ -119,7 +119,7 @@ export default function Header() {
   return (
     <>
       <header className="global-header">
-        <Link to={user ? "/dashboard" : "/"} className="brand-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        <Link to="/" className="brand-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <img src="/logo.png" alt="Amplified Skills" style={{ height: 52, width: 'auto', maxWidth: 220, objectFit: 'contain', objectPosition: 'left center', display: 'block', flexShrink: 0 }} />
         </Link>
 

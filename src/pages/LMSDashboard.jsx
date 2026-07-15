@@ -31,40 +31,19 @@ export function getShortDesc(product) {
 
 function MyLearningTab({ user }) {
   const [enrollments, setEnrollments] = useState([])
-  const [ebooks, setEbooks] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchLearningData() {
       if (!user) return
       try {
-        // 1. Fetch course enrollments
+        // Fetch course enrollments
         const { data: enrData, error: enrError } = await supabase
           .from('enrollments')
           .select('course_id, progress')
           .eq('user_id', user.id)
 
         if (enrError) throw enrError
-
-        // 2. Fetch paid orders to scan for ebooks
-        const { data: ordersData } = await supabase
-          .from('orders')
-          .select(`
-            id, product_id, reference, status,
-            products ( id, title, type, cover_image, ebook_url, bonus_ebook_urls )
-          `)
-          .eq('customer_email', user.email)
-          .eq('status', 'paid')
-
-        const ebookMap = {}
-        if (ordersData) {
-          ordersData.forEach(o => {
-            if (o.products && o.products.type === 'ebook') {
-              ebookMap[o.products.id] = o.products
-            }
-          })
-        }
-        setEbooks(Object.values(ebookMap))
 
         const courseIds = (enrData || []).map(e => e.course_id).filter(Boolean)
 
@@ -136,15 +115,15 @@ function MyLearningTab({ user }) {
     return <div style={{ padding: '40px 0', color: '#64748b', fontWeight: 600 }}>Loading courses...</div>
   }
 
-  if (enrollments.length === 0 && ebooks.length === 0) {
+  if (enrollments.length === 0) {
     return (
       <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
         <svg style={{ width: 64, height: 64, color: '#64748b', margin: '0 auto 20px', display: 'block' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No Products Found</h2>
-        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't purchased any items yet. Start learning today!</p>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No Courses Found</h2>
+        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't enrolled in any training programs yet. Start learning today!</p>
         <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse Products</Link>
       </div>
     )
@@ -152,117 +131,166 @@ function MyLearningTab({ user }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
-      {/* Courses Section */}
-      {enrollments.length > 0 && (
-        <div>
-          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My Courses</h3>
-          <div className="ud-course-grid">
-            {enrollments.map((enr) => {
-              const course = enr.courses
-              const product = course?.products
-              if (!product) return null
+      <div>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My Courses</h3>
+        <div className="ud-course-grid">
+          {enrollments.map((enr) => {
+            const course = enr.courses
+            const product = course?.products
+            if (!product) return null
 
-              const progressArr = enr.progress || []
-              const total = enr.totalLessons || 1
-              const percentComplete = Math.min(100, Math.round((progressArr.length / total) * 100))
-              const nextLessonLink = `/course/${course.id}`
+            const progressArr = enr.progress || []
+            const total = enr.totalLessons || 1
+            const percentComplete = Math.min(100, Math.round((progressArr.length / total) * 100))
+            const nextLessonLink = `/course/${course.id}`
 
-              return (
-                <div key={course.id} className="ud-course-card">
-                  <div className="ud-course-card-img">
-                    <img src={product.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={product.title.replace(/\s+slug$/i, '')} />
-                    <div className="ud-card-overlay">
-                      <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
-                    </div>
-                  </div>
-                  <div className="ud-course-card-body">
-                    <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
-                    <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
-                    
-                    <div className="ud-progress-container">
-                      <div className="ud-progress-bar-bg">
-                        <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
-                      </div>
-                      <div className="ud-progress-info">
-                        <span className="ud-progress-text">{percentComplete}% complete</span>
-                        <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
-                      </div>
-                    </div>
-                    
-                    <Link to={nextLessonLink} className="ud-card-btn">
-                      {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
-                    </Link>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* eBooks Section */}
-      {ebooks.length > 0 && (
-        <div>
-          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My eBooks & Blueprints</h3>
-          <div className="ud-course-grid">
-            {ebooks.map((ebook) => (
-              <div key={ebook.id} className="ud-course-card" style={{ display: 'flex', flexDirection: 'column' }}>
+            return (
+              <div key={course.id} className="ud-course-card">
                 <div className="ud-course-card-img">
-                  <img src={ebook.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={ebook.title.replace(/\s+slug$/i, '')} />
-                  <div className="ud-card-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '2.5rem' }}>📗</span>
+                  <img src={product.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={product.title.replace(/\s+slug$/i, '')} />
+                  <div className="ud-card-overlay">
+                    <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
                   </div>
                 </div>
-                <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <h3 className="ud-course-card-title">{ebook.title.replace(/\s+slug$/i, '')}</h3>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: 10, display: 'inline-block' }}>eBook Product</span>
+                <div className="ud-course-card-body">
+                  <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
+                  <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
                   
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
-                    {ebook.ebook_url ? (
-                      <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', background: '#10b981', textAlign: 'center', display: 'block' }}>
-                        ⬇️ Download Ebook (PDF)
-                      </a>
-                    ) : (
-                      <div style={{ padding: 10, background: '#f1f5f9', borderRadius: 6, fontSize: 12.5, color: '#64748b', textAlign: 'center' }}>No PDF file uploaded yet</div>
-                    )}
-
-                    {/* Bonus downloads list */}
-                    {ebook.bonus_ebook_urls && ebook.bonus_ebook_urls.length > 0 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>🎁 Included Bonuses:</span>
-                        {ebook.bonus_ebook_urls.map((bonus, idx) => (
-                          <a 
-                            key={idx} 
-                            href={bonus.url} 
-                            download 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: 6, 
-                              fontSize: 12.5, 
-                              color: '#2563eb', 
-                              textDecoration: 'none',
-                              fontWeight: 600,
-                              padding: '8px 10px',
-                              background: '#eff6ff',
-                              borderRadius: 6,
-                              border: '1px solid #bfdbfe'
-                            }}
-                          >
-                            ⬇️ {bonus.name || `Bonus #${idx + 1}`}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+                  <div className="ud-progress-container">
+                    <div className="ud-progress-bar-bg">
+                      <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
+                    </div>
+                    <div className="ud-progress-info">
+                      <span className="ud-progress-text">{percentComplete}% complete</span>
+                      <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
+                    </div>
                   </div>
+                  
+                  <Link to={nextLessonLink} className="ud-card-btn">
+                    {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
+                  </Link>
                 </div>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
-      )}
+      </div>
+    </div>
+  )
+}
+
+function EbooksTab({ user }) {
+  const [ebooks, setEbooks] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchEbooks() {
+      if (!user) return
+      try {
+        const { data: ordersData } = await supabase
+          .from('orders')
+          .select(`
+            id, product_id, reference, status,
+            products ( id, title, type, cover_image, ebook_url, bonus_ebook_urls )
+          `)
+          .eq('customer_email', user.email)
+          .eq('status', 'paid')
+
+        const ebookMap = {}
+        if (ordersData) {
+          ordersData.forEach(o => {
+            if (o.products && o.products.type === 'ebook') {
+              ebookMap[o.products.id] = o.products
+            }
+          })
+        }
+        setEbooks(Object.values(ebookMap))
+      } catch (err) {
+        console.error('Error fetching ebooks:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchEbooks()
+  }, [user])
+
+  if (loading) {
+    return <div style={{ padding: '40px 0', color: '#64748b', fontWeight: 600 }}>Loading ebooks...</div>
+  }
+
+  if (ebooks.length === 0) {
+    return (
+      <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
+        <svg style={{ width: 64, height: 64, color: '#64748b', margin: '0 auto 20px', display: 'block' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No eBooks Found</h2>
+        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't purchased any eBooks or blueprints yet.</p>
+        <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse eBooks</Link>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="ud-course-grid">
+        {ebooks.map((ebook) => (
+          <div key={ebook.id} className="ud-course-card" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="ud-course-card-img">
+              <img src={ebook.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={ebook.title.replace(/\s+slug$/i, '')} />
+              <div className="ud-card-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: '2.5rem' }}>📗</span>
+              </div>
+            </div>
+            <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <h3 className="ud-course-card-title">{ebook.title.replace(/\s+slug$/i, '')}</h3>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: 10, display: 'inline-block' }}>eBook Product</span>
+              
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
+                {ebook.ebook_url ? (
+                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', background: '#10b981', textAlign: 'center', display: 'block' }}>
+                    ⬇_ Download Ebook (PDF)
+                  </a>
+                ) : (
+                  <div style={{ padding: 10, background: '#f1f5f9', borderRadius: 6, fontSize: 12.5, color: '#64748b', textAlign: 'center' }}>No PDF file uploaded yet</div>
+                )}
+
+                {/* Bonus downloads list */}
+                {ebook.bonus_ebook_urls && ebook.bonus_ebook_urls.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>🎁 Included Bonuses:</span>
+                    {ebook.bonus_ebook_urls.map((bonus, idx) => (
+                      <a 
+                        key={idx} 
+                        href={bonus.url} 
+                        download 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          fontSize: 12.5, 
+                          color: '#2563eb', 
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          padding: '8px 10px',
+                          background: '#eff6ff',
+                          borderRadius: 6,
+                          border: '1px solid #bfdbfe'
+                        }}
+                      >
+                        <span>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
+                        <span style={{ fontSize: '11px', background: '#2563eb', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>Download</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -1646,8 +1674,18 @@ export default function LMSDashboard() {
   const impersonatedUser = impersonatedStr ? JSON.parse(impersonatedStr) : null
 
   // Default to Account Settings if user navigated from /account specifically
-  const initialTab = location.pathname === '/account' ? 'settings' : 'learning'
+  const params = new URLSearchParams(location.search)
+  const tabParam = params.get('tab')
+  const initialTab = tabParam || (location.pathname === '/account' ? 'settings' : 'learning')
   const [activeTab, setActiveTab] = useState(initialTab)
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const tabParam = params.get('tab')
+    if (tabParam) {
+      setActiveTab(tabParam)
+    }
+  }, [location.search])
   
   // Left Collapsible Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -1750,10 +1788,11 @@ export default function LMSDashboard() {
 
   const tabLabels = {
     learning: 'All Courses',
+    history: 'Purchase History',
+    ebooks: 'eBook Downloads',
     wishlist: 'My Wishlist',
     certificates: 'My Certificates',
     notifications: 'Notifications',
-    history: 'Purchase History',
     affiliate: 'Affiliate Program',
     settings: 'Account Settings'
   }
@@ -1859,10 +1898,11 @@ export default function LMSDashboard() {
             <nav style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
               {[
                 { id: 'learning', label: 'All Courses', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /> },
+                { id: 'history', label: 'Purchase History', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /> },
+                { id: 'ebooks', label: 'eBook Downloads', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /> },
                 { id: 'wishlist', label: 'Wishlist', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-7.682-7.682L12 5.67l-1.06-1.06a4.5 4.5 0 00-6.364 0z" /> },
                 { id: 'certificates', label: 'Certificates', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /> },
                 { id: 'notifications', label: 'Notifications', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /> },
-                { id: 'history', label: 'Purchase History', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /> },
                 { id: 'affiliate', label: 'Affiliate Program', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
                 { id: 'settings', label: 'Account Settings', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /> }
               ].map(item => (
@@ -1944,6 +1984,7 @@ export default function LMSDashboard() {
             {activeTab === 'certificates' && <StudentCertificates user={effectiveUser} />}
             {activeTab === 'notifications' && <NotificationsTab user={effectiveUser} />}
             {activeTab === 'history' && <PurchaseHistoryTab user={effectiveUser} profile={profile} />}
+            {activeTab === 'ebooks' && <EbooksTab user={effectiveUser} />}
             {activeTab === 'affiliate' && <AffiliateTab user={effectiveUser} profile={profile} />}
             {activeTab === 'settings' && <SettingsTab user={effectiveUser} />}
           </div>

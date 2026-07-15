@@ -176,11 +176,23 @@ export default function PaymentPage() {
         let activeProduct = null
         
         if (productIdParam) {
-          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(productIdParam)
-          let q = supabase.from('products').select('*')
-          q = isUUID ? q.eq('id', productIdParam) : q.eq('slug', productIdParam)
-          const { data } = await q.maybeSingle()
-          if (data) activeProduct = data
+          if (productIdParam === 'ebook') {
+            const { data } = await supabase.from('products').select('*')
+              .eq('type', 'ebook').eq('is_published', true)
+              .order('created_at', { ascending: false }).limit(1).maybeSingle()
+            if (data) activeProduct = data
+          } else if (productIdParam === 'course') {
+            const { data } = await supabase.from('products').select('*')
+              .eq('type', 'course').eq('is_published', true)
+              .order('created_at', { ascending: false }).limit(1).maybeSingle()
+            if (data) activeProduct = data
+          } else {
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(productIdParam)
+            let q = supabase.from('products').select('*')
+            q = isUUID ? q.eq('id', productIdParam) : q.eq('slug', productIdParam)
+            const { data } = await q.maybeSingle()
+            if (data) activeProduct = data
+          }
         }
         
         if (!activeProduct) {
@@ -499,9 +511,11 @@ export default function PaymentPage() {
 
       localStorage.setItem('paid_customer', JSON.stringify({
         name, email, phone, ref,
+        amount: finalTotal,
         product_id: product?.id,
         product_type: product?.type,
         product_title: productTitle,
+        cover_image: product?.cover_image,
         payment_method: 'bank_transfer'
       }))
 
@@ -603,9 +617,12 @@ export default function PaymentPage() {
 
     localStorage.setItem('paid_customer', JSON.stringify({
       name, email, phone, ref: reference,
+      amount: finalTotal,
       product_id: product?.id,
       product_type: product?.type,
       product_title: productTitle,
+      cover_image: product?.cover_image,
+      payment_method: 'paystack'
     }))
 
     await completeOrder({
@@ -661,7 +678,7 @@ export default function PaymentPage() {
         <div className="shopify-product-info">
           <h4 className="shopify-product-title">{productTitle}</h4>
           <span className="shopify-product-desc">
-            {isEbook ? 'Digital PDF Guide & Masterclass' : 'Full Access Course + Support'}
+            {product?.short_description || (isEbook ? 'Full Access Ebook + Bonuses' : 'Full Access Course + Support')}
           </span>
         </div>
         <div className="shopify-product-price-col">
@@ -1640,7 +1657,7 @@ export default function PaymentPage() {
                 <Field 
                   id="email" 
                   label="Email address" 
-                  hint={isEbook ? ' (For downloading delivery)' : ' (For course dashboard access)'} 
+                  hint={isEbook ? ' (For ebook dashboard access)' : ' (For course dashboard access)'} 
                   type="email" 
                   placeholder="chioma@gmail.com" 
                   val={form.email} 
@@ -1776,12 +1793,16 @@ export default function PaymentPage() {
                           <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.4 }}>Our Bank Accounts</span>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                             {bankAccounts.map((acc, idx) => (
-                              <div key={idx} style={{ paddingBottom: idx < bankAccounts.length - 1 ? 10 : 0, borderBottom: idx < bankAccounts.length - 1 ? '1px dashed #cbd5e1' : 'none' }}>
-                                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--g700)' }}>{acc.bank_name}</div>
+                              <div key={idx} style={{ paddingBottom: idx < bankAccounts.length - 1 ? 10 : 0, borderBottom: idx < bankAccounts.length - 1 ? '1px dashed #cbd5e1' : 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
                                 <div style={{ fontSize: 12.5, color: '#334155', marginTop: 2 }}>
-                                  Account Number: <strong style={{ color: '#0f172a', fontSize: '13px' }}>{acc.account_number}</strong>
+                                  Bank Name: <strong style={{ color: '#0f172a', fontSize: '13px', fontWeight: 700 }}>{acc.bank_name}</strong>
                                 </div>
-                                <div style={{ fontSize: 11.5, color: '#64748b', marginTop: 1 }}>Account Name: {acc.account_name}</div>
+                                <div style={{ fontSize: 12.5, color: '#334155' }}>
+                                  Account Number: <strong style={{ color: '#0f172a', fontSize: '13px', fontWeight: 700 }}>{acc.account_number}</strong>
+                                </div>
+                                <div style={{ fontSize: 12.5, color: '#334155' }}>
+                                  Account Name: <strong style={{ color: '#0f172a', fontSize: '13px', fontWeight: 700 }}>{acc.account_name}</strong>
+                                </div>
                               </div>
                             ))}
                           </div>
