@@ -10,11 +10,41 @@ export default function PlaybookSalesPage() {
   const [showStickyBar, setShowStickyBar] = useState(false)
   const [activeNotification, setActiveNotification] = useState(null)
 
+  // Evergreen countdown timer (15 minutes)
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const saved = localStorage.getItem('playbook_timer')
+    if (saved) {
+      const remaining = parseInt(saved) - Date.now()
+      if (remaining > 0) return Math.floor(remaining / 1000)
+    }
+    const expiry = Date.now() + 15 * 60 * 1000
+    localStorage.setItem('playbook_timer', expiry.toString())
+    return 15 * 60
+  })
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      const expiry = Date.now() + 15 * 60 * 1000
+      localStorage.setItem('playbook_timer', expiry.toString())
+      setTimeLeft(15 * 60)
+      return
+    }
+    const timer = setTimeout(() => {
+      setTimeLeft(timeLeft - 1)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [timeLeft])
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
   // Load product data dynamically from Supabase database
   useEffect(() => {
     async function loadProduct() {
       try {
-        // Try loading product configured for Playbook route first
         let { data } = await supabase
           .from('products')
           .select('*')
@@ -22,7 +52,6 @@ export default function PlaybookSalesPage() {
           .maybeSingle()
 
         if (!data) {
-          // Fallback by slug
           const res = await supabase
             .from('products')
             .select('*')
@@ -55,7 +84,7 @@ export default function PlaybookSalesPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Live Sales Notification Popup Logic matching WebinarPage
+  // Live Sales Notification Popup Logic
   useEffect(() => {
     const names = [
       'Tobi from Lagos', 'Chidi from Port Harcourt', 'Halima from Abuja', 
@@ -80,12 +109,11 @@ export default function PlaybookSalesPage() {
       const randomTime = times[Math.floor(Math.random() * times.length)]
       
       setActiveNotification({
-        name: randomName.split(' secured ')[0].split(' just ')[0],
+        name: randomName,
         action: randomProduct,
         time: randomTime
       })
 
-      // Hide after 5 seconds matching WebinarPage setTimeout
       const hideTimer = setTimeout(() => {
         setActiveNotification(null)
       }, 5000)
@@ -93,7 +121,6 @@ export default function PlaybookSalesPage() {
       return () => clearTimeout(hideTimer)
     }
 
-    // Trigger initial notification after 4 seconds
     const initialTimer = setTimeout(() => {
       setActiveNotification({
         name: 'Tobi',
@@ -106,7 +133,6 @@ export default function PlaybookSalesPage() {
       return () => clearTimeout(hideTimer)
     }, 4000)
 
-    // Repeat every 18 seconds matching WebinarPage setInterval
     const interval = setInterval(triggerNotification, 18000)
 
     return () => {
@@ -135,9 +161,11 @@ export default function PlaybookSalesPage() {
   }
 
   return (
-    <div style={{ backgroundColor: '#FBF8F2', color: '#262220', fontFamily: "'Lora', serif", fontSize: '17px', lineHeight: 1.65 }}>
+    <div className="playbook-page-root" style={{ backgroundColor: '#FBF8F2', color: '#262220', fontSize: '17px', lineHeight: 1.65 }}>
       {/* Page specific inline CSS stylings with forced font overrides to override global.css */}
       <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
         :root {
           --dark: #171512; --dark2: #1B2E29; --dark3: #12100D;
           --cream: #FBF8F2; --paper: #F1EDDF; --paper2: #EFEAD9;
@@ -150,10 +178,49 @@ export default function PlaybookSalesPage() {
         * { box-sizing: border-box; }
         
         /* Font Family overrides to force correct custom typography matching the replicated design */
-        body, p, li, .sub, .lead, .pull, .role, .rdesc, .fa p {
+        .playbook-page-root, 
+        .playbook-page-root p, 
+        .playbook-page-root li, 
+        .playbook-page-root .sub, 
+        .playbook-page-root .lead, 
+        .playbook-page-root .pull, 
+        .playbook-page-root .role, 
+        .playbook-page-root .rdesc, 
+        .playbook-page-root .fa p {
           font-family: 'Lora', serif !important;
         }
-        h1, h2, h3, h4, .disp, .eyebrow, .btn, .navlinks, .nav-cta, .logo, .chnum, .tname, .trole, .rtitle, .rsub, .rval, .rtorig, .rtval, .rtlabel, .rfoot, .fq, .urgency, .stickybar, .gbadge, .toast-title, .toast-body {
+        .playbook-page-root h1, 
+        .playbook-page-root h2, 
+        .playbook-page-root h3, 
+        .playbook-page-root h4, 
+        .playbook-page-root h5, 
+        .playbook-page-root h6, 
+        .playbook-page-root .disp, 
+        .playbook-page-root .eyebrow, 
+        .playbook-page-root .btn, 
+        .playbook-page-root .navlinks, 
+        .playbook-page-root .nav-cta, 
+        .playbook-page-root .logo, 
+        .playbook-page-root .chnum, 
+        .playbook-page-root .tname, 
+        .playbook-page-root .trole, 
+        .playbook-page-root .rtitle, 
+        .playbook-page-root .rsub, 
+        .playbook-page-root .rval, 
+        .playbook-page-root .rtorig, 
+        .playbook-page-root .rtval, 
+        .playbook-page-root .rtlabel, 
+        .playbook-page-root .rfoot, 
+        .playbook-page-root .fq, 
+        .playbook-page-root .urgency, 
+        .playbook-page-root .stickybar, 
+        .playbook-page-root .gbadge, 
+        .playbook-page-root .toast-title,
+        .playbook-page-root .toast-body,
+        .playbook-page-root button,
+        .playbook-page-root select,
+        .playbook-page-root input,
+        .playbook-page-root label {
           font-family: 'Poppins', sans-serif !important;
         }
 
@@ -256,7 +323,7 @@ export default function PlaybookSalesPage() {
         .author { padding: 90px 0; background: var(--cream); }
         .author .wrap { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
         @media(max-width:640px) { .author .wrap { grid-template-columns: 1fr; text-align: center; } .author .wrap .avatar { margin: 0 auto; } }
-        .avatar { width: 170px; height: 170px; border-radius: 50%; background: linear-gradient(155deg,var(--teal) 0%, var(--teal-deep) 100%); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 52px; color: var(--gold-light); flex-shrink: 0; }
+        .avatar { width: 170px; height: 170px; border-radius: 50%; background: linear-gradient(155deg,var(--teal) 0%, var(--teal-deep) 100%); display: flex; align-items: center; justify-content: center; font-size: 52px; color: var(--gold-light); flex-shrink: 0; }
         .author h3 { font-size: 22px; margin: 0 0 4px; color: var(--dark); }
         .author .role { font-size: 13px; color: var(--gold-deep); font-weight: 700; margin-bottom: 16px; }
         .author p { color: var(--ink-soft); font-size: 16px; margin-bottom: 14px; }
@@ -296,9 +363,9 @@ export default function PlaybookSalesPage() {
         .receipt .rfoot { text-align: center; font-size: 11px; color: #9A917C; margin-top: 14px; }
 
         /* ---------- GUARANTEE ---------- */
-        .guarantee .wrap { display: flex; gap: 30px; align-items: center; max-width: 780px; }
-        @media(max-width:640px) { .guarantee .wrap { flex-direction: column; text-align: center; } }
-        .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.3; padding: 10px; }
+        .guarantee .wrap { display: flex; gap: 40px; align-items: center; max-width: 800px; margin: 0 auto; }
+        @media(max-width:640px) { .guarantee .wrap { flex-direction: column; text-align: center; gap: 20px; } }
+        .gbadge { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; color: var(--gold-deep); text-align: center; font-size: 13px; line-height: 1.2; padding: 10px; }
         .guarantee h3 { margin: 0 0 10px; font-size: 21px; color: var(--dark); }
         .guarantee p { color: var(--ink-soft); font-size: 15.5px; margin: 0; }
 
@@ -338,16 +405,16 @@ export default function PlaybookSalesPage() {
         .stickybar .btn { padding: 12px 22px; font-size: 14px; }
         @media(max-width:780px) { .stickybar { display: flex; } }
 
-        /* ---------- WEBINAR PAGE SALES TOAST DESIGN ---------- */
+        /* ---------- CUSTOM CREAM & BROWN VERIFIED SALES TOAST ---------- */
         .wb-sales-toast {
           position: fixed;
           bottom: 84px; /* so it stays above the mobile sticky cta bar */
           left: 24px;
-          background: #0b1329 !important;
-          border: 1px solid #1e3a8a !important;
+          background: #FBF8F2 !important; /* cream color used for page background */
+          border: 1px solid #DCD2BC !important; /* light brown/hair border lines */
           border-radius: 12px !important;
           padding: 16px 20px !important;
-          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5) !important;
+          box-shadow: 0 15px 30px rgba(74, 68, 56, 0.15) !important;
           display: flex !important;
           align-items: center !important;
           gap: 16px !important;
@@ -359,7 +426,7 @@ export default function PlaybookSalesPage() {
         .toast-border-accent {
           width: 4px !important;
           height: 36px !important;
-          background: var(--gold) !important;
+          background: #B8862F !important; /* gold/brown accent line */
           border-radius: 4px !important;
           flex-shrink: 0 !important;
         }
@@ -374,14 +441,18 @@ export default function PlaybookSalesPage() {
           font-weight: 900 !important;
           text-transform: uppercase !important;
           letter-spacing: 0.8px !important;
-          color: var(--gold) !important;
+          color: #8C6420 !important; /* dark brown */
         }
         .toast-body {
           margin: 0 !important;
           font-size: 13px !important;
-          color: #ffffff !important;
+          color: #4A4438 !important; /* soft dark brown */
           font-weight: 500 !important;
           line-height: 1.4 !important;
+        }
+        .toast-body strong {
+          color: #8C6420 !important; /* dark brown color for username and product */
+          font-weight: 700 !important;
         }
         .toast-course-image {
           width: 45px !important;
@@ -390,13 +461,18 @@ export default function PlaybookSalesPage() {
           object-fit: cover !important;
           flex-shrink: 0 !important;
           align-self: center !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid #DCD2BC !important; /* light brown border line */
         }
         @keyframes toastSlideIn {
           from { opacity: 0; transform: translateY(40px); }
           to { opacity: 1; transform: translateY(0); }
         }
       ` }} />
+
+      {/* TOP COUNTDOWN TIMER BAR FOR EVERGREEN FOMO */}
+      <div style={{ background: 'var(--rust)', color: '#fff', textAlign: 'center', padding: '10px 20px', fontSize: '13.5px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>
+        🔥 Special Launch Price Ends In: <span style={{ fontFamily: 'monospace', fontSize: '15px', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '2px 8px', borderRadius: '4px', marginLeft: '6px' }}>{formatTime(timeLeft)}</span>
+      </div>
 
       {/* LOCAL HEADER (No global website header is loaded) */}
       <header className="nav">
@@ -419,11 +495,31 @@ export default function PlaybookSalesPage() {
           <div>
             <div className="eyebrow on-dark">FOR FREELANCERS, CONSULTANTS &amp; SERVICE PROVIDERS</div>
             <h1>Your price isn't the problem.<br />Your <em>pitch</em> is.</h1>
-            <p className="sub">The Pricing &amp; Negotiation Playbook shows you exactly why clients say "too expensive" — and gives you the scripts, frameworks, and mindset shifts to stop hearing it.</p>
+            <p className="sub" style={{ marginBottom: '20px' }}>The Pricing &amp; Negotiation Playbook shows you exactly why clients say "too expensive" — and gives you the scripts, frameworks, and mindset shifts to stop hearing it.</p>
+            
+            {/* Social stats badges under the subheader */}
+            <div style={{ display: 'flex', gap: '24px', margin: '24px 0', borderTop: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '16px 0' }}>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--gold-light)' }}>1,847+</div>
+                <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '2px' }}>Copies Sold</div>
+              </div>
+              <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '24px' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--gold-light)' }}>4.9/5</div>
+                <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '2px' }}>Average Rating</div>
+              </div>
+              <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '24px' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--gold-light)' }}>100%</div>
+                <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '2px' }}>Satisfaction Rate</div>
+              </div>
+            </div>
+
             <div className="hero-ctarow">
               <button onClick={handleCheckoutRedirect} className="btn btn-primary">
                 Get The Playbook Now <span className="arrow">→</span>
               </button>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px', width: '100%' }}>
+                ⚡ Instant PDF · Lifetime Access
+              </div>
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -606,6 +702,39 @@ export default function PlaybookSalesPage() {
         </div>
       </section>
 
+      {/* THE CHOICE IS SIMPLE / NOT TAKING ACTION SECTION */}
+      <section className="section" style={{ background: 'var(--dark3)', color: 'var(--cream)', borderTop: '1px solid var(--hair)' }}>
+        <div className="wrap" style={{ maxWidth: '720px', textAlign: 'center' }}>
+          <div className="eyebrow on-dark">THE DECISION</div>
+          <h2 className="h-lg" style={{ color: 'var(--cream)', marginTop: '14px' }}>The Choice Is Simple</h2>
+          <p style={{ fontSize: '19px', color: '#D8CBAE', marginBottom: '32px' }}>
+            The Real Cost of NOT Taking Action
+          </p>
+          <div style={{ textAlign: 'left', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(244,239,228,0.1)', padding: '32px' }}>
+            <p style={{ marginBottom: '20px' }}>
+              You can close this page and keep running your business the way you've been doing it. 
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              But that means the next time a client tells you your price is <b>"too expensive,"</b> you'll react the same way. You'll either discount your rate and work for less than you're worth, or you'll watch the client walk away in silence.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              Every single proposal you send without anchoring your value is leaving money on the table. If you lose just one project this month because of a bad pitch, that's already costing you 10x or 50x the price of this playbook.
+            </p>
+            <p style={{ fontWeight: 600, color: 'var(--gold-light)', margin: 0 }}>
+              The choice is yours: keep guessing, or learn the exact system to command your worth.
+            </p>
+          </div>
+          <div style={{ marginTop: '40px' }}>
+            <button onClick={handleCheckoutRedirect} className="btn btn-primary">
+              Get The Playbook Now <span className="arrow">→</span>
+            </button>
+            <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px' }}>
+              ⚡ Instant PDF · Lifetime Access
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* OFFER */}
       <section className="section offer" id="offer">
         <div className="wrap">
@@ -655,7 +784,11 @@ export default function PlaybookSalesPage() {
             <div className="rtotal">
               <div className="rtlabel">Total Due Today</div>
               <div>
-                {oldPrice > price && <span className="rtorig" style={{ marginRight: '8px', textDecoration: 'line-through', color: '#B0A78F' }}>{formattedOldPrice}</span>}
+                {product?.old_price && product.old_price > price && (
+                  <span className="rtorig" style={{ marginRight: '8px', textDecoration: 'line-through', color: '#B0A78F' }}>
+                    {formattedOldPrice}
+                  </span>
+                )}
                 <span className="rtval" style={{ fontWeight: 800, fontSize: '32px', color: 'var(--gold-deep)' }}>{formattedPrice}</span>
               </div>
             </div>
@@ -664,6 +797,9 @@ export default function PlaybookSalesPage() {
               <button onClick={handleCheckoutRedirect} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
                 Get Instant Access <span className="arrow">→</span>
               </button>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--ink-soft)', marginTop: '8px', width: '100%', textAlign: 'center' }}>
+                ⚡ Instant PDF · Lifetime Access
+              </div>
             </div>
             
             <div className="rfoot">🔒 Secure checkout · Instant digital delivery</div>
@@ -672,18 +808,23 @@ export default function PlaybookSalesPage() {
       </section>
 
       {/* GUARANTEE */}
-      <section className="section tight guarantee">
+      <section className="section tight guarantee" style={{ background: 'transparent' }}>
         <div className="wrap">
-          <div className="gbadge">30 DAY<br />GUARANTEE</div>
+          <div className="gbadge">
+            <div style={{ fontWeight: 800, letterSpacing: '1px' }}>30 DAY</div>
+            <div style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '11px' }}>GUARANTEE</div>
+          </div>
           <div>
             <h3>Read it. Use one script on your next quote.</h3>
-            <p>Since this is a digital eBook product, you get immediate download access right after payment. We stand behind the value of this playbook. Read it, apply the scripts to your next proposal, and if you don't feel it gives you the tools to command higher fees and win better clients, send us a message within 14 days and we will gladly refund your payment under our digital satisfaction guarantee.</p>
+            <p>If it doesn't change how that conversation goes, email within 30 days and get a full refund — no argument, no hoops. I'd rather give your money back than have you sitting on a book that isn't earning its place on your shelf.</p>
           </div>
         </div>
       </section>
 
-      {/* URGENCY */}
-      <div className="urgency">Launch price ends soon — after that, price returns to <b>{formattedOldPrice}</b>.</div>
+      {/* URGENCY - Show only if compare price exists */}
+      {product?.old_price && product.old_price > price && (
+        <div className="urgency">Launch price ends soon — after that, price returns to <b>{formattedOldPrice}</b>.</div>
+      )}
 
       {/* FAQ */}
       <section className="section faq" id="faq">
@@ -737,7 +878,7 @@ export default function PlaybookSalesPage() {
               <span className="plus" style={{ transform: openFaq === 4 ? 'rotate(45deg)' : 'none' }}>+</span>
             </button>
             <div className="fa" style={{ maxHeight: openFaq === 4 ? '300px' : '0' }}>
-              <p>Email within 14 days and you'll get one — see our digital satisfaction guarantee details above.</p>
+              <p>Email within 30 days and you'll get one — see our 30-day satisfaction guarantee details above.</p>
             </div>
           </div>
         </div>
@@ -751,7 +892,10 @@ export default function PlaybookSalesPage() {
           <button onClick={handleCheckoutRedirect} className="btn btn-primary">
             Get The Pricing &amp; Negotiation Playbook <span className="arrow">→</span>
           </button>
-          <div className="microtrust" style={{ color: '#B7AC92' }}>14-day digital guarantee · Instant download · {formattedPrice}</div>
+          <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#A79C82', marginTop: '8px' }}>
+            ⚡ Instant PDF · Lifetime Access
+          </div>
+          <div className="microtrust" style={{ color: '#B7AC92', marginTop: '16px' }}>30-day guarantee · Instant download · {formattedPrice}</div>
         </div>
       </section>
 
@@ -759,7 +903,7 @@ export default function PlaybookSalesPage() {
       <section className="section tight ps">
         <div className="wrap">
           <p><b>P.S.</b> Every day you don't fix this pricing conversation is another quote that might come back with "too expensive" attached to it — and another client you were actually the right fit for, gone.</p>
-          <p><b>P.S.2</b> This comes with a full 14-day digital refund guarantee. The only risk here is staying exactly where you are.</p>
+          <p><b>P.S.2</b> This comes with a full 30-day refund guarantee. The only risk here is staying exactly where you are.</p>
         </div>
       </section>
 
@@ -780,7 +924,7 @@ export default function PlaybookSalesPage() {
         <button onClick={handleCheckoutRedirect} className="btn btn-primary">Get Access →</button>
       </div>
 
-      {/* Live Sales Notification Widget matching WebinarPage style exactly */}
+      {/* Live Sales Notification Widget matching WebinarPage style exactly in cream/brown custom colors */}
       {activeNotification && (
         <div className="wb-sales-toast">
           <div className="toast-border-accent"></div>
