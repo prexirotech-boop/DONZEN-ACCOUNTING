@@ -736,7 +736,7 @@ export default function PlaybookSalesPage() {
             <div className="eyebrow">WHO'S TEACHING THIS</div>
             <h3>Nnanta Precious</h3>
             <div className="role">FOUNDER, AMPLIFIED SKILLS</div>
-            <p>I've spent years running my own web design agency and coaching freelancers through the Freelance Web Design Blueprint — and if there's one conversation I've watched derail more good freelancers than any other single thing, it's the pricing conversation.</p>
+            <p>I've spent years running my own web design agency and coaching freelancers and coaching freelancers business owners across the world — and if there's one conversation I've watched derail more good freelancers than any other single thing, it's the pricing conversation.</p>
             <p>Not because they weren't skilled. Because nobody ever taught them what's actually happening in a client's head between "here's my price" and "that's too expensive." I built this playbook because I got tired of watching talented people undercharge, over-explain, and quietly resent clients who were only ever responding to a pitch that hadn't done its job yet.</p>
           </div>
         </div>
