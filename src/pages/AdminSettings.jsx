@@ -547,8 +547,26 @@ export default function AdminSettings() {
                 </div>
               )}
 
-              <button type="submit" style={{ alignSelf: 'flex-start', background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13.5, marginTop: 8, transition: 'all 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                Save Configurations
+               <button 
+                type="submit" 
+                disabled={loading} 
+                style={{ 
+                  alignSelf: 'flex-start', 
+                  background: '#2563eb', 
+                  color: '#fff', 
+                  border: 'none', 
+                  padding: '10px 20px', 
+                  borderRadius: 6, 
+                  fontWeight: 600, 
+                  cursor: loading ? 'not-allowed' : 'pointer', 
+                  fontSize: 13.5, 
+                  marginTop: 8, 
+                  transition: 'all 0.15s', 
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                  opacity: loading ? 0.7 : 1
+                }}
+              >
+                {loading ? 'Saving...' : 'Save Configurations'}
               </button>
             </form>
           </div>
