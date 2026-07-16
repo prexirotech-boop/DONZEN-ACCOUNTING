@@ -214,6 +214,50 @@ function EbooksTab({ user }) {
     fetchEbooks()
   }, [user])
 
+  const triggerSecureDownload = async (e, url, defaultFilename) => {
+    e.preventDefault();
+    if (!url) return;
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Fetch failed");
+      
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const tempLink = document.createElement("a");
+      tempLink.href = blobUrl;
+      
+      let filename = defaultFilename || "download.pdf";
+      try {
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname;
+        const lastSegment = pathname.substring(pathname.lastIndexOf('/') + 1);
+        if (lastSegment && lastSegment.includes('.')) {
+          filename = decodeURIComponent(lastSegment);
+        }
+      } catch (e) {}
+
+      tempLink.download = filename;
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.warn("Direct blob download failed. Falling back to direct URL with download param.", err);
+      let downloadUrl = url;
+      try {
+        const urlObj = new URL(url);
+        urlObj.searchParams.set("download", "");
+        downloadUrl = urlObj.toString();
+      } catch (e) {}
+      
+      const win = window.open(downloadUrl, "_blank");
+      if (!win) {
+        window.location.href = downloadUrl;
+      }
+    }
+  };
+
   if (loading) {
     return <div style={{ padding: '40px 0', color: '#64748b', fontWeight: 600 }}>Loading ebooks...</div>
   }
@@ -245,7 +289,7 @@ function EbooksTab({ user }) {
               
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
                 {ebook.ebook_url ? (
-                  <a href={ebook.ebook_url} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <a href={ebook.ebook_url} onClick={(e) => triggerSecureDownload(e, ebook.ebook_url, `${ebook.title.replace(/\s+slug$/i, '')}.pdf`)} download target="_blank" rel="noreferrer" className="ud-card-btn" style={{ textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
@@ -265,6 +309,7 @@ function EbooksTab({ user }) {
                       <a 
                         key={idx} 
                         href={bonus.url} 
+                        onClick={(e) => triggerSecureDownload(e, bonus.url, `${bonus.name || `Bonus_${idx + 1}`}.pdf`)}
                         download 
                         target="_blank" 
                         rel="noreferrer" 
