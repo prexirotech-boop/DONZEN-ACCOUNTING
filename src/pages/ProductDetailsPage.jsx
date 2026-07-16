@@ -1539,6 +1539,7 @@ export default function ProductDetailsPage() {
             padding: 14px 20px;
             align-items: center;
             justify-content: space-between;
+            gap: 16px;
             z-index: 999;
             box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
           }

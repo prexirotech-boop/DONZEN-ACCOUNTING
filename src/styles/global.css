@@ -531,7 +531,7 @@ ul, ol { list-style: none; }
 .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 14px; transition: color 0.2s; }
 .nav-link:hover, .nav-link.active { color: var(--text-main); }
 .header-actions { display: flex; gap: 16px; align-items: center; }
-.btn-login { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 500; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+.btn-login { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 500; font-size: 14px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
 .btn-login:hover { background: rgba(0,0,0,0.03); border-color: var(--text-main); }
 .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--text-main); padding: 8px; cursor: pointer; align-items: center; justify-content: center; }
 

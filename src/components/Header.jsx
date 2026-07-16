@@ -136,7 +136,7 @@ export default function Header() {
     <>
       <header className="global-header">
         <Link to="/" className="brand-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-          <img src="/logo.png" alt="Amplified Skills" style={{ height: 52, width: 'auto', maxWidth: 220, objectFit: 'contain', objectPosition: 'left center', display: 'block', flexShrink: 0 }} />
+          <img src="/logo.png" alt="Amplified Skills" className="header-logo-img" style={{ height: 52, width: 'auto', maxWidth: 220, objectFit: 'contain', objectPosition: 'left center', display: 'block', flexShrink: 0 }} />
         </Link>
 
         <div className="header-search-wrapper" ref={dropdownRef} style={{ position: 'relative', flex: 1, maxWidth: '440px' }}>
@@ -233,6 +233,7 @@ export default function Header() {
             <div ref={currencyMenuRef} style={{ position: 'relative', marginRight: '6px', display: 'flex', alignItems: 'center' }}>
               <button
                 onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                className="header-currency-btn"
                 style={{
                   background: '#ffffff',
                   border: '1px solid #cbd5e1',
@@ -405,7 +406,10 @@ export default function Header() {
           { label: 'About Us', path: '/about', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> },
           { label: 'FAQs', path: '/faq', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg> },
           { label: 'Blog', path: '/blog', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> },
-          { label: 'Contact', path: '/contact', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> }
+          { label: 'Contact', path: '/contact', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+          user 
+            ? { label: 'My Dashboard', path: '/dashboard', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> }
+            : { label: 'Sign In', path: '/login', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> }
         ].map((item, idx) => {
           const isActive = location.pathname === item.path
           return (
@@ -752,6 +756,33 @@ export default function Header() {
           background: linear-gradient(135deg, #1d4ed8, #1e40af);
           transform: translateY(-1px);
           box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        @media (max-width: 768px) {
+          .global-header {
+            padding: 8px 12px !important;
+          }
+          .header-logo-img {
+            height: 32px !important;
+          }
+          .header-actions {
+            gap: 8px !important;
+          }
+          .header-currency-btn {
+            padding: 4px 8px !important;
+            font-size: 10.5px !important;
+          }
+          .btn-login {
+            padding: 5px 10px !important;
+            font-size: 12px !important;
+            white-space: nowrap !important;
+          }
+          .cart-toggle-btn {
+            padding: 6px !important;
+          }
+          .mobile-menu-btn {
+            padding: 6px !important;
+          }
         }
       `}} />
     </>
