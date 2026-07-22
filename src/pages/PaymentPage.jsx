@@ -740,7 +740,7 @@ export default function PaymentPage() {
         <div className="shopify-product-info">
           <h4 className="shopify-product-title">{productTitle}</h4>
           <span className="shopify-product-desc">
-            {product?.short_description || (isEbook ? 'Full Access Ebook + Bonuses' : 'Full Access Course + Support')}
+            {product?.type === 'physical' ? 'Physical Product' : 'Digital Product'}
           </span>
         </div>
         <div className="shopify-product-price-col">
