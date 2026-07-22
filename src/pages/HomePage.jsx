@@ -1,1493 +1,458 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { getShortDesc } from './ProductsPage'
-import { useCurrency } from '../context/CurrencyContext'
-import UpsellWidget from '../components/UpsellWidget'
-
-const SLIDES = [
-  '/slideshow_1.jpg',
-  '/slideshow_2.jpg',
-  '/slideshow_3.jpg'
-]
+import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
-  const { formatPrice } = useCurrency()
-  const [featuredProducts, setFeaturedProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [activeSlide, setActiveSlide] = useState(0)
-  const [activeFaq, setActiveFaq] = useState(null)
-
-  // Slideshow interval
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % SLIDES.length)
-    }, 6000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Load featured products from Supabase
-  useEffect(() => {
-    async function loadProducts() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_published', true)
-        .order('created_at', { ascending: true })
-        .limit(4) // Load up to 4 items for a full layout
-      
-      if (!error && data) {
-        setFeaturedProducts(data)
-      }
-      setLoading(false)
-    }
-    loadProducts()
-  }, [])
-
-  const toggleFaq = (index) => {
-    setActiveFaq(activeFaq === index ? null : index)
-  }
+  const navigate = useNavigate()
 
   return (
-    <div className="home-layout">
+    <div style={{ background: '#FFFFFF', color: '#101010', fontFamily: 'var(--font)', minHeight: '100vh' }}>
       
-      {/* Hero Section with Dynamic Fading Slideshow */}
-      <section className="home-hero">
-        <div className="hero-slideshow-container">
-          {SLIDES.map((slide, idx) => (
-            <div 
-              key={slide} 
-              className={`hero-slide ${idx === activeSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${slide})` }}
-            />
-          ))}
-          <div className="hero-overlay" />
-        </div>
+      {/* ─── HERO SECTION ────────────────────────────────────────────── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #101010 0%, #18181B 60%, #050505 100%)',
+        color: '#FFFFFF',
+        padding: '100px 24px 90px',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '3px solid #ff1717'
+      }}>
+        {/* Glow backdrop */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-10%',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(255,23,23,0.18) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 1
+        }} />
 
-        <div className="home-container hero-content animate-fade-in">
-          <span className="hero-badge-glow">
-            ELITE DIGITAL ACADEMY & MENTORSHIP
-          </span>
-
-          <h1 className="hero-title">
-            Build High-Income Skills. Earn Daily. <span className="gradient-text">Build Real Wealth.</span>
-          </h1>
-
-          <p className="hero-subtitle">
-            Skip theoretical academic models. We provide practical, step-by-step courses and elite training programs designed for the modern digital economy.
-          </p>
-
-          <div className="hero-actions">
-            <Link to="/products" className="btn-hero-primary">
-              Explore Our Courses <span className="arrow">→</span>
-            </Link>
-            <Link to="/about" className="btn-hero-outline">
-              Our Story
-            </Link>
-          </div>
-
-          <div className="hero-trust-indicator">
-            <div className="stars">★★★★★</div>
-            <p>Rated <strong>4.9/5</strong> by 2,500+ successful graduates globally</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Brand Stat Section */}
-      <section className="stats-strip">
-        <div className="home-container">
-          <div className="stats-grid">
-            {[
-              { val: '2,500+', label: 'Graduated Students' },
-              { val: '18+', label: 'Premium Courses' },
-              { val: '4.9/5', label: 'Average Course Rating' },
-              { val: '100%', label: 'Practical Focus (Zero Fluff)' }
-            ].map((item, i) => (
-              <div key={i} className="stat-card">
-                <div className="stat-value">{item.val}</div>
-                <div className="stat-label">{item.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products Grid Section - TAKEN UP ON THE PAGE */}
-      <section className="home-section bg-light-gray">
-        <div className="home-container">
-          <div className="section-header animate-slide-up">
-            <span className="section-tag">ACADEMY</span>
-            <h2>Premium Mentoring & Courses</h2>
-            <p>Gain instant access to our highly sought-after execution systems.</p>
-          </div>
-
-          <div className="home-grid">
-            {loading ? (
-              // Skeleton loading states
-              [1, 2, 3].map((n) => (
-                <div key={n} className="skeleton-card">
-                  <div className="skeleton-image" />
-                  <div className="skeleton-body">
-                    <div className="skeleton-line title" />
-                    <div className="skeleton-line text" />
-                    <div className="skeleton-line text" />
-                    <div className="skeleton-line tags" />
-                  </div>
-                  <div className="skeleton-footer" />
-                </div>
-              ))
-            ) : featuredProducts.length === 0 ? (
-              <div className="empty-products">
-                No courses are currently published. Check back soon!
-              </div>
-            ) : (
-              featuredProducts.map(product => {
-                const isCourse = product.type === 'course'
-                const features = product.features || []
-                const discountPct = product.old_price && product.price
-                  ? Math.round((1 - product.price / product.old_price) * 100)
-                  : null
-
-                return (
-                  <Link 
-                    to={`/product/${product.slug || product.id}`} 
-                    key={product.id} 
-                    className="premium-product-card"
-                  >
-                    {/* Card Cover Image */}
-                    <div className="product-image-area">
-                      {product.cover_image ? (
-                        <img 
-                          src={product.cover_image} 
-                          alt={product.title.replace(/\s+slug$/i, '')} 
-                          className="hover-zoom" 
-                        />
-                      ) : (
-                        <div className="default-type-icon">
-                          {isCourse ? '🎓' : '📗'}
-                        </div>
-                      )}
-                      
-                      {/* Badge Overlays */}
-                      <div className="card-overlays">
-                        {isCourse && <span className="type-badge course">COURSE</span>}
-                        {!isCourse && <span className="type-badge ebook">E-BOOK</span>}
-                        {discountPct && <span className="type-badge discount">{discountPct}% OFF</span>}
-                      </div>
-                    </div>
-
-                    <div className="product-details-area">
-                      <h3>{product.title.replace(/\s+slug$/i, '')}</h3>
-                      <p className="description-preview">
-                        {product.short_description || getShortDesc(product)}
-                      </p>
-                      
-                      {features.length > 0 && (
-                        <div className="features-tags-strip">
-                          {features.slice(0, 3).map((feat, idx) => (
-                            <span key={idx} className="feat-tag">{feat}</span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="product-footer-area">
-                      <div className="price-box">
-                        {product.old_price && <span className="old-price">{formatPrice(product.old_price)}</span>}
-                        <span className="price-tag">{formatPrice(product.price)}</span>
-                      </div>
-                      <span className="premium-card-btn">
-                        {isCourse ? 'Enroll Now' : 'Get E-Book'} →
-                      </span>
-                    </div>
-                  </Link>
-                )
-              })
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us / Curricular Pillars - MOVED BELOW PRODUCTS */}
-      <section className="home-section bg-surface">
-        <div className="home-container">
-          <div className="section-header animate-slide-up">
-            <span className="section-tag">CURRICULUM</span>
-            <h2>Our Core Skill Pillars</h2>
-            <p>Four specialized domains built for maximum leverage and daily income.</p>
-          </div>
-
-          <div className="pillars-grid">
-            {/* Pillar 1 */}
-            <div className="pillar-card">
-              <div className="pillar-icon-box orange">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="pillar-svg">
-                  <rect x="4" y="4" width="16" height="16" rx="2" />
-                  <rect x="9" y="9" width="6" height="6" />
-                  <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3" />
-                </svg>
-              </div>
-              <h3>Software & AI Engineering</h3>
-              <p>Master modern web stacks and build custom AI-powered integrations to automate business pipelines.</p>
-              <ul className="pillar-list">
-                <li>✓ Fullstack Web Apps (React, Vite, Node)</li>
-                <li>✓ Serverless Backend & Database Architectures</li>
-                <li>✓ Autonomous AI Agents & API Integrations</li>
-              </ul>
+        <div style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 2,
+          display: 'grid',
+          gridTemplateColumns: '1.2fr 0.8fr',
+          gap: '48px',
+          alignItems: 'center'
+        }}>
+          <div>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(255,23,23,0.12)',
+              border: '1px solid rgba(255,23,23,0.3)',
+              color: '#ff1717',
+              padding: '6px 16px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginBottom: '24px'
+            }}>
+              <span style={{ fontSize: '10px' }}>🔴</span> Welcome To Donzen Accounting Hub
             </div>
 
-            {/* Pillar 2 */}
-            <div className="pillar-card">
-              <div className="pillar-icon-box green">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="pillar-svg">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="2" y1="12" x2="22" y2="12" />
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                </svg>
-              </div>
-              <h3>High-Ticket Freelancing</h3>
-              <p>Learn how to package your services and sign high-paying global clients who pay in stable currencies.</p>
-              <ul className="pillar-list">
-                <li>✓ Global Client Acquisition & Lead Generation</li>
-                <li>✓ Premium Freelance Profile Funnels</li>
-                <li>✓ Strategic Cold Pitching & Closing scripts</li>
-              </ul>
+            <h1 style={{
+              fontSize: 'clamp(2.4rem, 5vw, 3.8rem)',
+              fontWeight: 900,
+              lineHeight: 1.15,
+              marginBottom: '20px',
+              letterSpacing: '-1px',
+              color: '#FFFFFF'
+            }}>
+              A Bookkeeping Firm & Community Dedicated To <span style={{ color: '#ff1717' }}>Your Financial Success</span>
+            </h1>
+
+            <p style={{
+              fontSize: '1.15rem',
+              color: 'rgba(255,255,255,0.85)',
+              lineHeight: 1.7,
+              marginBottom: '32px',
+              maxWidth: '620px'
+            }}>
+              Donzen is a place for every Startup, SME, and Entrepreneur looking for a one-stop shop for easy business accounting. We offer comprehensive bookkeeping and accounting services tailored for businesses of all sizes across Nigeria and Africa.
+            </p>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.05)',
+              borderLeft: '4px solid #ff1717',
+              padding: '14px 20px',
+              borderRadius: '0 8px 8px 0',
+              marginBottom: '36px',
+              fontSize: '1.05rem',
+              fontWeight: 600,
+              color: '#F7F3F5'
+            }}>
+              Our Mission: To make bookkeeping solutions and accounting education more accessible! <br />
+              <strong style={{ color: '#ff1717', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.95rem' }}>We Are Bookkeeping For Africa.</strong>
             </div>
 
-            {/* Pillar 3 */}
-            <div className="pillar-card">
-              <div className="pillar-icon-box blue">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="pillar-svg">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                </svg>
-              </div>
-              <h3>E-Book Mastery</h3>
-              <p>Self-publish guides and digital assets that address critical market needs and run on complete autopilot.</p>
-              <ul className="pillar-list">
-                <li>✓ Researching Lucrative Niche Demands</li>
-                <li>✓ High-Conversion Landing Pages</li>
-                <li>✓ Social Media Lead Magnets</li>
-              </ul>
-            </div>
-
-            {/* Pillar 4 */}
-            <div className="pillar-card">
-              <div className="pillar-icon-box gold">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="pillar-svg">
-                  <path d="M11 5L6 9H2v6h4l5 4V5z" />
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" />
-                </svg>
-              </div>
-              <h3>Digital Marketing</h3>
-              <p>Drive highly-targeted traffic that converts and scale advertising campaigns with maximum ROI.</p>
-              <ul className="pillar-list">
-                <li>✓ Direct Response Copywriting</li>
-                <li>✓ Paid Advertising Campaigns (Meta, Google)</li>
-                <li>✓ Funnel Optimization & Analytics tracking</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Founder's Spotlight Section */}
-      <section className="home-section bg-gradient-dark text-light">
-        <div className="home-container">
-          <div className="founder-wrapper">
-            <div className="founder-text-column">
-              <span className="section-tag border-light">OUR MISSION</span>
-              <h2>We Build Builders, Not Theorists</h2>
-              <p className="founder-p">
-                Most educational systems are designed around outdated curricula that prioritize memorization over production. At Amplified Skills, we reject theoretical learning.
-              </p>
-              <p className="founder-p">
-                Every single course and playbook we publish is built upon actual battle-tested experience. We teach you exactly what is making money today in the global digital economy.
-              </p>
-              
-              <div className="founder-pillars-mini">
-                <div className="mini-item">
-                  <div className="mini-check">✓</div>
-                  <div>
-                    <strong>Direct Mentorship</strong>
-                    <span>Get answers directly from executors who actively run digital operations.</span>
-                  </div>
-                </div>
-                <div className="mini-item">
-                  <div className="mini-check">✓</div>
-                  <div>
-                    <strong>USD & Global Scale</strong>
-                    <span>Our courses focus on teaching local builders how to acquire international clients.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="founder-card-column">
-              <div className="founder-glass-card">
-                <div className="quote-icon">“</div>
-                <blockquote>
-                  We don't teach. We guide. Every course is a battle-tested roadmap that we have used ourselves to build high-scale digital operations. If it doesn't generate income, it's not on our platform.
-                </blockquote>
-                <div className="founder-profile">
-                  <img src="/favicon.png" alt="Amplified Team" className="founder-team-logo" />
-                  <div className="founder-meta">
-                    <cite className="founder-name">The Amplified Team</cite>
-                    <span className="founder-title">Elite Mentoring & Playbooks</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Student Testimonials / Outcomes */}
-      <section className="home-section bg-light-gray">
-        <div className="home-container">
-          <div className="section-header animate-slide-up">
-            <span className="section-tag">TESTIMONIALS</span>
-            <h2>Real Success, Real Numbers</h2>
-            <p>Hear from active students who completed the courses and unlocked cash flow.</p>
-          </div>
-
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="t-rating">★★★★★</div>
-              <p className="t-text">
-                "I was highly skeptical at first, but the E-book course changed everything. Within 2 months, I researched a niche, designed a landing page, and generated over ₦250,000 in direct sales. The execution model is incredibly simple."
-              </p>
-              <div className="t-user">
-                <img src="/testimonial_2.png" alt="Amina Y." className="t-user-image" />
-                <div>
-                  <strong>Amina Y.</strong>
-                  <span>E-Book Mastery Student</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="t-rating">★★★★★</div>
-              <p className="t-text">
-                "The software & AI engineering course gave me the exact tools to build a custom automation agency. Instead of coding boilerplate sites, I learned how to connect APIs and build systems. I've already signed two US-based clients."
-              </p>
-              <div className="t-user">
-                <img src="/testimonial_1.png" alt="Chidi O." className="t-user-image" />
-                <div>
-                  <strong>Chidi O.</strong>
-                  <span>Software & AI Engineering Student</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="t-rating">★★★★★</div>
-              <p className="t-text">
-                "High-Ticket Freelancing showed me how to pitch my services in USD. Using their profile templates and client acquisition templates, I closed my first contract on Upwork for $800 in less than 21 days."
-              </p>
-              <div className="t-user">
-                <img src="/testimonial_3.png" alt="Precious E." className="t-user-image" />
-                <div>
-                  <strong>Precious E.</strong>
-                  <span>High-Ticket Freelancing Student</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Accordion FAQs summary */}
-      <section className="home-section bg-surface">
-        <div className="home-container">
-          <div className="section-header animate-slide-up">
-            <span className="section-tag">FAQ</span>
-            <h2>Got Questions? We Have Answers</h2>
-            <p>Clear, direct responses to help you decide on your next course.</p>
-          </div>
-
-          <div className="faq-accordion-box">
-            {[
-              {
-                q: "Are these programs suitable for complete beginners?",
-                a: "Absolutely. Each course begins with basic concepts and builds up. We design our training with direct, actionable playbooks so you won't get lost in complex theoretical jargon."
-              },
-              {
-                q: "Do I need a laptop, or can I use my phone?",
-                a: "You can start learning on either! While writing software is much easier on a PC, several of our courses (like E-Book Mastery and High-Ticket Freelancing) have students earning using just their phones or PC."
-              },
-              {
-                q: "How long do I have access to the courses?",
-                a: "Once you purchase a course, you have lifetime access. This includes all future course updates, playbooks, community threads, and live session recordings."
-              },
-              {
-                q: "Is there support if I get stuck?",
-                a: "Yes. Every student gains access to our community forums where you can ask questions, share your milestone screenshots, and get support from mentors and other students."
-              }
-            ].map((faq, idx) => {
-              const isOpen = activeFaq === idx
-              return (
-                <div key={idx} className={`faq-accordion-item ${isOpen ? 'open' : ''}`}>
-                  <button className="faq-accordion-header" onClick={() => toggleFaq(idx)}>
-                    <span>{faq.q}</span>
-                    <span className="faq-toggle-icon">{isOpen ? '−' : '+'}</span>
-                  </button>
-                  <div className="faq-accordion-content" style={{ maxHeight: isOpen ? '200px' : '0' }}>
-                    <p>{faq.a}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="faq-cta-footer">
-            <p>Have more questions?</p>
-            <Link to="/faq" className="btn-outline font-sm">
-              View Full FAQ Page
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Recommended Homepage Deal Banner */}
-      <div className="home-container" style={{ marginTop: 20 }}>
-        <UpsellWidget placement="homepage" />
-      </div>
-
-      {/* Final Call To Action Banner */}
-      <section className="final-cta-section">
-        <div className="home-container">
-          <div className="final-cta-card">
-            <h2>Ready to Amplify Your Skills?</h2>
-            <p>Gain instant access to our premium courses, dedicated mentoring, and start earning today.</p>
-            <div className="final-cta-actions">
-              <Link to="/products" className="btn-hero-primary glow">
-                Explore Programs Now
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <Link to="/contact" style={{
+                background: '#ff1717',
+                color: '#FFFFFF',
+                padding: '16px 36px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '1rem',
+                textDecoration: 'none',
+                boxShadow: '0 8px 24px rgba(255,23,23,0.4)',
+                transition: 'all 0.25s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                Request A Service ➔
+              </Link>
+              <Link to="/resources" style={{
+                background: '#F7F3F5',
+                color: '#101010',
+                padding: '16px 32px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '1rem',
+                textDecoration: 'none',
+                transition: 'all 0.25s ease',
+                border: '1px solid #E4E4E7'
+              }}>
+                Our Plans & Pricing
               </Link>
             </div>
           </div>
+
+          {/* Hero Visual Card */}
+          <div style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '20px',
+            padding: '36px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+            position: 'relative'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <img 
+                src="/logo.png" 
+                alt="Donzen Accounting Hub Logo" 
+                style={{ height: '56px', width: 'auto', margin: '0 auto 16px', objectFit: 'contain' }} 
+              />
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF' }}>You Think It, We Fix It At Donzen!</h3>
+              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)' }}>Your trusted partner in financial recordkeeping & tax compliance.</p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {[
+                { title: 'Trusted Expertise', desc: 'Knowledgeable years of industry experience across startups, SMEs & corporate sectors.' },
+                { title: 'Real-Time Financial Reports', desc: '24/7 access to your profit & loss statements, balance sheets, and tax reports.' },
+                { title: 'Custom DIY Accounting Tools', desc: 'Custom Excel & QuickBooks templates built specifically for non-accountant business owners.' }
+              ].map((item, idx) => (
+                <div key={idx} style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  padding: '14px 18px',
+                  borderRadius: '12px',
+                  borderLeft: '3px solid #ff1717'
+                }}>
+                  <div style={{ fontWeight: 700, color: '#FFFFFF', fontSize: '0.95rem' }}>{item.title}</div>
+                  <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)' }}>{item.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '24px', textAlign: 'center' }}>
+              <a 
+                href="https://wa.me/message/XUEP2CGZ4FM6E1" 
+                target="_blank" 
+                rel="noreferrer"
+                style={{
+                  color: '#22c55e',
+                  fontWeight: 700,
+                  fontSize: '0.92rem',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                💬 Chat On WhatsApp With Our Team
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Embedded Premium Stylesheet */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .home-layout {
-          min-height: 100vh;
-          font-family: var(--font);
-          background: #ffffff;
-          overflow-x: hidden;
-        }
+      {/* ─── STATEMENT / TAGLINE BAR ─────────────────────────────────── */}
+      <section style={{
+        background: '#ff1717',
+        color: '#FFFFFF',
+        padding: '24px 20px',
+        textAlign: 'center',
+        fontWeight: 800,
+        fontSize: '1.2rem',
+        letterSpacing: '0.5px'
+      }}>
+        At Donzen, We Can Help You Achieve The Best Results In Business Accounting. Our Business Is Your Success!
+      </section>
+
+      {/* ─── 5 CORE OFFERINGS GRID ───────────────────────────────────── */}
+      <section style={{ padding: '90px 24px', background: '#F7F3F5' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          
+          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <span style={{ color: '#ff1717', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.85rem' }}>
+              What We Do Best
+            </span>
+            <h2 style={{ fontSize: '2.4rem', fontWeight: 900, marginTop: '8px', color: '#101010' }}>
+              Our Core Services & Accounting Solutions
+            </h2>
+            <p style={{ maxWidth: '650px', margin: '12px auto 0', color: '#71717A', fontSize: '1.05rem' }}>
+              We are your choice partner with the best experience in providing exceptional and relatable bookkeeping solutions you need to succeed.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '30px'
+          }}>
+            
+            {/* 01. Bookkeeping Services */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '16px',
+              padding: '36px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderTop: '4px solid #ff1717',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ff1717', opacity: 0.85, marginBottom: '12px' }}>01.</div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '14px' }}>
+                  Bookkeeping & Accounting Services for Small Business
+                </h3>
+                <p style={{ color: '#3F3F46', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                  At Donzen Accounting Hub, we offer comprehensive, accurate, and reliable bookkeeping services to help your business stay on top of financial records and make informed decisions.
+                </p>
+              </div>
+              <Link to="/services" style={{ color: '#ff1717', fontWeight: 700, textDecoration: 'none' }}>
+                Read More ➔
+              </Link>
+            </div>
+
+            {/* 02. Experience Program */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '16px',
+              padding: '36px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderTop: '4px solid #101010',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#101010', opacity: 0.85, marginBottom: '12px' }}>02.</div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '14px' }}>
+                  Donzen Accounting Experience Program
+                </h3>
+                <p style={{ color: '#3F3F46', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                  A 30-Day Online Accounting Training and Certification Academy where you learn lifetime practical skills needed in any workplace, with hands-on QuickBooks & Excel training.
+                </p>
+              </div>
+              <Link to="/about" style={{ color: '#ff1717', fontWeight: 700, textDecoration: 'none' }}>
+                Learn More ➔
+              </Link>
+            </div>
+
+            {/* 03. Tools & Resources */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '16px',
+              padding: '36px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderTop: '4px solid #ff1717',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ff1717', opacity: 0.85, marginBottom: '12px' }}>03.</div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '14px' }}>
+                  Accounting Tools & Resources
+                </h3>
+                <p style={{ color: '#3F3F46', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                  Intuitive financial tools designed specifically for small business owners with no accounting background to track income, automate tasks, and remain tax compliant.
+                </p>
+              </div>
+              <Link to="/resources" style={{ color: '#ff1717', fontWeight: 700, textDecoration: 'none' }}>
+                Read More ➔
+              </Link>
+            </div>
+
+            {/* 04. Systems & Procedures */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '16px',
+              padding: '36px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderTop: '4px solid #101010',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div>
+                <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#101010', opacity: 0.85, marginBottom: '12px' }}>04.</div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '14px' }}>
+                  Accounting Systems & Procedures for SMEs
+                </h3>
+                <p style={{ color: '#3F3F46', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                  Customized procedures that streamline financial processes, eliminate errors, prevent internal fraud, and ensure timely financial statement delivery.
+                </p>
+              </div>
+              <Link to="/services" style={{ color: '#ff1717', fontWeight: 700, textDecoration: 'none' }}>
+                Read More ➔
+              </Link>
+            </div>
+
+            {/* 05. Templates */}
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '16px',
+              padding: '36px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+              borderTop: '4px solid #ff1717',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              gridColumn: '1 / -1'
+            }}>
+              <div>
+                <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ff1717', opacity: 0.85, marginBottom: '12px' }}>05.</div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '14px' }}>
+                  Donzen Accounting Templates for Small Business
+                </h3>
+                <p style={{ color: '#3F3F46', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                  Know exactly what’s happening with your business finances. Our custom P&L statements, vendor management, and client management DIY templates eliminate complexity so you can focus on growing your business.
+                </p>
+              </div>
+              <Link to="/resources" style={{ color: '#ff1717', fontWeight: 700, textDecoration: 'none' }}>
+                Learn More ➔
+              </Link>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ─── THREE FEATURE PILLARS ───────────────────────────────────── */}
+      <section style={{ padding: '80px 24px', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '36px'
+          }}>
+            
+            <div style={{
+              background: '#F7F3F5',
+              borderRadius: '16px',
+              padding: '36px',
+              textAlign: 'center',
+              border: '1px solid #E4E4E7'
+            }}>
+              <div style={{ fontSize: '2.8rem', marginBottom: '16px' }}>🎧</div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#101010', marginBottom: '10px' }}>Dedicated Support</h3>
+              <p style={{ color: '#71717A', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Our team of experienced accountants is ready and waiting to help online, on WhatsApp, and over the phone whenever you need advice.
+              </p>
+            </div>
+
+            <div style={{
+              background: '#F7F3F5',
+              borderRadius: '16px',
+              padding: '36px',
+              textAlign: 'center',
+              border: '1px solid #E4E4E7'
+            }}>
+              <div style={{ fontSize: '2.8rem', marginBottom: '16px' }}>📱</div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#101010', marginBottom: '10px' }}>Business On The Go</h3>
+              <p style={{ color: '#71717A', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Take your business anywhere in the world. Collaborate effortlessly with your accountant or bookkeeper to share books securely across devices.
+              </p>
+            </div>
+
+            <div style={{
+              background: '#F7F3F5',
+              borderRadius: '16px',
+              padding: '36px',
+              textAlign: 'center',
+              border: '1px solid #E4E4E7'
+            }}>
+              <div style={{ fontSize: '2.8rem', marginBottom: '16px' }}>🔒</div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#101010', marginBottom: '10px' }}>Secure Cloud Storage</h3>
+              <p style={{ color: '#71717A', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                Safely store and retrieve your business records, invoices, bank reconciliations, and financial statements 24/7 with end-to-end security.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CALL TO ACTION BANNER ───────────────────────────────────── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #101010 0%, #18181B 100%)',
+        color: '#FFFFFF',
+        padding: '80px 24px',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <span style={{ color: '#ff1717', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.85rem' }}>
+            Hello — Make The Right Call
+          </span>
+          <h2 style={{ fontSize: '2.6rem', fontWeight: 900, margin: '16px 0', color: '#FFFFFF' }}>
+            Ready To Streamline Your Business Finances?
+          </h2>
+          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.8)', marginBottom: '36px', lineHeight: 1.6 }}>
+            Join hundreds of African small businesses, startups, and accounting professionals who trust Donzen Accounting Hub for accurate recordkeeping and growth.
+          </p>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/contact" style={{
+              background: '#ff1717',
+              color: '#FFFFFF',
+              padding: '16px 36px',
+              borderRadius: '8px',
+              fontWeight: 700,
+              fontSize: '1rem',
+              textDecoration: 'none',
+              boxShadow: '0 8px 24px rgba(255,23,23,0.4)'
+            }}>
+              Start Today — Get Started
+            </Link>
+            <a href="tel:+2347039999842" style={{
+              background: 'rgba(255,255,255,0.1)',
+              color: '#FFFFFF',
+              padding: '16px 28px',
+              borderRadius: '8px',
+              fontWeight: 700,
+              fontSize: '1rem',
+              textDecoration: 'none',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}>
+              Call Us: +234 703 9999 842
+            </a>
+          </div>
+        </div>
+      </section>
 
-        .home-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-
-        /* ─── BACKGROUND SLIDESHOW ─── */
-        .home-hero {
-          position: relative;
-          min-height: 85vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 120px 0;
-          text-align: center;
-          overflow: hidden;
-          color: white;
-        }
-
-        .hero-slideshow-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-        }
-
-        .hero-slide {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-size: cover;
-          background-position: center;
-          opacity: 0;
-          transition: opacity 1.5s ease-in-out;
-          transform: scale(1.05);
-          animation: zoomSlow 30s infinite alternate;
-        }
-
-        .hero-slide.active {
-          opacity: 0.45;
-        }
-
-        .hero-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(135deg, #050b14 0%, #0c152d 100%);
-          z-index: 2;
-          opacity: 0.80;
-        }
-
-        .hero-content {
-          position: relative;
-          z-index: 3;
-          max-width: 820px;
-        }
-
-        /* Animations */
-        @keyframes zoomSlow {
-          0% { transform: scale(1.02); }
-          100% { transform: scale(1.09); }
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-          animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .animate-slide-up {
-          opacity: 1;
-        }
-
-        /* Hero Text & Badges */
-        .hero-badge-glow {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(37, 99, 235, 0.15);
-          border: 1px solid rgba(37, 99, 235, 0.35);
-          color: #93c5fd;
-          padding: 8px 16px;
-          border-radius: 50px;
-          font-size: 12.5px;
-          font-weight: 700;
-          letter-spacing: 1px;
-          margin-bottom: 28px;
-          box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
-        }
-
-        .badge-dot {
-          width: 8px;
-          height: 8px;
-          background: #3b82f6;
-          border-radius: 50%;
-          box-shadow: 0 0 8px #3b82f6;
-          display: inline-block;
-          animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes pulseGlow {
-          0% { transform: scale(0.9); opacity: 0.7; }
-          50% { transform: scale(1.2); opacity: 1; }
-          100% { transform: scale(0.9); opacity: 0.7; }
-        }
-
-        .hero-title {
-          font-family: var(--font-heading) !important;
-          font-size: clamp(2.6rem, 6.5vw, 4.4rem) !important;
-          font-weight: 900 !important;
-          line-height: 1.15;
-          letter-spacing: -2px;
-          margin-bottom: 24px;
-        }
-
-        .gradient-text {
-          background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-          font-size: 19px;
-          color: #94a3b8;
-          line-height: 1.6;
-          max-width: 680px;
-          margin: 0 auto 40px;
-        }
-
-        .hero-actions {
-          display: flex;
-          gap: 16px;
-          justify-content: center;
-          margin-bottom: 40px;
-        }
-
-        /* Hero Action Buttons */
-        .btn-hero-primary {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #2563eb;
-          color: #ffffff;
-          font-weight: 700;
-          font-size: 16px;
-          padding: 16px 32px;
-          border-radius: 50px;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-hero-primary:hover {
-          background: #1d4ed8;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(37, 99, 235, 0.45);
-        }
-
-        .btn-hero-primary:hover .arrow {
-          transform: translateX(4px);
-        }
-
-        .btn-hero-primary .arrow {
-          transition: transform 0.2s ease;
-        }
-
-        .btn-hero-outline {
-          display: inline-flex;
-          align-items: center;
-          background: rgba(255, 255, 255, 0.05);
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          font-weight: 600;
-          font-size: 16px;
-          padding: 16px 32px;
-          border-radius: 50px;
-          transition: all 0.3s ease;
-        }
-
-        .btn-hero-outline:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .hero-trust-indicator {
-          font-size: 14px;
-          color: #94a3b8;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          padding-top: 24px;
-          display: inline-block;
-        }
-
-        .hero-trust-indicator .stars {
-          color: #f59e0b;
-          font-size: 18px;
-          margin-bottom: 6px;
-          letter-spacing: 2px;
-        }
-
-        /* ─── STATS STRIP ─── */
-        .stats-strip {
-          background: #0b1329;
-          border-top: 1px solid #1e293b;
-          border-bottom: 1px solid #1e293b;
-          padding: 48px 0;
-          color: white;
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 24px;
-          text-align: center;
-        }
-
-        .stats-grid .stat-card {
-          padding: 24px 20px;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          border-radius: 12px;
-          transition: transform 0.3s ease, background 0.3s ease;
-        }
-
-        .stats-grid .stat-card:hover {
-          background: rgba(255, 255, 255, 0.06);
-          transform: translateY(-4px);
-        }
-
-        .stat-value {
-          font-family: var(--font-heading) !important;
-          font-size: clamp(2rem, 4.5vw, 2.7rem);
-          font-weight: 800;
-          background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          margin-bottom: 6px;
-        }
-
-        .stat-label {
-          color: #94a3b8;
-          font-size: 13px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        /* ─── SECTIONS COMMON ─── */
-        .home-section {
-          padding: 96px 0;
-        }
-
-        .bg-gradient-light {
-          background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-        }
-
-        .bg-off-white {
-          background: #f9fafb;
-        }
-
-        .bg-light-gray {
-          background: #f8fafc;
-        }
-
-        .bg-surface {
-          background: #ffffff;
-        }
-
-        .section-header {
-          text-align: center;
-          max-width: 680px;
-          margin: 0 auto 64px;
-        }
-
-        .section-tag {
-          display: inline-block;
-          background: #eff6ff;
-          color: #2563eb;
-          font-size: 11px;
-          font-weight: 800;
-          padding: 5px 12px;
-          border-radius: 4px;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-          margin-bottom: 16px;
-        }
-
-        .section-header h2 {
-          font-family: var(--font-heading) !important;
-          font-size: 38px !important;
-          font-weight: 800 !important;
-          color: #0f172a;
-          margin: 0 0 16px;
-          letter-spacing: -1.2px;
-        }
-
-        .section-header p {
-          font-size: 17.5px;
-          color: #64748b;
-          line-height: 1.6;
-        }
-
-        /* ─── PILLARS GRID ─── */
-        .pillars-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 24px;
-        }
-
-        .pillar-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 32px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .pillar-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-          border-color: #cbd5e1;
-        }
-
-        .pillar-icon-box {
-          width: 52px;
-          height: 52px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 24px;
-        }
-
-        .pillar-icon-box.orange { background: #fff7ed; color: #ea580c; }
-        .pillar-icon-box.green { background: #f0fdf4; color: #16a34a; }
-        .pillar-icon-box.blue { background: #eff6ff; color: #2563eb; }
-        .pillar-icon-box.gold { background: #fffbeb; color: #d97706; }
-
-        .pillar-svg {
-          width: 26px;
-          height: 26px;
-        }
-
-        .pillar-card h3 {
-          font-size: 20px !important;
-          font-weight: 800 !important;
-          color: #0f172a;
-          margin: 0 0 12px;
-        }
-
-        .pillar-card p {
-          color: #64748b;
-          font-size: 14px;
-          line-height: 1.6;
-          margin-bottom: 20px;
-        }
-
-        .pillar-list {
-          border-top: 1px solid #f1f5f9;
-          padding-top: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .pillar-list li {
-          font-size: 13.5px;
-          color: #475569;
-          font-weight: 500;
-        }
-
-        /* ─── PRODUCT BLUEPRINT GRID ─── */
-        .home-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 32px;
-        }
-
-        .premium-product-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .premium-product-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(37, 99, 235, 0.08);
-          border-color: #2563eb;
-        }
-
-        .premium-product-card:hover h3 {
-          color: #2563eb;
-        }
-
-        .product-image-area {
-          position: relative;
-          height: 200px;
-          background: linear-gradient(135deg, #1e3a8a, #0b1329);
-          overflow: hidden;
-        }
-
-        .product-image-area img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.4s ease;
-        }
-
-        .premium-product-card:hover .hover-zoom {
-          transform: scale(1.06);
-        }
-
-        .default-type-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          font-size: 64px;
-        }
-
-        .card-overlays {
-          position: absolute;
-          top: 16px;
-          left: 16px;
-          display: flex;
-          gap: 8px;
-        }
-
-        .type-badge {
-          font-size: 10px;
-          font-weight: 800;
-          padding: 4px 10px;
-          border-radius: 4px;
-          letter-spacing: 0.5px;
-          color: white;
-        }
-
-        .type-badge.course { background: #2563eb; }
-        .type-badge.ebook { background: #16a34a; }
-        .type-badge.discount { background: #dc2626; }
-
-        .product-details-area {
-          padding: 28px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .product-details-area h3 {
-          font-size: 21px !important;
-          font-weight: 800 !important;
-          color: #0f172a;
-          margin: 0 0 12px;
-          line-height: 1.35;
-          transition: color 0.2s ease;
-        }
-
-        .description-preview {
-          font-size: 14.5px;
-          color: #64748b;
-          line-height: 1.6;
-          margin-bottom: 20px;
-          flex: 1;
-        }
-
-        .features-tags-strip {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-
-        .feat-tag {
-          background: #f1f5f9;
-          color: #475569;
-          font-size: 12px;
-          font-weight: 600;
-          padding: 5px 12px;
-          border-radius: 50px;
-        }
-
-        .product-footer-area {
-          padding: 20px 28px;
-          border-top: 1px solid #f1f5f9;
-          background: #f8fafc;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .price-box {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .old-price {
-          font-size: 13px;
-          color: #94a3b8;
-          text-decoration: line-through;
-          line-height: 1;
-          margin-bottom: 2px;
-        }
-
-        .price-tag {
-          font-size: 22px;
-          font-weight: 900;
-          color: #0f172a;
-          line-height: 1;
-        }
-
-        .premium-card-btn {
-          background: rgba(37, 99, 235, 0.08);
-          color: #2563eb;
-          padding: 8px 18px;
-          border-radius: 50px;
-          font-size: 13px;
-          font-weight: 700;
-          transition: all 0.28s ease;
-          display: inline-block;
-        }
-
-        .premium-product-card:hover .premium-card-btn {
-          background: #2563eb;
-          color: #ffffff;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
-
-        /* Skeleton Loading Cards */
-        .skeleton-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          height: 480px;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .skeleton-image {
-          height: 220px;
-          background: #f1f5f9;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .skeleton-body {
-          padding: 28px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .skeleton-line {
-          background: #f1f5f9;
-          border-radius: 4px;
-        }
-
-        .skeleton-line.title {
-          width: 70%;
-          height: 24px;
-          margin-bottom: 8px;
-        }
-
-        .skeleton-line.text {
-          width: 100%;
-          height: 16px;
-        }
-
-        .skeleton-line.tags {
-          width: 50%;
-          height: 14px;
-          margin-top: auto;
-        }
-
-        .skeleton-footer {
-          height: 70px;
-          background: #f8fafc;
-          border-top: 1px solid #f1f5f9;
-        }
-
-        .skeleton-image::after,
-        .skeleton-line::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-          transform: translateX(-100%);
-          animation: loadingShimmer 1.5s infinite;
-        }
-
-        @keyframes loadingShimmer {
-          100% { transform: translateX(100%); }
-        }
-
-        .empty-products {
-          grid-column: 1 / -1;
-          text-align: center;
-          padding: 64px;
-          color: #64748b;
-          font-size: 16px;
-        }
-
-        /* ─── FOUNDER SPOTLIGHT ─── */
-        .bg-gradient-dark {
-          background: linear-gradient(135deg, #0b1329 0%, #050b14 100%);
-          border-top: 1px solid #1e293b;
-        }
-
-        .text-light {
-          color: white;
-        }
-
-        .founder-wrapper {
-          display: grid;
-          grid-template-columns: 1.1fr 0.9fr;
-          gap: 64px;
-          align-items: center;
-        }
-
-        .founder-text-column .section-tag.border-light {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: #93c5fd;
-        }
-
-        .founder-text-column h2 {
-          font-family: var(--font-heading) !important;
-          font-size: 38px !important;
-          font-weight: 800 !important;
-          color: #ffffff;
-          margin-bottom: 24px;
-          letter-spacing: -1px;
-        }
-
-        .founder-p {
-          font-size: 16.5px;
-          color: #94a3b8;
-          line-height: 1.7;
-          margin-bottom: 20px;
-        }
-
-        .founder-pillars-mini {
-          margin-top: 32px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .mini-item {
-          display: flex;
-          gap: 16px;
-        }
-
-        .mini-check {
-          flex-shrink: 0;
-          width: 24px;
-          height: 24px;
-          background: rgba(37, 99, 235, 0.2);
-          border: 1px solid rgba(37, 99, 235, 0.4);
-          color: #3b82f6;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          font-weight: bold;
-        }
-
-        .mini-item strong {
-          display: block;
-          font-size: 15px;
-          color: #ffffff;
-          margin-bottom: 4px;
-        }
-
-        .mini-item span {
-          font-size: 13.5px;
-          color: #94a3b8;
-          line-height: 1.5;
-        }
-
-        .founder-glass-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 24px;
-          padding: 48px;
-          box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
-          position: relative;
-        }
-
-        .quote-icon {
-          font-size: 96px;
-          color: rgba(37, 99, 235, 0.15);
-          font-family: serif;
-          position: absolute;
-          top: 10px;
-          left: 24px;
-          line-height: 1;
-        }
-
-        .founder-glass-card blockquote {
-          font-size: 18.5px;
-          color: #e2e8f0;
-          font-style: italic;
-          line-height: 1.6;
-          position: relative;
-          z-index: 2;
-          margin-bottom: 32px;
-        }
-
-        .founder-profile {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .founder-team-logo {
-          width: 48px;
-          height: 48px;
-          object-fit: contain;
-          background: #0f172a;
-          border-radius: 50%;
-          border: 1.5px solid rgba(255, 255, 255, 0.2);
-          padding: 6px;
-        }
-
-        .founder-meta {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .founder-name {
-          font-weight: 700;
-          color: white;
-          font-style: normal;
-          font-size: 15px;
-        }
-
-        .founder-title {
-          font-size: 13px;
-          color: #64748b;
-        }
-
-        /* ─── TESTIMONIALS ─── */
-        .testimonials-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 32px;
-        }
-
-        .testimonial-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 32px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .t-rating {
-          color: #f59e0b;
-          font-size: 16px;
-          margin-bottom: 16px;
-        }
-
-        .t-text {
-          font-size: 14.5px;
-          color: #475569;
-          line-height: 1.6;
-          margin-bottom: 24px;
-          font-style: italic;
-        }
-
-        .t-user {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          border-top: 1px solid #f1f5f9;
-          padding-top: 16px;
-        }
-
-        .t-user-image {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid #2563eb;
-        }
-
-        .t-user strong {
-          display: block;
-          font-size: 14px;
-          color: #0f172a;
-        }
-
-        .t-user span {
-          font-size: 12.5px;
-          color: #64748b;
-        }
-
-        /* ─── INTERACTIVE ACCORDION FAQS ─── */
-        .faq-accordion-box {
-          max-width: 780px;
-          margin: 0 auto;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .faq-accordion-item {
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          overflow: hidden;
-          transition: all 0.2s ease;
-        }
-
-        .faq-accordion-item.open {
-          border-color: #cbd5e1;
-          background: #ffffff;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-        }
-
-        .faq-accordion-header {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 20px 24px;
-          text-align: left;
-          font-size: 16px;
-          font-weight: 700;
-          color: #0f172a;
-          background: none;
-          border: none;
-          cursor: pointer;
-        }
-
-        .faq-toggle-icon {
-          font-size: 20px;
-          color: #64748b;
-          font-weight: normal;
-        }
-
-        .faq-accordion-content {
-          overflow: hidden;
-          transition: max-height 0.3s ease-out;
-        }
-
-        .faq-accordion-content p {
-          padding: 0 24px 20px;
-          font-size: 14.5px;
-          color: #475569;
-          line-height: 1.6;
-        }
-
-        .faq-cta-footer {
-          text-align: center;
-          margin-top: 48px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .faq-cta-footer p {
-          font-size: 15px;
-          color: #64748b;
-        }
-
-        .font-sm {
-          font-size: 13.5px;
-          padding: 10px 20px;
-        }
-
-        /* ─── FINAL CTA BANNER ─── */
-        .final-cta-section {
-          padding: 0 0 96px 0;
-        }
-
-        .final-cta-card {
-          background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
-          border-radius: 24px;
-          padding: 64px 32px;
-          text-align: center;
-          color: white;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-        }
-
-        .final-cta-card h2 {
-          font-family: var(--font-heading) !important;
-          font-size: 36px !important;
-          font-weight: 850 !important;
-          color: #ffffff;
-          margin-bottom: 16px;
-          letter-spacing: -1px;
-        }
-
-        .final-cta-card p {
-          font-size: 17px;
-          color: #94a3b8;
-          max-width: 580px;
-          margin: 0 auto 32px;
-          line-height: 1.6;
-        }
-
-        .final-cta-actions {
-          display: flex;
-          justify-content: center;
-        }
-
-        .btn-hero-primary.glow {
-          box-shadow: 0 0 30px rgba(37, 99, 235, 0.5);
-        }
-
-        .btn-hero-primary.glow:hover {
-          box-shadow: 0 0 40px rgba(37, 99, 235, 0.7);
-        }
-
-        /* ─── RESPONSIVENESS ─── */
-        @media (max-width: 992px) {
-          .founder-wrapper {
-            grid-template-columns: 1fr;
-            gap: 48px;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .home-hero {
-            padding: 80px 0;
-            min-height: auto;
-          }
-
-          .hero-title {
-            font-size: 32px !important;
-            line-height: 1.25 !important;
-            letter-spacing: -1px !important;
-          }
-
-          .hero-title br {
-            display: none;
-          }
-
-          .hero-subtitle {
-            font-size: 16px !important;
-            line-height: 1.5 !important;
-            margin-bottom: 32px;
-          }
-
-          .hero-actions {
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-          }
-
-          .btn-hero-primary, .btn-hero-outline {
-            width: auto !important;
-            min-width: 240px;
-            text-align: center;
-            justify-content: center;
-          }
-
-          .stats-grid {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-          }
-
-          .stats-grid .stat-card {
-            border-right: none;
-            padding: 20px 16px;
-          }
-
-          .home-section {
-            padding: 64px 0;
-          }
-
-          .section-header h2 {
-            font-size: 30px !important;
-          }
-
-          .founder-text-column h2 {
-            font-size: 30px !important;
-          }
-
-          .founder-glass-card {
-            padding: 32px;
-          }
-
-          .final-cta-card h2 {
-            font-size: 28px !important;
-          }
-        }
-      `}} />
     </div>
   )
 }

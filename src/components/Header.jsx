@@ -136,7 +136,7 @@ export default function Header() {
     <>
       <header className="global-header">
         <Link to="/" className="brand-link" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-          <img src="/logo.png" alt="Amplified Skills" className="header-logo-img" style={{ height: 52, width: 'auto', maxWidth: 220, objectFit: 'contain', objectPosition: 'left center', display: 'block', flexShrink: 0 }} />
+          <img src="/logo.png" alt="Donzen Accounting Hub" className="header-logo-img" style={{ height: 52, width: 'auto', maxWidth: 240, objectFit: 'contain', objectPosition: 'left center', display: 'block', flexShrink: 0 }} />
         </Link>
 
         <div className="header-search-wrapper" ref={dropdownRef} style={{ position: 'relative', flex: 1, maxWidth: '440px' }}>
@@ -147,7 +147,7 @@ export default function Header() {
             </svg>
             <input 
               type="text" 
-              placeholder="Search for courses or resources..." 
+              placeholder="Search services, templates, resources..." 
               value={searchQuery}
               onChange={e => {
                 setSearchQuery(e.target.value)
@@ -156,7 +156,7 @@ export default function Header() {
               onFocus={() => setShowDropdown(true)}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
-                  navigate(`/products?search=${encodeURIComponent(searchQuery)}`)
+                  navigate(`/resources?search=${encodeURIComponent(searchQuery)}`)
                   setShowDropdown(false)
                 }
               }}
@@ -173,11 +173,7 @@ export default function Header() {
                     key={product.id} 
                     className="search-dropdown-item"
                     onClick={() => {
-                      if (product.type === 'ebook') {
-                        navigate('/ebook')
-                      } else {
-                        navigate(`/product/${product.slug || product.id}`)
-                      }
+                      navigate(`/resources`)
                       setSearchQuery('')
                       setShowDropdown(false)
                     }}
@@ -191,9 +187,9 @@ export default function Header() {
                     <div className="search-item-info">
                       <div className="search-item-title">{product.title}</div>
                       <div className="search-item-meta">
-                        <span className="search-item-badge">{product.type === 'course' ? 'Course' : 'E-Book'}</span>
+                        <span className="search-item-badge">{product.type || 'Service'}</span>
                         <span className="search-item-price">
-                          {product.price ? `₦${Number(product.price).toLocaleString()}` : 'Free'}
+                          {product.price ? `₦${Number(product.price).toLocaleString()}` : 'Custom'}
                         </span>
                       </div>
                     </div>
@@ -201,7 +197,7 @@ export default function Header() {
                 ))
               ) : (
                 <div className="search-dropdown-empty">
-                  No courses or resources found for "{searchQuery}"
+                  No accounting services or templates found for "{searchQuery}"
                 </div>
               )}
             </div>
@@ -211,11 +207,10 @@ export default function Header() {
         <nav className="desktop-nav">
           {[
             { label: 'Home', path: '/' },
-            { label: 'Products', path: '/products' },
             { label: 'About Us', path: '/about' },
-            { label: 'FAQs', path: '/faq' },
-            { label: 'Blog', path: '/blog' },
-            { label: 'Contact', path: '/contact' }
+            { label: 'Services', path: '/services' },
+            { label: 'Resources', path: '/resources' },
+            { label: 'Contact Us', path: '/contact' }
           ].map(item => (
             <Link
               key={item.label}
@@ -402,11 +397,11 @@ export default function Header() {
         {/* Nav Links */}
         {[
           { label: 'Home', path: '/', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
-          { label: 'Products', path: '/products', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> },
           { label: 'About Us', path: '/about', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg> },
+          { label: 'Services', path: '/services', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> },
+          { label: 'Resources & Pricing', path: '/resources', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> },
           { label: 'FAQs', path: '/faq', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg> },
-          { label: 'Blog', path: '/blog', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> },
-          { label: 'Contact', path: '/contact', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+          { label: 'Contact Us', path: '/contact', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
           user 
             ? { label: 'My Dashboard', path: '/dashboard', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> }
             : { label: 'Sign In', path: '/login', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> }

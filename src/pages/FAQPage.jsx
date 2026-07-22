@@ -1,290 +1,197 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function FAQPage() {
-  const [openIndex, setOpenIndex] = useState(null)
-  
-  // Persistent Search State
-  const [search, setSearch] = useState(() => {
-    return localStorage.getItem('faq_search_query') || ''
-  })
-  
-  // Persistent Category State
-  const [activeCategory, setActiveCategory] = useState(() => {
-    return localStorage.getItem('faq_active_category') || 'All'
-  })
+  const [openIndex, setOpenIndex] = useState(0)
 
-  useEffect(() => {
-    localStorage.setItem('faq_search_query', search)
-  }, [search])
-
-  useEffect(() => {
-    localStorage.setItem('faq_active_category', activeCategory)
-  }, [activeCategory])
-
-  const faqData = [
+  const faqList = [
     {
-      category: 'General',
-      question: 'What is Amplified Skills and how does it work?',
-      answer: 'Amplified Skills is Precious\' personal solo creator training platform where you can purchase premium blueprints, worksheets, and courses designed to level up your engineering and digital sales capabilities. All materials are instantly unlocked in your student dashboard upon purchase.'
+      question: "About Donzen Accounting Services?",
+      answer: "We strongly encourage small business owners looking for expert bookkeeping and accounting services to look no further. Contact us today to see how we can help you achieve financial success."
     },
     {
-      category: 'Payments',
-      question: 'What payment methods do you support?',
-      answer: 'We process all payments securely via Paystack. You can pay via credit/debit card (Visa, Mastercard, Verve), bank transfer, or USSD code depending on your bank. All digital delivery occurs instantly upon Paystack payment confirmation.'
+      question: "How Do I Access My Account?",
+      answer: "After a complete payment, a confirmation email with details of your business account will be created and sent to you within 48 hours. These services are accessible from anywhere you have access to internet with your devices i.e Desktop, Laptops or Smart Mobile Phones, however, we strongly advise the use of a computer."
     },
     {
-      category: 'Courses',
-      question: 'How do I access my course lessons and blueprints?',
-      answer: 'After a successful payment, simply log into the platform using the email address you purchased with. Your enrolled courses will be listed under the "My Learning" tab on your student dashboard. Click "Start Course" or "Continue Learning" to enter the player.'
+      question: "How long do I have access to my business records and reports online?",
+      answer: "After enrolling, you have unlimited access to your business account for as long as you like – across any and all devices you own provided that you have made monthly payment in advance. The account starts now and never ends! You decide when you start and when you stop or cancel anytime."
     },
     {
-      category: 'Certificates',
-      question: 'How do I earn and verify my completion certificate?',
-      answer: 'When your lesson progress reaches 100% (marking all lessons, quizzes, and modules as completed), the system automatically issues a unique, signed certificate of completion. You can view, download a PDF version, or retrieve a public verification link directly from the "Certificates" tab in your dashboard.'
+      question: "How can I make Payment?",
+      answer: (
+        <div>
+          <p style={{ margin: '0 0 12px' }}>You can proceed to check out and complete your purchase online. Also, you can pay using direct bank transfer into:</p>
+          <div style={{
+            background: 'rgba(255,23,23,0.06)',
+            border: '1px solid rgba(255,23,23,0.2)',
+            borderRadius: '10px',
+            padding: '16px',
+            fontWeight: 600,
+            color: '#101010'
+          }}>
+            <div style={{ color: '#ff1717', fontWeight: 800, marginBottom: '4px' }}>Bank Transfer Account Details:</div>
+            <div>Account Name: <strong>Donzen Accounting Hub</strong></div>
+            <div>Account No: <strong style={{ color: '#ff1717', fontSize: '1.1rem', letterSpacing: '1px' }}>1211575347</strong></div>
+            <div>Bank: <strong>Zenith Bank</strong></div>
+          </div>
+        </div>
+      )
     },
     {
-      category: 'Q&A',
-      question: 'Can I ask questions if I get stuck on a curriculum lesson?',
-      answer: 'Yes! Inside the course player, there is a dedicated "Q&A" sidebar. You can ask questions directly under any lesson. Precious (the instructor) will review student questions and reply directly in the thread. You will receive an in-app notification when an answer is posted.'
+      question: "What if I am unhappy with the services and don't get what I was expecting?",
+      answer: "We would never want you to be unhappy because we invest a ton of time making sure that we fix your recordkeeping, business accounting, and financial reports that you can rely on for making informed business decisions. The financial advisory knowledge you can apply immediately is worth more. If you are unsatisfied with your purchase or have a change of mind, contact us immediately to reach a common ground and resolve our interests."
     },
     {
-      category: 'Coupons',
-      question: 'How do I apply a discount coupon code?',
-      answer: 'During the checkout/payment page, enter your promo coupon code (e.g. AMPLIFIED50) in the promo box and click apply. The checkout price will update dynamically to reflect the discount before you initiate the Paystack payment portal.'
-    },
-    {
-      category: 'Refunds',
-      question: 'What is your refund policy?',
-      answer: 'Since digital courses, ebooks, and blueprints are intangible items delivered instantly upon payment confirmation, all sales are final. Please review our Refund Policy page for more details, or contact support if you encounter technical access issues.'
+      question: "Can I get financial advisory services for free?",
+      answer: "Check our plans and pricing, then choose a plan that gives you access to free advisory services and resources that you are comfortable with accordingly."
     }
   ]
-
-  const categories = ['All', 'General', 'Payments', 'Courses', 'Certificates', 'Q&A', 'Refunds']
-
-  const filteredFaqs = faqData.filter(faq => {
-    const matchesSearch = 
-      faq.question.toLowerCase().includes(search.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(search.toLowerCase())
-    
-    const matchesCategory = 
-      activeCategory === 'All' || 
-      faq.category.toLowerCase() === activeCategory.toLowerCase()
-    
-    return matchesSearch && matchesCategory
-  })
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index)
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#334155', fontFamily: "'Outfit', 'Inter', sans-serif", padding: '80px 20px 80px' }}>
-      <div style={{ maxWidth: 840, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: '#F7F3F5', color: '#101010', fontFamily: 'var(--font)', padding: '80px 20px 90px' }}>
+      <div style={{ maxWidth: 880, margin: '0 auto' }}>
         
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 50 }}>
           <span style={{ 
-            background: 'rgba(37, 99, 235, 0.06)', 
-            color: '#2563eb', 
-            padding: '6px 16px', 
+            background: 'rgba(255, 23, 23, 0.1)', 
+            color: '#ff1717', 
+            padding: '6px 18px', 
             borderRadius: 50, 
-            fontSize: 12, 
-            fontWeight: 700, 
-            letterSpacing: '1px', 
+            fontSize: 13, 
+            fontWeight: 800, 
+            letterSpacing: '1.5px', 
             textTransform: 'uppercase', 
             display: 'inline-block',
-            marginBottom: 20,
-            border: '1px solid rgba(37, 99, 235, 0.15)'
+            marginBottom: 16
           }}>
-            Help Center & FAQs
+            Explore The Latest Updates On Our Services
           </span>
-          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3rem)', fontWeight: 850, letterSpacing: '-1.2px', color: '#0f172a', margin: '0 0 16px', lineHeight: 1.2 }}>
-            Frequently Asked <span style={{ color: '#2563eb' }}>Questions</span>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 900, color: '#101010', margin: '0 0 16px', lineHeight: 1.2 }}>
+            Frequently Asked <span style={{ color: '#ff1717' }}>Questions</span>
           </h1>
-          <p style={{ fontSize: 16, color: '#64748b', maxWidth: 550, margin: '0 auto 32px', lineHeight: 1.6 }}>
-            Quick solutions, onboarding guides, and common answers regarding student enrollment and course playback.
+          <p style={{ fontSize: 16, color: '#71717A', maxWidth: 620, margin: '0 auto', lineHeight: 1.6 }}>
+            Learn more about Donzen Virtual Bookkeeping & Accounting Services, client account access, payments, and advisory.
           </p>
-
-          {/* Search bar */}
-          <div style={{ position: 'relative', maxWidth: 500, margin: '0 auto 30px' }}>
-            <input 
-              type="text"
-              placeholder="Search help topics..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: 12,
-                padding: '14px 16px',
-                fontSize: 14.5,
-                color: '#0f172a',
-                outline: 'none',
-                transition: 'all 0.3s ease',
-                boxSizing: 'border-box',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-              }}
-              onFocus={e => {
-                e.target.style.borderColor = '#2563eb'
-                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.12)'
-              }}
-              onBlur={e => {
-                e.target.style.borderColor = '#e2e8f0'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
-          </div>
-
-          {/* Category tabs */}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => {
-                  setActiveCategory(cat)
-                  setOpenIndex(null)
-                }}
-                style={{
-                  background: activeCategory === cat ? '#2563eb' : '#ffffff',
-                  border: activeCategory === cat ? '1px solid #2563eb' : '1px solid #e2e8f0',
-                  padding: '7px 16px',
-                  borderRadius: 50,
-                  fontSize: 12.5,
-                  fontWeight: activeCategory === cat ? '700' : '600',
-                  color: activeCategory === cat ? '#ffffff' : '#64748b',
-                  transition: 'all 0.2s ease',
-                  cursor: 'pointer',
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.02)'
-                }}
-                onMouseEnter={e => {
-                  if (activeCategory !== cat) {
-                    e.target.style.borderColor = '#cbd5e1'
-                    e.target.style.color = '#0f172a'
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (activeCategory !== cat) {
-                    e.target.style.borderColor = '#e2e8f0'
-                    e.target.style.color = '#64748b'
-                  }
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* FAQ Accordion List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 60 }}>
-          {filteredFaqs.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '48px 20px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 14, boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-              <span style={{ fontSize: 32, display: 'block', marginBottom: 12 }}>🔍</span>
-              <p style={{ color: '#64748b', margin: 0 }}>No help items match your search. Try different keywords.</p>
-            </div>
-          ) : (
-            filteredFaqs.map((faq, idx) => {
-              const isOpen = openIndex === idx
-              return (
-                <div 
-                  key={idx}
+          {faqList.map((faq, idx) => {
+            const isOpen = openIndex === idx
+            return (
+              <div 
+                key={idx}
+                style={{
+                  background: '#ffffff',
+                  border: isOpen ? '1.5px solid #ff1717' : '1px solid #E4E4E7',
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  transition: 'all 0.25s ease',
+                  boxShadow: isOpen ? '0 8px 24px rgba(255, 23, 23, 0.08)' : '0 2px 6px rgba(0, 0, 0, 0.02)'
+                }}
+              >
+                <button
+                  onClick={() => toggleAccordion(idx)}
                   style={{
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: 12,
-                    overflow: 'hidden',
-                    transition: 'all 0.25s ease',
-                    boxShadow: isOpen ? '0 4px 20px rgba(0, 0, 0, 0.04)' : '0 1px 3px rgba(0, 0, 0, 0.02)'
+                    width: '100%',
+                    padding: '20px 24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    textAlign: 'left',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#101010',
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
+                    gap: 16
                   }}
                 >
-                  <button
-                    onClick={() => toggleAccordion(idx)}
-                    style={{
-                      width: '100%',
-                      padding: '20px 24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      textAlign: 'left',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#0f172a',
-                      fontSize: 16,
-                      fontWeight: 700,
-                      gap: 16
-                    }}
-                  >
-                    <span>{faq.question}</span>
-                    <span style={{
-                      color: isOpen ? '#2563eb' : '#64748b',
-                      fontSize: 20,
-                      fontWeight: '300',
-                      transition: 'transform 0.25s ease',
-                      transform: isOpen ? 'rotate(45deg)' : 'none',
-                      display: 'inline-block',
-                      lineHeight: 1
-                    }}>
-                      +
-                    </span>
-                  </button>
-
-                  <div style={{
-                    maxHeight: isOpen ? 250 : 0,
-                    overflow: 'hidden',
-                    transition: 'max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    background: '#f8fafc'
+                  <span>{faq.question}</span>
+                  <span style={{
+                    color: isOpen ? '#ff1717' : '#71717A',
+                    fontSize: 22,
+                    fontWeight: '700',
+                    transition: 'transform 0.25s ease',
+                    transform: isOpen ? 'rotate(45deg)' : 'none',
+                    display: 'inline-block',
+                    lineHeight: 1
                   }}>
-                    <div style={{ padding: '0 24px 20px', color: '#475569', fontSize: 14.5, lineHeight: 1.7, borderTop: '1px solid #e2e8f0', paddingTop: 12 }}>
-                      {faq.answer}
-                    </div>
+                    +
+                  </span>
+                </button>
+
+                {isOpen && (
+                  <div style={{
+                    padding: '0 24px 22px',
+                    color: '#3F3F46',
+                    fontSize: 15,
+                    lineHeight: 1.7,
+                    borderTop: '1px solid #F4F4F5',
+                    paddingTop: 16
+                  }}>
+                    {faq.answer}
                   </div>
-                </div>
-              )
-            })
-          )}
+                )}
+              </div>
+            )
+          })}
         </div>
 
-        {/* Contact Banner */}
+        {/* Contact CTA */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 
-          border: '1px solid rgba(37, 99, 235, 0.1)', 
-          borderRadius: 16, 
-          padding: '40px', 
+          background: 'linear-gradient(135deg, #101010 0%, #18181B 100%)', 
+          borderRadius: 18, 
+          padding: '44px 32px', 
           textAlign: 'center',
-          boxShadow: '0 10px 30px rgba(37, 99, 235, 0.15)'
+          color: '#FFFFFF',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.15)',
+          borderBottom: '3px solid #ff1717'
         }}>
-          <h3 style={{ fontSize: 20, color: '#ffffff', fontWeight: 800, margin: '0 0 10px' }}>Still need assistance?</h3>
-          <p style={{ color: '#bfdbfe', fontSize: 14.5, margin: '0 0 24px', lineHeight: 1.6, maxWidth: 500, marginInline: 'auto' }}>
-            Our support team is always available to assist. Drop a line directly and we will get back to you within 24 hours.
+          <h3 style={{ fontSize: 22, color: '#ffffff', fontWeight: 900, margin: '0 0 10px' }}>Still Have Questions?</h3>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15, margin: '0 0 24px', lineHeight: 1.6, maxWidth: 540, marginInline: 'auto' }}>
+            Our team is ready and waiting to help online and on the phone. Reach out directly for personalized guidance.
           </p>
-          <Link 
-            to="/contact" 
-            style={{ 
-              background: '#ffffff', 
-              color: '#1e40af', 
-              padding: '12px 28px', 
-              borderRadius: 8, 
-              fontWeight: 700, 
-              fontSize: 14.5, 
-              textDecoration: 'none',
-              display: 'inline-block',
-              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
-              transition: 'transform 0.2s, background-color 0.2s'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.backgroundColor = '#f8fafc'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'none'
-              e.currentTarget.style.backgroundColor = '#ffffff'
-            }}
-          >
-            Contact our team
-          </Link>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link 
+              to="/contact" 
+              style={{ 
+                background: '#ff1717', 
+                color: '#ffffff', 
+                padding: '14px 32px', 
+                borderRadius: 8, 
+                fontWeight: 800, 
+                fontSize: 15, 
+                textDecoration: 'none',
+                boxShadow: '0 6px 20px rgba(255,23,23,0.3)'
+              }}
+            >
+              Contact Our Team
+            </Link>
+            <a 
+              href="https://wa.me/message/XUEP2CGZ4FM6E1" 
+              target="_blank" 
+              rel="noreferrer"
+              style={{ 
+                background: '#22c55e', 
+                color: '#ffffff', 
+                padding: '14px 28px', 
+                borderRadius: 8, 
+                fontWeight: 800, 
+                fontSize: 15, 
+                textDecoration: 'none'
+              }}
+            >
+              WhatsApp Support 💬
+            </a>
+          </div>
         </div>
 
       </div>

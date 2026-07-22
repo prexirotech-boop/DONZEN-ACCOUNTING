@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-const WA_NUMBER = '2347041418304'
+const WA_DIRECT_URL = 'https://wa.me/message/XUEP2CGZ4FM6E1'
+const WA_PHONE = '2347039999842'
 
 export default function WhatsAppWidget() {
   const location = useLocation()
@@ -14,7 +15,6 @@ export default function WhatsAppWidget() {
   // Slide in after 2 seconds
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 2000)
-    // Stop pulse after 8s
     const p = setTimeout(() => setPulse(false), 8000)
     return () => { clearTimeout(t); clearTimeout(p) }
   }, [])
@@ -23,10 +23,10 @@ export default function WhatsAppWidget() {
     e.preventDefault()
     const cleanMsg = message.trim()
     const defaultMsg = isCheckout 
-      ? "Hi! I need help with my payment on the checkout page." 
-      : "Hi! I have a question about Amplified Skills."
+      ? "Hi Donzen Accounting! I need help with my payment / subscription." 
+      : "Hi Donzen Accounting Hub! I would like to inquire about your bookkeeping and accounting services."
     const finalMsg = cleanMsg ? encodeURIComponent(cleanMsg) : encodeURIComponent(defaultMsg)
-    const url = `https://wa.me/${WA_NUMBER}?text=${finalMsg}`
+    const url = `${WA_DIRECT_URL}?text=${finalMsg}`
     window.open(url, '_blank')
     setMessage('')
     setIsOpen(false)
@@ -42,60 +42,48 @@ export default function WhatsAppWidget() {
           right: 28,
           width: 350,
           maxWidth: 'calc(100vw - 56px)',
-          height: 400,
+          height: 410,
           background: '#fff',
           borderRadius: 16,
-          boxShadow: '0 12px 32px rgba(5,11,20,0.18), 0 2px 12px rgba(0,0,0,0.08)',
+          boxShadow: '0 12px 32px rgba(16,16,16,0.25), 0 2px 12px rgba(0,0,0,0.1)',
           display: 'flex',
           flexDirection: 'column',
           zIndex: 9999,
           fontFamily: "var(--font)",
           overflow: 'hidden',
-          border: '1.5px solid var(--n200)',
+          border: '1.5px solid #E4E4E7',
           animation: 'widgetFadeIn 0.25s ease-out'
         }}>
           {/* Header */}
           <div style={{
-            background: 'linear-gradient(135deg, var(--g900), var(--g800))',
+            background: 'linear-gradient(135deg, #101010, #18181B)',
             color: '#fff',
             padding: '16px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            position: 'relative'
+            position: 'relative',
+            borderBottom: '2px solid #ff1717'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {/* Favicon Avatar */}
+              {/* Logo Mark Avatar */}
               <div style={{ position: 'relative', width: 44, height: 44 }}>
                 <img 
-                  src="/favicon.png" 
-                  alt="Amplified Skills" 
+                  src="/favicon.svg" 
+                  alt="Donzen Accounting Hub" 
                   style={{
                     width: '100%',
                     height: '100%',
                     borderRadius: '50%',
                     background: '#fff',
-                    objectFit: 'cover',
-                    border: '1px solid rgba(255,255,255,0.2)'
+                    padding: '4px',
+                    objectFit: 'contain',
+                    border: '1px solid rgba(255,23,23,0.3)'
                   }}
                   onError={e => {
-                    // Fallback in case favicon doesn't load/exist
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextSibling.style.display = 'flex';
+                    e.currentTarget.src = '/logo.png'
                   }}
                 />
-                <div style={{
-                  display: 'none',
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  background: 'var(--gold)',
-                  color: '#fff',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 800,
-                  fontSize: '1.2rem'
-                }}>AS</div>
                 <span style={{
                   position: 'absolute',
                   bottom: 0,
@@ -104,13 +92,13 @@ export default function WhatsAppWidget() {
                   height: 12,
                   borderRadius: '50%',
                   background: '#22c55e',
-                  border: '2px solid var(--g900)'
+                  border: '2px solid #101010'
                 }} />
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 700, color: '#fff' }}>Amplified Support</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  Online (Replies instantly)
+                <h4 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 700, color: '#fff' }}>Donzen Support</h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: '#ff1717', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600 }}>
+                  ● Replies instantly
                 </p>
               </div>
             </div>
@@ -137,8 +125,8 @@ export default function WhatsAppWidget() {
           {/* Messages Area */}
           <div style={{
             flex: 1,
-            background: '#f8fafc',
-            backgroundImage: 'radial-gradient(#cbd5e1 0.75px, #f8fafc 0.75px)',
+            background: '#F7F3F5',
+            backgroundImage: 'radial-gradient(#e4e4e7 0.75px, #F7F3F5 0.75px)',
             backgroundSize: '15px 15px',
             padding: 20,
             display: 'flex',
@@ -149,23 +137,23 @@ export default function WhatsAppWidget() {
             {/* Greeting Bubble */}
             <div style={{
               background: '#fff',
-              border: '1px solid var(--n200)',
+              border: '1px solid #e4e4e7',
               borderRadius: '0px 14px 14px 14px',
-              padding: '12px 16px',
-              maxWidth: '85%',
+              padding: '14px 16px',
+              maxWidth: '90%',
               alignSelf: 'flex-start',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.03)'
+              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
             }}>
-              <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--n800)', lineHeight: 1.5 }}>
-                {isCheckout ? "Hi there! 👋 Need help with your payment?" : "Hi there! 👋 Welcome to Amplified Skills."}
+              <p style={{ margin: 0, fontSize: '0.86rem', color: '#101010', lineHeight: 1.5, fontWeight: 600 }}>
+                {isCheckout ? "Hi there! 👋 Need help with your booking or template purchase?" : "Welcome to Donzen Accounting Hub! 👋"}
               </p>
-              <p style={{ margin: '8px 0 0', fontSize: '0.85rem', color: 'var(--n800)', lineHeight: 1.5 }}>
+              <p style={{ margin: '8px 0 0', fontSize: '0.84rem', color: '#3f3f46', lineHeight: 1.5 }}>
                 {isCheckout 
-                  ? "Let us know if you're experiencing any issues with your checkout or payment, and we'll help you complete your purchase right away."
-                  : "How can we help you build your digital skills or resolve course payments today?"
+                  ? "Reach out to our team directly on WhatsApp for payment support and instant verification."
+                  : "How can we assist your business bookkeeping, financial statements, CAC registration, or tax accounting today?"
                 }
               </p>
-              <span style={{ display: 'block', textAlign: 'right', fontSize: '0.7rem', color: 'var(--n400)', marginTop: 6 }}>
+              <span style={{ display: 'block', textAlign: 'right', fontSize: '0.7rem', color: '#a1a1aa', marginTop: 6 }}>
                 Just now
               </span>
             </div>
@@ -177,7 +165,7 @@ export default function WhatsAppWidget() {
             style={{
               padding: 12,
               background: '#fff',
-              borderTop: '1px solid var(--n200)',
+              borderTop: '1px solid #e4e4e7',
               display: 'flex',
               alignItems: 'center',
               gap: 8
@@ -190,7 +178,7 @@ export default function WhatsAppWidget() {
               onChange={e => setMessage(e.target.value)}
               style={{
                 flex: 1,
-                border: '1.5px solid var(--n200)',
+                border: '1.5px solid #d4d4d8',
                 borderRadius: 24,
                 padding: '10px 16px',
                 fontSize: '0.86rem',
@@ -198,13 +186,13 @@ export default function WhatsAppWidget() {
                 transition: 'border-color 0.2s',
                 fontFamily: 'inherit'
               }}
-              onFocus={e => e.currentTarget.style.borderColor = 'var(--g500)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'var(--n200)'}
+              onFocus={e => e.currentTarget.style.borderColor = '#ff1717'}
+              onBlur={e => e.currentTarget.style.borderColor = '#d4d4d8'}
             />
             <button 
               type="submit"
               style={{
-                background: 'linear-gradient(135deg, var(--g600), var(--g500))',
+                background: '#ff1717',
                 border: 'none',
                 color: '#fff',
                 width: 40,
@@ -214,7 +202,7 @@ export default function WhatsAppWidget() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+                boxShadow: '0 2px 8px rgba(255,23,23,0.4)',
                 transition: 'transform 0.2s',
                 flexShrink: 0
               }}
@@ -242,11 +230,11 @@ export default function WhatsAppWidget() {
           width: 56,
           height: 56,
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--g600), var(--g500))',
+          background: '#ff1717',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(37,99,235,0.45), 0 2px 8px rgba(0,0,0,0.18)',
+          boxShadow: '0 4px 20px rgba(255,23,23,0.5), 0 2px 8px rgba(0,0,0,0.2)',
           zIndex: 9998,
           border: 'none',
           cursor: 'pointer',
@@ -268,7 +256,7 @@ export default function WhatsAppWidget() {
             />
             <path
               d="M16 4.5C9.596 4.5 4.5 9.596 4.5 16c0 2.24.628 4.333 1.72 6.117l.282.47-1.09 3.97 4.086-1.072.453.265A11.456 11.456 0 0016 27.5c6.404 0 11.5-5.096 11.5-11.5S22.404 4.5 16 4.5z"
-              fill="var(--g500)"
+              fill="#101010"
             />
             <path
               d="M12.572 10.5c-.322 0-.657.008-.946.644-.29.635-1.11 2.72-1.11 3.329 0 .608.32 1.215.64 1.62.322.406 1.736 2.694 4.26 3.683 2.105.821 2.525.658 2.98.616.453-.04 1.463-.598 1.67-1.175.208-.578.208-1.073.145-1.175-.06-.1-.225-.16-.474-.28-.25-.12-1.463-.722-1.69-.804-.225-.08-.388-.12-.552.12-.163.24-.633.804-.775.968-.143.162-.288.182-.537.06-.25-.12-1.054-.39-2.008-1.24-.742-.663-1.244-1.481-1.39-1.73-.147-.25-.016-.385.108-.51.112-.112.25-.29.375-.436.124-.145.165-.25.248-.414.08-.163.04-.307-.02-.43-.06-.12-.542-1.326-.75-1.812-.19-.455-.39-.395-.552-.402-.143-.007-.307-.009-.47-.009z"
@@ -283,7 +271,7 @@ export default function WhatsAppWidget() {
             position: 'absolute',
             inset: -4,
             borderRadius: '50%',
-            border: '2px solid rgba(37,99,235,0.5)',
+            border: '2px solid rgba(255,23,23,0.5)',
             animation: 'waPulse 1.6s ease-out infinite',
             pointerEvents: 'none'
           }} />

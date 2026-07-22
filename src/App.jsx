@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
+import ServicesPage from './pages/ServicesPage'
+import PricingPage from './pages/PricingPage'
 import ProductsPage from './pages/ProductsPage'
 import EbookSalesPage from './pages/EbookSalesPage'
 import PlaybookSalesPage from './pages/PlaybookSalesPage'
@@ -30,7 +32,6 @@ import LMSDashboard from './pages/LMSDashboard'
 import LMSCourse from './pages/LMSCourse'
 import AccountPage from './pages/AccountPage'
 import AdminDashboard from './pages/AdminDashboard'
-import BlogPage from './pages/BlogPage'
 import FAQPage from './pages/FAQPage'
 import WhatsAppWidget from './components/WhatsAppWidget'
 
@@ -52,64 +53,25 @@ function ScrollToTop() {
 
 function AppLayout() {
   const location = useLocation()
-  const [webinarWhatsAppActive, setWebinarWhatsAppActive] = useState(false)
   
   // Track PageView on location changes for Facebook Pixel & DB Analytics
   useEffect(() => {
     trackEvent('page_view')
   }, [location])
 
-  // Timer to enable WhatsApp widget on webinar page after 55 minutes (persisted via localStorage start time)
-  useEffect(() => {
-    if (location.pathname.startsWith('/webinar')) {
-      let startTime = localStorage.getItem('webinar_start_time')
-      if (!startTime) {
-        startTime = Date.now().toString()
-        localStorage.setItem('webinar_start_time', startTime)
-      }
-
-      const startTimeMs = parseInt(startTime, 10)
-      const elapsed = Date.now() - startTimeMs
-      const targetTime = 55 * 60 * 1000
-
-      if (elapsed >= targetTime) {
-        setWebinarWhatsAppActive(true)
-      } else {
-        const remaining = targetTime - elapsed
-        const timer = setTimeout(() => {
-          setWebinarWhatsAppActive(true)
-        }, remaining)
-        return () => clearTimeout(timer)
-      }
-    } else {
-      setWebinarWhatsAppActive(false)
-    }
-  }, [location.pathname])
-
-  // Affiliate referral tracking disabled for now
-  
   const hideHeaderFooter = 
     location.pathname.startsWith('/admin') || 
     location.pathname.startsWith('/dashboard') || 
     location.pathname.startsWith('/course/') ||
     location.pathname.startsWith('/account') ||
-    location.pathname.startsWith('/free-training') ||
-    location.pathname.startsWith('/freelance-web-design-lander') ||
-    location.pathname.startsWith('/webinar') ||
-    location.pathname.startsWith('/the-pricing-and-negotiation-playbook') ||
-    location.pathname.startsWith('/pricing-negotiation-playbook') ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
     location.pathname === '/forgot-password' ||
     location.pathname === '/reset-password' ||
     location.pathname === '/setup-account'
 
-  // WhatsApp widget: show in checkout page, course learning center, user dashboard, and webinar page (after 15 mins)
-  const showWhatsApp = 
-    location.pathname.startsWith('/checkout') || 
-    location.pathname.startsWith('/course/') || 
-    location.pathname.startsWith('/dashboard') ||
-    (location.pathname.startsWith('/webinar') && webinarWhatsAppActive)
+  // Always show WhatsApp widget on public pages and checkout
+  const showWhatsApp = !location.pathname.startsWith('/admin')
 
   const isDashboard = 
     location.pathname.startsWith('/admin') || 
@@ -127,17 +89,15 @@ function AppLayout() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/free-training" element={<LandingPage />} />
-        <Route path="/freelance-web-design-lander" element={<LandingPage />} />
-        <Route path="/webinar" element={<WebinarPage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/product/:productId" element={<ProductDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/ebook" element={<EbookSalesPage />} />
-        <Route path="/the-n50k-blueprint" element={<EbookSalesPage />} />
-        <Route path="/the-pricing-and-negotiation-playbook" element={<PlaybookSalesPage />} />
-        <Route path="/pricing-negotiation-playbook" element={<PlaybookSalesPage />} />
-        <Route path="/course" element={<SalesPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/resources" element={<PricingPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/faq" element={<FAQPage />} />
+        
+        <Route path="/products" element={<PricingPage />} />
+        <Route path="/product/:productId" element={<ProductDetailsPage />} />
         <Route path="/checkout" element={<PaymentPage />} />
         <Route path="/success" element={<ThankYouPage />} />
         <Route path="/setup-account" element={<SetPasswordPage />} />
@@ -154,19 +114,14 @@ function AppLayout() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund" element={<RefundPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/faq" element={<FAQPage />} />
-        <Route path="/affiliate" element={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#050b14', color: '#fff' }}><h2>Affiliate System is temporarily disabled</h2></div>} />
 
         {/* Dynamic / Auto-registered user created pages */}
         {getPages().map(page => {
           const staticPaths = [
-            '/', '/free-training', '/freelance-web-design-lander', '/products', '/product/:productId',
-            '/about', '/ebook', '/course', '/checkout', '/success', '/setup-account', '/login',
-            '/register', '/forgot-password', '/reset-password', '/dashboard', '/course/:courseId',
-            '/course/:courseId/:lessonId', '/account', '/admin/*', '/terms', '/privacy', '/refund',
-            '/contact', '/blog', '/faq', '/the-n50k-blueprint', '/the-pricing-and-negotiation-playbook', '/pricing-negotiation-playbook'
+            '/', '/services', '/pricing', '/resources', '/about', '/checkout', '/success',
+            '/setup-account', '/login', '/register', '/forgot-password', '/reset-password',
+            '/dashboard', '/course/:courseId', '/account', '/admin/*', '/terms', '/privacy',
+            '/refund', '/contact', '/faq'
           ]
           if (staticPaths.includes(page.path)) return null;
           return <Route key={page.path} path={page.path} element={<page.component />} />

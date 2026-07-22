@@ -12,8 +12,7 @@ export default function Footer() {
     '/login',
     '/forgot-password',
     '/reset-password',
-    '/checkout',
-    '/free-training'
+    '/checkout'
   ]
 
   const shouldHide = hideFooterOn.some(path => location.pathname === path) || location.pathname.startsWith('/course')
@@ -33,14 +32,13 @@ export default function Footer() {
 
   return (
     <footer style={{
-      background: 'linear-gradient(180deg, #030712 0%, #0b1329 100%)',
-      borderTop: '1px solid rgba(255,255,255,0.05)',
+      background: 'linear-gradient(180deg, #101010 0%, #050505 100%)',
+      borderTop: '1px solid rgba(255,23,23,0.15)',
       fontFamily: 'var(--font)',
       position: 'relative',
       overflow: 'hidden',
       color: '#f8fafc'
     }}>
-
 
       {/* Modern Ambient Radial Glow Spotlights */}
       <div style={{
@@ -49,17 +47,7 @@ export default function Footer() {
         left: '5%',
         width: '450px',
         height: '450px',
-        background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%)',
-        pointerEvents: 'none',
-        zIndex: 1
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-150px',
-        right: '5%',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255,23,23,0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
         zIndex: 1
       }} />
@@ -68,80 +56,94 @@ export default function Footer() {
       <div style={{
         position: 'relative',
         zIndex: 2,
-        maxWidth: 1200,
+        maxWidth: 1240,
         margin: '0 auto',
-        padding: '80px 40px 48px'
+        padding: '70px 30px 40px'
       }}>
         {/* Footer Navigation & Brand Columns */}
         <div className="footer-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(280px, 2.5fr) 1.2fr 1.2fr 2fr',
-          gap: '64px 48px'
+          gridTemplateColumns: 'minmax(280px, 1.8fr) 1fr 1fr 1.6fr',
+          gap: '48px 36px'
         }}>
           
           {/* Column 1: Brand & Bio */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {/* Logo Wrapper to prevent stretching */}
+            {/* Logo Wrapper */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-start',
-              height: 48,
+              height: 52,
               width: '100%',
               flexShrink: 0
             }}>
               <img
                 src="/logo.png"
-                alt="Amplified Skills"
+                alt="Donzen Accounting Hub"
                 onClick={scrollToTop}
                 style={{
                   height: '100%',
                   width: 'auto',
-                  maxWidth: '180px',
+                  maxWidth: '220px',
                   objectFit: 'contain',
                   cursor: 'pointer',
-                  filter: 'brightness(0) invert(1) drop-shadow(0 2px 4px rgba(255,255,255,0.05))',
+                  filter: 'drop-shadow(0 2px 8px rgba(255,23,23,0.15))',
                   transition: 'opacity 0.2s'
                 }}
-                onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
-                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
               />
             </div>
 
             <p style={{
               fontSize: '14px',
-              color: 'rgba(255,255,255,0.5)',
-              lineHeight: 1.8,
-              maxWidth: 320,
+              color: 'rgba(255,255,255,0.7)',
+              lineHeight: 1.7,
               margin: 0
             }}>
-              Accelerating professional careers through elite, masterclass-level training modules and actionable blueprints.
+              A bookkeeping firm and community dedicated to fostering the right skills, principles, and commitments for SME and corporate financial advancement. <strong>We Are Bookkeeping For Africa.</strong>
             </p>
 
             {/* Social Icons */}
-            <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+            <div style={{ display: 'flex', gap: 12, marginTop: 4 }}>
               {[
-                { label: 'Instagram', url: '#', svg: <><rect x="2" y="2" width="20" height="20" rx="5" strokeWidth="1.8"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" strokeWidth="1.8"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" strokeWidth="2.5" strokeLinecap="round"/></> },
-                { label: 'X', url: '#', svg: <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.213 5.567L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" fill="currentColor" strokeWidth="0"/> },
-                { label: 'YouTube', url: '#', svg: <><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" strokeWidth="1.8"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></> },
-                { label: 'LinkedIn', url: '#', svg: <><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" strokeWidth="1.8"/><rect x="2" y="9" width="4" height="12" strokeWidth="1.8"/><circle cx="4" cy="4" r="2" strokeWidth="1.8"/></> }
-              ].map(({ label, url, svg }) => (
-                <a key={label} href={url} aria-label={label} className="footer-social-link"
-                   style={{
-                     width: 36,
-                     height: 36,
-                     borderRadius: '50%',
-                     background: 'rgba(255,255,255,0.03)',
-                     border: '1px solid rgba(255,255,255,0.08)',
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     color: 'rgba(255,255,255,0.5)',
-                     textDecoration: 'none',
-                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-                   }}
+                { 
+                  label: 'Facebook', 
+                  url: 'https://www.facebook.com/donzenaccountinghub', 
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> 
+                },
+                { 
+                  label: 'Instagram', 
+                  url: 'https://www.instagram.com/donzenaccountinghub/', 
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> 
+                },
+                { 
+                  label: 'WhatsApp', 
+                  url: 'https://wa.me/message/XUEP2CGZ4FM6E1', 
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> 
+                }
+              ].map(({ label, url, icon }) => (
+                <a 
+                  key={label} 
+                  href={url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label={label} 
+                  className="footer-social-link"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,23,23,0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ff1717',
+                    textDecoration: 'none',
+                    transition: 'all 0.25s ease'
+                  }}
                 >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor">{svg}</svg>
+                  {icon}
                 </a>
               ))}
             </div>
@@ -150,61 +152,25 @@ export default function Footer() {
           {/* Column 2: Quick Links */}
           <div>
             <h4 style={{
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 700,
-              color: 'rgba(255,255,255,0.3)',
+              color: '#ff1717',
               textTransform: 'uppercase',
               letterSpacing: '2px',
-              marginBottom: 20,
-              fontFamily: 'var(--font-sub)'
-            }}>Menu</h4>
+              marginBottom: 20
+            }}>Navigation</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
                 { label: 'Home', path: '/' },
-                { label: 'Products', path: '/products' },
                 { label: 'About Us', path: '/about' },
+                { label: 'Services', path: '/services' },
+                { label: 'Resources & Pricing', path: '/resources' },
                 { label: 'FAQs', path: '/faq' },
-                { label: 'Blog', path: '/blog' },
-                { label: 'Contact', path: '/contact' },
+                { label: 'Contact Us', path: '/contact' }
               ].map(({ label, path }) => (
                 <Link key={label} to={path} onClick={scrollToTop} className="footer-nav-link"
                   style={{
-                    color: 'rgba(255,255,255,0.45)',
-                    fontSize: '14px',
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    transition: 'all 0.2s ease',
-                    position: 'relative'
-                  }}
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 3: Legal & Support */}
-          <div>
-            <h4 style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'rgba(255,255,255,0.3)',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-              marginBottom: 20,
-              fontFamily: 'var(--font-sub)'
-            }}>Legal</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[
-                { label: 'Terms of Service', path: '/terms' },
-                { label: 'Privacy Policy', path: '/privacy' },
-                { label: 'Refund Policy', path: '/refund' },
-                { label: 'Student Support', path: '/contact' },
-              ].map(({ label, path }) => (
-                <Link key={label} to={path} onClick={scrollToTop} className="footer-nav-link"
-                  style={{
-                    color: 'rgba(255,255,255,0.45)',
+                    color: 'rgba(255,255,255,0.7)',
                     fontSize: '14px',
                     textDecoration: 'none',
                     display: 'inline-flex',
@@ -218,217 +184,152 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 4: Newsletter */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Column 3: Direct Bank Details & Legal */}
+          <div>
+            <h4 style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: '#ff1717',
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+              marginBottom: 20
+            }}>Direct Payment</h4>
+            
+            <div style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,23,23,0.2)',
+              borderRadius: 10,
+              padding: 14,
+              fontSize: '13px',
+              color: '#e2e8f0',
+              lineHeight: 1.6,
+              marginBottom: 20
+            }}>
+              <div style={{ fontWeight: 700, color: '#ff1717', marginBottom: 4 }}>Zenith Bank Transfer</div>
+              <div>Account Name: <strong>Donzen Accounting Hub</strong></div>
+              <div>Account No: <strong style={{ color: '#fff', fontSize: '14px', letterSpacing: '1px' }}>1211575347</strong></div>
+              <div>Bank: <strong>Zenith Bank</strong></div>
+            </div>
+
             <h4 style={{
               fontSize: '11px',
               fontWeight: 700,
-              color: 'rgba(255,255,255,0.3)',
+              color: 'rgba(255,255,255,0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginBottom: 10
+            }}>Legal Policies</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[
+                { label: 'Terms of Service', path: '/terms' },
+                { label: 'Privacy Policy', path: '/privacy' },
+                { label: 'Refund Policy', path: '/refund' }
+              ].map(({ label, path }) => (
+                <Link key={label} to={path} onClick={scrollToTop} className="footer-nav-link"
+                  style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', textDecoration: 'none' }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Column 4: Contact & Google Map Embed */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <h4 style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: '#ff1717',
               textTransform: 'uppercase',
               letterSpacing: '2px',
-              marginBottom: 4,
-              fontFamily: 'var(--font-sub)'
-            }}>Stay Informed</h4>
-            <p style={{
-              fontSize: '13px',
-              color: 'rgba(255,255,255,0.4)',
-              lineHeight: 1.6,
-              margin: 0
-            }}>
-              Join our mailing list to receive exclusive pricing codes, course updates, and skill-building guides.
-            </p>
+              marginBottom: 4
+            }}>Contact Us</h4>
             
-            {subscribed ? (
-              <div style={{
-                background: 'rgba(16,185,129,0.06)',
-                border: '1px solid rgba(16,185,129,0.2)',
-                borderRadius: 8,
-                padding: '12px 16px',
-                color: '#34d399',
-                fontSize: '13px',
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                animation: 'fadeIn 0.3s ease-out'
-              }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span>Awesome! Check your inbox soon.</span>
+            <div style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.85)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                <span style={{ color: '#ff1717', flexShrink: 0 }}>📍</span>
+                <span>Ikota Shopping Complex, Eti-Osa, Lekki 101001, Lagos, Nigeria</span>
               </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="footer-form" style={{
-                display: 'flex',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: '8px',
-                padding: '4px',
-                transition: 'border-color 0.2s, box-shadow 0.2s'
-              }}>
-                <input
-                  type="email"
-                  required
-                  placeholder="name@email.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    color: '#fff',
-                    fontSize: '13.5px',
-                    padding: '8px 12px',
-                    outline: 'none',
-                    width: '100%',
-                    fontFamily: 'var(--font)'
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    background: '#2563eb',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '8px 16px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#1d4ed8'; e.currentTarget.style.boxShadow = '0 0 12px rgba(37,99,235,0.4)' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.boxShadow = 'none' }}
-                >
-                  Join
-                </button>
-              </form>
-            )}
-
-            {/* Paystack and security assurance badge */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginTop: 10,
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.04)',
-              borderRadius: 8,
-              padding: '8px 12px',
-              width: 'fit-content'
-            }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>Secure payments by <strong>Paystack</strong></span>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <span style={{ color: '#ff1717', flexShrink: 0 }}>✉️</span>
+                <a href="mailto:info@donzenaccountinghub.com" style={{ color: '#fff', textDecoration: 'underline' }}>info@donzenaccountinghub.com</a>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <span style={{ color: '#ff1717', flexShrink: 0 }}>📞</span>
+                <a href="tel:+2347039999842" style={{ color: '#fff', fontWeight: 600 }}>+234 703 9999 842</a>
+              </div>
             </div>
+
+            {/* Google Map Embed for Ikota Shopping Complex Lekki */}
+            <div style={{
+              width: '100%',
+              height: '140px',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              border: '1px solid rgba(255,23,23,0.3)',
+              marginTop: 6
+            }}>
+              <iframe
+                title="Donzen Accounting Hub Google Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.673890288825!2d3.5590000000000006!3d6.435000000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf705c7428f65%3A0xc3412cb7f784e1b8!2sIkota%20Shopping%20Complex%2C%20Lekki!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
           </div>
         </div>
 
-        {/* Disclaimer / Meta Affiliate Note */}
-        <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.04)',
-          marginTop: 64,
-          paddingTop: 24,
-          textAlign: 'center'
-        }}>
-          <p style={{
-            fontSize: '11px',
-            color: 'rgba(255,255,255,0.22)',
-            lineHeight: 1.7,
-            maxWidth: 720,
-            margin: '0 auto'
-          }}>
-            Disclaimer: This site is not a part of the Meta website or Meta Platforms, Inc. Additionally, this site is NOT endorsed by Meta in any way. META is a trademark of META PLATFORMS, INC.
-          </p>
-        </div>
       </div>
 
       {/* Bottom Legal Copyright Bar */}
       <div style={{
-        background: '#020617',
-        borderTop: '1px solid rgba(255,255,255,0.03)'
+        background: '#0a0a0a',
+        borderTop: '1px solid rgba(255,255,255,0.05)'
       }}>
         <div style={{
-          maxWidth: 1200,
+          maxWidth: 1240,
           margin: '0 auto',
-          padding: '24px 40px',
+          padding: '20px 30px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: 16
         }}>
-          <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-            &copy; {year} <strong style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>Amplified Skills</strong>. All rights reserved.
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+            &copy; {year} <strong style={{ color: '#fff', fontWeight: 600 }}>Donzen Accounting Hub</strong>. All rights reserved.
           </p>
           <div style={{ display: 'flex', gap: 20 }}>
-            {['Terms', 'Privacy', 'Refunds'].map(txt => {
-              const path = txt === 'Terms' ? '/terms' : txt === 'Privacy' ? '/privacy' : '/refund';
-              return (
-                <Link key={txt} to={path} onClick={scrollToTop} className="footer-bottom-link"
-                  style={{
-                    fontSize: '12px',
-                    color: 'rgba(255,255,255,0.3)',
-                    textDecoration: 'none',
-                    transition: 'color 0.2s'
-                  }}
-                >
-                  {txt}
-                </Link>
-              );
-            })}
+            <Link to="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Privacy Policy</Link>
+            <Link to="/terms" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Terms of Service</Link>
+            <Link to="/contact" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Contact</Link>
           </div>
         </div>
       </div>
 
-      {/* Inline animations & responsive behaviors */}
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         .footer-social-link:hover {
-          background: rgba(37,99,235,0.15) !important;
-          border-color: rgba(37,99,235,0.4) !important;
-          color: #3b82f6 !important;
+          background: #ff1717 !important;
+          color: #ffffff !important;
+          border-color: #ff1717 !important;
           transform: translateY(-2px);
         }
-        .footer-nav-link {
-          transition: transform 0.2s ease, color 0.2s ease !important;
-        }
         .footer-nav-link:hover {
-          color: #fff !important;
+          color: #ff1717 !important;
           transform: translateX(4px);
-        }
-        .footer-bottom-link:hover {
-          color: rgba(255,255,255,0.65) !important;
-        }
-        .footer-form:focus-within {
-          border-color: rgba(37,99,235,0.4) !important;
-          box-shadow: 0 0 16px rgba(37,99,235,0.1);
         }
         @media (max-width: 1024px) {
           .footer-grid {
-            grid-template-columns: 1.5fr 1fr 1fr !important;
-            gap: 48px !important;
-          }
-          .footer-grid > div:last-child {
-            grid-column: span 3;
-            max-width: 480px;
+            grid-template-columns: 1fr 1fr !important;
           }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
           .footer-grid {
             grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-          .footer-grid > div:last-child {
-            grid-column: span 1;
-          }
-          div[style*="padding: 80px 40px 48px"] {
-            padding: 48px 24px 32px !important;
-          }
-          div[style*="padding: 24px 40px"] {
-            padding: 20px 24px !important;
-            flex-direction: column;
-            text-align: center;
-            justify-content: center !important;
           }
         }
       `}</style>
