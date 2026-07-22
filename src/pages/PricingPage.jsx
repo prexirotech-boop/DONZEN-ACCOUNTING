@@ -1,400 +1,511 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { useCurrency } from '../context/CurrencyContext'
 
 export default function PricingPage() {
-  const mainPlans = [
-    {
-      title: 'Donzen Accounting Services - Do It Yourself (DIY) Remote',
-      price: '₦80,000',
-      period: '/ Monthly',
-      subnote: '₦130,000 In The First Month and ₦80,000 Monthly In The Subsequent Months',
-      badge: 'Popular Choice',
-      features: [
-        'Easily Manage Day-To-Day Bookkeeping',
-        'Enter Routine Business Accounting Transactions',
-        'Inventory Accounting & Management (Manage up to 350 stock items)',
-        'Fixed Assets Maintenance',
-        'Petty Cash & Admin Expenses',
-        'Staff Payroll Management & PAYE Computation',
-        'Account Receivables & Payables Management (Process up to 1,000 supplier invoices and customer receipts)',
-        'Tax Computation: CIT, WHT, VAT, PAYE',
-        '24/7 Access to Real-time Financial Reports on any device and anywhere in the world',
-        'Bank & Account Reconciliations',
-        'Premium Financial Advisory & Review of Reports - 30 minutes',
-        'Track all business expenses and income'
-      ],
-      ctaText: 'Start Today',
-      link: '/checkout?plan=diy'
-    },
-    {
-      title: 'Donzen Accounting Services - Done For You',
-      price: '₦120,000',
-      period: '/ Monthly',
-      subnote: 'Full-Service Hands-Off Accounting & Monthly Financial Reporting',
-      badge: 'Comprehensive',
-      features: [
-        'Easily Manage Day-To-Day Bookkeeping',
-        'Enter Routine Business Accounting Transactions',
-        'Inventory Accounting & Management (Manage up to 350 stock items)',
-        'Fixed Assets Maintenance',
-        'Petty Cash & Admin Expenses',
-        'Staff Payroll Management & PAYE Computation',
-        'Account Receivables & Payables Management (Process up to 1,000 supplier invoices and customer receipts)',
-        'Tax Computation: CIT, WHT, VAT, PAYE',
-        '24/7 Access to Real-Time Financial Reports on any device and anywhere in the world',
-        'Bank & Account Reconciliations',
-        'Premium Financial Advisory & Review of Reports - 30 minutes',
-        'Track all business expenses and income'
-      ],
-      ctaText: 'Start Today',
-      link: '/checkout?plan=done-for-you'
-    },
-    {
-      title: 'Premium Business Consulting Services',
-      price: 'Custom',
-      period: '/ Stand-Alone',
-      subnote: 'Tailored Corporate Advisory & SME Business Setup',
-      badge: 'Bespoke',
-      features: [
-        'Online Courses & Digital Accounting Bootcamps',
-        'Accounting Software Setup (QuickBooks, Excel & Cloud Apps)',
-        'Donzen Accounting Toolkit',
-        'Tax Consulting & Corporate Tax Strategy',
-        'Audited Financial Reports & Audit Support',
-        'Year-End Financial Statements Preparation',
-        'Website Development for Financial & SME Businesses',
-        'Incorporation of Businesses with CAC: Business Name, Limited Liability Company, & NGO',
-        'Individual, Staff & Corporate Training',
-        'Premium Financial Advisory'
-      ],
-      ctaText: 'Contact Us',
-      link: '/contact'
-    }
-  ]
+  const { formatPrice } = useCurrency()
+  const [dbProducts, setDbProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const templates = [
-    {
-      title: 'Profit and Loss Statements for Business With No Accountant - DIY Template',
-      price: '₦55,000',
-      period: '/ Offline',
-      desc: 'Generate professional monthly profit and loss statements and see profitability at a glance without hiring a full-time accountant.',
-      features: [
-        'Classify all transactions correctly into charts of account (COA)',
-        'Easily manage day-to-day bookkeeping',
-        'Enter routine business accounting transactions',
-        'Organize and manage your recordkeeping',
-        'Track all petty cash & admin expenses',
-        'Petty cash management and tracking',
-        'Bank & account reconciliations',
-        'Track all your business expenses and sales',
-        'Generate professional monthly profit and loss statements',
-        'See profitability of the business'
-      ],
-      cta: 'Get Template Now'
-    },
-    {
-      title: 'Vendors / Suppliers Management - DIY Template',
-      price: '₦40,000',
-      period: '/ Offline',
-      desc: 'Need help with tracking your accounts payable, managing vendors database, payables reconciliation, and aging analysis at a go?',
-      features: [
-        'Accounts payable tracking & database',
-        'Vendor database management',
-        'Payables reconciliation',
-        'Aging analysis reports at a click',
-        'Automated payment tracking'
-      ],
-      cta: 'Get Template Now'
-    },
-    {
-      title: 'Customers / Clients Management - DIY Template',
-      price: '₦40,000',
-      period: '/ Stand-Alone',
-      desc: 'Need help with tracking your accounts receivable, managing customers database, receivables reconciliation, and aging analysis at a go?',
-      features: [
-        'Accounts receivable & customer database',
-        'Client invoicing & statement generation',
-        'Receivables reconciliation',
-        'Aging analysis for unpaid invoices',
-        'Automated overdue payment alerts'
-      ],
-      cta: 'Get Template Now'
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const { data } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_published', true)
+          .order('price', { ascending: false })
+
+        if (data) setDbProducts(data)
+      } catch (err) {
+        console.error('Error fetching products from DB:', err)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+    loadProducts()
+  }, [])
+
+  // Filter services vs templates vs courses directly from DB
+  const serviceProducts = dbProducts.filter(p => p.type === 'service')
+  const templateProducts = dbProducts.filter(p => p.type === 'template')
+  const courseProducts = dbProducts.filter(p => p.type === 'course' || p.type === 'ebook')
 
   return (
-    <div style={{ background: '#FFFFFF', color: '#101010', fontFamily: 'var(--font)', minHeight: '100vh' }}>
-      
-      {/* ─── BANNER ─────────────────────────────────────────────────── */}
-      <section style={{
-        background: 'linear-gradient(135deg, #101010 0%, #18181B 100%)',
-        color: '#FFFFFF',
-        padding: '90px 24px 70px',
-        textAlign: 'center',
-        borderBottom: '3px solid #ff1717'
-      }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <span style={{ color: '#ff1717', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.85rem' }}>
-            Plans & Pricing
-          </span>
-          <h1 style={{ fontSize: 'clamp(2.3rem, 4.5vw, 3.5rem)', fontWeight: 900, marginTop: '12px', marginBottom: '16px', color: '#FFFFFF' }}>
-            Pricing & Resources
-          </h1>
-          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, maxWidth: '780px', margin: '0 auto' }}>
-            We offer a variety of plans to suit your needs and budget. Our plans are designed to give you complete business accounting experience and access to the features and resources you need to grow and succeed. All of our plans include top-notch client services and support. Take a look at our plans below and find the one that’s right for you. If you have any questions, don’t hesitate to reach out to us. We’re here to help you every step of the way in doing business from a balanced perspective.
+    <div className="pricing-page">
+      {/* Hero Header */}
+      <section className="pricing-hero">
+        <div className="pricing-hero-container">
+          <span className="pricing-badge">Donzen Pricing & Packages</span>
+          <h1 className="pricing-title">Simple, Transparent Pricing For Every Business</h1>
+          <p className="pricing-subtitle">
+            Whether you need hands-off monthly bookkeeping, customized advisory, software training, or practical DIY accounting templates — we have you covered.
           </p>
-          <div style={{ marginTop: '20px', fontWeight: 700, color: '#ff1717', fontSize: '1rem' }}>
-            More Than Just Bookkeeping. P.S. Choose the right plan that best suits your business.
-          </div>
         </div>
       </section>
 
-      {/* ─── MAIN SERVICE PLANS ──────────────────────────────────────── */}
-      <section style={{ padding: '80px 24px', background: '#F7F3F5' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#101010' }}>
-              Monthly Accounting & Bookkeeping Plans
-            </h2>
-            <p style={{ color: '#71717A', fontSize: '1rem', marginTop: '8px' }}>
-              Select a monthly service plan tailored to your business operations.
-            </p>
-          </div>
+      {/* Main Service Packages from Database */}
+      <section className="pricing-grid-section">
+        <div className="pricing-section-container">
+          <h2 className="section-title">Monthly Accounting & Advisory Packages</h2>
+          <p className="section-subtitle">Real-time financial management, payroll, tax computation, and advisory for African SMEs.</p>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '30px'
-          }}>
-            {mainPlans.map((plan, idx) => (
-              <div key={idx} style={{
-                background: '#FFFFFF',
-                borderRadius: '20px',
-                padding: '36px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                border: idx === 0 ? '2px solid #ff1717' : '1px solid #E4E4E7',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative'
-              }}>
-                {plan.badge && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-14px',
-                    right: '24px',
-                    background: idx === 0 ? '#ff1717' : '#101010',
-                    color: '#FFFFFF',
-                    padding: '4px 14px',
-                    borderRadius: '12px',
-                    fontSize: '0.78rem',
-                    fontWeight: 800,
-                    textTransform: 'uppercase'
-                  }}>
-                    {plan.badge}
-                  </span>
-                )}
-
-                <div>
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#101010', marginBottom: '16px', minHeight: '52px' }}>
-                    {plan.title}
-                  </h3>
-
-                  <div style={{ marginBottom: '16px' }}>
-                    <span style={{ fontSize: '2.4rem', fontWeight: 900, color: '#ff1717' }}>{plan.price}</span>
-                    <span style={{ fontSize: '0.95rem', color: '#71717A', fontWeight: 600 }}> {plan.period}</span>
-                    <div style={{ fontSize: '0.82rem', color: '#3F3F46', marginTop: '6px', fontWeight: 600, minHeight: '36px' }}>
-                      {plan.subnote}
+          <div className="pricing-grid">
+            {serviceProducts.length > 0 ? (
+              serviceProducts.map((p, idx) => {
+                const features = Array.isArray(p.features) ? p.features : []
+                return (
+                  <div key={p.id} className={`pricing-card ${idx === 0 ? 'featured' : ''}`}>
+                    {idx === 0 && <div className="card-badge">Popular Choice</div>}
+                    <h3 className="card-title">{p.title}</h3>
+                    <p className="card-subnote">{p.description}</p>
+                    
+                    <div className="card-price-box">
+                      <span className="card-price">{formatPrice(p.price)}</span>
+                      <span className="card-period">/ Monthly</span>
+                      {p.old_price && <div className="card-subnote">Was {formatPrice(p.old_price)}</div>}
                     </div>
+
+                    {features.length > 0 && (
+                      <ul className="card-features">
+                        {features.map((feat, fIdx) => (
+                          <li key={fIdx}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <Link to={`/checkout?product=${p.id}`} className="card-cta-btn">
+                      Get Started →
+                    </Link>
                   </div>
-
-                  <hr style={{ border: 0, borderTop: '1px solid #E4E4E7', margin: '20px 0' }} />
-
-                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px', listStyle: 'none', marginBottom: '28px' }}>
-                    {plan.features.map((feat, fidx) => (
-                      <li key={fidx} style={{ fontSize: '0.88rem', color: '#3F3F46', display: 'flex', alignItems: 'flex-start', gap: '8px', lineHeight: 1.5 }}>
-                        <span style={{ color: '#ff1717', fontWeight: 800 }}>✓</span>
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <Link to={plan.link} style={{
-                  background: idx === 0 ? '#ff1717' : '#101010',
-                  color: '#FFFFFF',
-                  textAlign: 'center',
-                  padding: '14px',
-                  borderRadius: '8px',
-                  fontWeight: 700,
-                  fontSize: '0.95rem',
-                  textDecoration: 'none',
-                  boxShadow: idx === 0 ? '0 6px 20px rgba(255,23,23,0.3)' : 'none'
-                }}>
-                  {plan.ctaText}
-                </Link>
+                )
+              })
+            ) : (
+              <div style={{ textalign: 'center', padding: '40px 0', gridColumn: '1 / -1', color: '#71717a' }}>
+                {loading ? 'Loading packages from database...' : 'No service packages available.'}
               </div>
-            ))}
-          </div>
+            )}
 
+            {/* Stand-Alone Consulting Card */}
+            <div className="pricing-card">
+              <div className="card-badge" style={{ background: '#101010', color: '#ff1717', border: '1px solid #ff1717' }}>Bespoke</div>
+              <h3 className="card-title">Premium Business Consulting</h3>
+              <p className="card-subnote">Tailored Corporate Advisory, Business Incorporation & System Setup</p>
+              
+              <div className="card-price-box">
+                <span className="card-price">Custom</span>
+                <span className="card-period">/ Stand-Alone</span>
+              </div>
+
+              <ul className="card-features">
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                  <span>Accounting Software Setup (QuickBooks, Excel & Cloud Apps)</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                  <span>CAC Business Incorporation (Business Name, LTD, NGO)</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                  <span>Tax Strategy, Audited Financial Reports & Audit Support</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                  <span>Individual, Staff & Corporate Financial Training</span>
+                </li>
+              </ul>
+
+              <Link to="/contact" className="card-cta-btn" style={{ background: '#101010' }}>
+                Contact Advisory Team →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ─── DIY TEMPLATES & TOOLKITS SECTION ───────────────────────── */}
-      <section style={{ padding: '80px 24px', background: '#FFFFFF' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          
-          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-            <span style={{ color: '#ff1717', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.85rem' }}>
-              Custom Financial Tools
-            </span>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginTop: '8px', color: '#101010' }}>
-              Donzen Accounting DIY Templates
-            </h2>
-            <p style={{ color: '#71717A', fontSize: '1rem', marginTop: '8px' }}>
-              Ready-to-use custom Excel templates to manage recordkeeping, receivables, and payables offline.
-            </p>
+      {/* DIY Templates from Database */}
+      <section className="templates-section">
+        <div className="templates-container">
+          <div className="templates-header">
+            <h2>Donzen DIY Accounting Templates</h2>
+            <p>Ready-to-use professional spreadsheets and templates engineered for African small businesses.</p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '30px'
-          }}>
-            {templates.map((tmpl, idx) => (
-              <div key={idx} style={{
-                background: '#F7F3F5',
-                borderRadius: '16px',
-                padding: '32px',
-                border: '1px solid #E4E4E7',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}>
-                <div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#101010', marginBottom: '12px' }}>
-                    {tmpl.title}
-                  </h3>
-                  <div style={{ marginBottom: '14px' }}>
-                    <span style={{ fontSize: '2rem', fontWeight: 900, color: '#101010' }}>{tmpl.price}</span>
-                    <span style={{ fontSize: '0.85rem', color: '#71717A' }}> {tmpl.period}</span>
+          <div className="templates-grid">
+            {templateProducts.length > 0 ? (
+              templateProducts.map(t => (
+                <div key={t.id} className="template-card">
+                  <div className="template-icon">📊</div>
+                  <h3>{t.title}</h3>
+                  <p>{t.description}</p>
+                  <div className="template-price-row">
+                    <span className="template-price">{formatPrice(t.price)}</span>
+                    <Link to={`/checkout?product=${t.id}`} className="template-buy-btn">
+                      Get Template →
+                    </Link>
                   </div>
-                  <p style={{ color: '#3F3F46', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                    {tmpl.desc}
-                  </p>
-                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', marginBottom: '24px' }}>
-                    {tmpl.features.map((f, fidx) => (
-                      <li key={fidx} style={{ fontSize: '0.85rem', color: '#27272A', display: 'flex', gap: '8px' }}>
-                        <span style={{ color: '#ff1717' }}>•</span>
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-
-                <Link to="/contact" style={{
-                  background: '#ff1717',
-                  color: '#FFFFFF',
-                  textAlign: 'center',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  textDecoration: 'none'
-                }}>
-                  {tmpl.cta} ➔
-                </Link>
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', width: '100%', color: '#71717a' }}>
+                {loading ? 'Loading templates from database...' : 'No templates found in database.'}
               </div>
-            ))}
+            )}
           </div>
-
         </div>
       </section>
 
-      {/* ─── WHY DONZEN TOOLS SECTION ───────────────────────────────── */}
-      <section style={{ padding: '80px 24px', background: '#F7F3F5', borderTop: '1px solid #E4E4E7' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          
-          <div style={{
-            background: '#FFFFFF',
-            borderRadius: '24px',
-            padding: '48px',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.05)',
-            borderLeft: '6px solid #ff1717'
-          }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#101010', marginBottom: '16px' }}>
-              Need Donzen Accounting Tool for small businesses with no accountants?
-            </h2>
-            
-            <p style={{ color: '#3F3F46', fontSize: '1rem', lineHeight: 1.8, marginBottom: '16px' }}>
-              As a small business owner, you know how important it is to keep track of your finances. We understand that hiring an accountant and purchasing expensive accounting software can be costly, and learning accounting on your own can be overwhelming. That’s where our DIY accounting tools and resources come in.
-            </p>
-            <p style={{ color: '#3F3F46', fontSize: '1rem', lineHeight: 1.8, marginBottom: '24px' }}>
-              Donzen Accounting tools and resources provide business owners and financial managers with the tools they need to effectively manage their finances, stay organized and informed, and make strategic decisions. Our tools are designed to save you time and hassle while providing you with accurate, up-to-date financial information.
-            </p>
+      {/* Training Courses & Academy from Database */}
+      {courseProducts.length > 0 && (
+        <section className="templates-section" style={{ background: '#ffffff', paddingTop: 0 }}>
+          <div className="templates-container">
+            <div className="templates-header">
+              <h2>Bootcamps & Academy Programs</h2>
+              <p>Practical online training programs with certificates and live mentor support.</p>
+            </div>
 
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#101010', marginBottom: '16px' }}>
-              With our custom tools, you’ll have the power to:
-            </h3>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '16px',
-              marginBottom: '32px'
-            }}>
-              {[
-                'Track income and expenses in real-time',
-                'Create and manage budgets and financial forecasts',
-                'Generate and analyze financial reports',
-                'Streamline financial processes and automate repetitive tasks',
-                'Stay compliant with tax laws and regulations',
-                'Easily share financial data with your team and advisors',
-                'Collaborate with multiple teams, departments and stakeholders',
-                'Access financial information anytime, anywhere with 24/7 access'
-              ].map((benefit, idx) => (
-                <div key={idx} style={{
-                  background: '#F7F3F5',
-                  padding: '14px 18px',
-                  borderRadius: '10px',
-                  fontSize: '0.92rem',
-                  color: '#101010',
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px'
-                }}>
-                  <span style={{ color: '#ff1717', fontWeight: 800 }}>✓</span>
-                  <span>{benefit}</span>
+            <div className="templates-grid">
+              {courseProducts.map(c => (
+                <div key={c.id} className="template-card" style={{ borderColor: '#ff1717' }}>
+                  <div className="template-icon">🎓</div>
+                  <h3>{c.title}</h3>
+                  <p>{c.description}</p>
+                  <div className="template-price-row">
+                    <span className="template-price">{formatPrice(c.price)}</span>
+                    <Link to={`/product/${c.slug || c.id}`} className="template-buy-btn" style={{ background: '#ff1717' }}>
+                      Enroll Program →
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>
-
-            <p style={{ color: '#3F3F46', fontSize: '0.98rem', lineHeight: 1.7, marginBottom: '24px' }}>
-              Whether you are a small business owner, a financial manager for a growing company, or a freelancer looking for a better way to manage your finances, our accounting tools and resources are the solution you’ve been searching for. With the tools, you will have the power to take control of your finances and grow your business. Our custom-built accounting tools are designed specifically for small business owners like you, with easy-to-use tools that make it simple to manage your financials. From invoice processing and expense tracking to tax preparation and financial reporting, we’ve got you covered.
-            </p>
-
-            <div style={{ textAlign: 'center' }}>
-              <Link to="/contact" style={{
-                background: '#ff1717',
-                color: '#FFFFFF',
-                padding: '16px 36px',
-                borderRadius: '8px',
-                fontWeight: 800,
-                fontSize: '1rem',
-                textDecoration: 'none',
-                display: 'inline-block',
-                boxShadow: '0 8px 24px rgba(255,23,23,0.3)'
-              }}>
-                Get Started With Donzen Tools
-              </Link>
-            </div>
-
           </div>
+        </section>
+      )}
 
+      {/* Payment Details */}
+      <section className="bank-details-section">
+        <div className="bank-container">
+          <div className="bank-card">
+            <h3>Zenith Bank Direct Transfer Details</h3>
+            <p>Prefer direct bank transfer in Nigeria? Pay directly into our Zenith Bank account:</p>
+            <div className="bank-info-box">
+              <div className="bank-row"><strong>Account Name:</strong> <span>Donzen Accounting Hub</span></div>
+              <div className="bank-row"><strong>Account Number:</strong> <span style={{ fontSize: '20px', fontWeight: '900', color: '#ff1717' }}>1211575347</span></div>
+              <div className="bank-row"><strong>Bank Name:</strong> <span>Zenith Bank</span></div>
+            </div>
+            <p className="bank-notice">After payment, send your proof of transfer to WhatsApp: <strong>+234 703 9999 842</strong> or Email: <strong>info@donzenaccountinghub.com</strong></p>
+          </div>
         </div>
       </section>
 
+      <style>{`
+        .pricing-page {
+          font-family: var(--font);
+          background: #F7F3F5;
+          min-height: 100vh;
+        }
+
+        .pricing-hero {
+          background: linear-gradient(135deg, #101010 0%, #18181B 60%, #050505 100%);
+          color: #ffffff;
+          padding: 80px 24px;
+          text-align: center;
+          border-bottom: 3px solid #ff1717;
+        }
+        .pricing-hero-container {
+          max-width: 900px;
+          margin: 0 auto;
+        }
+        .pricing-badge {
+          display: inline-block;
+          background: rgba(255,23,23,0.15);
+          color: #ff1717;
+          border: 1px solid rgba(255,23,23,0.3);
+          padding: 6px 18px;
+          border-radius: 50px;
+          font-size: 12px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 20px;
+        }
+        .pricing-title {
+          font-size: 46px;
+          font-weight: 900;
+          margin: 0 0 20px;
+          letter-spacing: -1.5px;
+          line-height: 1.15;
+        }
+        .pricing-subtitle {
+          font-size: 18px;
+          color: rgba(255,255,255,0.8);
+          line-height: 1.7;
+          margin: 0;
+        }
+
+        .pricing-grid-section {
+          padding: 72px 24px;
+          max-width: 1240px;
+          margin: 0 auto;
+        }
+        .pricing-section-container {
+          text-align: center;
+        }
+        .section-title {
+          font-size: 32px;
+          font-weight: 900;
+          color: #101010;
+          margin: 0 0 10px;
+        }
+        .section-subtitle {
+          font-size: 16px;
+          color: #71717a;
+          margin: 0 0 48px;
+        }
+        .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 32px;
+          text-align: left;
+        }
+        .pricing-card {
+          background: #ffffff;
+          border: 1px solid #e4e4e7;
+          border-radius: 16px;
+          padding: 36px 30px;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+          transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .pricing-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .pricing-card.featured {
+          border: 2px solid #ff1717;
+        }
+        .card-badge {
+          position: absolute;
+          top: -14px;
+          right: 24px;
+          background: #ff1717;
+          color: #ffffff;
+          font-size: 11px;
+          font-weight: 800;
+          padding: 4px 14px;
+          border-radius: 20px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .card-title {
+          font-size: 20px;
+          font-weight: 800;
+          color: #101010;
+          margin: 0 0 10px;
+          line-height: 1.3;
+        }
+        .card-subnote {
+          font-size: 13px;
+          color: #71717a;
+          line-height: 1.5;
+          margin-bottom: 20px;
+        }
+        .card-price-box {
+          margin-bottom: 24px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #f4f4f5;
+        }
+        .card-price {
+          font-size: 38px;
+          font-weight: 900;
+          color: #ff1717;
+          letter-spacing: -1px;
+        }
+        .card-period {
+          font-size: 14px;
+          color: #71717a;
+          font-weight: 600;
+          margin-left: 4px;
+        }
+        .card-features {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 32px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          flex: 1;
+        }
+        .card-features li {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          font-size: 13.5px;
+          color: #27272a;
+          line-height: 1.5;
+        }
+        .card-features svg {
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+        .card-cta-btn {
+          display: block;
+          text-align: center;
+          background: #ff1717;
+          color: #ffffff;
+          padding: 14px;
+          border-radius: 8px;
+          font-weight: 800;
+          font-size: 15px;
+          text-decoration: none;
+          transition: background 0.2s;
+        }
+        .card-cta-btn:hover {
+          background: #d91414;
+        }
+
+        .templates-section {
+          background: #F7F3F5;
+          padding: 64px 24px;
+          border-top: 1px solid #e4e4e7;
+        }
+        .templates-container {
+          max-width: 1240px;
+          margin: 0 auto;
+        }
+        .templates-header {
+          text-align: center;
+          margin-bottom: 48px;
+        }
+        .templates-header h2 {
+          font-size: 32px;
+          font-weight: 900;
+          color: #101010;
+          margin: 0 0 10px;
+        }
+        .templates-header p {
+          font-size: 16px;
+          color: #71717a;
+          margin: 0;
+        }
+        .templates-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+        }
+        .template-card {
+          background: #ffffff;
+          border: 1px solid #e4e4e7;
+          border-radius: 14px;
+          padding: 28px;
+          display: flex;
+          flex-direction: column;
+        }
+        .template-icon {
+          font-size: 32px;
+          margin-bottom: 14px;
+        }
+        .template-card h3 {
+          font-size: 18px;
+          font-weight: 800;
+          color: #101010;
+          margin: 0 0 10px;
+        }
+        .template-card p {
+          font-size: 13.5px;
+          color: #71717a;
+          line-height: 1.6;
+          margin: 0 0 20px;
+          flex: 1;
+        }
+        .template-price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 16px;
+          border-top: 1px solid #f4f4f5;
+        }
+        .template-price {
+          font-size: 20px;
+          font-weight: 900;
+          color: #ff1717;
+        }
+        .template-buy-btn {
+          background: #101010;
+          color: #ffffff;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 700;
+          text-decoration: none;
+        }
+
+        .bank-details-section {
+          padding: 64px 24px;
+          background: #ffffff;
+          border-top: 1px solid #e4e4e7;
+        }
+        .bank-container {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .bank-card {
+          background: #101010;
+          color: #ffffff;
+          border-radius: 16px;
+          padding: 40px;
+          border-left: 6px solid #ff1717;
+        }
+        .bank-card h3 {
+          font-size: 24px;
+          font-weight: 900;
+          margin: 0 0 12px;
+          color: #ffffff;
+        }
+        .bank-card p {
+          color: rgba(255,255,255,0.8);
+          font-size: 15px;
+          line-height: 1.6;
+          margin: 0 0 24px;
+        }
+        .bank-info-box {
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 10px;
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+        .bank-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          font-size: 15px;
+        }
+        .bank-row:last-child {
+          border-bottom: none;
+        }
+        .bank-notice {
+          font-size: 13.5px;
+          color: rgba(255,255,255,0.7);
+          margin: 0;
+        }
+
+        @media (max-width: 768px) {
+          .pricing-title { font-size: 32px; }
+          .pricing-subtitle { font-size: 15px; }
+        }
+      `}</style>
     </div>
   )
 }
