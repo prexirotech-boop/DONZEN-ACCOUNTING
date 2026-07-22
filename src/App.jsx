@@ -96,7 +96,7 @@ function AppLayout() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FAQPage />} />
         
-        <Route path="/products" element={<PricingPage />} />
+        <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:productId" element={<ProductDetailsPage />} />
         <Route path="/checkout" element={<PaymentPage />} />
         <Route path="/success" element={<ThankYouPage />} />
@@ -118,7 +118,7 @@ function AppLayout() {
         {/* Dynamic / Auto-registered user created pages */}
         {getPages().map(page => {
           const staticPaths = [
-            '/', '/services', '/pricing', '/resources', '/about', '/checkout', '/success',
+            '/', '/services', '/pricing', '/resources', '/products', '/about', '/checkout', '/success',
             '/setup-account', '/login', '/register', '/forgot-password', '/reset-password',
             '/dashboard', '/course/:courseId', '/account', '/admin/*', '/terms', '/privacy',
             '/refund', '/contact', '/faq'

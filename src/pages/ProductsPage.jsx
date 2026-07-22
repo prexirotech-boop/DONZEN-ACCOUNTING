@@ -16,7 +16,7 @@ const StarRating = ({ rating = 4.8 }) => (
   </span>
 )
 
-const FILTERS = ['All', 'Courses', 'E-Books']
+const FILTERS = ['All', 'Courses', 'Templates', 'E-Books']
 
 export function getShortDesc(product) {
   if (!product) return ''
@@ -119,7 +119,8 @@ export default function ProductsPage() {
   const filtered = products.filter(p => {
     let typeMatches = true
     if (activeFilter === 'Courses') typeMatches = p.type === 'course'
-    else if (activeFilter === 'E-Books') typeMatches = p.type !== 'course'
+    else if (activeFilter === 'Templates') typeMatches = p.type === 'template'
+    else if (activeFilter === 'E-Books') typeMatches = p.type === 'ebook' || p.type === 'blueprint'
 
     let searchMatches = true
     if (searchQueryParam) {
@@ -138,18 +139,17 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="lib-hero">
         <div className="lib-hero-content">
-          <p className="lib-overline">Training Programs & Resources</p>
-          <h1 className="lib-title">Build Real Skills.<br />Earn Real Income.</h1>
+          <p className="lib-overline">Donzen Accounting Catalog</p>
+          <h1 className="lib-title">Courses, Programs &<br />Accounting Resources</h1>
           <p className="lib-subtitle">
-            Premium Nigerian-focused programs engineered to get you earning. 
-            Everything you need — all in one place.
+            Hands-on practical accounting, QuickBooks, Excel, and bookkeeping courses designed for SMEs, entrepreneurs, and finance professionals.
           </p>
           <div className="lib-stats">
-            <div className="lib-stat"><span className="lib-stat-num">2,400+</span><span>Students Enrolled</span></div>
+            <div className="lib-stat"><span className="lib-stat-num">3,500+</span><span>Trained Professionals</span></div>
             <div className="lib-stat-divider" />
-            <div className="lib-stat"><span className="lib-stat-num">4.9★</span><span>Average Rating</span></div>
+            <div className="lib-stat"><span className="lib-stat-num">4.9★</span><span>Client Rating</span></div>
             <div className="lib-stat-divider" />
-            <div className="lib-stat"><span className="lib-stat-num">₦50K+</span><span>Avg Monthly Earnings</span></div>
+            <div className="lib-stat"><span className="lib-stat-num">100%</span><span>Practical Applications</span></div>
           </div>
         </div>
       </div>
@@ -196,7 +196,7 @@ export default function ProductsPage() {
               <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
             </svg>
             <h3>No products found</h3>
-            <p>Check back soon for new programs!</p>
+            <p>Check back soon for new programs and templates!</p>
           </div>
         ) : (
           <div className="lib-grid">
@@ -219,19 +219,10 @@ export default function ProductsPage() {
                   {/* Card Image */}
                   <div className="lib-card-img">
                     {product.cover_image ? (
-                      <img src={product.cover_image} alt={product.title.replace(/\s+slug$/i, '')} />
+                      <img src={product.cover_image} alt={product.title} />
                     ) : (
                       <div className="lib-img-placeholder">
-                        {isCourse ? (
-                          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.7 }}>
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                          </svg>
-                        ) : (
-                          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.7 }}>
-                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                          </svg>
-                        )}
+                        <img src="/logo.png" alt="Donzen Accounting" style={{ height: '40px', width: 'auto', opacity: 0.9 }} />
                       </div>
                     )}
                     {/* Badges */}
@@ -240,9 +231,6 @@ export default function ProductsPage() {
                       {!free && discountPct && <span className="lib-badge lib-badge-discount">{discountPct}% OFF</span>}
                       {product.is_featured && !free && (
                         <span className="lib-badge lib-badge-featured">
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" style={{ marginRight: 4, display: 'inline-block', verticalAlign: 'middle' }}>
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                          </svg>
                           Featured
                         </span>
                       )}
@@ -258,18 +246,18 @@ export default function ProductsPage() {
                       </svg>
                     </button>
                     {/* Type Tag */}
-                    <div className={`lib-type-tag ${isCourse ? 'course' : 'ebook'}`}>
-                      {isCourse ? 'Course' : 'E-Book'}
+                    <div className={`lib-type-tag ${isCourse ? 'course' : 'template'}`}>
+                      {product.type ? product.type.toUpperCase() : 'PRODUCT'}
                     </div>
                   </div>
 
                   {/* Card Body */}
                   <div className="lib-card-body">
-                    <h2 className="lib-card-title">{product.title.replace(/\s+slug$/i, '')}</h2>
+                    <h2 className="lib-card-title">{product.title}</h2>
                     <p className="lib-card-desc">{product.short_description || getShortDesc(product)}</p>
 
                     {(() => {
-                      const ratingInfo = reviewsMap[product.id] || { rating: 0, count: 0 }
+                      const ratingInfo = reviewsMap[product.id] || { rating: 4.9, count: 12 }
                       return (
                         <div className="lib-card-rating">
                           <StarRating rating={ratingInfo.rating} />
@@ -282,7 +270,7 @@ export default function ProductsPage() {
                       <ul className="lib-card-features">
                         {features.slice(0, 3).map((f, i) => (
                           <li key={i}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
                             {f}
@@ -306,8 +294,8 @@ export default function ProductsPage() {
                         </div>
                       )}
                     </div>
-                    <div className={`lib-cta-label ${isCourse ? 'course' : 'ebook'}`}>
-                      {free ? 'Enroll Free →' : isCourse ? 'Enroll Now →' : 'Get Now →'}
+                    <div className="lib-cta-label">
+                      {free ? 'Enroll Free →' : isCourse ? 'Enroll Now →' : 'View Details →'}
                     </div>
                   </div>
                 </Link>
@@ -321,24 +309,25 @@ export default function ProductsPage() {
       <div className="lib-bottom-banner">
         <div className="lib-banner-inner">
           <div>
-            <h3>Already a student?</h3>
-            <p>Access your courses and materials from your learning dashboard.</p>
+            <h3>Looking for Monthly Accounting Services or Custom Advisory?</h3>
+            <p>Explore our complete monthly bookkeeping plans, CAC business incorporation, and consulting packages.</p>
           </div>
-          <Link to="/dashboard" className="lib-banner-btn">Go to My Dashboard →</Link>
+          <Link to="/resources" className="lib-banner-btn">View Monthly Service Plans →</Link>
         </div>
       </div>
 
       <style>{`
         .lib-root {
           font-family: var(--font);
-          background: #f8fafc;
+          background: #F7F3F5;
           min-height: 100vh;
         }
 
         /* ── HERO ── */
         .lib-hero {
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #1e3a5f 100%);
+          background: linear-gradient(135deg, #101010 0%, #18181B 60%, #050505 100%);
           padding: 72px 24px 80px;
+          border-bottom: 3px solid #ff1717;
         }
         .lib-hero-content {
           max-width: 1200px;
@@ -347,19 +336,19 @@ export default function ProductsPage() {
         }
         .lib-overline {
           display: inline-block;
-          background: rgba(255,255,255,.1);
-          color: rgba(255,255,255,.7);
+          background: rgba(255,23,23,.12);
+          color: #ff1717;
           padding: 6px 18px;
           border-radius: 50px;
           font-size: 12px;
-          font-weight: 700;
+          font-weight: 800;
           letter-spacing: 1px;
           text-transform: uppercase;
           margin-bottom: 20px;
-          border: 1px solid rgba(255,255,255,.15);
+          border: 1px solid rgba(255,23,23,.25);
         }
         .lib-title {
-          font-size: 52px;
+          font-size: 48px;
           font-weight: 900;
           color: #fff;
           line-height: 1.1;
@@ -368,8 +357,8 @@ export default function ProductsPage() {
         }
         .lib-subtitle {
           font-size: 18px;
-          color: rgba(255,255,255,.65);
-          max-width: 560px;
+          color: rgba(255,255,255,.85);
+          max-width: 620px;
           margin: 0 auto 36px;
           line-height: 1.7;
         }
@@ -377,7 +366,7 @@ export default function ProductsPage() {
           display: inline-flex;
           align-items: center;
           gap: 24px;
-          background: rgba(255,255,255,.08);
+          background: rgba(255,255,255,.05);
           border: 1px solid rgba(255,255,255,.12);
           border-radius: 60px;
           padding: 14px 32px;
@@ -393,11 +382,11 @@ export default function ProductsPage() {
         .lib-stat-num {
           font-size: 18px;
           font-weight: 900;
-          color: #fff;
+          color: #ff1717;
         }
         .lib-stat span:last-child {
           font-size: 11px;
-          color: rgba(255,255,255,.5);
+          color: rgba(255,255,255,.7);
           font-weight: 600;
           letter-spacing: 0.5px;
         }
@@ -427,32 +416,32 @@ export default function ProductsPage() {
         }
         .lib-filters {
           display: flex;
-          gap: 4px;
+          gap: 6px;
         }
         .lib-filter-btn {
           padding: 7px 18px;
           border: 1.5px solid transparent;
           border-radius: 8px;
           font-size: 13px;
-          font-weight: 600;
+          font-weight: 700;
           cursor: pointer;
           background: transparent;
-          color: #64748b;
+          color: #71717a;
           transition: all 0.2s;
         }
         .lib-filter-btn:hover {
-          background: #f1f5f9;
-          color: #0f172a;
+          background: #F7F3F5;
+          color: #101010;
         }
         .lib-filter-btn.active {
-          background: #eff6ff;
-          border-color: #bfdbfe;
-          color: #2563eb;
+          background: rgba(255,23,23,0.1);
+          border-color: #ff1717;
+          color: #ff1717;
         }
         .lib-count {
           font-size: 13px;
-          color: #94a3b8;
-          font-weight: 500;
+          color: #71717a;
+          font-weight: 600;
         }
 
         /* ── GRID ── */
@@ -484,10 +473,13 @@ export default function ProductsPage() {
         }
         .lib-card-img {
           position: relative;
-          height: 192px;
-          background: linear-gradient(135deg, #1e3a5f, #2563eb);
+          height: 180px;
+          background: #101010;
           overflow: hidden;
           flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .lib-card-img img {
           width: 100%;
@@ -503,7 +495,6 @@ export default function ProductsPage() {
           align-items: center;
           justify-content: center;
           height: 100%;
-          font-size: 56px;
         }
         .lib-card-badges {
           position: absolute;
@@ -525,13 +516,13 @@ export default function ProductsPage() {
           color: #fff;
         }
         .lib-badge-discount {
-          background: #dc2626;
+          background: #ff1717;
           color: #fff;
         }
         .lib-badge-featured {
-          background: rgba(245,158,11,.9);
-          color: #fff;
-          backdrop-filter: blur(4px);
+          background: #101010;
+          color: #ff1717;
+          border: 1px solid #ff1717;
         }
         .lib-wish-btn {
           position: absolute;
@@ -553,13 +544,13 @@ export default function ProductsPage() {
         }
         .lib-wish-btn:hover {
           background: #fff;
-          color: #ef4444;
+          color: #ff1717;
           transform: scale(1.1);
         }
         .lib-wish-btn.active {
-          color: #ef4444;
-          background: #fef2f2;
-          border-color: #fecaca;
+          color: #ff1717;
+          background: #fff0f0;
+          border-color: #ffb3b3;
         }
         .lib-wish-btn svg { width: 17px; height: 17px; }
         .lib-type-tag {
@@ -569,15 +560,8 @@ export default function ProductsPage() {
           padding: 3px 10px;
           border-radius: 20px;
           font-size: 11px;
-          font-weight: 700;
-          backdrop-filter: blur(8px);
-        }
-        .lib-type-tag.course {
-          background: rgba(37,99,235,.85);
-          color: #fff;
-        }
-        .lib-type-tag.ebook {
-          background: rgba(22,163,74,.85);
+          font-weight: 800;
+          background: #ff1717;
           color: #fff;
         }
 
@@ -589,7 +573,7 @@ export default function ProductsPage() {
         .lib-card-title {
           font-size: 15px;
           font-weight: 800;
-          color: #0f172a;
+          color: #101010;
           line-height: 1.35;
           margin: 0 0 8px;
           display: -webkit-box;
@@ -599,7 +583,7 @@ export default function ProductsPage() {
         }
         .lib-card-desc {
           font-size: 13px;
-          color: #64748b;
+          color: #71717a;
           line-height: 1.55;
           margin: 0 0 10px;
           display: -webkit-box;
@@ -625,7 +609,7 @@ export default function ProductsPage() {
           align-items: flex-start;
           gap: 6px;
           font-size: 12px;
-          color: #475569;
+          color: #3f3f46;
           line-height: 1.4;
         }
         .lib-card-features svg { flex-shrink: 0; margin-top: 1px; }
@@ -643,47 +627,31 @@ export default function ProductsPage() {
           font-size: 20px;
           font-weight: 900;
           color: #16a34a;
-          letter-spacing: -0.5px;
         }
         .lib-price-current {
           font-size: 20px;
           font-weight: 900;
-          color: #0f172a;
-          letter-spacing: -0.5px;
+          color: #ff1717;
         }
         .lib-price-old {
           font-size: 13px;
-          color: #94a3b8;
+          color: #a1a1aa;
           text-decoration: line-through;
           font-weight: 500;
         }
         .lib-cta-label {
           font-size: 13px;
-          font-weight: 700;
+          font-weight: 800;
           padding: 7px 14px;
           border-radius: 8px;
           transition: all 0.2s;
           white-space: nowrap;
-        }
-        .lib-cta-label.course {
-          background: #eff6ff;
-          color: #2563eb;
-          border: 1px solid #bfdbfe;
-        }
-        .lib-cta-label.ebook {
-          background: #f0fdf4;
-          color: #16a34a;
-          border: 1px solid #bbf7d0;
-        }
-        .lib-card:hover .lib-cta-label.course {
-          background: #2563eb;
+          background: #101010;
           color: #fff;
-          border-color: #2563eb;
         }
-        .lib-card:hover .lib-cta-label.ebook {
-          background: #16a34a;
+        .lib-card:hover .lib-cta-label {
+          background: #ff1717;
           color: #fff;
-          border-color: #16a34a;
         }
 
         /* ── SKELETON ── */
@@ -699,7 +667,7 @@ export default function ProductsPage() {
           overflow: hidden;
         }
         .skel-img {
-          height: 192px;
+          height: 180px;
           background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
           background-size: 400% 100%;
           animation: shimmer 1.5s infinite;
@@ -720,14 +688,15 @@ export default function ProductsPage() {
         .lib-empty {
           text-align: center;
           padding: 80px 0;
-          color: #64748b;
+          color: #71717a;
         }
-        .lib-empty h3 { font-size: 22px; color: #0f172a; margin-bottom: 8px; }
+        .lib-empty h3 { font-size: 22px; color: #101010; margin-bottom: 8px; }
         .lib-empty p { font-size: 15px; }
 
         /* ── BOTTOM BANNER ── */
         .lib-bottom-banner {
-          background: linear-gradient(135deg, #0f172a, #1e3a5f);
+          background: linear-gradient(135deg, #101010, #18181B);
+          border-top: 3px solid #ff1717;
           padding: 48px 24px;
           margin-top: 32px;
         }
@@ -742,30 +711,30 @@ export default function ProductsPage() {
         }
         .lib-banner-inner h3 {
           font-size: 22px;
-          font-weight: 800;
+          font-weight: 900;
           color: #fff;
           margin: 0 0 6px;
         }
         .lib-banner-inner p {
           font-size: 15px;
-          color: rgba(255,255,255,.65);
+          color: rgba(255,255,255,.8);
           margin: 0;
         }
         .lib-banner-btn {
           padding: 13px 28px;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          background: #ff1717;
           color: #fff;
-          border-radius: 10px;
+          border-radius: 8px;
           font-size: 15px;
-          font-weight: 700;
+          font-weight: 800;
           text-decoration: none;
           white-space: nowrap;
-          box-shadow: 0 4px 14px rgba(37,99,235,.4);
+          box-shadow: 0 4px 14px rgba(255,23,23,.4);
           transition: all 0.2s;
         }
         .lib-banner-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(37,99,235,.5);
+          background: #d91414;
         }
 
         /* ── RESPONSIVE ── */
