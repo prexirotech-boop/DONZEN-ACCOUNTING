@@ -36,6 +36,9 @@ export default function AdminSettings() {
   const [eurRate, setEurRate] = useState(1650)
   const [gbpRate, setGbpRate] = useState(1950)
 
+  // Payment plans global settings
+  const [enablePaymentPlans, setEnablePaymentPlans] = useState(false)
+
   // Bank configuration fields
   const [bankAccounts, setBankAccounts] = useState([])
   const [newBankName, setNewBankName] = useState('')
@@ -63,6 +66,7 @@ export default function AdminSettings() {
           if (siteConfig?.value) {
             setBrandName(siteConfig.value.platform_name || 'Amplified Skills')
             setSupportEmail(siteConfig.value.support_email || 'support@amplifiedskills.com')
+            setEnablePaymentPlans(!!siteConfig.value.enable_payment_plans)
           }
           const payConfig = data.find(s => s.id === 'payment_config')
           if (payConfig?.value) {
@@ -182,7 +186,8 @@ export default function AdminSettings() {
           value: {
             platform_name: brandName.trim(),
             support_email: supportEmail.trim(),
-            refund_days: 30
+            refund_days: 30,
+            enable_payment_plans: enablePaymentPlans
           },
           updated_at: new Date().toISOString()
         })
@@ -429,6 +434,17 @@ export default function AdminSettings() {
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
+              </div>
+ 
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '6px 0 12px' }}>
+                <input 
+                  type="checkbox" 
+                  id="enable_payment_plans" 
+                  checked={enablePaymentPlans} 
+                  onChange={e => setEnablePaymentPlans(e.target.checked)} 
+                  style={{ width: 15, height: 15, cursor: 'pointer' }}
+                />
+                <label htmlFor="enable_payment_plans" style={{ fontWeight: 600, fontSize: 13, color: '#3c4257', cursor: 'pointer' }}>Enable Installment Payment Plans Globally</label>
               </div>
 
               <div style={{ borderTop: '1px solid #e2e8f0', margin: '12px 0 6px 0', paddingTop: 12 }}>

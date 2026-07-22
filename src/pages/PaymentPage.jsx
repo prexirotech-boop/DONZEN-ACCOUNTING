@@ -125,6 +125,11 @@ export default function PaymentPage() {
   const { getReferralCode } = useAffiliate()
   const [affiliateData, setAffiliateData] = useState(null)
 
+  // Payment Plans checkout states
+  const [isInstallmentMode, setIsInstallmentMode] = useState(false)
+  const [selectedCheckoutPlan, setSelectedCheckoutPlan] = useState(null)
+  const [globalPaymentPlansEnabled, setGlobalPaymentPlansEnabled] = useState(false)
+
   useEffect(() => {
     async function checkReferral() {
       const code = getReferralCode()
@@ -149,16 +154,25 @@ export default function PaymentPage() {
   const isEbook = product ? product.type === 'ebook' : false
   const productTitle = product ? product.title.replace(/\s+slug$/i, '') : (isEbook ? 'The N50K Blueprint (PDF)' : CONFIG.BOOK_TITLE)
   const bonuses = product && Array.isArray(product.features) ? product.features.filter(Boolean) : []
+
+  const activePlanToday = isInstallmentMode 
+    ? (product?.payment_plans?.find(p => p.id === searchParams.get('plan'))) 
+    : selectedCheckoutPlan
+
+  const todayBasePrice = activePlanToday 
+    ? activePlanToday.installment_amount 
+    : (product ? product.price : CONFIG.PRICE_NAIRA)
+
   const basePrice = product ? product.price : CONFIG.PRICE_NAIRA
   const oldPrice = product?.old_price || null
 
-  const discountedPrice = appliedCoupon
+  const discountedPrice = (appliedCoupon && !activePlanToday)
     ? appliedCoupon.type === 'percentage'
-      ? Math.round(basePrice * (1 - appliedCoupon.value / 100))
-      : Math.max(0, basePrice - appliedCoupon.value)
-    : basePrice
+      ? Math.round(todayBasePrice * (1 - appliedCoupon.value / 100))
+      : Math.max(0, todayBasePrice - appliedCoupon.value)
+    : todayBasePrice
 
-  const bumpsTotal = selectedBumps.reduce((sum, bump) => {
+  const bumpsTotal = isInstallmentMode ? 0 : selectedBumps.reduce((sum, bump) => {
     const base = bump.offered_product?.price || 0
     if (bump.discount_type === 'percentage') {
       return sum + Math.round(base * (1 - bump.discount_value / 100))
@@ -176,6 +190,40 @@ export default function PaymentPage() {
     async function load() {
       try {
         let activeProduct = null
+
+        // Get query params
+        const planParam = searchParams.get('plan')
+        const installmentParam = searchParams.get('installment')
+        const parentParam = searchParams.get('parent')
+
+        const hasInstallmentParams = !!(planParam && installmentParam && parentParam)
+        setIsInstallmentMode(hasInstallmentParams)
+
+        // Fetch global configuration settings
+        const { data: siteConfigData } = await supabase
+          .from('settings')
+          .select('value')
+          .eq('id', 'site_config')
+          .maybeSingle()
+        if (siteConfigData?.value) {
+          setGlobalPaymentPlansEnabled(!!siteConfigData.value.enable_payment_plans)
+        }
+
+        // Load parent order details if in installment mode
+        if (hasInstallmentParams) {
+          const { data: parentOrderData } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('reference', parentParam)
+            .maybeSingle()
+          if (parentOrderData) {
+            setForm({
+              name: parentOrderData.customer_name || '',
+              email: parentOrderData.customer_email || '',
+              phone: parentOrderData.customer_phone || '',
+            })
+          }
+        }
         
         if (productIdParam) {
           if (productIdParam === 'ebook') {
@@ -455,6 +503,10 @@ export default function PaymentPage() {
     const affId = affiliateData?.id || null
     const affCode = affiliateData?.affiliate_code || null
 
+    const planParam = searchParams.get('plan')
+    const installmentParam = searchParams.get('installment')
+    const parentParam = searchParams.get('parent')
+
     const { orderId } = await createPendingOrder({
       reference: ref, name, email, phone,
       productId: product?.id || null,
@@ -463,6 +515,14 @@ export default function PaymentPage() {
       affiliateId: affId,
       paymentMethod,
       bankReceiptUrl: paymentMethod === 'bank_transfer' ? receiptUrl : null,
+      parentReference: parentParam || null,
+      paymentPlanId: activePlanToday ? activePlanToday.id : null,
+      installmentPaid: activePlanToday ? (isInstallmentMode ? parseInt(installmentParam) : 1) : 1,
+      totalInstallments: activePlanToday ? activePlanToday.installments_count : 1,
+      paymentPlanNextDue: (activePlanToday && !(isInstallmentMode && parseInt(installmentParam) === activePlanToday.installments_count))
+        ? new Date(Date.now() + activePlanToday.interval_days * 24 * 60 * 60 * 1000).toISOString()
+        : null,
+      paymentPlanStatus: activePlanToday ? 'pending' : null,
     })
     pendingOrderIdRef.current = orderId
 
@@ -735,9 +795,10 @@ export default function PaymentPage() {
       )}
 
       {/* Coupon Field */}
-      <div className="shopify-coupon-container">
-        {!appliedCoupon ? (
-          <div className="shopify-coupon-input-row">
+      {!activePlanToday && (
+        <div className="shopify-coupon-container">
+          {!appliedCoupon ? (
+            <div className="shopify-coupon-input-row">
             <div className="shopify-coupon-field-wrapper">
               <input
                 type="text" 
@@ -785,12 +846,13 @@ export default function PaymentPage() {
         {couponErr && <p className="shopify-coupon-err-msg">{couponErr}</p>}
         {couponOk && <p className="shopify-coupon-ok-msg">{couponOk}</p>}
       </div>
+      )}
 
       {/* Subtotal, Shipping, Discount Calculations */}
       <div className="shopify-calculations-block">
         <div className="shopify-calc-row">
           <span>Subtotal</span>
-          <span className="calc-value">{formatPrice(basePrice)}</span>
+          <span className="calc-value">{formatPrice(todayBasePrice)}</span>
         </div>
         {appliedCoupon && (
           <div className="shopify-calc-row highlight-green">
@@ -813,6 +875,25 @@ export default function PaymentPage() {
             <span className="total-amount">{formatPrice(finalTotal)}</span>
           </div>
         </div>
+
+        {activePlanToday && (
+          <div style={{ marginTop: 12, padding: 10, background: '#f8fafc', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 12 }}>
+            <div style={{ fontWeight: 600, color: '#475569', marginBottom: 6 }}>Payment Plan Breakdown:</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {Array.from({ length: activePlanToday.installments_count }).map((_, idx) => {
+                const isPaid = isInstallmentMode ? (idx < parseInt(searchParams.get('installment')) - 1) : false
+                const isCurrent = isInstallmentMode ? (idx === parseInt(searchParams.get('installment')) - 1) : (idx === 0)
+                const label = isPaid ? "Paid" : isCurrent ? "Due Today" : `Due in ${activePlanToday.interval_days * idx} days`
+                return (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', color: isCurrent ? '#2563eb' : isPaid ? '#10b981' : '#64748b', fontWeight: isCurrent ? 600 : 400 }}>
+                    <span>Installment {idx + 1} ({label})</span>
+                    <span>{formatPrice(activePlanToday.installment_amount)}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Safe SSL Guarantee Box */}
@@ -1732,12 +1813,95 @@ export default function PaymentPage() {
               </div>
             </div>
 
+            {/* Payment Plan Options Selector */}
+            {globalPaymentPlansEnabled && product?.has_payment_plans && product?.payment_plans?.length > 0 && !isInstallmentMode && (
+              <div className="sp-form-card" style={{ marginTop: 20 }}>
+                <h3 className="sp-section-title">Select Payment Option</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {/* Pay in Full Option */}
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    padding: '14px 16px', 
+                    borderRadius: 8, 
+                    border: !selectedCheckoutPlan ? '2.5px solid #2563eb' : '1px solid #cbd5e1', 
+                    cursor: 'pointer',
+                    background: !selectedCheckoutPlan ? '#eff6ff' : '#fff'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <input 
+                        type="radio" 
+                        name="payment_option" 
+                        checked={!selectedCheckoutPlan} 
+                        onChange={() => setSelectedCheckoutPlan(null)} 
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>Pay in Full</div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>Immediate access to all content & bonuses</div>
+                      </div>
+                    </div>
+                    <span style={{ fontWeight: 700, fontSize: 15, color: '#0f172a' }}>{formatPrice(basePrice)}</span>
+                  </label>
+
+                  {/* Installment Plans */}
+                  {product.payment_plans.map(plan => (
+                    <label key={plan.id} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: '14px 16px', 
+                      borderRadius: 8, 
+                      border: selectedCheckoutPlan?.id === plan.id ? '2.5px solid #2563eb' : '1px solid #cbd5e1', 
+                      cursor: 'pointer',
+                      background: selectedCheckoutPlan?.id === plan.id ? '#eff6ff' : '#fff'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <input 
+                          type="radio" 
+                          name="payment_option" 
+                          checked={selectedCheckoutPlan?.id === plan.id} 
+                          onChange={() => setSelectedCheckoutPlan(plan)} 
+                          style={{ cursor: 'pointer' }}
+                        />
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>{plan.name || `${plan.installments_count} Installments`}</div>
+                          <div style={{ fontSize: 12, color: '#64748b' }}>₦{plan.installment_amount.toLocaleString()} every {plan.interval_days} days</div>
+                        </div>
+                      </div>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: '#0f172a' }}>{formatPrice(plan.installment_amount)} <span style={{ fontSize: 11, fontWeight: 500, color: '#64748b' }}>today</span></span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Installment payment confirmation note */}
+            {isInstallmentMode && (
+              <div className="sp-form-card" style={{ marginTop: 20, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <div>
+                    <h4 style={{ color: '#166534', margin: 0, fontSize: 14, fontWeight: 600 }}>Installment Payment Mode</h4>
+                    <p style={{ color: '#15803d', fontSize: 12.5, margin: '2px 0 0' }}>
+                      Paying installment <strong>{searchParams.get('installment')}</strong> of <strong>{product?.payment_plans?.find(p => p.id === searchParams.get('plan'))?.installments_count || '3'}</strong> for <strong>{productTitle}</strong>.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Order Bump Section */}
-            <OrderBump 
-              triggerProductId={product?.id} 
-              onBumpsChange={setSelectedBumps} 
-              currentTotal={discountedPrice} 
-            />
+            {!isInstallmentMode && (
+              <OrderBump 
+                triggerProductId={product?.id} 
+                onBumpsChange={setSelectedBumps} 
+                currentTotal={discountedPrice} 
+              />
+            )}
 
             {/* Payment Section */}
             <div className="sp-form-card">

@@ -34,6 +34,12 @@ export async function createPendingOrder({
   affiliateId,
   paymentMethod = 'paystack',
   bankReceiptUrl = null,
+  parentReference = null,
+  paymentPlanId = null,
+  installmentPaid = null,
+  totalInstallments = null,
+  paymentPlanNextDue = null,
+  paymentPlanStatus = null,
 }) {
   try {
     const cleanEmail = (email || '').trim().toLowerCase()
@@ -53,6 +59,12 @@ export async function createPendingOrder({
         currency: 'NGN',
         affiliate_code: affiliateCode || null,
         affiliate_id: affiliateId || null,
+        parent_reference: parentReference || null,
+        payment_plan_id: paymentPlanId || null,
+        installment_paid: installmentPaid || null,
+        total_installments: totalInstallments || null,
+        payment_plan_next_due: paymentPlanNextDue || null,
+        payment_plan_status: paymentPlanStatus || null,
       })
       .select('id, product_id')
       .single()
@@ -93,11 +105,43 @@ export async function completeOrder({
   let enrolled = false
 
   try {
+    // Check if there is an installment plan to update
+    const { data: orderDetails } = await supabase
+      .from('orders')
+      .select('payment_plan_id, installment_paid, total_installments, parent_reference')
+      .eq('reference', reference)
+      .maybeSingle()
+
+    let extraUpdates = {}
+    if (orderDetails && orderDetails.payment_plan_id) {
+      const isLast = orderDetails.installment_paid === orderDetails.total_installments
+      extraUpdates = {
+        payment_plan_status: isLast ? 'completed' : 'active'
+      }
+
+      // If it is a child payment, also update the parent order status and progress!
+      if (orderDetails.parent_reference) {
+        await supabase
+          .from('orders')
+          .update({
+            installment_paid: orderDetails.installment_paid,
+            payment_plan_status: isLast ? 'completed' : 'active',
+            // Update next due date for parent (30 days from now)
+            payment_plan_next_due: isLast ? null : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          })
+          .eq('reference', orderDetails.parent_reference)
+      }
+    }
+
     // ── 1. Mark all orders as paid (main and bumps) ───────────────────────────
     // PostgREST .or() needs comma-separated filters in a single string
     const { data: updatedOrders, error: updateErr } = await supabase
       .from('orders')
-      .update({ status: 'paid', paid_at: new Date().toISOString() })
+      .update({ 
+        status: 'paid', 
+        paid_at: new Date().toISOString(),
+        ...extraUpdates
+      })
       .or(`reference.eq.${reference},reference.like.${reference}-bump-%`)
       .select('product_id, products(type)')
 

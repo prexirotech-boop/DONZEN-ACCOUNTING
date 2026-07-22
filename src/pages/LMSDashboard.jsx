@@ -5,6 +5,7 @@ import UserMenu from '../components/UserMenu'
 import { supabase, recoverEnrollmentFromOrders } from '../lib/supabase'
 import StudentCertificates from './StudentCertificates'
 import UserAvatar from '../components/UserAvatar'
+import { useCurrency } from '../context/CurrencyContext'
 
 export function getShortDesc(product) {
   if (!product) return ''
@@ -687,6 +688,214 @@ function PurchaseHistoryTab({ user, profile }) {
           )}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+function BillingTab({ user }) {
+  const [plans, setPlans] = useState([])
+  const [loading, setLoading] = useState(true)
+  const { formatPrice } = useCurrency()
+
+  useEffect(() => {
+    async function loadBillingData() {
+      if (!user) return
+      try {
+        const { data: ords } = await supabase
+          .from('orders')
+          .select('*, products(*)')
+          .eq('customer_email', user.email)
+          .order('created_at', { ascending: true })
+
+        if (ords) {
+          // Find initial payment plan orders
+          const parentOrders = ords.filter(o => o.payment_plan_id && !o.parent_reference && o.status === 'paid')
+          
+          const groupedPlans = parentOrders.map(parentOrder => {
+            const childOrders = ords.filter(o => o.parent_reference === parentOrder.reference && o.status === 'paid')
+            const totalPaidInstallments = 1 + childOrders.length
+            const totalInstallments = parentOrder.total_installments || 1
+            const nextInstallment = totalPaidInstallments + 1
+            
+            const product = parentOrder.products
+            const activePlan = product?.payment_plans?.find(p => p.id === parentOrder.payment_plan_id)
+            
+            // Format dates
+            const dueDate = parentOrder.payment_plan_next_due 
+              ? new Date(parentOrder.payment_plan_next_due).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+              : 'N/A'
+              
+            const isCompleted = parentOrder.payment_plan_status === 'completed' || totalPaidInstallments >= totalInstallments
+
+            // Collect payment history
+            const history = [
+              { reference: parentOrder.reference, amount: parentOrder.amount, date: parentOrder.created_at, installment: 1 },
+              ...childOrders.map((c, i) => ({ reference: c.reference, amount: c.amount, date: c.created_at, installment: i + 2 }))
+            ]
+
+            return {
+              id: parentOrder.id,
+              reference: parentOrder.reference,
+              product,
+              planName: activePlan?.name || `${totalInstallments} Installments Plan`,
+              amountPerInstallment: activePlan?.installment_amount || parentOrder.amount,
+              totalPaidInstallments,
+              totalInstallments,
+              nextInstallment,
+              dueDate,
+              status: isCompleted ? 'completed' : (parentOrder.payment_plan_status || 'active'),
+              history,
+              planId: parentOrder.payment_plan_id
+            }
+          })
+          setPlans(groupedPlans)
+        }
+      } catch (err) {
+        console.error('[BillingTab] Error loading plans:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadBillingData()
+  }, [user])
+
+  if (loading) {
+    return <div style={{ padding: '40px 0', color: '#64748b', fontWeight: 600 }}>Loading billing details...</div>
+  }
+
+  if (plans.length === 0) {
+    return (
+      <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 12 }}>
+        <svg style={{ width: 64, height: 64, color: '#94a3b8', margin: '0 auto 20px', display: 'block' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="3" y="4" width="18" height="16" rx="2" ry="2" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+          <line x1="7" y1="15" x2="7.01" y2="15" />
+          <line x1="11" y1="15" x2="13" y2="15" />
+        </svg>
+        <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10, color: '#0b1329' }}>No Active Payment Plans</h3>
+        <p style={{ color: '#64748b', marginBottom: 20, fontSize: 14, maxWidth: 440, margin: '0 auto 20px' }}>
+          You do not have any active installment payment plans configured on this workspace. All your products are paid in full.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {plans.map(plan => (
+        <div key={plan.id} style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 12, overflow: 'hidden' }}>
+          {/* Card Header */}
+          <div style={{ padding: '20px 24px', borderBottom: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, background: '#f8fafc' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <img 
+                src={plan.product?.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} 
+                alt="" 
+                style={{ width: 48, height: 48, borderRadius: 6, objectFit: 'cover' }}
+              />
+              <div>
+                <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{plan.product?.title?.replace(/\s+slug$/i, '')}</h4>
+                <span style={{ fontSize: 12, color: '#2563eb', fontWeight: 600 }}>{plan.planName}</span>
+              </div>
+            </div>
+            <div>
+              <span style={{ 
+                padding: '6px 12px', 
+                borderRadius: 9999, 
+                fontSize: 11, 
+                fontWeight: 700, 
+                textTransform: 'uppercase', 
+                background: plan.status === 'completed' ? '#dcfce7' : plan.status === 'overdue' ? '#fee2e2' : '#eff6ff',
+                color: plan.status === 'completed' ? '#15803d' : plan.status === 'overdue' ? '#b91c1c' : '#1d4ed8'
+              }}>
+                {plan.status}
+              </span>
+            </div>
+          </div>
+
+          {/* Card Content */}
+          <div style={{ padding: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 24 }}>
+              <div>
+                <span style={{ display: 'block', fontSize: 12, color: '#64748b', fontWeight: 500, marginBottom: 4 }}>Installments Progress</span>
+                <strong style={{ fontSize: 16, color: '#0f172a' }}>{plan.totalPaidInstallments} of {plan.totalInstallments} paid</strong>
+                {/* Visual Progress Bar */}
+                <div style={{ width: '100%', height: 6, background: '#cbd5e1', borderRadius: 3, marginTop: 8, overflow: 'hidden' }}>
+                  <div style={{ width: `${(plan.totalPaidInstallments / plan.totalInstallments) * 100}%`, height: '100%', background: plan.status === 'completed' ? '#10b981' : '#2563eb', borderRadius: 3 }} />
+                </div>
+              </div>
+              
+              <div>
+                <span style={{ display: 'block', fontSize: 12, color: '#64748b', fontWeight: 500, marginBottom: 4 }}>Amount per Installment</span>
+                <strong style={{ fontSize: 16, color: '#0f172a' }}>{formatPrice(plan.amountPerInstallment)}</strong>
+              </div>
+
+              <div>
+                <span style={{ display: 'block', fontSize: 12, color: '#64748b', fontWeight: 500, marginBottom: 4 }}>
+                  {plan.status === 'completed' ? 'Completed On' : 'Next Payment Due'}
+                </span>
+                <strong style={{ fontSize: 16, color: plan.status === 'overdue' ? '#b91c1c' : '#0f172a' }}>
+                  {plan.status === 'completed' ? new Date(plan.history[plan.history.length - 1].date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : plan.dueDate}
+                </strong>
+              </div>
+            </div>
+
+            {/* Actions Block */}
+            {plan.status !== 'completed' && (
+              <div style={{ padding: '16px', background: '#eff6ff', borderRadius: 8, border: '1px solid #bfdbfe', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#1e40af' }}>Action Required</h5>
+                  <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#2563eb' }}>
+                    Pay installment <strong>{plan.nextInstallment}</strong> of <strong>{plan.totalInstallments}</strong> to keep your access active.
+                  </p>
+                </div>
+                <Link 
+                  to={`/checkout?product=${plan.product?.slug}&plan=${plan.planId}&installment=${plan.nextInstallment}&parent=${plan.reference}`}
+                  style={{ 
+                    background: '#2563eb', 
+                    color: '#fff', 
+                    padding: '8px 16px', 
+                    borderRadius: 6, 
+                    fontWeight: 600, 
+                    fontSize: 13, 
+                    textDecoration: 'none',
+                    boxShadow: '0 2px 4px rgba(37,99,235,0.15)',
+                    transition: 'background 0.2s'
+                  }}
+                >
+                  Pay Installment ({formatPrice(plan.amountPerInstallment)})
+                </Link>
+              </div>
+            )}
+
+            {/* Installment History list */}
+            <div style={{ marginTop: 24 }}>
+              <h5 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Payment History</h5>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b', textAlign: 'left' }}>
+                      <th style={{ padding: '8px 0', fontWeight: 600 }}>Installment</th>
+                      <th style={{ padding: '8px 0', fontWeight: 600 }}>Transaction Ref</th>
+                      <th style={{ padding: '8px 0', fontWeight: 600 }}>Paid Date</th>
+                      <th style={{ padding: '8px 0', fontWeight: 600, textAlign: 'right' }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {plan.history.map(item => (
+                      <tr key={item.reference} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ padding: '10px 0', color: '#0f172a', fontWeight: 500 }}>Installment #{item.installment}</td>
+                        <td style={{ padding: '10px 0', color: '#64748b', fontFamily: 'monospace' }}>{item.reference}</td>
+                        <td style={{ padding: '10px 0', color: '#64748b' }}>{new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                        <td style={{ padding: '10px 0', color: '#0f172a', fontWeight: 600, textAlign: 'right' }}>{formatPrice(item.amount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -1837,6 +2046,7 @@ export default function LMSDashboard() {
   const tabLabels = {
     learning: 'All Courses',
     history: 'Purchase History',
+    billing: 'Billing & Payment Plans',
     ebooks: 'eBook Downloads',
     wishlist: 'My Wishlist',
     certificates: 'My Certificates',
@@ -1947,6 +2157,7 @@ export default function LMSDashboard() {
               {[
                 { id: 'learning', label: 'All Courses', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /> },
                 { id: 'history', label: 'Purchase History', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /> },
+                { id: 'billing', label: 'Billing & Plans', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /> },
                 { id: 'ebooks', label: 'eBook Downloads', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /> },
                 { id: 'wishlist', label: 'Wishlist', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-7.682-7.682L12 5.67l-1.06-1.06a4.5 4.5 0 00-6.364 0z" /> },
                 { id: 'certificates', label: 'Certificates', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /> },
@@ -2037,6 +2248,7 @@ export default function LMSDashboard() {
             {activeTab === 'certificates' && <StudentCertificates user={effectiveUser} />}
             {activeTab === 'notifications' && <NotificationsTab user={effectiveUser} />}
             {activeTab === 'history' && <PurchaseHistoryTab user={effectiveUser} profile={profile} />}
+            {activeTab === 'billing' && <BillingTab user={effectiveUser} />}
             {activeTab === 'ebooks' && <EbooksTab user={effectiveUser} />}
             {activeTab === 'affiliate' && <AffiliateTab user={effectiveUser} profile={profile} />}
             {activeTab === 'settings' && <SettingsTab user={effectiveUser} />}

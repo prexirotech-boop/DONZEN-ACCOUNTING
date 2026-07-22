@@ -895,7 +895,9 @@ function AdminProducts() {
       is_free: false,
       ebook_url: '',
       bonus_ebook_urls: [],
-      sales_page_path: ''
+      sales_page_path: '',
+      has_payment_plans: false,
+      payment_plans: []
     })
     setShowModal(true)
   }
@@ -915,7 +917,9 @@ function AdminProducts() {
       is_free: p.is_free || false,
       ebook_url: p.ebook_url || '',
       bonus_ebook_urls: p.bonus_ebook_urls || [],
-      sales_page_path: p.sales_page_path || ''
+      sales_page_path: p.sales_page_path || '',
+      has_payment_plans: p.has_payment_plans || false,
+      payment_plans: Array.isArray(p.payment_plans) ? p.payment_plans : []
     })
     setShowModal(true)
   }
@@ -944,6 +948,43 @@ function AdminProducts() {
     }
   }
 
+  const handleAddPlan = () => {
+    const newPlan = {
+      id: 'plan_' + Date.now(),
+      name: '',
+      installments_count: 2,
+      installment_amount: '',
+      interval_days: 30
+    }
+    setProductForm(prev => ({
+      ...prev,
+      payment_plans: [...(prev.payment_plans || []), newPlan]
+    }))
+  }
+
+  const handleUpdatePlanField = (index, field, value) => {
+    setProductForm(prev => {
+      const plans = [...(prev.payment_plans || [])]
+      plans[index] = { ...plans[index], [field]: value }
+      if (field === 'installments_count' || field === 'installment_amount') {
+        const instCount = field === 'installments_count' ? value : plans[index].installments_count;
+        const instAmount = field === 'installment_amount' ? value : plans[index].installment_amount;
+        if (!plans[index].name || plans[index].name.includes('Installments') || plans[index].name.includes('Payments')) {
+          plans[index].name = `${instCount} Installments of ₦${Number(instAmount || 0).toLocaleString()}`;
+        }
+      }
+      return { ...prev, payment_plans: plans }
+    })
+  }
+
+  const handleRemovePlan = (index) => {
+    setProductForm(prev => {
+      const plans = [...(prev.payment_plans || [])]
+      plans.splice(index, 1)
+      return { ...prev, payment_plans: plans }
+    })
+  }
+
   const handleSaveProduct = async (e) => {
     e.preventDefault()
     if (!productForm.title.trim() || !productForm.slug.trim()) return
@@ -964,7 +1005,9 @@ function AdminProducts() {
       is_free: isFree,
       ebook_url: productForm.type === 'ebook' ? (productForm.ebook_url || null) : null,
       bonus_ebook_urls: productForm.type === 'ebook' ? (productForm.bonus_ebook_urls || []) : [],
-      sales_page_path: productForm.sales_page_path || null
+      sales_page_path: productForm.sales_page_path || null,
+      has_payment_plans: !!productForm.has_payment_plans,
+      payment_plans: productForm.payment_plans || []
     }
 
     try {
@@ -1457,6 +1500,101 @@ function AdminProducts() {
                   style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13, minHeight: 60 }} 
                   placeholder="20+ Premium Videos&#10;Downloadable resources"
                 />
+              </div>
+
+              {/* Payment Plans section */}
+              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <input 
+                    type="checkbox" 
+                    id="has_payment_plans" 
+                    checked={productForm.has_payment_plans || false} 
+                    onChange={e => setProductForm({ ...productForm, has_payment_plans: e.target.checked })} 
+                    style={{ width: 14, height: 14, cursor: 'pointer' }} 
+                  />
+                  <label htmlFor="has_payment_plans" style={{ fontWeight: 600, fontSize: 13, color: '#3c4257', cursor: 'pointer' }}>Enable Installment Payment Plans for this product</label>
+                </div>
+
+                {productForm.has_payment_plans && (
+                  <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 11.5, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>Installment Plans</span>
+                      <button 
+                        type="button" 
+                        onClick={handleAddPlan}
+                        style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+                      >
+                        + Add Plan
+                      </button>
+                    </div>
+
+                    {(!productForm.payment_plans || productForm.payment_plans.length === 0) ? (
+                      <div style={{ fontSize: 12, color: '#64748b', textAlign: 'center', padding: '10px 0' }}>No installment plans configured yet. Click "+ Add Plan" above.</div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {productForm.payment_plans.map((plan, idx) => (
+                          <div key={plan.id || idx} style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 8, background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, position: 'relative' }}>
+                            <div style={{ display: 'flex', gap: 6 }}>
+                              <input 
+                                type="text"
+                                placeholder="Plan Name (e.g. 3 monthly payments)"
+                                value={plan.name}
+                                onChange={e => handleUpdatePlanField(idx, 'name', e.target.value)}
+                                style={{ flex: 1, padding: '4px 8px', fontSize: 12, borderRadius: 4, border: '1px solid #cbd5e1' }}
+                                required
+                              />
+                              <button 
+                                type="button"
+                                onClick={() => handleRemovePlan(idx)}
+                                style={{ background: '#fef2f2', color: '#ef4444', border: '1px solid #fee2e2', borderRadius: 4, padding: '4px 8px', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6 }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: 9.5, fontWeight: 700, color: '#64748b', marginBottom: 2 }}>Installments</label>
+                                <input 
+                                  type="number"
+                                  placeholder="e.g. 3"
+                                  value={plan.installments_count}
+                                  onChange={e => handleUpdatePlanField(idx, 'installments_count', parseInt(e.target.value) || 2)}
+                                  style={{ width: '100%', padding: '4px 6px', fontSize: 11, borderRadius: 4, border: '1px solid #cbd5e1' }}
+                                  min="2"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: 9.5, fontWeight: 700, color: '#64748b', marginBottom: 2 }}>Amount / Pay (₦)</label>
+                                <input 
+                                  type="number"
+                                  placeholder="e.g. 15000"
+                                  value={plan.installment_amount}
+                                  onChange={e => handleUpdatePlanField(idx, 'installment_amount', parseInt(e.target.value) || '')}
+                                  style={{ width: '100%', padding: '4px 6px', fontSize: 11, borderRadius: 4, border: '1px solid #cbd5e1' }}
+                                  min="1"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: 9.5, fontWeight: 700, color: '#64748b', marginBottom: 2 }}>Interval (Days)</label>
+                                <input 
+                                  type="number"
+                                  placeholder="e.g. 30"
+                                  value={plan.interval_days}
+                                  onChange={e => handleUpdatePlanField(idx, 'interval_days', parseInt(e.target.value) || 30)}
+                                  style={{ width: '100%', padding: '4px 6px', fontSize: 11, borderRadius: 4, border: '1px solid #cbd5e1' }}
+                                  min="1"
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
