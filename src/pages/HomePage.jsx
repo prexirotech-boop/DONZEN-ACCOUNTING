@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 // ─── HIGH-GRADE SVG ICONS (NO EMOJIS) ───────────────────────────────────────
 const Icons = {
@@ -43,36 +43,13 @@ const Icons = {
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
     </svg>
   ),
-  Headset: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-    </svg>
-  ),
-  Smartphone: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-      <line x1="12" y1="18" x2="12.01" y2="18" />
-    </svg>
-  ),
-  ShieldCheck: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      <polyline points="9 12 11 14 15 10" />
-    </svg>
-  ),
   WhatsApp: () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
       <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
     </svg>
   ),
-  Phone: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  ),
   Star: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   ),
@@ -83,9 +60,59 @@ const Icons = {
   )
 }
 
-export default function HomePage() {
-  const navigate = useNavigate()
+// 8 Verified Nigerian Client Testimonials
+const TESTIMONIALS = [
+  {
+    initials: 'AO',
+    name: 'Adewale O.',
+    role: 'Founder, Retail Logistics Enterprise · Lagos',
+    quote: 'Before working with Donzen Accounting, managing inventory across 3 retail outlets in Lagos was a nightmare. Their team set up QuickBooks and now handles our monthly reconciliations smoothly.'
+  },
+  {
+    initials: 'CN',
+    name: 'Chidinma N.',
+    role: 'Managing Director, Tech Services Ltd · Abuja',
+    quote: 'Donzen handled our FIRS tax filing and monthly PAYE for our staff with total precision. They saved us from heavy compliance fines and clarified our financial position.'
+  },
+  {
+    initials: 'SO',
+    name: 'Samuel O.',
+    role: 'CEO, E-Commerce Brand · Lekki, Lagos',
+    quote: 'The Profit and Loss DIY template from Donzen is super clear! Even as a non-accountant, I can now track daily petty cash and know my exact monthly profits.'
+  },
+  {
+    initials: 'FA',
+    name: 'Funke A.',
+    role: 'Managing Director, Hospitality Hub · Ikeja, Lagos',
+    quote: 'Donzen Accounting Hub reconciled 14 months of backlogged transactions in less than two weeks. Exceptional corporate service and dedicated responsiveness!'
+  },
+  {
+    initials: 'IK',
+    name: 'Ibrahim K.',
+    role: 'Founder, AgriTech Processing Co. · Kano',
+    quote: 'Their CAC incorporation and monthly VAT remittance package is top notch. We got our Tax Clearance Certificate without stress or unnecessary delays.'
+  },
+  {
+    initials: 'BE',
+    name: 'Blessing E.',
+    role: 'Head of Operations, Logistics Firm · Port Harcourt',
+    quote: 'Having a dedicated account manager from Donzen who reviews our P&L statement every month gave us total confidence to pitch for bank financing.'
+  },
+  {
+    initials: 'VM',
+    name: 'Victor M.',
+    role: 'CEO, Construction Solutions Ltd · Abuja',
+    quote: 'QuickBooks setup and staff corporate accounting training provided by Donzen transformed our internal controls completely. Highly recommended!'
+  },
+  {
+    initials: 'NU',
+    name: 'Ngozi U.',
+    role: 'Founder, Fashion & Lifestyle Brand · Victoria Island, Lagos',
+    quote: 'Professional, trustworthy, and cost-effective. Donzen Accounting Hub gives SME owners true peace of mind regarding financial recordkeeping.'
+  }
+]
 
+export default function HomePage() {
   // State for Interactive Business Calculator / Service Selector
   const [businessType, setBusinessType] = useState('sme')
   const [txVolume, setTxVolume] = useState('medium')
@@ -130,12 +157,9 @@ export default function HomePage() {
 
       {/* ─── 1. HERO SECTION ────────────────────────────────────────────── */}
       <section className="hero-section">
-        
-        {/* Geometric Background Textures & Subtle Mesh Glow */}
         <div className="hero-bg-grid" />
         <div className="hero-shape-glow glow-1" />
         <div className="hero-shape-glow glow-2" />
-        <div className="hero-accent-lines" />
 
         <div className="hero-container">
           
@@ -175,7 +199,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Quick Stats Bar — Pixel Perfect Mobile Grid */}
+            {/* Quick Stats Bar — Mobile Grid Optimized */}
             <div className="hero-stats-row">
               <div className="stat-card">
                 <span className="stat-number">3,500+</span>
@@ -194,7 +218,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual Column — Big Full-Height Executive Display */}
+          {/* Hero Visual Column — Big Full-Height Executive Box */}
           <div className="hero-visual-col">
             <div className="image-frame-hero">
               <img 
@@ -249,7 +273,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION ─────────────────────── */}
+      {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION (BALANCED 6 CARDS) ───── */}
       <section className="services-section">
         <div className="services-pattern-bg" />
         
@@ -261,9 +285,10 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* Exactly 6 Service Cards — Perfectly Fills Desktop Grid (2 Rows x 3 Columns) */}
         <div className="services-grid">
           
-          {/* Card 1 */}
+          {/* Card 01 */}
           <div className="service-card">
             <div className="service-card-header">
               <div className="service-num">01</div>
@@ -284,7 +309,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Card 2 */}
+          {/* Card 02 */}
           <div className="service-card">
             <div className="service-card-header">
               <div className="service-num">02</div>
@@ -305,7 +330,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Card 3 */}
+          {/* Card 03 */}
           <div className="service-card">
             <div className="service-card-header">
               <div className="service-num">03</div>
@@ -326,7 +351,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Card 4 */}
+          {/* Card 04 */}
           <div className="service-card">
             <div className="service-card-header">
               <div className="service-num">04</div>
@@ -347,32 +372,44 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Card 5 — Redesigned Premium Featured Corporate Banner */}
-          <div className="service-card full-width-card">
-            <div className="bootcamp-pattern-overlay" />
-            <div className="full-card-inner">
-              <div className="bootcamp-left-content">
-                <div className="bootcamp-header-row">
-                  <span className="bootcamp-num">05</span>
-                  <span className="bootcamp-pill-badge">ACADEMY & TRAINING</span>
-                </div>
-                <h3 className="bootcamp-title">Donzen Accounting Experience Bootcamp (30-Day Academy)</h3>
-                <p className="bootcamp-desc">
-                  Our flagship 30-Day Online Practical Accounting Bootcamp equips aspiring bookkeepers, finance graduates, and SME owners with real-world QuickBooks, Excel, and corporate accounting skills with verifiable certification.
-                </p>
-              </div>
-
-              <div className="bootcamp-right-cta">
-                <div className="bootcamp-price-box">
-                  <span className="current-price">₦50,000</span>
-                  <span className="slashed-price">₦100,000</span>
-                </div>
-                <Link to="/products" className="btn-bootcamp-action">
-                  <span>View Course Details & Register</span>
-                  <Icons.ArrowRight />
-                </Link>
-              </div>
+          {/* Card 05 */}
+          <div className="service-card">
+            <div className="service-card-header">
+              <div className="service-num">05</div>
+              <span className="service-tag">Audit & Statements</span>
             </div>
+            <h3 className="service-title">Corporate Financial Statements & Year-End Audits</h3>
+            <p className="service-desc">
+              Prepare investor-ready financial reports and audited financial statements required for corporate loans, investor due diligence, annual returns, and official statutory filings.
+            </p>
+            <ul className="service-bullets">
+              <li>Audited Balance Sheets & Cash Flow</li>
+              <li>Management Reports & KPI Review</li>
+              <li>Bank Loan & Investor Due Diligence</li>
+            </ul>
+            <Link to="/services" className="service-link">
+              <span>Request Audit Support</span>
+              <Icons.ArrowRight />
+            </Link>
+          </div>
+
+          {/* Card 06 — Donzen Academy Bootcamp */}
+          <div className="service-card">
+            <div className="service-card-header">
+              <div className="service-num">06</div>
+              <span className="service-tag highlight">Academy & Training</span>
+            </div>
+            <h3 className="service-title">Donzen Accounting Experience Bootcamp (30-Day Academy)</h3>
+            <p className="service-desc">
+              Our flagship 30-Day Online Practical Accounting Bootcamp equips bookkeepers, finance graduates, and SME owners with real-world QuickBooks, Excel, and corporate skills.
+            </p>
+            <div className="price-tag" style={{ margin: '8px 0 16px', fontSize: '1.6rem', fontWeight: 900, color: '#0f172a' }}>
+              ₦50,000 <span style={{ fontSize: '0.9rem', color: '#94a3b8', textDecoration: 'line-through' }}>₦100,000</span>
+            </div>
+            <Link to="/products" className="service-link">
+              <span>Register For Bootcamp</span>
+              <Icons.ArrowRight />
+            </Link>
           </div>
 
         </div>
@@ -401,7 +438,6 @@ export default function HomePage() {
             </p>
 
             <div className="advantages-list">
-              
               <div className="advantage-item">
                 <div className="adv-icon-box">01</div>
                 <div>
@@ -425,13 +461,12 @@ export default function HomePage() {
                   <p className="adv-desc">Receive monthly financial performance breakdowns detailing your gross margins, operating overheads, net cash flow, and tax liabilities.</p>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── 5. INTERACTIVE PLAN SELECTOR ───────────────────────────── */}
+      {/* ─── 5. INTERACTIVE PLAN SELECTOR (REDESIGNED PIXEL PERFECT) ──── */}
       <section className="estimator-section">
         <div className="estimator-container">
           <div className="estimator-header">
@@ -445,28 +480,28 @@ export default function HomePage() {
               
               {/* Control 1 */}
               <div className="control-group">
-                <label className="control-label">1. Business Type</label>
+                <label className="control-label">1. Business Structure</label>
                 <div className="button-group">
                   <button 
                     type="button"
                     className={`choice-btn ${businessType === 'micro' ? 'active' : ''}`}
                     onClick={() => setBusinessType('micro')}
                   >
-                    Sole Proprietor / Freelancer
+                    <span>Sole Proprietor / Freelancer</span>
                   </button>
                   <button 
                     type="button"
                     className={`choice-btn ${businessType === 'sme' ? 'active' : ''}`}
                     onClick={() => setBusinessType('sme')}
                   >
-                    Growing SME / Startup
+                    <span>Growing SME / Startup</span>
                   </button>
                   <button 
                     type="button"
                     className={`choice-btn ${businessType === 'corporate' ? 'active' : ''}`}
                     onClick={() => setBusinessType('corporate')}
                   >
-                    Limited Liability / NGO
+                    <span>Limited Liability Company / NGO</span>
                   </button>
                 </div>
               </div>
@@ -480,21 +515,21 @@ export default function HomePage() {
                     className={`choice-btn ${txVolume === 'low' ? 'active' : ''}`}
                     onClick={() => setTxVolume('low')}
                   >
-                    Up to 150 Transactions
+                    <span>Up to 150 Transactions</span>
                   </button>
                   <button 
                     type="button"
                     className={`choice-btn ${txVolume === 'medium' ? 'active' : ''}`}
                     onClick={() => setTxVolume('medium')}
                   >
-                    150 – 1,000 Transactions
+                    <span>150 – 1,000 Transactions</span>
                   </button>
                   <button 
                     type="button"
                     className={`choice-btn ${txVolume === 'high' ? 'active' : ''}`}
                     onClick={() => setTxVolume('high')}
                   >
-                    1,000+ Transactions
+                    <span>1,000+ Transactions</span>
                   </button>
                 </div>
               </div>
@@ -516,64 +551,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 6. CLIENT TESTIMONIALS SECTION ─────────────────────────── */}
+      {/* ─── 6. AUTO-SCROLLING HORIZONTAL MARQUEE TESTIMONIALS (PAUSE ON HOVER) ─── */}
       <section className="testimonials-section">
         <div className="section-header">
           <span className="section-pretitle">CLIENT SUCCESS STORIES</span>
           <h2 className="section-title">Trusted By Entrepreneurs & Business Leaders</h2>
-          <p className="section-subtitle">Read how Donzen Accounting Hub helps Nigerian businesses maintain clean financial records and achieve peace of mind.</p>
+          <p className="section-subtitle">Hover over any testimonial card to pause scrolling and read client experiences.</p>
         </div>
 
-        <div className="testimonials-grid">
-          
-          <div className="testimonial-card">
-            <div className="stars-row">
-              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
-            </div>
-            <p className="testimonial-quote">
-              "Before working with Donzen Accounting, managing inventory across 3 retail outlets in Lagos was a nightmare. Their team set up QuickBooks and now handles our monthly reconciliations smoothly."
-            </p>
-            <div className="client-info">
-              <div className="client-avatar">AO</div>
-              <div>
-                <div className="client-name">Adewale O.</div>
-                <div className="client-role">Founder, Retail Logistics Enterprise</div>
+        <div className="marquee-wrapper">
+          <div className="marquee-track">
+            {/* Duplicated list for infinite seamless marquee loop */}
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, idx) => (
+              <div key={idx} className="testimonial-card">
+                <div className="stars-row">
+                  <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
+                </div>
+                <p className="testimonial-quote">"{t.quote}"</p>
+                <div className="client-info">
+                  <div className="client-avatar">{t.initials}</div>
+                  <div>
+                    <div className="client-name">{t.name}</div>
+                    <div className="client-role">{t.role}</div>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-
-          <div className="testimonial-card">
-            <div className="stars-row">
-              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
-            </div>
-            <p className="testimonial-quote">
-              "Donzen handled our FIRS tax filing and monthly PAYE for our staff with total precision. They saved us from heavy compliance fines and clarified our financial position."
-            </p>
-            <div className="client-info">
-              <div className="client-avatar">CN</div>
-              <div>
-                <div className="client-name">Chidinma N.</div>
-                <div className="client-role">Managing Director, Tech Services Ltd</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="testimonial-card">
-            <div className="stars-row">
-              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
-            </div>
-            <p className="testimonial-quote">
-              "The Profit and Loss DIY template from Donzen is super clear! Even as a non-accountant, I can now track daily petty cash and know my exact monthly profits."
-            </p>
-            <div className="client-info">
-              <div className="client-avatar">SO</div>
-              <div>
-                <div className="client-name">Samuel O.</div>
-                <div className="client-role">CEO, E-Commerce Brand</div>
-              </div>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -623,8 +627,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 8. FINAL EXECUTIVE CTA BANNER ──────────────────────────── */}
+      {/* ─── 8. FINAL EXECUTIVE CTA BANNER (BACKGROUND IMAGE OVERLAY & 2 BUTTONS) ─── */}
       <section className="final-cta-section">
+        <div className="final-cta-overlay" />
         <div className="final-cta-container">
           <span className="section-pretitle light">YOUR BUSINESS IS OUR SUCCESS</span>
           <h2 className="final-cta-heading">Ready To Upgrade Your Business Financial Management?</h2>
@@ -632,7 +637,8 @@ export default function HomePage() {
             Speak directly with our senior accounting consultants today or request a custom proposal tailored to your operational budget.
           </p>
 
-          <div className="final-cta-buttons">
+          {/* EXACTLY TWO BUTTONS */}
+          <div className="final-cta-two-buttons">
             <Link to="/contact" className="btn-primary-cta">
               <span>Schedule A Free Consultation</span>
               <Icons.ArrowRight />
@@ -646,15 +652,11 @@ export default function HomePage() {
               <Icons.WhatsApp />
               <span>WhatsApp Direct Message</span>
             </a>
-            <a href="tel:+2347039999842" className="btn-phone-cta">
-              <Icons.Phone />
-              <span>Call +234 703 9999 842</span>
-            </a>
           </div>
         </div>
       </section>
 
-      {/* ─── COMPREHENSIVE STYLESHEET ────────────────────────────────── */}
+      {/* ─── STYLESHEET ────────────────────────────────── */}
       <style>{`
         .home-corporate-root {
           font-family: var(--font, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
@@ -672,6 +674,10 @@ export default function HomePage() {
         @keyframes pulse-glow {
           0%, 100% { opacity: 0.4; transform: scale(1); }
           50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        @keyframes marquee-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
 
         .float-anim {
@@ -734,14 +740,6 @@ export default function HomePage() {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(255, 23, 23, 0.45);
         }
-        .btn-primary-cta.compact {
-          padding: 12px 24px;
-          font-size: 0.9rem;
-        }
-        .btn-primary-cta.full-width {
-          width: 100%;
-          justify-content: center;
-        }
 
         .btn-secondary-cta {
           display: inline-flex;
@@ -776,24 +774,6 @@ export default function HomePage() {
         }
         .btn-whatsapp-cta:hover {
           background: #15803d;
-        }
-
-        .btn-phone-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(255, 255, 255, 0.1);
-          color: #ffffff;
-          padding: 15px 28px;
-          border-radius: 8px;
-          font-weight: 700;
-          font-size: 0.98rem;
-          text-decoration: none;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          transition: background 0.2s;
-        }
-        .btn-phone-cta:hover {
-          background: rgba(255, 255, 255, 0.18);
         }
 
         /* ── HERO STYLING ── */
@@ -1018,7 +998,7 @@ export default function HomePage() {
           color: #0f172a;
         }
 
-        /* ── SERVICES SECTION WITH RICH GRAPHICS ── */
+        /* ── SERVICES SECTION (PERFECT 6-CARD GRID) ── */
         .services-section {
           padding: 92px 24px;
           background: #f8fafc;
@@ -1037,7 +1017,7 @@ export default function HomePage() {
           max-width: 1240px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+          grid-template-columns: repeat(3, 1fr);
           gap: 32px;
           position: relative;
           z-index: 2;
@@ -1046,7 +1026,7 @@ export default function HomePage() {
           background: #ffffff;
           border: 1px solid #e2e8f0;
           border-radius: 18px;
-          padding: 38px 34px;
+          padding: 36px 30px;
           display: flex;
           flex-direction: column;
           transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
@@ -1061,7 +1041,7 @@ export default function HomePage() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 22px;
+          margin-bottom: 20px;
         }
         .service-num {
           font-size: 1.8rem;
@@ -1084,17 +1064,17 @@ export default function HomePage() {
           color: #ff1717;
         }
         .service-title {
-          font-size: 1.28rem;
+          font-size: 1.22rem;
           font-weight: 800;
           color: #0f172a;
           margin: 0 0 12px;
           line-height: 1.35;
         }
         .service-desc {
-          font-size: 0.95rem;
+          font-size: 0.94rem;
           color: #64748b;
           line-height: 1.65;
-          margin: 0 0 22px;
+          margin: 0 0 20px;
           flex: 1;
         }
         .service-bullets {
@@ -1130,113 +1110,6 @@ export default function HomePage() {
         }
         .service-link:hover {
           gap: 10px;
-        }
-
-        /* Bootcamp Banner Card 05 Redesigned */
-        .full-width-card {
-          grid-column: 1 / -1;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-        }
-        .bootcamp-pattern-overlay {
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(rgba(255, 23, 23, 0.15) 1px, transparent 1px);
-          background-size: 24px 24px;
-          pointer-events: none;
-        }
-        .full-card-inner {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 40px;
-          position: relative;
-          z-index: 2;
-          flex-wrap: wrap;
-        }
-        .bootcamp-left-content {
-          max-width: 680px;
-        }
-        .bootcamp-header-row {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 16px;
-        }
-        .bootcamp-num {
-          font-size: 1.8rem;
-          font-weight: 900;
-          color: #ffffff;
-          opacity: 0.3;
-        }
-        .bootcamp-pill-badge {
-          background: rgba(255, 23, 23, 0.2);
-          border: 1px solid rgba(255, 23, 23, 0.4);
-          color: #ff1717;
-          font-size: 0.75rem;
-          font-weight: 800;
-          padding: 4px 14px;
-          border-radius: 30px;
-          letter-spacing: 1px;
-        }
-        .bootcamp-title {
-          font-size: 1.5rem;
-          font-weight: 900;
-          color: #ffffff;
-          margin: 0 0 12px;
-          line-height: 1.3;
-        }
-        .bootcamp-desc {
-          font-size: 0.95rem;
-          color: #94a3b8;
-          line-height: 1.65;
-          margin: 0;
-        }
-
-        .bootcamp-right-cta {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 14px;
-          flex-shrink: 0;
-        }
-        .bootcamp-price-box {
-          display: flex;
-          align-items: baseline;
-          gap: 10px;
-        }
-        .current-price {
-          font-size: 2.4rem;
-          font-weight: 900;
-          color: #ffffff;
-          letter-spacing: -0.5px;
-        }
-        .slashed-price {
-          font-size: 1.1rem;
-          color: #94a3b8;
-          text-decoration: line-through;
-        }
-        .btn-bootcamp-action {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #ff1717;
-          color: #ffffff;
-          padding: 14px 28px;
-          border-radius: 8px;
-          font-weight: 800;
-          font-size: 0.95rem;
-          text-decoration: none;
-          box-shadow: 0 6px 20px rgba(255, 23, 23, 0.4);
-          transition: all 0.2s;
-        }
-        .btn-bootcamp-action:hover {
-          background: #d91414;
-          transform: translateY(-2px);
         }
 
         /* ── WHY CHOOSE DONZEN SECTION ── */
@@ -1338,18 +1211,18 @@ export default function HomePage() {
           line-height: 1.6;
         }
 
-        /* ── ESTIMATOR WIDGET ── */
+        /* ── ESTIMATOR WIDGET (PIXEL PERFECT REDESIGN) ── */
         .estimator-section {
-          padding: 88px 24px;
+          padding: 92px 24px;
           background: #f8fafc;
         }
         .estimator-container {
-          max-width: 1040px;
+          max-width: 1080px;
           margin: 0 auto;
         }
         .estimator-header {
           text-align: center;
-          margin-bottom: 40px;
+          margin-bottom: 44px;
         }
         .estimator-header h2 {
           font-size: 2.2rem;
@@ -1370,7 +1243,7 @@ export default function HomePage() {
           display: grid;
           grid-template-columns: 1.2fr 0.8fr;
           gap: 40px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
         }
         .estimator-controls {
           display: flex;
@@ -1407,7 +1280,7 @@ export default function HomePage() {
         }
         .choice-btn.active {
           border-color: #ff1717;
-          background: rgba(255, 23, 23, 0.06);
+          background: rgba(255, 23, 23, 0.05);
           color: #ff1717;
           font-weight: 800;
           box-shadow: 0 0 0 1px #ff1717;
@@ -1456,20 +1329,32 @@ export default function HomePage() {
           margin: 0 0 24px;
         }
 
-        /* ── TESTIMONIALS SECTION ── */
+        /* ── AUTO-SCROLLING HORIZONTAL TESTIMONIAL MARQUEE (PAUSE ON HOVER) ── */
         .testimonials-section {
-          padding: 88px 24px;
+          padding: 92px 0;
           background: #ffffff;
           border-top: 1px solid #e2e8f0;
+          overflow: hidden;
         }
-        .testimonials-grid {
-          max-width: 1240px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        .marquee-wrapper {
+          width: 100%;
+          overflow: hidden;
+          position: relative;
+          padding: 10px 0 20px;
+        }
+        .marquee-track {
+          display: flex;
           gap: 28px;
+          width: max-content;
+          animation: marquee-scroll 35s linear infinite;
         }
+        .marquee-wrapper:hover .marquee-track {
+          animation-play-state: paused;
+        }
+
         .testimonial-card {
+          width: 360px;
+          flex-shrink: 0;
           background: #f8fafc;
           border: 1px solid #e2e8f0;
           border-radius: 16px;
@@ -1478,6 +1363,11 @@ export default function HomePage() {
           flex-direction: column;
           justify-content: space-between;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+          transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .testimonial-card:hover {
+          transform: translateY(-4px);
+          border-color: #ff1717;
         }
         .stars-row {
           display: flex;
@@ -1485,7 +1375,7 @@ export default function HomePage() {
           margin-bottom: 16px;
         }
         .testimonial-quote {
-          font-size: 0.98rem;
+          font-size: 0.95rem;
           color: #334155;
           line-height: 1.65;
           font-style: italic;
@@ -1503,10 +1393,12 @@ export default function HomePage() {
           background: #0f172a;
           color: #ffffff;
           font-weight: 800;
-          font-size: 0.95rem;
+          font-size: 0.92rem;
           display: flex;
           align-items: center;
           justify-content: center;
+          border: 2px solid #ff1717;
+          flex-shrink: 0;
         }
         .client-name {
           font-weight: 800;
@@ -1514,7 +1406,7 @@ export default function HomePage() {
           font-size: 0.95rem;
         }
         .client-role {
-          font-size: 0.82rem;
+          font-size: 0.8rem;
           color: #64748b;
         }
 
@@ -1574,34 +1466,48 @@ export default function HomePage() {
           white-space: pre-line;
         }
 
-        /* ── FINAL CTA BANNER ── */
+        /* ── FINAL EXECUTIVE CTA BANNER (WITH BACKGROUND IMAGE OVERLAY & EXACTLY 2 BUTTONS) ── */
         .final-cta-section {
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+          position: relative;
+          background-image: url('/hero-corporate.jpg');
+          background-size: cover;
+          background-position: center;
           color: #ffffff;
-          padding: 92px 24px;
+          padding: 100px 24px;
           text-align: center;
-          border-top: 3px solid #ff1717;
+          border-top: 4px solid #ff1717;
+          overflow: hidden;
+        }
+        .final-cta-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.96) 100%);
+          z-index: 1;
         }
         .final-cta-container {
           max-width: 840px;
           margin: 0 auto;
+          position: relative;
+          z-index: 2;
         }
         .final-cta-heading {
           font-size: clamp(2rem, 3.8vw, 3rem);
           font-weight: 900;
           margin: 12px 0 16px;
           letter-spacing: -0.8px;
+          color: #ffffff;
         }
         .final-cta-desc {
           font-size: 1.1rem;
-          color: #94a3b8;
-          margin: 0 0 36px;
+          color: #cbd5e1;
+          margin: 0 0 40px;
           line-height: 1.7;
         }
-        .final-cta-buttons {
+        .final-cta-two-buttons {
           display: flex;
           justify-content: center;
-          gap: 16px;
+          align-items: center;
+          gap: 20px;
           flex-wrap: wrap;
         }
 
@@ -1613,6 +1519,9 @@ export default function HomePage() {
             grid-template-columns: 1fr;
             gap: 40px;
           }
+          .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
           .image-frame-hero {
             min-height: 380px;
           }
@@ -1623,12 +1532,12 @@ export default function HomePage() {
             margin-top: 16px;
             max-width: 100%;
           }
-          .bootcamp-right-cta {
-            align-items: flex-start;
-          }
         }
 
         @media (max-width: 768px) {
+          .services-grid {
+            grid-template-columns: 1fr;
+          }
           .hero-section {
             padding: 48px 18px 56px;
           }
@@ -1681,15 +1590,12 @@ export default function HomePage() {
             margin: 12px;
             padding: 14px 16px;
           }
-          .full-card-inner {
+          .final-cta-two-buttons {
             flex-direction: column;
-            align-items: flex-start;
-          }
-          .bootcamp-right-cta {
-            align-items: flex-start;
             width: 100%;
           }
-          .btn-bootcamp-action {
+          .final-cta-two-buttons .btn-primary-cta,
+          .final-cta-two-buttons .btn-whatsapp-cta {
             width: 100%;
             justify-content: center;
           }
