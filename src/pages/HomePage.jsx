@@ -1,6 +1,88 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+// ─── HIGH-GRADE SVG ICONS (NO EMOJIS) ───────────────────────────────────────
+const Icons = {
+  Check: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+  ArrowRight: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+  ),
+  Building: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+      <line x1="9" y1="6" x2="9" y2="6.01" />
+      <line x1="15" y1="6" x2="15" y2="6.01" />
+      <line x1="9" y1="10" x2="9" y2="10.01" />
+      <line x1="15" y1="10" x2="15" y2="10.01" />
+      <line x1="9" y1="14" x2="9" y2="14.01" />
+      <line x1="15" y1="14" x2="15" y2="14.01" />
+      <path d="M9 18h6v4H9z" />
+    </svg>
+  ),
+  Scale: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v18M3 7h18M5 7l-2 7h6L7 7M19 7l-2 7h6l-2-7" />
+    </svg>
+  ),
+  ChartTrend: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  ),
+  Briefcase: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+    </svg>
+  ),
+  Headset: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+    </svg>
+  ),
+  Smartphone: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+      <line x1="12" y1="18" x2="12.01" y2="18" />
+    </svg>
+  ),
+  ShieldCheck: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  ),
+  WhatsApp: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
+  ),
+  Phone: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  ),
+  Star: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  )
+}
+
 export default function HomePage() {
   const navigate = useNavigate()
 
@@ -15,27 +97,27 @@ export default function HomePage() {
     setOpenFaq(openFaq === index ? null : index)
   }
 
-  // Calculate recommended package dynamically
+  // Dynamic recommendation calculation
   const getRecommendation = () => {
     if (businessType === 'micro' || txVolume === 'low') {
       return {
         title: 'Donzen DIY Remote Bookkeeping',
         price: '₦80,000',
-        subtext: 'ideal for small businesses processing up to 350 transactions monthly.',
+        subtext: 'Ideal for small businesses processing up to 350 transactions monthly.',
         link: '/resources'
       }
     } else if (businessType === 'sme' || txVolume === 'medium') {
       return {
         title: 'Donzen Done-For-You Accounting',
         price: '₦120,000',
-        subtext: 'full-service bookkeeping, payroll, tax computation & monthly advisory.',
+        subtext: 'Full-service bookkeeping, payroll, tax computation & monthly advisory.',
         link: '/resources'
       }
     } else {
       return {
         title: 'Premium Corporate Consulting & Audit Support',
         price: 'Custom Quote',
-        subtext: 'tailored corporate tax advisory, audited financials & system setup.',
+        subtext: 'Tailored corporate tax advisory, audited financials & system setup.',
         link: '/contact'
       }
     }
@@ -49,11 +131,11 @@ export default function HomePage() {
       {/* ─── 1. HERO SECTION ────────────────────────────────────────────── */}
       <section className="hero-section">
         
-        {/* Background Textures & Animated Geometric Shapes */}
+        {/* Geometric Background Textures & Subtle Mesh Glow */}
         <div className="hero-bg-grid" />
         <div className="hero-shape-glow glow-1" />
         <div className="hero-shape-glow glow-2" />
-        <div className="hero-geometric-circle" />
+        <div className="hero-accent-lines" />
 
         <div className="hero-container">
           
@@ -67,42 +149,33 @@ export default function HomePage() {
               We empower startups, SMEs, and corporate entities with accurate financial recordkeeping, payroll management, FIRS/LIRS tax compliance, and cloud accounting systems designed for sustainable profitability.
             </p>
 
-            {/* Value Highlights */}
+            {/* Value Checklist */}
             <div className="hero-checklist">
               <div className="check-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <Icons.Check />
                 <span>FIRS & State Tax Compliance (CIT, WHT, VAT, PAYE)</span>
               </div>
               <div className="check-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <Icons.Check />
                 <span>24/7 Access to Real-Time P&L & Balance Sheets</span>
               </div>
               <div className="check-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <Icons.Check />
                 <span>QuickBooks & Custom Excel Financial Systems</span>
               </div>
             </div>
 
             <div className="hero-cta-group">
               <Link to="/contact" className="btn-primary-cta">
-                Request Service Consultation
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
+                <span>Request Service Consultation</span>
+                <Icons.ArrowRight />
               </Link>
               <Link to="/resources" className="btn-secondary-cta">
                 View Retainer Plans
               </Link>
             </div>
 
-            {/* Quick Stats Bar - Fully Mobile Grid Responsive */}
+            {/* Quick Stats Bar — Pixel Perfect Mobile Grid */}
             <div className="hero-stats-row">
               <div className="stat-card">
                 <span className="stat-number">3,500+</span>
@@ -111,7 +184,7 @@ export default function HomePage() {
               <div className="stat-divider" />
               <div className="stat-card">
                 <span className="stat-number">99.8%</span>
-                <span className="stat-label">Tax Filing Accuracy</span>
+                <span className="stat-label">Filing Accuracy</span>
               </div>
               <div className="stat-divider" />
               <div className="stat-card">
@@ -121,16 +194,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual Column — Expanded Big Layout */}
+          {/* Hero Visual Column — Big Full-Height Executive Display */}
           <div className="hero-visual-col">
             <div className="image-frame-hero">
-              
-              {/* Top Floating Glass Badge */}
-              <div className="hero-top-badge float-anim-slow">
-                <span className="live-dot" />
-                <span>Real-Time Bookkeeping Sync</span>
-              </div>
-
               <img 
                 src="/hero-corporate.jpg" 
                 alt="Donzen Accounting Hub Corporate Executive Reviewing Financial Reports" 
@@ -158,25 +224,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 2. TRUST / CORPORATE COMPLIANCE BAR ────────────────────── */}
+      {/* ─── 2. TRUST / CORPORATE COMPLIANCE BAR (NO EMOJIS) ───────────── */}
       <section className="trust-bar-section">
         <div className="trust-container">
           <span className="trust-label">TRUSTED BOOKKEEPING & ACCOUNTING PARTNER FOR NIGERIAN BUSINESSES</span>
           <div className="trust-badges-row">
             <div className="trust-item">
-              <span className="trust-icon">🏛️</span>
+              <Icons.Building />
               <span>CAC Business Incorporation</span>
             </div>
             <div className="trust-item">
-              <span className="trust-icon">⚖️</span>
+              <Icons.Scale />
               <span>FIRS & LIRS Tax Compliance</span>
             </div>
             <div className="trust-item">
-              <span className="trust-icon">📈</span>
+              <Icons.ChartTrend />
               <span>QuickBooks Pro Certified</span>
             </div>
             <div className="trust-item">
-              <span className="trust-icon">💼</span>
+              <Icons.Briefcase />
               <span>Monthly Financial Statements</span>
             </div>
           </div>
@@ -185,6 +251,8 @@ export default function HomePage() {
 
       {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION ─────────────────────── */}
       <section className="services-section">
+        <div className="services-pattern-bg" />
+        
         <div className="section-header">
           <span className="section-pretitle">OUR SERVICE OFFERINGS</span>
           <h2 className="section-title">Comprehensive Accounting Solutions Tailored To Your Growth</h2>
@@ -211,7 +279,8 @@ export default function HomePage() {
               <li>Monthly Profit & Loss & Balance Sheet</li>
             </ul>
             <Link to="/services" className="service-link">
-              Explore Bookkeeping Plans →
+              <span>Explore Bookkeeping Plans</span>
+              <Icons.ArrowRight />
             </Link>
           </div>
 
@@ -231,7 +300,8 @@ export default function HomePage() {
               <li>CAC Business Incorporation & Audit Support</li>
             </ul>
             <Link to="/services" className="service-link">
-              Learn Tax Solutions →
+              <span>Learn Tax Solutions</span>
+              <Icons.ArrowRight />
             </Link>
           </div>
 
@@ -251,7 +321,8 @@ export default function HomePage() {
               <li>Multi-Currency & Inventory Configuration</li>
             </ul>
             <Link to="/services" className="service-link">
-              Request System Setup →
+              <span>Request System Setup</span>
+              <Icons.ArrowRight />
             </Link>
           </div>
 
@@ -271,27 +342,34 @@ export default function HomePage() {
               <li>Client Receivables Ledger (₦40,000)</li>
             </ul>
             <Link to="/resources" className="service-link">
-              Browse Templates →
+              <span>Browse Templates</span>
+              <Icons.ArrowRight />
             </Link>
           </div>
 
-          {/* Card 5 */}
+          {/* Card 5 — Redesigned Premium Featured Corporate Banner */}
           <div className="service-card full-width-card">
+            <div className="bootcamp-pattern-overlay" />
             <div className="full-card-inner">
-              <div>
-                <div className="service-card-header">
-                  <div className="service-num">05</div>
-                  <span className="service-tag highlight">Academy & Training</span>
+              <div className="bootcamp-left-content">
+                <div className="bootcamp-header-row">
+                  <span className="bootcamp-num">05</span>
+                  <span className="bootcamp-pill-badge">ACADEMY & TRAINING</span>
                 </div>
-                <h3 className="service-title">Donzen Accounting Experience Bootcamp (30-Day Academy)</h3>
-                <p className="service-desc">
+                <h3 className="bootcamp-title">Donzen Accounting Experience Bootcamp (30-Day Academy)</h3>
+                <p className="bootcamp-desc">
                   Our flagship 30-Day Online Practical Accounting Bootcamp equips aspiring bookkeepers, finance graduates, and SME owners with real-world QuickBooks, Excel, and corporate accounting skills with verifiable certification.
                 </p>
               </div>
-              <div className="full-card-cta">
-                <div className="price-tag">₦50,000 <span className="old-price">₦100,000</span></div>
-                <Link to="/products" className="btn-primary-cta compact">
-                  View Course Details & Register
+
+              <div className="bootcamp-right-cta">
+                <div className="bootcamp-price-box">
+                  <span className="current-price">₦50,000</span>
+                  <span className="slashed-price">₦100,000</span>
+                </div>
+                <Link to="/products" className="btn-bootcamp-action">
+                  <span>View Course Details & Register</span>
+                  <Icons.ArrowRight />
                 </Link>
               </div>
             </div>
@@ -370,18 +448,21 @@ export default function HomePage() {
                 <label className="control-label">1. Business Type</label>
                 <div className="button-group">
                   <button 
+                    type="button"
                     className={`choice-btn ${businessType === 'micro' ? 'active' : ''}`}
                     onClick={() => setBusinessType('micro')}
                   >
                     Sole Proprietor / Freelancer
                   </button>
                   <button 
+                    type="button"
                     className={`choice-btn ${businessType === 'sme' ? 'active' : ''}`}
                     onClick={() => setBusinessType('sme')}
                   >
                     Growing SME / Startup
                   </button>
                   <button 
+                    type="button"
                     className={`choice-btn ${businessType === 'corporate' ? 'active' : ''}`}
                     onClick={() => setBusinessType('corporate')}
                   >
@@ -395,18 +476,21 @@ export default function HomePage() {
                 <label className="control-label">2. Monthly Transaction Volume</label>
                 <div className="button-group">
                   <button 
+                    type="button"
                     className={`choice-btn ${txVolume === 'low' ? 'active' : ''}`}
                     onClick={() => setTxVolume('low')}
                   >
                     Up to 150 Transactions
                   </button>
                   <button 
+                    type="button"
                     className={`choice-btn ${txVolume === 'medium' ? 'active' : ''}`}
                     onClick={() => setTxVolume('medium')}
                   >
                     150 – 1,000 Transactions
                   </button>
                   <button 
+                    type="button"
                     className={`choice-btn ${txVolume === 'high' ? 'active' : ''}`}
                     onClick={() => setTxVolume('high')}
                   >
@@ -417,14 +501,15 @@ export default function HomePage() {
 
             </div>
 
-            {/* Recommendation Result */}
+            {/* Recommendation Result Box */}
             <div className="estimator-result">
               <div className="result-header">RECOMMENDED SOLUTION</div>
               <h3 className="result-title">{rec.title}</h3>
               <div className="result-price">{rec.price} <span className="period-text">/ month</span></div>
-              <p className="result-subtext">Includes {rec.subtext}</p>
+              <p className="result-subtext">{rec.subtext}</p>
               <Link to={rec.link} className="btn-primary-cta full-width">
-                Proceed With This Package →
+                <span>Proceed With This Package</span>
+                <Icons.ArrowRight />
               </Link>
             </div>
           </div>
@@ -442,7 +527,9 @@ export default function HomePage() {
         <div className="testimonials-grid">
           
           <div className="testimonial-card">
-            <div className="stars-row">★★★★★</div>
+            <div className="stars-row">
+              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
+            </div>
             <p className="testimonial-quote">
               "Before working with Donzen Accounting, managing inventory across 3 retail outlets in Lagos was a nightmare. Their team set up QuickBooks and now handles our monthly reconciliations smoothly."
             </p>
@@ -456,7 +543,9 @@ export default function HomePage() {
           </div>
 
           <div className="testimonial-card">
-            <div className="stars-row">★★★★★</div>
+            <div className="stars-row">
+              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
+            </div>
             <p className="testimonial-quote">
               "Donzen handled our FIRS tax filing and monthly PAYE for our staff with total precision. They saved us from heavy compliance fines and clarified our financial position."
             </p>
@@ -470,7 +559,9 @@ export default function HomePage() {
           </div>
 
           <div className="testimonial-card">
-            <div className="stars-row">★★★★★</div>
+            <div className="stars-row">
+              <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
+            </div>
             <p className="testimonial-quote">
               "The Profit and Loss DIY template from Donzen is super clear! Even as a non-accountant, I can now track daily petty cash and know my exact monthly profits."
             </p>
@@ -517,7 +608,9 @@ export default function HomePage() {
               <div key={idx} className={`faq-item ${openFaq === idx ? 'open' : ''}`}>
                 <button className="faq-question" onClick={() => toggleFaq(idx)}>
                   <span>{faq.q}</span>
-                  <span className="faq-toggle-icon">{openFaq === idx ? '−' : '+'}</span>
+                  <span className={`faq-toggle-icon ${openFaq === idx ? 'rotated' : ''}`}>
+                    <Icons.ChevronDown />
+                  </span>
                 </button>
                 {openFaq === idx && (
                   <div className="faq-answer">
@@ -541,7 +634,8 @@ export default function HomePage() {
 
           <div className="final-cta-buttons">
             <Link to="/contact" className="btn-primary-cta">
-              Schedule A Free Consultation
+              <span>Schedule A Free Consultation</span>
+              <Icons.ArrowRight />
             </Link>
             <a 
               href="https://wa.me/message/XUEP2CGZ4FM6E1" 
@@ -549,10 +643,12 @@ export default function HomePage() {
               rel="noreferrer" 
               className="btn-whatsapp-cta"
             >
-              💬 WhatsApp Direct Message
+              <Icons.WhatsApp />
+              <span>WhatsApp Direct Message</span>
             </a>
             <a href="tel:+2347039999842" className="btn-phone-cta">
-              📞 Call +234 703 9999 842
+              <Icons.Phone />
+              <span>Call +234 703 9999 842</span>
             </a>
           </div>
         </div>
@@ -577,14 +673,7 @@ export default function HomePage() {
           0%, 100% { opacity: 0.4; transform: scale(1); }
           50% { opacity: 0.8; transform: scale(1.1); }
         }
-        @keyframes live-pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.3); opacity: 0.6; }
-        }
 
-        .float-anim-slow {
-          animation: float-slow 4s ease-in-out infinite;
-        }
         .float-anim {
           animation: float-slow 3s ease-in-out infinite;
         }
@@ -675,6 +764,7 @@ export default function HomePage() {
         .btn-whatsapp-cta {
           display: inline-flex;
           align-items: center;
+          gap: 8px;
           background: #16a34a;
           color: #ffffff;
           padding: 15px 28px;
@@ -691,6 +781,7 @@ export default function HomePage() {
         .btn-phone-cta {
           display: inline-flex;
           align-items: center;
+          gap: 8px;
           background: rgba(255, 255, 255, 0.1);
           color: #ffffff;
           padding: 15px 28px;
@@ -715,7 +806,6 @@ export default function HomePage() {
           overflow: hidden;
         }
         
-        /* Grid Texture & Floating Glowing Shapes */
         .hero-bg-grid {
           position: absolute;
           inset: 0;
@@ -858,33 +948,6 @@ export default function HomePage() {
           transform: scale(1.03);
         }
 
-        .hero-top-badge {
-          position: absolute;
-          top: 20px;
-          left: 20px;
-          background: rgba(15, 23, 42, 0.88);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 23, 23, 0.4);
-          padding: 8px 16px;
-          border-radius: 30px;
-          font-size: 0.82rem;
-          font-weight: 700;
-          color: #ffffff;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          z-index: 3;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-        .live-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #22c55e;
-          box-shadow: 0 0 8px #22c55e;
-          animation: live-pulse 1.8s infinite;
-        }
-
         .floating-metric-card {
           position: relative;
           z-index: 3;
@@ -924,7 +987,7 @@ export default function HomePage() {
         .trust-bar-section {
           background: #f8fafc;
           border-bottom: 1px solid #e2e8f0;
-          padding: 24px;
+          padding: 28px 24px;
         }
         .trust-container {
           max-width: 1240px;
@@ -937,66 +1000,79 @@ export default function HomePage() {
           color: #64748b;
           letter-spacing: 1.5px;
           display: block;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
         .trust-badges-row {
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 32px;
+          gap: 40px;
           flex-wrap: wrap;
         }
         .trust-item {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.9rem;
+          gap: 10px;
+          font-size: 0.92rem;
           font-weight: 700;
-          color: #334155;
+          color: #0f172a;
         }
 
-        /* ── SERVICES SECTION ── */
+        /* ── SERVICES SECTION WITH RICH GRAPHICS ── */
         .services-section {
-          padding: 88px 24px;
-          background: #ffffff;
+          padding: 92px 24px;
+          background: #f8fafc;
+          position: relative;
+          overflow: hidden;
         }
+        .services-pattern-bg {
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+          background-size: 32px 32px;
+          pointer-events: none;
+        }
+
         .services-grid {
           max-width: 1240px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-          gap: 28px;
+          gap: 32px;
+          position: relative;
+          z-index: 2;
         }
         .service-card {
           background: #ffffff;
           border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 36px 32px;
+          border-radius: 18px;
+          padding: 38px 34px;
           display: flex;
           flex-direction: column;
-          transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
         }
         .service-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06);
-          border-color: #cbd5e1;
+          transform: translateY(-6px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.07);
+          border-color: #ff1717;
         }
         .service-card-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
+          margin-bottom: 22px;
         }
         .service-num {
           font-size: 1.8rem;
           font-weight: 900;
           color: #0f172a;
-          opacity: 0.2;
+          opacity: 0.18;
         }
         .service-tag {
           font-size: 0.75rem;
           font-weight: 800;
-          padding: 4px 12px;
+          padding: 5px 14px;
           border-radius: 20px;
           background: #f1f5f9;
           color: #475569;
@@ -1008,7 +1084,7 @@ export default function HomePage() {
           color: #ff1717;
         }
         .service-title {
-          font-size: 1.25rem;
+          font-size: 1.28rem;
           font-weight: 800;
           color: #0f172a;
           margin: 0 0 12px;
@@ -1018,7 +1094,7 @@ export default function HomePage() {
           font-size: 0.95rem;
           color: #64748b;
           line-height: 1.65;
-          margin: 0 0 20px;
+          margin: 0 0 22px;
           flex: 1;
         }
         .service-bullets {
@@ -1027,7 +1103,7 @@ export default function HomePage() {
           margin: 0 0 24px;
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 10px;
         }
         .service-bullets li {
           font-size: 0.88rem;
@@ -1044,49 +1120,129 @@ export default function HomePage() {
         }
         .service-link {
           font-size: 0.92rem;
-          font-weight: 700;
+          font-weight: 800;
           color: #ff1717;
           text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
           transition: gap 0.2s;
         }
         .service-link:hover {
-          text-decoration: underline;
+          gap: 10px;
         }
 
+        /* Bootcamp Banner Card 05 Redesigned */
         .full-width-card {
           grid-column: 1 / -1;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
+          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+        .bootcamp-pattern-overlay {
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(rgba(255, 23, 23, 0.15) 1px, transparent 1px);
+          background-size: 24px 24px;
+          pointer-events: none;
         }
         .full-card-inner {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          gap: 32px;
+          gap: 40px;
+          position: relative;
+          z-index: 2;
           flex-wrap: wrap;
         }
-        .full-card-cta {
-          text-align: right;
+        .bootcamp-left-content {
+          max-width: 680px;
+        }
+        .bootcamp-header-row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+        .bootcamp-num {
+          font-size: 1.8rem;
+          font-weight: 900;
+          color: #ffffff;
+          opacity: 0.3;
+        }
+        .bootcamp-pill-badge {
+          background: rgba(255, 23, 23, 0.2);
+          border: 1px solid rgba(255, 23, 23, 0.4);
+          color: #ff1717;
+          font-size: 0.75rem;
+          font-weight: 800;
+          padding: 4px 14px;
+          border-radius: 30px;
+          letter-spacing: 1px;
+        }
+        .bootcamp-title {
+          font-size: 1.5rem;
+          font-weight: 900;
+          color: #ffffff;
+          margin: 0 0 12px;
+          line-height: 1.3;
+        }
+        .bootcamp-desc {
+          font-size: 0.95rem;
+          color: #94a3b8;
+          line-height: 1.65;
+          margin: 0;
+        }
+
+        .bootcamp-right-cta {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 14px;
           flex-shrink: 0;
         }
-        .price-tag {
-          font-size: 2rem;
-          font-weight: 900;
-          color: #0f172a;
-          margin-bottom: 12px;
+        .bootcamp-price-box {
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
         }
-        .old-price {
-          font-size: 1rem;
+        .current-price {
+          font-size: 2.4rem;
+          font-weight: 900;
+          color: #ffffff;
+          letter-spacing: -0.5px;
+        }
+        .slashed-price {
+          font-size: 1.1rem;
           color: #94a3b8;
           text-decoration: line-through;
-          font-weight: 500;
-          margin-left: 6px;
+        }
+        .btn-bootcamp-action {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #ff1717;
+          color: #ffffff;
+          padding: 14px 28px;
+          border-radius: 8px;
+          font-weight: 800;
+          font-size: 0.95rem;
+          text-decoration: none;
+          box-shadow: 0 6px 20px rgba(255, 23, 23, 0.4);
+          transition: all 0.2s;
+        }
+        .btn-bootcamp-action:hover {
+          background: #d91414;
+          transform: translateY(-2px);
         }
 
         /* ── WHY CHOOSE DONZEN SECTION ── */
         .why-section {
           padding: 92px 24px;
-          background: #f8fafc;
+          background: #ffffff;
           border-top: 1px solid #e2e8f0;
           border-bottom: 1px solid #e2e8f0;
         }
@@ -1158,7 +1314,7 @@ export default function HomePage() {
           width: 44px;
           height: 44px;
           border-radius: 10px;
-          background: #ffffff;
+          background: #f8fafc;
           border: 1px solid #e2e8f0;
           color: #ff1717;
           font-weight: 900;
@@ -1185,7 +1341,7 @@ export default function HomePage() {
         /* ── ESTIMATOR WIDGET ── */
         .estimator-section {
           padding: 88px 24px;
-          background: #ffffff;
+          background: #f8fafc;
         }
         .estimator-container {
           max-width: 1040px;
@@ -1207,7 +1363,7 @@ export default function HomePage() {
         }
 
         .estimator-card {
-          background: #f8fafc;
+          background: #ffffff;
           border: 1px solid #e2e8f0;
           border-radius: 20px;
           padding: 40px;
@@ -1231,38 +1387,41 @@ export default function HomePage() {
         .button-group {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 10px;
         }
         .choice-btn {
-          padding: 12px 18px;
-          border: 1px solid #cbd5e1;
+          padding: 14px 20px;
+          border: 1px solid #e2e8f0;
           background: #ffffff;
-          border-radius: 8px;
-          font-size: 0.9rem;
+          border-radius: 10px;
+          font-size: 0.92rem;
           font-weight: 600;
           color: #334155;
           text-align: left;
           cursor: pointer;
           transition: all 0.2s;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .choice-btn:hover {
           border-color: #0f172a;
         }
         .choice-btn.active {
           border-color: #ff1717;
-          background: rgba(255, 23, 23, 0.05);
+          background: rgba(255, 23, 23, 0.06);
           color: #ff1717;
-          font-weight: 700;
+          font-weight: 800;
+          box-shadow: 0 0 0 1px #ff1717;
         }
 
         .estimator-result {
           background: #0f172a;
           color: #ffffff;
           border-radius: 16px;
-          padding: 32px 28px;
+          padding: 36px 30px;
           display: flex;
           flex-direction: column;
           justify-content: center;
+          box-shadow: 0 16px 36px rgba(0,0,0,0.2);
         }
         .result-header {
           font-size: 0.75rem;
@@ -1279,10 +1438,11 @@ export default function HomePage() {
           line-height: 1.3;
         }
         .result-price {
-          font-size: 2.2rem;
+          font-size: 2.4rem;
           font-weight: 900;
           color: #ffffff;
           margin-bottom: 8px;
+          letter-spacing: -0.5px;
         }
         .period-text {
           font-size: 0.9rem;
@@ -1299,7 +1459,7 @@ export default function HomePage() {
         /* ── TESTIMONIALS SECTION ── */
         .testimonials-section {
           padding: 88px 24px;
-          background: #f8fafc;
+          background: #ffffff;
           border-top: 1px solid #e2e8f0;
         }
         .testimonials-grid {
@@ -1310,18 +1470,18 @@ export default function HomePage() {
           gap: 28px;
         }
         .testimonial-card {
-          background: #ffffff;
+          background: #f8fafc;
           border: 1px solid #e2e8f0;
           border-radius: 16px;
           padding: 32px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
         }
         .stars-row {
-          color: #f59e0b;
-          font-size: 1.1rem;
+          display: flex;
+          gap: 4px;
           margin-bottom: 16px;
         }
         .testimonial-quote {
@@ -1361,7 +1521,7 @@ export default function HomePage() {
         /* ── FAQ SECTION ── */
         .faq-section {
           padding: 88px 24px;
-          background: #ffffff;
+          background: #f8fafc;
           border-top: 1px solid #e2e8f0;
         }
         .faq-container {
@@ -1398,9 +1558,13 @@ export default function HomePage() {
           cursor: pointer;
         }
         .faq-toggle-icon {
-          font-size: 1.4rem;
           color: #ff1717;
-          margin-left: 16px;
+          display: flex;
+          align-items: center;
+          transition: transform 0.2s ease;
+        }
+        .faq-toggle-icon.rotated {
+          transform: rotate(180deg);
         }
         .faq-answer {
           padding: 0 24px 20px;
@@ -1458,6 +1622,9 @@ export default function HomePage() {
             right: auto;
             margin-top: 16px;
             max-width: 100%;
+          }
+          .bootcamp-right-cta {
+            align-items: flex-start;
           }
         }
 
@@ -1518,9 +1685,13 @@ export default function HomePage() {
             flex-direction: column;
             align-items: flex-start;
           }
-          .full-card-cta {
-            text-align: left;
+          .bootcamp-right-cta {
+            align-items: flex-start;
             width: 100%;
+          }
+          .btn-bootcamp-action {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>

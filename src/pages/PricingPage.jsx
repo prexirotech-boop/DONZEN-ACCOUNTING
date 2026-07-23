@@ -142,7 +142,13 @@ export default function PricingPage() {
             {templateProducts.length > 0 ? (
               templateProducts.map(t => (
                 <div key={t.id} className="template-card">
-                  <div className="template-icon">📊</div>
+                  <div className="template-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="20" x2="18" y2="10"></line>
+                      <line x1="12" y1="20" x2="12" y2="4"></line>
+                      <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                  </div>
                   <h3>{t.title}</h3>
                   <p>{t.description}</p>
                   <div className="template-price-row">
@@ -174,7 +180,12 @@ export default function PricingPage() {
             <div className="templates-grid">
               {courseProducts.map(c => (
                 <div key={c.id} className="template-card" style={{ borderColor: '#ff1717' }}>
-                  <div className="template-icon">🎓</div>
+                  <div className="template-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                    </svg>
+                  </div>
                   <h3>{c.title}</h3>
                   <p>{c.description}</p>
                   <div className="template-price-row">
