@@ -48,13 +48,17 @@ export default function HomePage() {
 
       {/* ─── 1. HERO SECTION ────────────────────────────────────────────── */}
       <section className="hero-section">
-        <div className="hero-container">
-          <div className="hero-text-col">
-            <div className="hero-badge">
-              <span className="badge-dot" />
-              <span>DONZEN ACCOUNTING HUB · NIGERIA & AFRICA</span>
-            </div>
+        
+        {/* Background Textures & Animated Geometric Shapes */}
+        <div className="hero-bg-grid" />
+        <div className="hero-shape-glow glow-1" />
+        <div className="hero-shape-glow glow-2" />
+        <div className="hero-geometric-circle" />
 
+        <div className="hero-container">
+          
+          {/* Left Text Column */}
+          <div className="hero-text-col">
             <h1 className="hero-headline">
               Executive Bookkeeping, Accounting & Tax Compliance <span className="highlight-text">For Growing Businesses</span>
             </h1>
@@ -98,11 +102,11 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Quick Stats Bar */}
+            {/* Quick Stats Bar - Fully Mobile Grid Responsive */}
             <div className="hero-stats-row">
               <div className="stat-card">
                 <span className="stat-number">3,500+</span>
-                <span className="stat-label">Clients & Trained Alumni</span>
+                <span className="stat-label">Clients & Alumni</span>
               </div>
               <div className="stat-divider" />
               <div className="stat-card">
@@ -117,17 +121,26 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual Column */}
+          {/* Hero Visual Column — Expanded Big Layout */}
           <div className="hero-visual-col">
-            <div className="image-frame">
+            <div className="image-frame-hero">
+              
+              {/* Top Floating Glass Badge */}
+              <div className="hero-top-badge float-anim-slow">
+                <span className="live-dot" />
+                <span>Real-Time Bookkeeping Sync</span>
+              </div>
+
               <img 
                 src="/hero-corporate.jpg" 
                 alt="Donzen Accounting Hub Corporate Executive Reviewing Financial Reports" 
-                className="hero-img"
+                className="hero-img-full"
               />
-              <div className="floating-metric-card">
+              
+              {/* Overlay Glass Card */}
+              <div className="floating-metric-card float-anim">
                 <div className="metric-icon">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
                     <line x1="12" y1="20" x2="12" y2="4"></line>
                     <line x1="6" y1="20" x2="6" y2="14"></line>
@@ -138,8 +151,10 @@ export default function HomePage() {
                   <div className="metric-desc">Audited Reports & Tax Computation</div>
                 </div>
               </div>
+
             </div>
           </div>
+
         </div>
       </section>
 
@@ -550,6 +565,28 @@ export default function HomePage() {
           background-color: #ffffff;
           color: #0f172a;
           line-height: 1.6;
+          overflow-x: hidden;
+        }
+
+        /* Keyframe Animations */
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        @keyframes live-pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.3); opacity: 0.6; }
+        }
+
+        .float-anim-slow {
+          animation: float-slow 4s ease-in-out infinite;
+        }
+        .float-anim {
+          animation: float-slow 3s ease-in-out infinite;
         }
 
         /* Common Utility Styles */
@@ -601,12 +638,12 @@ export default function HomePage() {
           font-size: 0.98rem;
           text-decoration: none;
           transition: all 0.2s ease;
-          box-shadow: 0 4px 14px rgba(255, 23, 23, 0.3);
+          box-shadow: 0 4px 14px rgba(255, 23, 23, 0.35);
         }
         .btn-primary-cta:hover {
           background: #d91414;
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(255, 23, 23, 0.4);
+          box-shadow: 0 6px 20px rgba(255, 23, 23, 0.45);
         }
         .btn-primary-cta.compact {
           padding: 12px 24px;
@@ -672,40 +709,55 @@ export default function HomePage() {
         .hero-section {
           background: linear-gradient(135deg, #0f172a 0%, #1e293b 70%, #090d16 100%);
           color: #ffffff;
-          padding: 84px 24px 72px;
+          padding: 80px 24px 72px;
           border-bottom: 3px solid #ff1717;
           position: relative;
+          overflow: hidden;
         }
+        
+        /* Grid Texture & Floating Glowing Shapes */
+        .hero-bg-grid {
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+          background-size: 28px 28px;
+          opacity: 0.6;
+          pointer-events: none;
+        }
+        .hero-shape-glow {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          pointer-events: none;
+        }
+        .glow-1 {
+          top: -10%;
+          right: 5%;
+          width: 500px;
+          height: 500px;
+          background: radial-gradient(circle, rgba(255,23,23,0.18) 0%, transparent 70%);
+          animation: pulse-glow 6s ease-in-out infinite;
+        }
+        .glow-2 {
+          bottom: -15%;
+          left: -5%;
+          width: 450px;
+          height: 450px;
+          background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+          animation: pulse-glow 8s ease-in-out infinite;
+        }
+
         .hero-container {
-          max-width: 1240px;
+          max-width: 1280px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1.15fr 0.85fr;
-          gap: 56px;
-          align-items: center;
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+          align-items: stretch;
+          position: relative;
+          z-index: 2;
         }
-        .hero-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: rgba(255, 23, 23, 0.1);
-          border: 1px solid rgba(255, 23, 23, 0.25);
-          color: #ff1717;
-          padding: 6px 16px;
-          border-radius: 30px;
-          font-size: 0.78rem;
-          font-weight: 800;
-          letter-spacing: 1px;
-          margin-bottom: 24px;
-        }
-        .badge-dot {
-          width: 8px;
-          height: 8px;
-          background: #ff1717;
-          border-radius: 50%;
-          display: inline-block;
-          box-shadow: 0 0 8px #ff1717;
-        }
+
         .hero-headline {
           font-size: clamp(2.4rem, 4.2vw, 3.6rem);
           font-weight: 900;
@@ -718,7 +770,7 @@ export default function HomePage() {
           color: #ff1717;
         }
         .hero-description {
-          font-size: 1.12rem;
+          font-size: 1.1rem;
           color: #94a3b8;
           line-height: 1.7;
           margin: 0 0 28px;
@@ -745,6 +797,7 @@ export default function HomePage() {
           margin-bottom: 40px;
         }
 
+        /* Quick Stats Bar */
         .hero-stats-row {
           display: flex;
           align-items: center;
@@ -773,42 +826,85 @@ export default function HomePage() {
           background: rgba(255, 255, 255, 0.12);
         }
 
-        /* Hero Image Frame */
+        /* Hero Image Frame - Full Big Column Size */
         .hero-visual-col {
-          position: relative;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
         }
-        .image-frame {
+        .image-frame-hero {
           position: relative;
-          border-radius: 16px;
+          border-radius: 20px;
           overflow: hidden;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          height: 100%;
+          min-height: 480px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          background: #0f172a;
         }
-        .hero-img {
+        .hero-img-full {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
-          display: block;
+          object-position: center;
+          transition: transform 0.6s ease;
         }
-        .floating-metric-card {
+        .image-frame-hero:hover .hero-img-full {
+          transform: scale(1.03);
+        }
+
+        .hero-top-badge {
           position: absolute;
-          bottom: 20px;
+          top: 20px;
           left: 20px;
-          right: 20px;
+          background: rgba(15, 23, 42, 0.88);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 23, 23, 0.4);
+          padding: 8px 16px;
+          border-radius: 30px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #ffffff;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          z-index: 3;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .live-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #22c55e;
+          box-shadow: 0 0 8px #22c55e;
+          animation: live-pulse 1.8s infinite;
+        }
+
+        .floating-metric-card {
+          position: relative;
+          z-index: 3;
+          margin: 20px;
           background: rgba(15, 23, 42, 0.92);
-          backdrop-filter: blur(10px);
+          backdrop-filter: blur(12px);
           border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 12px;
-          padding: 16px 20px;
+          border-radius: 14px;
+          padding: 20px 24px;
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 18px;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
         }
         .metric-icon {
-          width: 44px;
-          height: 44px;
-          border-radius: 10px;
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
           background: rgba(255, 23, 23, 0.15);
+          border: 1px solid rgba(255, 23, 23, 0.3);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -817,10 +913,10 @@ export default function HomePage() {
         .metric-title {
           font-weight: 800;
           color: #ffffff;
-          font-size: 0.95rem;
+          font-size: 1rem;
         }
         .metric-desc {
-          font-size: 0.82rem;
+          font-size: 0.84rem;
           color: #94a3b8;
         }
 
@@ -1345,13 +1441,16 @@ export default function HomePage() {
           flex-wrap: wrap;
         }
 
-        /* Responsive Breakpoints */
+        /* ── RESPONSIVE BREAKPOINTS (TABLET & MOBILE) ── */
         @media (max-width: 1024px) {
           .hero-container,
           .why-container,
           .estimator-card {
             grid-template-columns: 1fr;
             gap: 40px;
+          }
+          .image-frame-hero {
+            min-height: 380px;
           }
           .experience-badge {
             position: relative;
@@ -1361,17 +1460,59 @@ export default function HomePage() {
             max-width: 100%;
           }
         }
+
         @media (max-width: 768px) {
           .hero-section {
-            padding: 56px 20px;
+            padding: 48px 18px 56px;
           }
-          .hero-stats-row {
+          .hero-headline {
+            font-size: 2.2rem;
+            line-height: 1.2;
+          }
+          .hero-description {
+            font-size: 1rem;
+          }
+          .hero-cta-group {
             flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
+            width: 100%;
+          }
+          .btn-primary-cta, .btn-secondary-cta {
+            width: 100%;
+            justify-content: center;
+          }
+
+          /* Mobile Stats Grid - Perfect 3-Column Fit */
+          .hero-stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+            padding-top: 20px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+            width: 100% !important;
+          }
+          .stat-card {
+            align-items: center;
+            text-align: center;
+          }
+          .stat-number {
+            font-size: 1.25rem !important;
+            line-height: 1.2;
+          }
+          .stat-label {
+            font-size: 0.68rem !important;
+            line-height: 1.3;
+            margin-top: 2px;
           }
           .stat-divider {
-            display: none;
+            display: none !important;
+          }
+
+          .image-frame-hero {
+            min-height: 320px;
+          }
+          .floating-metric-card {
+            margin: 12px;
+            padding: 14px 16px;
           }
           .full-card-inner {
             flex-direction: column;
