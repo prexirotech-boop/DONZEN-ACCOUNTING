@@ -251,8 +251,8 @@ export default function AdminPlatformAnalytics() {
         <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} style={{ width: '100%', height: 'auto', display: 'block', overflow: 'visible' }}>
           <defs>
             <linearGradient id="chart-area-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2563eb" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+              <stop offset="0%" stopColor="#ff1717" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#ff1717" stopOpacity="0" />
             </linearGradient>
             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="3.5" result="blur" />
@@ -281,7 +281,7 @@ export default function AdminPlatformAnalytics() {
 
           {/* Line Path */}
           {points.length > 0 && (
-            <path d={pathString} fill="none" stroke="#2563eb" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#glow)" />
+            <path d={pathString} fill="none" stroke="#ff1717" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" filter="url(#glow)" />
           )}
 
           {/* X Axis Labels */}
@@ -309,7 +309,7 @@ export default function AdminPlatformAnalytics() {
                   y1={paddingTop} 
                   x2={pt.x} 
                   y2={paddingTop + plotHeight} 
-                  stroke="#2563eb" 
+                  stroke="#ff1717" 
                   strokeWidth="1.2" 
                   strokeDasharray="4,4" 
                   className="chart-hover-line" 
@@ -395,7 +395,7 @@ export default function AdminPlatformAnalytics() {
                 </g>
 
                 {/* Point Circle */}
-                <circle cx={pt.x} cy={pt.y} r="5.5" fill="#fff" stroke="#2563eb" strokeWidth="3" />
+                <circle cx={pt.x} cy={pt.y} r="5.5" fill="#fff" stroke="#ff1717" strokeWidth="3" />
                 
                 {/* Large Invisible Hit Target */}
                 <circle cx={pt.x} cy={pt.y} r="18" fill="transparent" style={{ cursor: 'pointer' }} />
@@ -521,7 +521,7 @@ export default function AdminPlatformAnalytics() {
               onClick={() => setTimeframe(t.id)}
               style={{
                 border: 'none',
-                background: timeframe === t.id ? '#2563eb' : 'transparent',
+                background: timeframe === t.id ? '#ff1717' : 'transparent',
                 color: timeframe === t.id ? '#fff' : '#64748b',
                 padding: '6px 12px',
                 borderRadius: 6,
@@ -539,7 +539,7 @@ export default function AdminPlatformAnalytics() {
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
-          <div className="premium-spinner" style={{ width: 40, height: 40, border: '4px solid #f3f3f3', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div className="premium-spinner" style={{ width: 40, height: 40, border: '4px solid #f3f3f3', borderTop: '4px solid #ff1717', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           <style dangerouslySetInnerHTML={{ __html: '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }' }} />
         </div>
       ) : (
@@ -547,7 +547,7 @@ export default function AdminPlatformAnalytics() {
           {/* KPI METRIC CARDS */}
           <div className="kpi-grid-platform-two-col">
             {[
-              { label: 'Gross Revenue', val: formatNaira(totalRevenue), sub: `From ${paidOrders.length} paid orders`, color: '#2563eb', focus: true },
+              { label: 'Gross Revenue', val: formatNaira(totalRevenue), sub: `From ${paidOrders.length} paid orders`, color: '#ff1717', focus: true },
               { label: 'Total Sales (Orders)', val: totalOrdersCount, sub: `AOV: ${formatNaira(aov)}` },
               { label: 'Enrolled Students', val: totalStudents, sub: 'Total registered students database' },
               { label: 'Active Products', val: activeProducts, sub: `Published of ${products.length} products total` }
@@ -598,8 +598,8 @@ export default function AdminPlatformAnalytics() {
                   padding: '12px 4px',
                   fontSize: 14,
                   fontWeight: 600,
-                  color: activeTab === tab.id ? '#2563eb' : '#64748b',
-                  borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent',
+                  color: activeTab === tab.id ? '#ff1717' : '#64748b',
+                  borderBottom: activeTab === tab.id ? '2px solid #ff1717' : '2px solid transparent',
                   cursor: 'pointer',
                   transition: 'all 0.15s',
                   paddingBottom: 10
@@ -906,7 +906,7 @@ export default function AdminPlatformAnalytics() {
                         <td style={{ padding: '14px 8px', textTransform: 'capitalize', fontSize: 12.5 }}>{prod.type}</td>
                         <td style={{ padding: '14px 8px', textAlign: 'center' }}>{prod.views}</td>
                         <td style={{ padding: '14px 8px', textAlign: 'center', fontWeight: 600 }}>{prod.copiesSold}</td>
-                        <td style={{ padding: '14px 8px', textAlign: 'center', color: '#2563eb', fontWeight: 700 }}>
+                        <td style={{ padding: '14px 8px', textAlign: 'center', color: '#ff1717', fontWeight: 700 }}>
                           {prod.conversion}%
                         </td>
                         <td style={{ padding: '14px 8px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>

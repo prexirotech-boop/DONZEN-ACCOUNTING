@@ -113,8 +113,8 @@ function StatusDropdown({ value, onChange }) {
                 width: '100%',
                 padding: '8px 10px',
                 border: 'none',
-                background: value === opt.value ? '#eff6ff' : 'transparent',
-                color: value === opt.value ? '#2563eb' : '#475569',
+                background: value === opt.value ? '#fff5f5' : 'transparent',
+                color: value === opt.value ? '#ff1717' : '#475569',
                 fontSize: 13,
                 fontWeight: value === opt.value ? '700' : '500',
                 borderRadius: 8,
@@ -141,7 +141,7 @@ function StatusDropdown({ value, onChange }) {
                 <span>{opt.label}</span>
               </span>
               {value === opt.value && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
               )}
@@ -179,7 +179,7 @@ const StatusBadge = ({ status, size = 'md' }) => {
 // STATS CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
-const StatCard = ({ icon, label, value, sub, accent = '#2563eb', onClick, active }) => (
+const StatCard = ({ icon, label, value, sub, accent = '#ff1717', onClick, active }) => (
   <button onClick={onClick} style={{
     background: active ? `linear-gradient(135deg, ${accent}18, ${accent}08)` : '#fff',
     border: active ? `2px solid ${accent}40` : '1.5px solid #e8ecf0',
@@ -267,7 +267,7 @@ const DRow = ({ label, value, mono, accent }) => (
 )
 
 const DAction = ({ children, color, icon, onClick }) => {
-  const isPrimary = color === '#059669' || color === '#2563eb'
+  const isPrimary = color === '#059669' || color === '#ff1717'
   const bg = isPrimary ? color : '#fff'
   const textCol = isPrimary ? '#fff' : color
   const borderCol = isPrimary ? 'transparent' : `${color}30`
@@ -322,7 +322,7 @@ function OrderDrawer({ order, onClose, onStatusChange, onEnroll }) {
         <style>{`@keyframes drawerIn { from { transform:translateX(100%); } to { transform:translateX(0); } }`}</style>
 
         {/* Header */}
-        <div style={{ padding: '18px 22px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', flexShrink: 0 }}>
+        <div style={{ padding: '18px 22px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a, #7f1d1d)', flexShrink: 0 }}>
           <div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 3 }}>Order Details</div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', fontFamily: 'monospace' }}>{truncR(order.reference, 24)}</div>
@@ -411,7 +411,7 @@ function OrderDrawer({ order, onClose, onStatusChange, onEnroll }) {
               {(order.status === 'pending' || order.status === 'abandoned' || order.status === 'cancelled') &&
                 <DAction color="#059669" icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>} onClick={() => onStatusChange(order, 'paid')}>Mark as Paid & Grant Access</DAction>}
               {order.status === 'paid' && order.products?.type === 'course' &&
-                <DAction color="#2563eb" icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>} onClick={() => onEnroll(order)}>Re-Grant Course Access</DAction>}
+                <DAction color="#ff1717" icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>} onClick={() => onEnroll(order)}>Re-Grant Course Access</DAction>}
               {order.status === 'paid' &&
                 <DAction color="#dc2626" icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>} onClick={() => onStatusChange(order, 'refunded')}>Process Refund & Revoke Access</DAction>}
               {order.status === 'refunded' &&
@@ -484,17 +484,17 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
             </button>
           </div>
           {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '10px 14px', borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
-          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '11px 13px', fontSize: '12px', color: '#1e40af', lineHeight: 1.45, marginBottom: 16 }}>
+          <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 10, padding: '11px 13px', fontSize: '12px', color: '#991b1b', lineHeight: 1.45, marginBottom: 16 }}>
             💡 <strong>No Password Needed:</strong> If the student doesn't have an account, they can simply sign up later at <strong>/register</strong> using this exact email (or click <strong>Forgot Password</strong> to set a password). The system will automatically link their manual orders and course access.
           </div>
         </div>
 
         <form onSubmit={handleSubmit} style={{ padding: '0 26px 26px', display: 'flex', flexDirection: 'column', gap: 15 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <div><label style={lbl}>Email *</label><input type="email" value={form.customer_email} onChange={e => setF('customer_email', e.target.value)} style={inp} placeholder="student@email.com" required onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
-            <div><label style={lbl}>Full Name</label><input type="text" value={form.customer_name} onChange={e => setF('customer_name', e.target.value)} style={inp} placeholder="John Doe" onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
+            <div><label style={lbl}>Email *</label><input type="email" value={form.customer_email} onChange={e => setF('customer_email', e.target.value)} style={inp} placeholder="student@email.com" required onFocus={e => e.target.style.borderColor='#ff1717'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
+            <div><label style={lbl}>Full Name</label><input type="text" value={form.customer_name} onChange={e => setF('customer_name', e.target.value)} style={inp} placeholder="John Doe" onFocus={e => e.target.style.borderColor='#ff1717'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
           </div>
-          <div><label style={lbl}>Phone Number</label><input type="tel" value={form.customer_phone} onChange={e => setF('customer_phone', e.target.value)} style={inp} placeholder="08012345678" onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
+          <div><label style={lbl}>Phone Number</label><input type="tel" value={form.customer_phone} onChange={e => setF('customer_phone', e.target.value)} style={inp} placeholder="08012345678" onFocus={e => e.target.style.borderColor='#ff1717'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
           <div>
             <label style={lbl}>Product *</label>
             <select value={form.product_id} onChange={e => handleProductChange(e.target.value)} style={{ ...inp, cursor: 'pointer' }} required>
@@ -503,7 +503,7 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
             </select>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <div><label style={lbl}>Amount (NGN) *</label><input type="number" value={form.amount} onChange={e => setF('amount', e.target.value)} style={inp} placeholder="10000" required min="0" onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
+            <div><label style={lbl}>Amount (NGN) *</label><input type="number" value={form.amount} onChange={e => setF('amount', e.target.value)} style={inp} placeholder="10000" required min="0" onFocus={e => e.target.style.borderColor='#ff1717'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
             <div>
               <label style={lbl}>Payment Method</label>
               <select value={form.payment_method} onChange={e => setF('payment_method', e.target.value)} style={{ ...inp, cursor: 'pointer' }}>
@@ -511,7 +511,7 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
               </select>
             </div>
           </div>
-          <div><label style={lbl}>Reference / Transaction ID</label><input type="text" value={form.reference} onChange={e => setF('reference', e.target.value)} style={inp} placeholder="Auto-generated if left empty" onFocus={e => e.target.style.borderColor='#2563eb'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
+          <div><label style={lbl}>Reference / Transaction ID</label><input type="text" value={form.reference} onChange={e => setF('reference', e.target.value)} style={inp} placeholder="Auto-generated if left empty" onFocus={e => e.target.style.borderColor='#ff1717'} onBlur={e => e.target.style.borderColor='#e2e8f0'} /></div>
           <div>
             <label style={lbl}>Order Status</label>
             <select value={form.status} onChange={e => setF('status', e.target.value)} style={{ ...inp, cursor: 'pointer' }}>
@@ -521,7 +521,7 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
             </select>
           </div>
           <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
-            <button type="submit" disabled={submitting} style={{ flex: 1, background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', border: 'none', padding: '13px', borderRadius: 10, fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 14, opacity: submitting ? 0.7 : 1 }}>
+            <button type="submit" disabled={submitting} style={{ flex: 1, background: 'linear-gradient(135deg, #ff1717, #d91414)', color: '#fff', border: 'none', padding: '13px', borderRadius: 10, fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 14, opacity: submitting ? 0.7 : 1 }}>
               {submitting ? 'Recording…' : '✓ Record Order'}
             </button>
             <button type="button" onClick={onClose} style={{ flex: 1, background: '#f8fafc', color: '#4f566b', border: '1.5px solid #e2e8f0', padding: '13px', borderRadius: 10, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
@@ -538,7 +538,7 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
 
 const MobileOrderCard = ({ order, onClick }) => (
   <button onClick={onClick} style={{ width: '100%', background: '#fff', border: '1.5px solid #e8ecf0', borderRadius: 16, padding: '16px 18px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.18s', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
-    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 6px 24px rgba(37,99,235,0.1)'; e.currentTarget.style.borderColor = '#bfdbfe' }}
+    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 23, 23,0.1)'; e.currentTarget.style.borderColor = '#ffcccc' }}
     onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = '#e8ecf0' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
       <div style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 12.5, color: '#1a1f36' }}>{truncR(order.reference, 22)}</div>
@@ -729,8 +729,8 @@ export default function AdminOrders() {
           border-color: #cbd5e1 !important;
         }
         .ao-filter-control:focus {
-          border-color: #2563eb !important;
-          box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.12) !important;
+          border-color: #ff1717 !important;
+          box-shadow: 0 0 0 3.5px rgba(255, 23, 23, 0.12) !important;
         }
         .ao-filter-search {
           width: 100% !important;
@@ -767,7 +767,7 @@ export default function AdminOrders() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export CSV
           </button>
-          <button onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 9, fontWeight: 700, cursor: 'pointer', fontSize: 13, boxShadow: '0 4px 14px rgba(37,99,235,0.25)' }}>
+          <button onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#ff1717,#d91414)', color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 9, fontWeight: 700, cursor: 'pointer', fontSize: 13, boxShadow: '0 4px 14px rgba(255, 23, 23,0.25)' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Record Order
           </button>
@@ -777,7 +777,7 @@ export default function AdminOrders() {
       {/* ── Stats Grid ─────────────────────────────────────────────────────── */}
       {!loading && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(150px,1fr))', gap: 12, marginBottom: 24 }}>
-          <StatCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>} label="Revenue" value={fmt(revenue)} sub={`${st.paid||0} paid orders`} accent="#2563eb" onClick={()=>setStatusFilter('all')} active={statusFilter==='all'} />
+          <StatCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>} label="Revenue" value={fmt(revenue)} sub={`${st.paid||0} paid orders`} accent="#ff1717" onClick={()=>setStatusFilter('all')} active={statusFilter==='all'} />
           <StatCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>} label="Total" value={orders.length} sub="all orders" accent="#7c3aed" onClick={()=>setStatusFilter('all')} active={false} />
           <StatCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>} label="Paid" value={st.paid||0} sub="completed" accent="#059669" onClick={()=>setStatusFilter(statusFilter==='paid'?'all':'paid')} active={statusFilter==='paid'} />
           <StatCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>} label="Pending" value={st.pending||0} sub="awaiting payment" accent="#d97706" onClick={()=>setStatusFilter(statusFilter==='pending'?'all':'pending')} active={statusFilter==='pending'} />
@@ -826,7 +826,7 @@ export default function AdminOrders() {
       {/* ── Table (desktop) ─────────────────────────────────────────────────── */}
       {loading ? (
         <div style={{ background:'#fff', border:'1.5px solid #e8ecf0', borderRadius:16, padding:'70px 24px', textAlign:'center' }}>
-          <div style={{ width:36, height:36, border:'3px solid #e2e8f0', borderTop:'3px solid #2563eb', borderRadius:'50%', animation:'ao-spin 0.7s linear infinite', margin:'0 auto 16px' }} />
+          <div style={{ width:36, height:36, border:'3px solid #e2e8f0', borderTop:'3px solid #ff1717', borderRadius:'50%', animation:'ao-spin 0.7s linear infinite', margin:'0 auto 16px' }} />
           <div style={{ color:'#64748b', fontSize:14, fontWeight:500 }}>Loading orders from database…</div>
           <style>{`@keyframes ao-spin { to { transform:rotate(360deg); } }`}</style>
         </div>

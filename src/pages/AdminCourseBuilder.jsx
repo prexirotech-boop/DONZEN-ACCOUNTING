@@ -931,7 +931,7 @@ export default function AdminCourseBuilder() {
         .wysiwyg-content-area ul { list-style-type: disc; padding-left: 20px; margin-bottom: 1em; }
         .wysiwyg-content-area ol { list-style-type: decimal; padding-left: 20px; margin-bottom: 1em; }
         .wysiwyg-content-area li { margin-bottom: 0.25em; }
-        .wysiwyg-content-area a { color: #2563eb; text-decoration: underline; }
+        .wysiwyg-content-area a { color: #ff1717; text-decoration: underline; }
         .wysiwyg-content-area:empty::before {
           content: attr(placeholder);
           color: #94a3b8;
@@ -961,8 +961,8 @@ export default function AdminCourseBuilder() {
           onClick={() => setActiveTab('curriculum')}
           style={{ 
             background: 'none', border: 'none', padding: '10px 4px', fontWeight: 500, fontSize: 14, cursor: 'pointer',
-            color: activeTab === 'curriculum' ? '#2563eb' : '#697386',
-            borderBottom: activeTab === 'curriculum' ? '2px solid #2563eb' : '2px solid transparent',
+            color: activeTab === 'curriculum' ? '#ff1717' : '#697386',
+            borderBottom: activeTab === 'curriculum' ? '2px solid #ff1717' : '2px solid transparent',
             marginBottom: -1
           }}
         >
@@ -972,8 +972,8 @@ export default function AdminCourseBuilder() {
           onClick={() => setActiveTab('settings')}
           style={{ 
             background: 'none', border: 'none', padding: '10px 4px', fontWeight: 500, fontSize: 14, cursor: 'pointer',
-            color: activeTab === 'settings' ? '#2563eb' : '#697386',
-            borderBottom: activeTab === 'settings' ? '2px solid #2563eb' : '2px solid transparent',
+            color: activeTab === 'settings' ? '#ff1717' : '#697386',
+            borderBottom: activeTab === 'settings' ? '2px solid #ff1717' : '2px solid transparent',
             marginBottom: -1
           }}
         >
@@ -991,7 +991,7 @@ export default function AdminCourseBuilder() {
               <h3 style={{ fontSize: 15, fontWeight: 600, color: '#1a1f36', margin: 0 }}>Syllabus Outline</h3>
               <button 
                 onClick={() => setShowAddModuleModal(true)}
-                style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '7px 14px', borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
+                style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '7px 14px', borderRadius: 6, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
               >
                 + Add Module
               </button>
@@ -1026,7 +1026,7 @@ export default function AdminCourseBuilder() {
                         <div style={{ display: 'flex', gap: 12, width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'flex-end' : 'flex-start' }}>
                           <button 
                             onClick={() => { setEditingModuleId(mod.id); setEditingModuleTitle(mod.title) }}
-                            style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
+                            style={{ background: 'none', border: 'none', color: '#ff1717', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
                           >
                             Rename
                           </button>
@@ -1066,7 +1066,7 @@ export default function AdminCourseBuilder() {
                                 <div style={{ display: 'flex', gap: 12 }}>
                                   <button 
                                     onClick={() => handleOpenEditLesson(les)}
-                                    style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: 12.5, cursor: 'pointer', fontWeight: 600 }}
+                                    style={{ background: 'none', border: 'none', color: '#ff1717', fontSize: 12.5, cursor: 'pointer', fontWeight: 600 }}
                                   >
                                     Edit
                                   </button>
@@ -1088,7 +1088,7 @@ export default function AdminCourseBuilder() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button 
                       onClick={() => handleOpenAddLesson(mod.id)}
-                      style={{ flex: 1, background: 'none', border: '1px dashed #2563eb', color: '#2563eb', padding: '8px', borderRadius: 6, cursor: 'pointer', fontSize: 12.5, fontWeight: 600 }}
+                      style={{ flex: 1, background: 'none', border: '1px dashed #ff1717', color: '#ff1717', padding: '8px', borderRadius: 6, cursor: 'pointer', fontSize: 12.5, fontWeight: 600 }}
                     >
                       + Add Lesson
                     </button>
@@ -1303,7 +1303,7 @@ export default function AdminCourseBuilder() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, what_you_learn: [...(formData.what_you_learn || []), ''] })}
-                  style={{ alignSelf: 'flex-start', padding: '7px 14px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
+                  style={{ alignSelf: 'flex-start', padding: '7px 14px', background: '#fff5f5', color: '#ff1717', border: '1px solid #ffcccc', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
                 >
                   + Add Syllabus Highlight
                 </button>
@@ -1341,7 +1341,7 @@ export default function AdminCourseBuilder() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, bonuses: [...(formData.bonuses || []), ''] })}
-                  style={{ alignSelf: 'flex-start', padding: '7px 14px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
+                  style={{ alignSelf: 'flex-start', padding: '7px 14px', background: '#fff5f5', color: '#ff1717', border: '1px solid #ffcccc', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 12 }}
                 >
                   + Add Bonus
                 </button>
@@ -1362,7 +1362,7 @@ export default function AdminCourseBuilder() {
             <button 
               type="submit" 
               disabled={saving}
-              style={{ alignSelf: 'flex-start', background: '#2563eb', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 4, fontWeight: 500, cursor: saving ? 'not-allowed' : 'pointer', fontSize: 13 }}
+              style={{ alignSelf: 'flex-start', background: '#ff1717', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 4, fontWeight: 500, cursor: saving ? 'not-allowed' : 'pointer', fontSize: 13 }}
             >
               {saving ? 'Saving changes...' : 'Save Settings'}
             </button>
@@ -1388,7 +1388,7 @@ export default function AdminCourseBuilder() {
                 />
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button type="submit" style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '8px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Create Module</button>
+                <button type="submit" style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '8px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Create Module</button>
                 <button type="button" onClick={() => setShowAddModuleModal(false)} style={{ flex: 1, background: '#f7f8f9', color: '#4f566b', border: '1px solid #cbd5e1', padding: '8px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Cancel</button>
               </div>
             </form>
@@ -1537,7 +1537,7 @@ export default function AdminCourseBuilder() {
                       <button 
                         type="button" 
                         onClick={handleAddQuestion}
-                        style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '5px 12px', borderRadius: 4, fontSize: 12, fontWeight: 500, cursor: 'pointer' }}
+                        style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '5px 12px', borderRadius: 4, fontSize: 12, fontWeight: 500, cursor: 'pointer' }}
                       >
                         + Add Question
                       </button>
@@ -1589,7 +1589,7 @@ export default function AdminCourseBuilder() {
                   <button 
                     type="button" 
                     onClick={handleAddAttachment}
-                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: 4, fontSize: 12, fontWeight: 500, cursor: 'pointer' }}
+                    style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: 4, fontSize: 12, fontWeight: 500, cursor: 'pointer' }}
                   >
                     Add
                   </button>
@@ -1617,7 +1617,7 @@ export default function AdminCourseBuilder() {
               </div>
 
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button type="submit" style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Save Lesson</button>
+                <button type="submit" style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Save Lesson</button>
                 <button 
                   type="button" 
                   onClick={() => setShowLessonModal(false)} 
@@ -1640,7 +1640,7 @@ export default function AdminCourseBuilder() {
                 Add one lesson per line. Format: <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4, fontFamily: 'monospace' }}>Lesson Title | duration</code>
               </p>
             </div>
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, padding: '10px 14px', fontSize: 12, color: '#1e40af' }}>
+            <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 6, padding: '10px 14px', fontSize: 12, color: '#991b1b' }}>
               <strong>Example:</strong><br />
               Introduction to Web Design | 10m<br />
               HTML Fundamentals | 20m<br />

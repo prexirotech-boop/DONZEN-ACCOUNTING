@@ -190,7 +190,7 @@ export default function AdminCertificates() {
         </div>
         <button
           onClick={() => setShowIssueModal(true)}
-          style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}
+          style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
           Issue Certificate
@@ -200,7 +200,7 @@ export default function AdminCertificates() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: isMobile ? 8 : 16 }}>
         {[
-          { label: 'Total Issued', value: totalIssued, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>, color: '#2563eb', bg: 'rgba(37,99,235,0.08)' },
+          { label: 'Total Issued', value: totalIssued, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>, color: '#ff1717', bg: 'rgba(255, 23, 23,0.08)' },
           { label: 'Active', value: totalActive, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>, color: '#00875a', bg: 'rgba(0,135,90,0.08)' },
           { label: 'Revoked', value: totalRevoked, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>, color: '#ae2a19', bg: 'rgba(174,42,25,0.08)' },
         ].map(s => (
@@ -345,7 +345,7 @@ export default function AdminCertificates() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px', borderRadius: 6, fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13, opacity: submitting ? 0.7 : 1 }}
+                  style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px', borderRadius: 6, fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13, opacity: submitting ? 0.7 : 1 }}
                 >
                   {submitting ? 'Issuing...' : 'Issue Certificate'}
                 </button>

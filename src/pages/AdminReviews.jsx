@@ -200,7 +200,7 @@ export default function AdminReviews() {
                   style={{
                     background: activeTab === tab.id ? '#fff' : 'none',
                     border: 'none',
-                    color: activeTab === tab.id ? '#2563eb' : '#4f566b',
+                    color: activeTab === tab.id ? '#ff1717' : '#4f566b',
                     padding: '6px 12px',
                     borderRadius: 4,
                     fontSize: 12.5,
@@ -299,7 +299,7 @@ export default function AdminReviews() {
                       <td style={{ padding: '12px 16px' }}>
                         <button 
                           onClick={(e) => { e.stopPropagation(); setSelectedReview(r) }}
-                          style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}
+                          style={{ background: 'none', border: 'none', color: '#ff1717', fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}
                         >
                           Manage
                         </button>

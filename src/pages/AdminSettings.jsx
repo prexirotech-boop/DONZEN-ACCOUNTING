@@ -405,7 +405,7 @@ export default function AdminSettings() {
                 />
               </div>
 
-              <button type="submit" disabled={loading} style={{ alignSelf: 'flex-start', background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13.5, transition: 'all 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+              <button type="submit" disabled={loading} style={{ alignSelf: 'flex-start', background: '#ff1717', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13.5, transition: 'all 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                 {loading ? 'Saving...' : 'Save Profile'}
               </button>
             </form>
@@ -568,7 +568,7 @@ export default function AdminSettings() {
                 disabled={loading} 
                 style={{ 
                   alignSelf: 'flex-start', 
-                  background: '#2563eb', 
+                  background: '#ff1717', 
                   color: '#fff', 
                   border: 'none', 
                   padding: '10px 20px', 
@@ -667,7 +667,7 @@ export default function AdminSettings() {
                 </button>
               </div>
 
-              <button type="submit" disabled={loading} style={{ alignSelf: 'flex-start', background: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13.5, marginTop: 8, transition: 'all 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+              <button type="submit" disabled={loading} style={{ alignSelf: 'flex-start', background: '#ff1717', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 13.5, marginTop: 8, transition: 'all 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                 {loading ? 'Saving...' : 'Save Bank Accounts'}
               </button>
             </form>
@@ -726,7 +726,7 @@ export default function AdminSettings() {
               <img 
                 src={avatarUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} 
                 alt="Avatar" 
-                style={{ width: 84, height: 84, borderRadius: '50%', objectFit: 'cover', border: '3px solid #2563eb', marginBottom: 12, boxShadow: '0 4px 10px rgba(37, 99, 235,0.15)' }} 
+                style={{ width: 84, height: 84, borderRadius: '50%', objectFit: 'cover', border: '3px solid #ff1717', marginBottom: 12, boxShadow: '0 4px 10px rgba(255, 23, 23,0.15)' }} 
               />
               <h5 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#1a1f36' }}>{fullName || 'Administrator Name'}</h5>
               <span style={{ fontSize: 12, color: '#697386', fontWeight: 500, marginTop: 4 }}>Platform Instructor</span>
@@ -739,7 +739,7 @@ export default function AdminSettings() {
 
               <div style={{ display: 'flex', gap: 8, justifyContent: 'center', width: '100%', marginTop: 8 }}>
                 <span style={{ fontSize: 11, background: '#e3fcef', color: '#00875a', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>Active</span>
-                <span style={{ fontSize: 11, background: 'rgba(37, 99, 235, 0.08)', color: '#2563eb', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>{brandName}</span>
+                <span style={{ fontSize: 11, background: 'rgba(255, 23, 23, 0.08)', color: '#ff1717', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>{brandName}</span>
               </div>
             </div>
 

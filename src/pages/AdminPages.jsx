@@ -67,7 +67,7 @@ export default function AdminPages() {
                 rel="noreferrer"
                 style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  background: '#2563eb', color: '#fff', textDecoration: 'none',
+                  background: '#ff1717', color: '#fff', textDecoration: 'none',
                   padding: '8px 12px', borderRadius: 6, fontSize: 13, fontWeight: 500
                 }}
               >
@@ -94,8 +94,8 @@ export default function AdminPages() {
         <div style={{ padding: 40, textAlign: 'center', color: '#697386', fontSize: 13 }}>No pages found matching "{searchQuery}".</div>
       )}
 
-      <div style={{ marginTop: 32, padding: '16px 20px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, fontSize: 13, color: '#1e40af' }}>
-        <strong>How to edit page content:</strong> Each page is a React component in the <code style={{ background: '#dbeafe', padding: '1px 4px', borderRadius: 3, fontFamily: 'monospace', fontSize: 12 }}>src/pages/</code> folder. Open the file in your code editor (VS Code recommended) to modify text, sections, and design. After saving, the dev server auto-reloads.
+      <div style={{ marginTop: 32, padding: '16px 20px', background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 8, fontSize: 13, color: '#991b1b' }}>
+        <strong>How to edit page content:</strong> Each page is a React component in the <code style={{ background: '#ffe5e5', padding: '1px 4px', borderRadius: 3, fontFamily: 'monospace', fontSize: 12 }}>src/pages/</code> folder. Open the file in your code editor (VS Code recommended) to modify text, sections, and design. After saving, the dev server auto-reloads.
       </div>
     </div>
   )

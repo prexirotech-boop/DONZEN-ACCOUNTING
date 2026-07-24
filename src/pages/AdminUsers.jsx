@@ -390,7 +390,7 @@ export default function AdminUsers() {
         </div>
         <button 
           onClick={() => setShowAddStaffModal(true)}
-          style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 4, fontWeight: 500, fontSize: 13, cursor: 'pointer', transition: 'background 0.15s ease' }}
+          style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 4, fontWeight: 500, fontSize: 13, cursor: 'pointer', transition: 'background 0.15s ease' }}
         >
           + Add Staff Member
         </button>
@@ -416,7 +416,7 @@ export default function AdminUsers() {
                   style={{
                     background: activeTab === tab.id ? '#fff' : 'none',
                     border: 'none',
-                    color: activeTab === tab.id ? '#2563eb' : '#4f566b',
+                    color: activeTab === tab.id ? '#ff1717' : '#4f566b',
                     padding: '6px 12px',
                     borderRadius: 4,
                     fontSize: 12.5,
@@ -500,7 +500,7 @@ export default function AdminUsers() {
                           textTransform: 'uppercase', 
                           padding: '3px 8px', 
                           borderRadius: 12, 
-                          background: u.role === 'admin' ? '#e0f2fe' : '#f1f5f9', 
+                          background: u.role === 'admin' ? '#ffebeb' : '#f1f5f9', 
                           color: u.role === 'admin' ? '#0369a1' : '#475569' 
                         }}>
                           {u.role === 'admin' ? 'Staff' : 'Student'}
@@ -515,7 +515,7 @@ export default function AdminUsers() {
                       <td style={{ padding: '12px 16px' }}>
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleViewEnrollments(u) }}
-                          style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}
+                          style={{ background: 'none', border: 'none', color: '#ff1717', fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}
                         >
                           Manage
                         </button>
@@ -633,7 +633,7 @@ export default function AdminUsers() {
                   </select>
                   <button 
                     type="submit" 
-                    style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '7px 14px', borderRadius: 4, fontWeight: 500, fontSize: 12.5, cursor: 'pointer' }}
+                    style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '7px 14px', borderRadius: 4, fontWeight: 500, fontSize: 12.5, cursor: 'pointer' }}
                   >
                     Grant
                   </button>
@@ -720,7 +720,7 @@ export default function AdminUsers() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div style={{ background: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0', width: '100%', maxWidth: 440, padding: 24, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>Register Internal Staff</h3>
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 12px', fontSize: '11.5px', color: '#1e40af', lineHeight: 1.4 }}>
+            <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 8, padding: '10px 12px', fontSize: '11.5px', color: '#991b1b', lineHeight: 1.4 }}>
               💡 <strong>Password Setup:</strong> Creating a staff entry sets up their placeholder admin profile. The staff member can simply register at <strong>/register</strong> using this email (or click <strong>Forgot Password</strong> to set a password) to activate their account and log in.
             </div>
             <form onSubmit={handleCreateStaff} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -746,7 +746,7 @@ export default function AdminUsers() {
                 />
               </div>
               <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-                <button type="submit" style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13.5, transition: 'all 0.15s' }}>Promote to Staff</button>
+                <button type="submit" style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13.5, transition: 'all 0.15s' }}>Promote to Staff</button>
                 <button type="button" onClick={() => setShowAddStaffModal(false)} style={{ flex: 1, background: '#f8fafc', color: '#475569', border: '1px solid #cbd5e1', padding: '10px 16px', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: 13.5, transition: 'all 0.15s' }}>Cancel</button>
               </div>
             </form>

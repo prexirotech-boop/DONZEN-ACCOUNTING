@@ -487,7 +487,7 @@ export default function AdminCourses() {
         <button 
           onClick={handleOpenAdd}
           style={{ 
-            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 
+            background: 'linear-gradient(135deg, #ff1717 0%, #d91414 100%)', 
             color: '#fff', 
             border: 'none', 
             padding: '10px 20px', 
@@ -495,14 +495,14 @@ export default function AdminCourses() {
             fontWeight: 600, 
             fontSize: 14,
             cursor: 'pointer', 
-            boxShadow: '0 4px 10px rgba(37,99,235,0.2)',
+            boxShadow: '0 4px 10px rgba(255, 23, 23,0.2)',
             transition: 'all 0.2s ease',
             display: 'flex',
             alignItems: 'center',
             gap: 6
           }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 14px rgba(37,99,235,0.3)' }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(37,99,235,0.2)' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 14px rgba(255, 23, 23,0.3)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(255, 23, 23,0.2)' }}
         >
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={{ transform: 'translateY(-0.5px)' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
           Create Course
@@ -511,7 +511,7 @@ export default function AdminCourses() {
 
       {loading ? (
         <div style={{ padding: '60px 0', textAlign: 'center', color: '#64748b', fontSize: 15, fontWeight: 500 }}>
-          <span style={{ display: 'inline-block', width: 24, height: 24, border: '3px solid #e2e8f0', borderTopColor: '#2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 10, verticalAlign: 'middle' }} />
+          <span style={{ display: 'inline-block', width: 24, height: 24, border: '3px solid #e2e8f0', borderTopColor: '#ff1717', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 10, verticalAlign: 'middle' }} />
           Loading course list...
         </div>
       ) : isMobile ? (
@@ -533,7 +533,7 @@ export default function AdminCourses() {
                       <span style={{ fontSize: 11, padding: '3px 8px', background: p.is_published ? '#dcfce7' : '#f1f5f9', color: p.is_published ? '#15803d' : '#64748b', borderRadius: 6, fontWeight: 600 }}>
                         {p.is_published ? 'Published' : 'Draft'}
                       </span>
-                      <span style={{ fontSize: 11, padding: '3px 8px', background: p.is_free ? '#fef9c3' : '#dbeafe', color: p.is_free ? '#a16207' : '#1e40af', borderRadius: 6, fontWeight: 600 }}>
+                      <span style={{ fontSize: 11, padding: '3px 8px', background: p.is_free ? '#fef9c3' : '#ffe5e5', color: p.is_free ? '#a16207' : '#991b1b', borderRadius: 6, fontWeight: 600 }}>
                         {p.is_free ? 'FREE' : 'PAID'}
                       </span>
                     </div>
@@ -547,7 +547,7 @@ export default function AdminCourses() {
                   <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
                     <Link 
                       to={`/admin/courses/${c.id}`}
-                      style={{ flex: '1 1 40%', textAlign: 'center', background: '#2563eb', color: '#fff', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, textDecoration: 'none', boxShadow: '0 2px 4px rgba(37,99,235,0.1)' }}
+                      style={{ flex: '1 1 40%', textAlign: 'center', background: '#ff1717', color: '#fff', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, textDecoration: 'none', boxShadow: '0 2px 4px rgba(255, 23, 23,0.1)' }}
                     >
                       Builder
                     </Link>
@@ -610,7 +610,7 @@ export default function AdminCourses() {
                             <span style={{ padding: '3px 8px', background: p.is_published ? '#dcfce7' : '#f1f5f9', color: p.is_published ? '#15803d' : '#475569', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
                               {p.is_published ? 'Published' : 'Draft'}
                             </span>
-                            <span style={{ padding: '3px 8px', background: p.is_free ? '#fef9c3' : '#eff6ff', color: p.is_free ? '#a16207' : '#1d4ed8', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+                            <span style={{ padding: '3px 8px', background: p.is_free ? '#fef9c3' : '#fff5f5', color: p.is_free ? '#a16207' : '#d91414', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
                               {p.is_free ? 'FREE' : 'PAID'}
                             </span>
                           </div>
@@ -642,18 +642,18 @@ export default function AdminCourses() {
                               to={`/admin/courses/${c.id}`} 
                               style={{
                                 display: 'inline-block',
-                                background: '#2563eb',
+                                background: '#ff1717',
                                 color: '#fff',
                                 padding: '8px 14px',
                                 borderRadius: 6,
                                 fontWeight: 600,
                                 textDecoration: 'none',
                                 fontSize: 13,
-                                boxShadow: '0 2px 4px rgba(37,99,235,0.08)',
+                                boxShadow: '0 2px 4px rgba(255, 23, 23,0.08)',
                                 transition: 'all 0.15s ease'
                               }}
-                              onMouseOver={e => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-                              onMouseOut={e => e.currentTarget.style.backgroundColor = '#2563eb'}
+                              onMouseOver={e => e.currentTarget.style.backgroundColor = '#d91414'}
+                              onMouseOut={e => e.currentTarget.style.backgroundColor = '#ff1717'}
                             >
                               Syllabus Builder
                             </Link>
@@ -750,7 +750,7 @@ export default function AdminCourses() {
                     setCourseForm({ ...courseForm, title, slug: generateSlug(title) })
                   }} 
                   style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} 
-                  onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                  onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                   onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                   required 
                   placeholder="e.g. Freelance Web Design Blueprint"
@@ -764,7 +764,7 @@ export default function AdminCourses() {
                   value={courseForm.slug} 
                   onChange={e => setCourseForm({ ...courseForm, slug: generateSlug(e.target.value) })} 
                   style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} 
-                  onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                  onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                   onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                   required 
                 />
@@ -778,7 +778,7 @@ export default function AdminCourses() {
                     value={courseForm.price} 
                     onChange={e => setCourseForm({ ...courseForm, price: e.target.value })} 
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} 
-                    onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                     required 
                   />
@@ -789,7 +789,7 @@ export default function AdminCourses() {
                     value={courseForm.level} 
                     onChange={e => setCourseForm({ ...courseForm, level: e.target.value })} 
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', backgroundColor: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                    onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                   >
                     <option value="beginner">Beginner</option>
@@ -807,7 +807,7 @@ export default function AdminCourses() {
                     value={courseForm.compare_price} 
                     onChange={e => setCourseForm({ ...courseForm, compare_price: e.target.value })} 
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} 
-                    onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                   />
                 </div>
@@ -817,7 +817,7 @@ export default function AdminCourses() {
                       type="checkbox" 
                       checked={courseForm.is_published} 
                       onChange={e => setCourseForm({ ...courseForm, is_published: e.target.checked })} 
-                      style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#2563eb' }}
+                      style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#ff1717' }}
                     />
                     Published
                   </label>
@@ -841,7 +841,7 @@ export default function AdminCourses() {
                     value={courseForm.cover_image} 
                     onChange={e => setCourseForm({ ...courseForm, cover_image: e.target.value })} 
                     style={{ flex: 1, padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} 
-                    onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(37,99,235,0.1)' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
                     placeholder="https://..."
                   />
@@ -870,7 +870,7 @@ export default function AdminCourses() {
                     />
                   </label>
                 </div>
-                {uploadingImage && <span style={{ fontSize: 12, color: '#2563eb', marginTop: 6, display: 'block', fontWeight: 500 }}>Uploading image...</span>}
+                {uploadingImage && <span style={{ fontSize: 12, color: '#ff1717', marginTop: 6, display: 'block', fontWeight: 500 }}>Uploading image...</span>}
               </div>
 
               <div>
@@ -919,9 +919,9 @@ export default function AdminCourses() {
                   <button
                     type="button"
                     onClick={() => setCourseForm({ ...courseForm, what_you_learn: [...(courseForm.what_you_learn || []), ''] })}
-                    style={{ alignSelf: 'flex-start', padding: '8px 16px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#dbeafe'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#eff6ff'}
+                    style={{ alignSelf: 'flex-start', padding: '8px 16px', background: '#fff5f5', color: '#ff1717', border: '1px solid #ffcccc', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#ffe5e5'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#fff5f5'}
                   >
                     + Add Syllabus Highlight
                   </button>
@@ -974,9 +974,9 @@ export default function AdminCourses() {
                   <button
                     type="button"
                     onClick={() => setCourseForm({ ...courseForm, bonuses: [...(courseForm.bonuses || []), ''] })}
-                    style={{ alignSelf: 'flex-start', padding: '8px 16px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#dbeafe'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#eff6ff'}
+                    style={{ alignSelf: 'flex-start', padding: '8px 16px', background: '#fff5f5', color: '#ff1717', border: '1px solid #ffcccc', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#ffe5e5'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#fff5f5'}
                   >
                     + Add Bonus
                   </button>
@@ -989,7 +989,7 @@ export default function AdminCourses() {
                   disabled={submitting} 
                   style={{ 
                     flex: 1.2, 
-                    background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 
+                    background: 'linear-gradient(135deg, #ff1717 0%, #d91414 100%)', 
                     color: '#fff', 
                     border: 'none', 
                     padding: '12px', 
@@ -997,11 +997,11 @@ export default function AdminCourses() {
                     fontWeight: 600, 
                     fontSize: 14,
                     cursor: submitting ? 'not-allowed' : 'pointer',
-                    boxShadow: '0 4px 10px rgba(37,99,235,0.15)',
+                    boxShadow: '0 4px 10px rgba(255, 23, 23,0.15)',
                     transition: 'all 0.2s'
                   }}
-                  onMouseEnter={e => { if(!submitting) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 14px rgba(37,99,235,0.2)' } }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(37,99,235,0.15)' }}
+                  onMouseEnter={e => { if(!submitting) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 14px rgba(255, 23, 23,0.2)' } }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(255, 23, 23,0.15)' }}
                 >
                   {submitting ? 'Saving...' : (editingCourseId ? 'Save Changes' : 'Create Course')}
                 </button>
@@ -1049,10 +1049,10 @@ export default function AdminCourses() {
                 />
               </div>
 
-              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#1e40af', lineHeight: 1.5 }}>
+              <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#991b1b', lineHeight: 1.5 }}>
                 <strong>Quick Plaintext Syntax:</strong><br />
-                • Write <code style={{ background: '#dbeafe', padding: '1px 3px', borderRadius: 2 }}>Module: [Module Title]</code> to define a module.<br />
-                • Write <code style={{ background: '#dbeafe', padding: '1px 3px', borderRadius: 2 }}>Lesson: [Title] | [type (video/article)] | [wistia_url_or_markdown] | [duration] | [free/paid]</code> to define a lesson.<br />
+                • Write <code style={{ background: '#ffe5e5', padding: '1px 3px', borderRadius: 2 }}>Module: [Module Title]</code> to define a module.<br />
+                • Write <code style={{ background: '#ffe5e5', padding: '1px 3px', borderRadius: 2 }}>Lesson: [Title] | [type (video/article)] | [wistia_url_or_markdown] | [duration] | [free/paid]</code> to define a lesson.<br />
                 • Existing lessons will match on Title to <strong>fully preserve student progress, notes, and discussions</strong>.
               </div>
 

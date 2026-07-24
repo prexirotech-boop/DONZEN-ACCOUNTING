@@ -48,6 +48,31 @@ export default function ContactPage() {
     service: 'Bookkeeping & Accounting', message: ''
   })
 
+  const [showServiceDropdown, setShowServiceDropdown] = useState(false)
+  const serviceDropdownRef = useRef(null)
+
+  const serviceOptions = [
+    { value: 'Bookkeeping & Accounting', label: 'Bookkeeping & Accounting Services (DIY Remote)' },
+    { value: 'Done For You Accounting', label: 'Done-For-You Accounting Services' },
+    { value: 'Experience Program', label: 'Donzen Accounting Experience Program (Bootcamp)' },
+    { value: 'DIY Templates', label: 'DIY Accounting Templates (P&L, Vendors, Clients)' },
+    { value: 'CAC Business Incorporation', label: 'CAC Business Incorporation (Business Name, LLC, NGO)' },
+    { value: 'Tax Advisory', label: 'Tax Advisory & Financial Statements' },
+    { value: 'General Inquiry', label: 'General Enquiry' }
+  ]
+
+  const selectedOption = serviceOptions.find(opt => opt.value === formData.service) || serviceOptions[0]
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (serviceDropdownRef.current && !serviceDropdownRef.current.contains(event.target)) {
+        setShowServiceDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   // Reveal refs
   const [heroRef, heroVis] = useReveal(0.1)
   const [infoRef, infoVis] = useReveal(0.12)
@@ -127,7 +152,6 @@ export default function ContactPage() {
             <div className="cp-hero-overlay" />
           </div>
           <div className={`cp-hero-content ${heroVis ? 'cp-vis' : ''}`}>
-            <div className="cp-hero-badge">Contact Us</div>
             <h1 className="cp-hero-title">
               Let's Talk About<br />
               <span className="cp-hero-accent">Your Business</span>
@@ -223,17 +247,36 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="cp-field">
+                    <div className="cp-field" ref={serviceDropdownRef} style={{ position: 'relative' }}>
                       <label>Service Interested In</label>
-                      <select value={formData.service} onChange={e => setFormData({ ...formData, service: e.target.value })}>
-                        <option value="Bookkeeping & Accounting">Bookkeeping & Accounting Services (DIY Remote)</option>
-                        <option value="Done For You Accounting">Done-For-You Accounting Services</option>
-                        <option value="Experience Program">Donzen Accounting Experience Program (Bootcamp)</option>
-                        <option value="DIY Templates">DIY Accounting Templates (P&L, Vendors, Clients)</option>
-                        <option value="CAC Business Incorporation">CAC Business Incorporation (Business Name, LLC, NGO)</option>
-                        <option value="Tax Advisory">Tax Advisory & Financial Statements</option>
-                        <option value="General Inquiry">General Enquiry</option>
-                      </select>
+                      <div className="cp-custom-select-container">
+                        <button
+                          type="button"
+                          className="cp-custom-select-trigger"
+                          onClick={() => setShowServiceDropdown(!showServiceDropdown)}
+                        >
+                          <span>{selectedOption.label}</span>
+                          <svg className={`cp-custom-select-arrow ${showServiceDropdown ? 'open' : ''}`} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        
+                        {showServiceDropdown && (
+                          <div className="cp-custom-select-options">
+                            {serviceOptions.map(opt => (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                className={`cp-custom-select-option ${formData.service === opt.value ? 'selected' : ''}`}
+                                onClick={() => {
+                                  setFormData({ ...formData, service: opt.value })
+                                  setShowServiceDropdown(false)
+                                }}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="cp-field">
@@ -851,6 +894,90 @@ export default function ContactPage() {
           color: #ef4444;
         }
 
+        /* ─── CUSTOM DROPDOWN SELECT ─── */
+        .cp-custom-select-container {
+          position: relative;
+          width: 100%;
+        }
+        .cp-custom-select-trigger {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100% !important;
+          padding: 12px 16px !important;
+          background: #ffffff !important;
+          border: 1px solid #d0d5dd !important;
+          border-radius: 6px !important;
+          font-size: 14.5px !important;
+          color: #1f2937 !important;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+          outline: none;
+          box-sizing: border-box;
+        }
+        .cp-custom-select-trigger:focus {
+          border-color: #ff1717 !important;
+          box-shadow: 0 0 0 4px rgba(255, 23, 23, 0.15) !important;
+        }
+        .cp-custom-select-arrow {
+          color: #64748b;
+          transition: transform 0.2s ease;
+          flex-shrink: 0;
+          margin-left: 12px;
+        }
+        .cp-custom-select-arrow.open {
+          transform: rotate(180deg);
+        }
+        .cp-custom-select-options {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 0;
+          right: 0;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
+          z-index: 100;
+          max-height: 280px;
+          overflow-y: auto;
+          padding: 6px;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          box-sizing: border-box;
+          animation: cpSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes cpSlideIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .cp-custom-select-option {
+          width: 100% !important;
+          padding: 10px 14px !important;
+          background: transparent !important;
+          border: none !important;
+          border-radius: 6px !important;
+          font-size: 14px !important;
+          color: #374151 !important;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          box-shadow: none !important;
+          box-sizing: border-box;
+        }
+        .cp-custom-select-option:hover {
+          background: rgba(255, 23, 23, 0.05) !important;
+          color: #ff1717 !important;
+          padding-left: 18px !important;
+        }
+        .cp-custom-select-option.selected {
+          background: rgba(255, 23, 23, 0.08) !important;
+          color: #ff1717 !important;
+          font-weight: 700 !important;
+        }
+
         /* ─── WHATSAPP CTA ─── */
         .cp-wa-cta {
           display: flex;
@@ -1084,7 +1211,7 @@ export default function ContactPage() {
           .cp-form-title { font-size: 1.35rem; }
           .cp-faq-title { font-size: 1.5rem; }
           .cp-wa-cta { flex-direction: column; text-align: center; }
-          .cp-wa-cta svg:last-child { display: none; }
+          .cp-wa-cta > svg:last-child { display: none; }
           .cp-bottom-cta-btns { flex-direction: column; align-items: stretch; }
           .cp-cta-btn { justify-content: center; }
         }

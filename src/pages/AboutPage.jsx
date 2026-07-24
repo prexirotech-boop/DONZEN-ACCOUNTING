@@ -114,7 +114,6 @@ export default function AboutPage() {
             <div className="ab-hero-overlay" />
           </div>
           <div className={`ab-hero-inner ${heroVis ? 'ab-vis' : ''}`}>
-            <div className="ab-hero-badge">About Donzen Accounting Hub</div>
             <h1 className="ab-hero-title">
               We Build Financial<br />
               <span className="ab-hero-accent">Clarity for Africa</span>
@@ -1056,6 +1055,12 @@ export default function AboutPage() {
           .ab-bootcamp-inner {
             grid-template-columns: 1fr;
             gap: 48px;
+          }
+          .ab-founder-img-col {
+            order: 2;
+          }
+          .ab-founder-content {
+            order: 1;
           }
           .ab-pillars-grid {
             grid-template-columns: repeat(2, 1fr);

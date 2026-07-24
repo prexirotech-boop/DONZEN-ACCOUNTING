@@ -85,7 +85,7 @@ export default function StudentCertificates({ user }) {
               height: 580px;
               padding: 40px;
               background-color: #fff;
-              border: 16px double #1e3a8a;
+              border: 16px double #7f1d1d;
               box-shadow: 0 10px 25px rgba(0,0,0,0.1);
               box-sizing: border-box;
               position: relative;
@@ -104,7 +104,7 @@ export default function StudentCertificates({ user }) {
               font-family: 'Cinzel', serif;
               font-size: 24px;
               font-weight: 800;
-              color: #1e3a8a;
+              color: #7f1d1d;
               margin-top: 10px;
               letter-spacing: 2px;
             }
@@ -112,7 +112,7 @@ export default function StudentCertificates({ user }) {
               font-family: 'Cinzel', serif;
               font-size: 38px;
               font-weight: 800;
-              color: #1e3a8a;
+              color: #7f1d1d;
               margin-top: 20px;
               margin-bottom: 5px;
               letter-spacing: 3px;
@@ -150,7 +150,7 @@ export default function StudentCertificates({ user }) {
             }
             .course-title {
               font-weight: 700;
-              color: #1e3a8a;
+              color: #7f1d1d;
             }
             .footer-info {
               display: flex;
@@ -192,7 +192,7 @@ export default function StudentCertificates({ user }) {
             }
             @media print {
               body { background-color: #fff; }
-              .certificate-container { box-shadow: none; border-color: #1e3a8a !important; }
+              .certificate-container { box-shadow: none; border-color: #7f1d1d !important; }
               button { display: none; }
             }
             .print-btn-container {
@@ -202,7 +202,7 @@ export default function StudentCertificates({ user }) {
               z-index: 100;
             }
             .print-btn {
-              background-color: #1e3a8a;
+              background-color: #7f1d1d;
               color: white;
               border: none;
               padding: 10px 20px;
@@ -213,7 +213,7 @@ export default function StudentCertificates({ user }) {
               box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             }
             .print-btn:hover {
-              background-color: #1d4ed8;
+              background-color: #d91414;
             }
           </style>
         </head>
@@ -239,7 +239,7 @@ export default function StudentCertificates({ user }) {
                 <div class="signature-title">${cert.courses?.instructor || 'Lead Instructor'}</div>
               </div>
               <div class="signature-block">
-                <div style="font-family: 'Cinzel', serif; font-size: 18px; color: #1e3a8a; font-weight: 800;">APPROVED</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 18px; color: #7f1d1d; font-weight: 800;">APPROVED</div>
                 <div class="signature-line" style="margin-top: 15px;"></div>
                 <div class="signature-title">Donzen Executive Board</div>
               </div>
@@ -306,7 +306,7 @@ export default function StudentCertificates({ user }) {
           <div style={{ display: 'flex', gap: 12 }}>
             <button 
               onClick={() => handleDownload(cert)}
-              style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+              style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
               📥 Download PDF
             </button>

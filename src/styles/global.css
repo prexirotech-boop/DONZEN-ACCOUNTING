@@ -462,8 +462,8 @@ ul, ol { list-style: none; }
 
 /* ─── APP SAAS CSS (LMS, Account, Header) ───────────────────────────────── */
 :root {
-  --brand-primary: #2563eb;
-  --brand-hover: #1d4ed8;
+  --brand-primary: #ff1717;
+  --brand-hover: #d91414;
   --bg-app: #f8fafc;
   --bg-surface: #ffffff;
   --border-color: #e2e8f0;
@@ -717,7 +717,7 @@ ul, ol { list-style: none; }
 .lms-lesson-item { display: flex; gap: 12px; padding: 12px 20px; text-decoration: none; color: var(--text-main); border-bottom: 1px solid #f1f5f9; transition: background 0.2s; }
 .lms-lesson-item:last-child { border-bottom: none; }
 .lms-lesson-item:hover { background: var(--bg-app); }
-.lms-lesson-item.active { background: #eff6ff; border-left: 3px solid var(--brand-primary); padding-left: 17px; }
+.lms-lesson-item.active { background: #fff5f5; border-left: 3px solid var(--brand-primary); padding-left: 17px; }
 .lms-checkbox { padding-top: 2px; }
 .lms-checkbox svg { width: 18px; height: 18px; }
 .empty-circle { width: 16px; height: 16px; border: 1px solid #cbd5e1; border-radius: 50%; }
@@ -791,8 +791,8 @@ select {
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
 textarea:focus,
 select:focus {
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+  border-color: #ff1717 !important;
+  box-shadow: 0 0 0 4px rgba(255, 23, 23, 0.15) !important;
 }
 
 textarea {
@@ -834,8 +834,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background-color: #2563eb !important;
-  border-color: #2563eb !important;
+  background-color: #ff1717 !important;
+  border-color: #ff1717 !important;
 }
 
 input[type="checkbox"]:checked::after {
@@ -852,8 +852,8 @@ input[type="checkbox"]:checked::after {
 }
 
 input[type="checkbox"]:focus-visible {
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
-  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(255, 23, 23, 0.15) !important;
+  border-color: #ff1717 !important;
 }
 
 /* Custom Radio Design */
@@ -879,12 +879,12 @@ input[type="radio"] {
 
 input[type="radio"]:checked {
   background-color: #fff !important;
-  border-color: #2563eb !important;
+  border-color: #ff1717 !important;
   border-width: 5px !important;
 }
 
 input[type="radio"]:focus-visible {
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 0 0 4px rgba(255, 23, 23, 0.15) !important;
 }
 
 /* Icon padding utilities to override global inputs */
@@ -958,7 +958,7 @@ html, body {
 }
 
 .search-dropdown-item:hover {
-  background: rgba(37, 99, 235, 0.05);
+  background: rgba(255, 23, 23, 0.05);
   padding-left: 20px;
 }
 
@@ -1006,14 +1006,14 @@ html, body {
 
 .search-dropdown-item:nth-child(even) .search-item-badge,
 .search-item-badge {
-  background: rgba(37, 99, 235, 0.08);
-  color: #1d4ed8;
+  background: rgba(255, 23, 23, 0.08);
+  color: #d91414;
 }
 
 .search-item-price {
   font-size: 12px;
   font-weight: 600;
-  color: #2563eb;
+  color: #ff1717;
 }
 
 .search-dropdown-empty {
@@ -1067,6 +1067,32 @@ html, body {
     display: none !important;
   }
 }
+/* ────────────────────────────────────────────────────────────────────────── */
+/* CUSTOM OVERRIDES & RESPONSIVE CORRECTIONS */
+/* ────────────────────────────────────────────────────────────────────────── */
 
+/* 1. Force header search input transparency to match the brand header and prevent solid white background */
+#root header .header-search-container input.header-search-input,
+#root header .header-search-container input.header-search-input:focus,
+#root header .header-search-container input.header-search-input:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  width: 100% !important;
+  font-size: 13.5px !important;
+}
 
-
+/* 2. Prevent mobile zooming on input/textarea/select fields by enforcing at least 16px font-size */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  textarea,
+  select,
+  .header-search-input {
+    font-size: 16px !important;
+  }
+}

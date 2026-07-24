@@ -242,7 +242,7 @@ function AdminOverview() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button 
             onClick={() => navigate('/admin/products')}
-            style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13, boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+            style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 13, boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
           >
             + Create Product
           </button>
@@ -270,7 +270,7 @@ function AdminOverview() {
             </div>
             <span style={{ fontSize: 13.5, fontWeight: 500, color: '#92400e' }}>You have <strong>{stats.unansweredQna}</strong> unanswered student questions in your classes.</span>
           </div>
-          <Link to="/admin/qna" style={{ fontSize: 12.5, color: '#2563eb', fontWeight: 600, textDecoration: 'none' }}>Answer Now &rarr;</Link>
+          <Link to="/admin/qna" style={{ fontSize: 12.5, color: '#ff1717', fontWeight: 600, textDecoration: 'none' }}>Answer Now &rarr;</Link>
         </div>
       )}
 
@@ -278,7 +278,7 @@ function AdminOverview() {
       <div style={{ display: 'grid', gridTemplateColumns: isSmall ? '1fr' : 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
         
         {/* Net Revenue */}
-        <div style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%)', padding: '22px 20px', borderRadius: 12, boxShadow: '0 4px 20px rgba(37,99,235,0.35)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'linear-gradient(135deg, #7f1d1d 0%, #d91414 100%)', padding: '22px 20px', borderRadius: 12, boxShadow: '0 4px 20px rgba(255, 23, 23,0.35)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, background: 'rgba(255,255,255,0.06)', borderRadius: '50%' }} />
           <div style={{ position: 'absolute', bottom: -30, right: 10, width: 100, height: 100, background: 'rgba(255,255,255,0.04)', borderRadius: '50%' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -296,32 +296,32 @@ function AdminOverview() {
 
         {/* Sales Count */}
         <div style={{ background: '#fff', padding: '22px 20px', borderRadius: 12, border: '1px solid #e8edf3', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 60, background: 'rgba(37,99,235,0.05)', borderRadius: '0 12px 0 100%' }} />
+          <div style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 60, background: 'rgba(255, 23, 23,0.05)', borderRadius: '0 12px 0 100%' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <h3 style={{ color: '#697386', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>Sales Count</h3>
-            <div style={{ width: 32, height: 32, background: 'rgba(37,99,235,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <div style={{ width: 32, height: 32, background: 'rgba(255, 23, 23,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: '#1a1f36', letterSpacing: '-0.5px' }}>{stats.orders}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: 11 }}>
-            <span style={{ fontWeight: 700, color: '#2563eb' }}>{stats.conversionRate}%</span>
+            <span style={{ fontWeight: 700, color: '#ff1717' }}>{stats.conversionRate}%</span>
             <span style={{ color: '#697386' }}>conversion rate</span>
           </div>
         </div>
 
         {/* Total Learners */}
         <div style={{ background: '#fff', padding: '22px 20px', borderRadius: 12, border: '1px solid #e8edf3', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 60, background: 'rgba(37,99,235,0.05)', borderRadius: '0 12px 0 100%' }} />
+          <div style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 60, background: 'rgba(255, 23, 23,0.05)', borderRadius: '0 12px 0 100%' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <h3 style={{ color: '#697386', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', margin: 0 }}>Total Learners</h3>
-            <div style={{ width: 32, height: 32, background: 'rgba(37,99,235,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div style={{ width: 32, height: 32, background: 'rgba(255, 23, 23,0.08)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: '#1a1f36', letterSpacing: '-0.5px' }}>{stats.users}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: 11 }}>
-            <span style={{ fontWeight: 700, color: '#2563eb' }}>Active</span>
+            <span style={{ fontWeight: 700, color: '#ff1717' }}>Active</span>
             <span style={{ color: '#697386' }}>registered profiles</span>
           </div>
         </div>
@@ -355,7 +355,7 @@ function AdminOverview() {
               <span style={{ fontSize: 11.5, color: '#94a3b8', fontWeight: 500 }}>Last 7 days · Live transactions</span>
             </div>
             <div style={{ display: 'flex', align: 'center', gap: 8 }}>
-              <span style={{ fontSize: 11, background: 'linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.05))', color: '#2563eb', padding: '4px 10px', borderRadius: 20, fontWeight: 600, border: '1px solid rgba(37,99,235,0.15)' }}>● Live</span>
+              <span style={{ fontSize: 11, background: 'linear-gradient(135deg, rgba(255, 23, 23,0.1), rgba(255, 23, 23,0.05))', color: '#ff1717', padding: '4px 10px', borderRadius: 20, fontWeight: 600, border: '1px solid rgba(255, 23, 23,0.15)' }}>● Live</span>
             </div>
           </div>
 
@@ -370,13 +370,13 @@ function AdminOverview() {
             <svg onClick={() => setHoveredRevenue(null)} viewBox="0 0 500 160" style={{ width: '100%', height: 'auto', display: 'block', overflow: 'visible' }}>
               <defs>
                 <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
-                  <stop offset="55%" stopColor="#2563eb" stopOpacity="0.06" />
-                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#ff1717" stopOpacity="0.25" />
+                  <stop offset="55%" stopColor="#ff1717" stopOpacity="0.06" />
+                  <stop offset="100%" stopColor="#ff1717" stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="revLineGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#1d4ed8" />
+                  <stop offset="0%" stopColor="#ff4d4d" />
+                  <stop offset="100%" stopColor="#d91414" />
                 </linearGradient>
                 <filter id="revGlow">
                   <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -407,11 +407,11 @@ function AdminOverview() {
                     const isHovered = hoveredRevenue && hoveredRevenue.idx === idx
                     return (
                       <g key={idx}>
-                        {isHovered && <circle cx={x} cy={y} r="10" fill="rgba(37,99,235,0.1)" />}
+                        {isHovered && <circle cx={x} cy={y} r="10" fill="rgba(255, 23, 23,0.1)" />}
                         <circle
                           cx={x} cy={y}
                           r={isHovered ? "5.5" : "3.5"}
-                          fill={isHovered ? "#1d4ed8" : "#2563eb"}
+                          fill={isHovered ? "#d91414" : "#ff1717"}
                           stroke="#fff" strokeWidth="2"
                           style={{ transition: 'r 0.15s ease, fill 0.15s ease', pointerEvents: 'none' }}
                         />
@@ -459,7 +459,7 @@ function AdminOverview() {
                 top: `${hoveredRevenue.topPct}%`,
                 transform: `translate(${hoveredRevenue.idx === 0 ? '0%' : (hoveredRevenue.idx === 6 ? '-100%' : '-50%')}, -120%)`,
                 background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-                border: '1px solid rgba(37,99,235,0.3)',
+                border: '1px solid rgba(255, 23, 23,0.3)',
                 color: '#fff',
                 padding: '8px 12px',
                 borderRadius: 8,
@@ -470,7 +470,7 @@ function AdminOverview() {
                 whiteSpace: 'nowrap',
                 backdropFilter: 'blur(8px)'
               }}>
-                <div style={{ fontWeight: 700, color: '#3b82f6', fontSize: 13 }}>{hoveredRevenue.value}</div>
+                <div style={{ fontWeight: 700, color: '#ff4d4d', fontSize: 13 }}>{hoveredRevenue.value}</div>
                 <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>{hoveredRevenue.date}</div>
               </div>
             )}
@@ -604,12 +604,12 @@ function AdminOverview() {
         <div style={{ background: '#fff', border: '1px solid #e8edf3', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', overflow: 'hidden' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #fafbff 0%, #f8fafc 100%)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 28, height: 28, background: 'rgba(37,99,235,0.08)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <div style={{ width: 28, height: 28, background: 'rgba(255, 23, 23,0.08)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               </div>
               <h4 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>Recent Payments</h4>
             </div>
-            <Link to="/admin/orders" style={{ fontSize: 12.5, color: '#2563eb', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Link to="/admin/orders" style={{ fontSize: 12.5, color: '#ff1717', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
               View all <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
           </div>
@@ -663,8 +663,8 @@ function AdminOverview() {
           {/* Top Courses Progress Chart */}
           <div style={{ background: '#fff', border: '1px solid #e8edf3', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <div style={{ width: 28, height: 28, background: 'rgba(37,99,235,0.08)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              <div style={{ width: 28, height: 28, background: 'rgba(255, 23, 23,0.08)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
               </div>
               <h4 style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: '#0f172a' }}>Course Enrollments</h4>
             </div>
@@ -674,7 +674,7 @@ function AdminOverview() {
               ) : (
                 (() => {
                   const maxEnroll = Math.max(...stats.courseStats.map(c => c.enrollmentsCount), 1)
-                  const colors = ['#2563eb', '#3b82f6', '#10b981', '#f59e0b']
+                  const colors = ['#ff1717', '#ff4d4d', '#10b981', '#f59e0b']
                   return stats.courseStats.slice(0, 4).map((c, idx) => {
                     const percentWidth = Math.round((c.enrollmentsCount / maxEnroll) * 100)
                     return (
@@ -1059,7 +1059,7 @@ function AdminProducts() {
         </div>
         <button 
           onClick={handleOpenAdd}
-          style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
+          style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
         >
           + Add Product
         </button>
@@ -1072,17 +1072,17 @@ function AdminProducts() {
           display: 'flex',
           alignItems: 'center',
           background: searchQuery ? '#fff' : '#f7f8fa',
-          border: `1.5px solid ${searchQuery ? '#2563eb' : '#e2e8f0'}`,
+          border: `1.5px solid ${searchQuery ? '#ff1717' : '#e2e8f0'}`,
           borderRadius: 10,
           padding: '0 10px',
           flex: 1,
           minWidth: 220,
           maxWidth: 360,
           transition: 'all 0.2s ease',
-          boxShadow: searchQuery ? '0 0 0 3px rgba(37,99,235,0.08)' : 'none',
+          boxShadow: searchQuery ? '0 0 0 3px rgba(255, 23, 23,0.08)' : 'none',
           gap: 8
         }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={searchQuery ? '#2563eb' : '#94a3b8'} strokeWidth="2" style={{ flexShrink: 0, transition: 'stroke 0.2s' }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={searchQuery ? '#ff1717' : '#94a3b8'} strokeWidth="2" style={{ flexShrink: 0, transition: 'stroke 0.2s' }}>
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           <input 
@@ -1116,8 +1116,8 @@ function AdminProducts() {
               style={{
                 padding: '7px 14px',
                 borderRadius: 8,
-                border: `1.5px solid ${typeFilter === type ? '#2563eb' : '#e2e8f0'}`,
-                background: typeFilter === type ? '#2563eb' : '#fff',
+                border: `1.5px solid ${typeFilter === type ? '#ff1717' : '#e2e8f0'}`,
+                background: typeFilter === type ? '#ff1717' : '#fff',
                 color: typeFilter === type ? '#fff' : '#64748b',
                 fontSize: 12.5,
                 fontWeight: 600,
@@ -1140,7 +1140,7 @@ function AdminProducts() {
             </span>
             <button
               onClick={() => { setSearchQuery(''); setTypeFilter('all') }}
-              style={{ fontSize: 11.5, color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+              style={{ fontSize: 11.5, color: '#ff1717', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: 0 }}
             >
               Clear all
             </button>
@@ -1176,7 +1176,7 @@ function AdminProducts() {
                   {p.type === 'course' && (
                     <button 
                       onClick={() => navigate(`/admin/courses/${p.id}`)}
-                      style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 500, fontSize: 13, cursor: 'pointer' }}
+                      style={{ background: 'none', border: 'none', color: '#ff1717', fontWeight: 500, fontSize: 13, cursor: 'pointer' }}
                     >
                       Curriculum
                     </button>
@@ -1242,7 +1242,7 @@ function AdminProducts() {
                           {p.type === 'course' && (
                             <button 
                               onClick={() => navigate(`/admin/courses/${p.id}`)}
-                              style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 500, cursor: 'pointer', fontSize: 13 }}
+                              style={{ background: 'none', border: 'none', color: '#ff1717', fontWeight: 500, cursor: 'pointer', fontSize: 13 }}
                             >
                               Curriculum
                             </button>
@@ -1522,7 +1522,7 @@ function AdminProducts() {
                       <button 
                         type="button" 
                         onClick={handleAddPlan}
-                        style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+                        style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
                       >
                         + Add Plan
                       </button>
@@ -1622,7 +1622,7 @@ function AdminProducts() {
               </div>
 
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer' }}>
+                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer' }}>
                   {submitting ? 'Saving...' : 'Save Product'}
                 </button>
                 <button 
@@ -1851,7 +1851,7 @@ export default function AdminDashboard() {
       <div style={{ padding: '100px 20px', textAlign: 'center', background: '#f8fafc', minHeight: '100vh', fontFamily: 'var(--font)' }}>
         <h1 style={{ fontSize: 26, fontWeight: 600, color: '#1a1f36' }}>Access Denied</h1>
         <p style={{ color: '#697386', marginBottom: 24, fontSize: 14 }}>You do not have administrative privileges to view this portal.</p>
-        <Link to="/" style={{ color: '#2563eb', fontWeight: 500, textDecoration: 'none' }}>Return to Home</Link>
+        <Link to="/" style={{ color: '#ff1717', fontWeight: 500, textDecoration: 'none' }}>Return to Home</Link>
       </div>
     )
   }
@@ -2191,16 +2191,16 @@ export default function AdminDashboard() {
                 display: 'flex',
                 alignItems: 'center',
                 background: globalSearch ? '#fff' : '#f7f8fa',
-                border: `1.5px solid ${globalSearch ? '#2563eb' : '#e2e8f0'}`,
+                border: `1.5px solid ${globalSearch ? '#ff1717' : '#e2e8f0'}`,
                 borderRadius: 10,
                 padding: '0 8px 0 0',
                 width: 300,
                 transition: 'all 0.2s ease',
-                boxShadow: globalSearch ? '0 0 0 3px rgba(37,99,235,0.1)' : 'none',
+                boxShadow: globalSearch ? '0 0 0 3px rgba(255, 23, 23,0.1)' : 'none',
                 overflow: 'hidden'
               }}>
                 {/* Search icon */}
-                <div style={{ padding: '0 10px', display: 'flex', alignItems: 'center', color: globalSearch ? '#2563eb' : '#94a3b8', transition: 'color 0.2s', flexShrink: 0 }}>
+                <div style={{ padding: '0 10px', display: 'flex', alignItems: 'center', color: globalSearch ? '#ff1717' : '#94a3b8', transition: 'color 0.2s', flexShrink: 0 }}>
                   {searching ? (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}>
                       <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
@@ -2266,8 +2266,8 @@ export default function AdminDashboard() {
                   {/* Result items */}
                   {globalResults.map((res, i) => {
                     const typeIcons = {
-                      product: { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>, color: '#2563eb', bg: 'rgba(37,99,235,0.08)' },
-                      user: { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, color: '#2563eb', bg: 'rgba(37,99,235,0.08)' },
+                      product: { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>, color: '#ff1717', bg: 'rgba(255, 23, 23,0.08)' },
+                      user: { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, color: '#ff1717', bg: 'rgba(255, 23, 23,0.08)' },
                       order: { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>, color: '#10b981', bg: 'rgba(16,185,129,0.08)' }
                     }
                     const typeStyle = typeIcons[res.type] || typeIcons.product
@@ -2351,7 +2351,7 @@ export default function AdminDashboard() {
                 }}>
                   <div style={{ padding: '8px 16px', borderBottom: '1px solid #f7f8f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: 600, fontSize: 13, color: '#1a1f36' }}>Notifications</span>
-                    <button onClick={handleMarkAllRead} style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: 11, cursor: 'pointer', fontWeight: 500 }}>Mark all read</button>
+                    <button onClick={handleMarkAllRead} style={{ background: 'none', border: 'none', color: '#ff1717', fontSize: 11, cursor: 'pointer', fontWeight: 500 }}>Mark all read</button>
                   </div>
                   <div style={{ maxHeight: 200, overflowY: 'auto' }}>
                     {alerts.length === 0 ? (

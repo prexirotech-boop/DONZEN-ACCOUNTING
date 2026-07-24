@@ -123,9 +123,9 @@ function MyLearningTab({ user }) {
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No Courses Found</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#121212', fontFamily: 'var(--font-heading)' }}>No Courses Found</h2>
         <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't enrolled in any training programs yet. Start learning today!</p>
-        <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse Products</Link>
+        <Link to="/products" style={{ background: '#ff1717', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse Products</Link>
       </div>
     )
   }
@@ -133,7 +133,7 @@ function MyLearningTab({ user }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
       <div>
-        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#0b1329' }}>My Courses</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: '#121212' }}>My Courses</h3>
         <div className="ud-course-grid">
           {enrollments.map((enr) => {
             const course = enr.courses
@@ -242,9 +242,9 @@ function EbooksTab({ user }) {
         <svg style={{ width: 64, height: 64, color: '#64748b', margin: '0 auto 20px', display: 'block' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
         </svg>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>No eBooks Found</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#121212', fontFamily: 'var(--font-heading)' }}>No eBooks Found</h2>
         <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>You haven't purchased any eBooks or blueprints yet.</p>
-        <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse eBooks</Link>
+        <Link to="/products" style={{ background: '#ff1717', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block', transition: 'background 0.15s' }}>Browse eBooks</Link>
       </div>
     )
   }
@@ -259,7 +259,7 @@ function EbooksTab({ user }) {
             </div>
             <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <h3 className="ud-course-card-title">{ebook.title.replace(/\s+slug$/i, '')}</h3>
-              <span style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: 10, display: 'inline-block' }}>eBook Product</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#ff1717', textTransform: 'uppercase', marginBottom: 10, display: 'inline-block' }}>eBook Product</span>
               
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
                 {ebook.ebook_url ? (
@@ -291,17 +291,17 @@ function EbooksTab({ user }) {
                           alignItems: 'center', 
                           justifyContent: 'space-between', 
                           fontSize: 12.5, 
-                          color: '#2563eb', 
+                          color: '#ff1717', 
                           textDecoration: 'none',
                           fontWeight: 600,
                           padding: '8px 10px',
-                          background: '#eff6ff',
+                          background: '#fff5f5',
                           borderRadius: 6,
-                          border: '1px solid #bfdbfe'
+                          border: '1px solid #ffcccc'
                         }}
                       >
                         <span>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
-                        <span style={{ fontSize: '11px', background: '#2563eb', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>Download</span>
+                        <span style={{ fontSize: '11px', background: '#ff1717', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>Download</span>
                       </a>
                     ))}
                   </div>
@@ -373,7 +373,7 @@ function PurchaseHistoryTab({ user, profile }) {
               margin: 0;
               text-transform: uppercase;
               letter-spacing: 1px;
-              background: linear-gradient(135deg, #2563eb, #1d4ed8);
+              background: linear-gradient(135deg, #ff1717, #d91414);
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
             }
@@ -457,7 +457,7 @@ function PurchaseHistoryTab({ user, profile }) {
             .total-amount {
               font-size: 20px;
               font-weight: 800;
-              color: #2563eb;
+              color: #ff1717;
             }
             .footer-note {
               text-align: center;
@@ -472,7 +472,7 @@ function PurchaseHistoryTab({ user, profile }) {
               display: block;
               width: 100%;
               padding: 14px;
-              background: linear-gradient(135deg, #2563eb, #1d4ed8);
+              background: linear-gradient(135deg, #ff1717, #d91414);
               color: white;
               border: none;
               border-radius: 8px;
@@ -481,12 +481,12 @@ function PurchaseHistoryTab({ user, profile }) {
               cursor: pointer;
               text-align: center;
               margin-bottom: 28px;
-              box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+              box-shadow: 0 4px 10px rgba(255, 23, 23, 0.2);
               transition: all 0.2s;
             }
             .btn-print:hover {
               opacity: 0.95;
-              box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+              box-shadow: 0 4px 14px rgba(255, 23, 23, 0.3);
             }
             @media print {
               .btn-print {
@@ -666,9 +666,9 @@ function PurchaseHistoryTab({ user, profile }) {
                     <button 
                       onClick={() => downloadReceipt(order)}
                       style={{
-                        background: '#eff6ff',
-                        color: '#2563eb',
-                        border: '1px solid #bfdbfe',
+                        background: '#fff5f5',
+                        color: '#ff1717',
+                        border: '1px solid #ffcccc',
                         padding: '6px 12px',
                         borderRadius: 6,
                         fontWeight: 600,
@@ -676,8 +676,8 @@ function PurchaseHistoryTab({ user, profile }) {
                         cursor: 'pointer',
                         transition: 'background-color 0.2s'
                       }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#dbeafe'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#eff6ff'}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#ffe5e5'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#fff5f5'}
                     >
                       Download
                     </button>
@@ -772,7 +772,7 @@ function BillingTab({ user }) {
           <line x1="7" y1="15" x2="7.01" y2="15" />
           <line x1="11" y1="15" x2="13" y2="15" />
         </svg>
-        <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10, color: '#0b1329' }}>No Active Payment Plans</h3>
+        <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10, color: '#121212' }}>No Active Payment Plans</h3>
         <p style={{ color: '#64748b', marginBottom: 20, fontSize: 14, maxWidth: 440, margin: '0 auto 20px' }}>
           You do not have any active installment payment plans configured on this workspace. All your products are paid in full.
         </p>
@@ -794,7 +794,7 @@ function BillingTab({ user }) {
               />
               <div>
                 <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{plan.product?.title?.replace(/\s+slug$/i, '')}</h4>
-                <span style={{ fontSize: 12, color: '#2563eb', fontWeight: 600 }}>{plan.planName}</span>
+                <span style={{ fontSize: 12, color: '#ff1717', fontWeight: 600 }}>{plan.planName}</span>
               </div>
             </div>
             <div>
@@ -804,8 +804,8 @@ function BillingTab({ user }) {
                 fontSize: 11, 
                 fontWeight: 700, 
                 textTransform: 'uppercase', 
-                background: plan.status === 'completed' ? '#dcfce7' : plan.status === 'overdue' ? '#fee2e2' : '#eff6ff',
-                color: plan.status === 'completed' ? '#15803d' : plan.status === 'overdue' ? '#b91c1c' : '#1d4ed8'
+                background: plan.status === 'completed' ? '#dcfce7' : plan.status === 'overdue' ? '#fee2e2' : '#fff5f5',
+                color: plan.status === 'completed' ? '#15803d' : plan.status === 'overdue' ? '#b91c1c' : '#d91414'
               }}>
                 {plan.status}
               </span>
@@ -820,7 +820,7 @@ function BillingTab({ user }) {
                 <strong style={{ fontSize: 16, color: '#0f172a' }}>{plan.totalPaidInstallments} of {plan.totalInstallments} paid</strong>
                 {/* Visual Progress Bar */}
                 <div style={{ width: '100%', height: 6, background: '#cbd5e1', borderRadius: 3, marginTop: 8, overflow: 'hidden' }}>
-                  <div style={{ width: `${(plan.totalPaidInstallments / plan.totalInstallments) * 100}%`, height: '100%', background: plan.status === 'completed' ? '#10b981' : '#2563eb', borderRadius: 3 }} />
+                  <div style={{ width: `${(plan.totalPaidInstallments / plan.totalInstallments) * 100}%`, height: '100%', background: plan.status === 'completed' ? '#10b981' : '#ff1717', borderRadius: 3 }} />
                 </div>
               </div>
               
@@ -841,24 +841,24 @@ function BillingTab({ user }) {
 
             {/* Actions Block */}
             {plan.status !== 'completed' && (
-              <div style={{ padding: '16px', background: '#eff6ff', borderRadius: 8, border: '1px solid #bfdbfe', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ padding: '16px', background: '#fff5f5', borderRadius: 8, border: '1px solid #ffcccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <div>
-                  <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#1e40af' }}>Action Required</h5>
-                  <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#2563eb' }}>
+                  <h5 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#991b1b' }}>Action Required</h5>
+                  <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#ff1717' }}>
                     Pay installment <strong>{plan.nextInstallment}</strong> of <strong>{plan.totalInstallments}</strong> to keep your access active.
                   </p>
                 </div>
                 <Link 
                   to={`/checkout?product=${plan.product?.slug}&plan=${plan.planId}&installment=${plan.nextInstallment}&parent=${plan.reference}`}
                   style={{ 
-                    background: '#2563eb', 
+                    background: '#ff1717', 
                     color: '#fff', 
                     padding: '8px 16px', 
                     borderRadius: 6, 
                     fontWeight: 600, 
                     fontSize: 13, 
                     textDecoration: 'none',
-                    boxShadow: '0 2px 4px rgba(37,99,235,0.15)',
+                    boxShadow: '0 2px 4px rgba(255, 23, 23,0.15)',
                     transition: 'background 0.2s'
                   }}
                 >
@@ -1006,7 +1006,7 @@ function SettingsTab({ user }) {
             style={{
               position: 'absolute', bottom: 0, right: 0,
               width: 26, height: 26, borderRadius: '50%',
-              background: '#2563eb', color: '#fff',
+              background: '#ff1717', color: '#fff',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', border: '2px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
               transition: 'background 0.15s'
@@ -1022,7 +1022,7 @@ function SettingsTab({ user }) {
           <input id="avatar-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarUpload} />
         </div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: '#0b1329', marginBottom: 4 }}>Profile Photo</div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: '#121212', marginBottom: 4 }}>Profile Photo</div>
           <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.4 }}>Upload a photo. JPG, PNG or WebP. Max 3MB.</div>
           {avatarError && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 6, fontWeight: 600 }}>{avatarError}</div>}
         </div>
@@ -1127,9 +1127,9 @@ function WishlistTab({ user }) {
   if (wishlist.length === 0) {
     return (
       <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>Your Wishlist is Empty</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#121212', fontFamily: 'var(--font-heading)' }}>Your Wishlist is Empty</h2>
         <p style={{ color: '#64748b', marginBottom: 24, fontSize: 15, maxWidth: 400, margin: '0 auto 24px' }}>Browse our training programs and save courses to purchase later.</p>
-        <Link to="/products" style={{ background: '#2563eb', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>Browse Products</Link>
+        <Link to="/products" style={{ background: '#ff1717', color: '#fff', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>Browse Products</Link>
       </div>
     )
   }
@@ -1158,10 +1158,10 @@ function WishlistTab({ user }) {
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: '#0b1329' }}>₦{prod.price.toLocaleString()}</span>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: '#121212' }}>₦{prod.price.toLocaleString()}</span>
                   {prod.old_price && <span style={{ fontSize: 13, color: '#64748b', textDecoration: 'line-through' }}>₦{prod.old_price.toLocaleString()}</span>}
                 </div>
-                <Link to={prod.type === 'course' ? '/course' : '/ebook'} className="ud-card-btn" style={{ background: '#2563eb', color: '#fff', border: '1px solid #2563eb' }}>
+                <Link to={prod.type === 'course' ? '/course' : '/ebook'} className="ud-card-btn" style={{ background: '#ff1717', color: '#fff', border: '1px solid #ff1717' }}>
                   Buy Now
                 </Link>
               </div>
@@ -1267,7 +1267,7 @@ function NotificationsTab({ user }) {
   if (notifications.length === 0) {
     return (
       <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>All Caught Up!</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#121212', fontFamily: 'var(--font-heading)' }}>All Caught Up!</h2>
         <p style={{ color: '#64748b', fontSize: 15 }}>No new announcements or replies recorded recently.</p>
       </div>
     )
@@ -1279,8 +1279,8 @@ function NotificationsTab({ user }) {
         <div key={n.id} className="ud-notif-card" style={{ borderRadius: 4 }}>
           <div className="ud-notif-icon">
             {n.type === 'announcement' 
-              ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-              : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+              : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
             }
           </div>
           <div className="ud-notif-content">
@@ -1290,9 +1290,9 @@ function NotificationsTab({ user }) {
             </div>
             <p className="ud-notif-body" style={{ whiteSpace: 'pre-wrap' }}>{n.body}</p>
             <div className="ud-notif-meta">
-              <span>Source: <strong style={{ color: '#0b1329' }}>{n.sourceName}</strong></span>
+              <span>Source: <strong style={{ color: '#121212' }}>{n.sourceName}</strong></span>
               <span style={{ margin: '0 8px' }}>&bull;</span>
-              <span>Course: <strong style={{ color: '#0b1329' }}>{n.courseTitle}</strong></span>
+              <span>Course: <strong style={{ color: '#121212' }}>{n.courseTitle}</strong></span>
             </div>
           </div>
         </div>
@@ -1458,7 +1458,7 @@ function AffiliateTab({ user, profile }) {
   const STATUS_COLORS = {
     pending: { bg: '#fef9c3', text: '#854d0e' },
     approved: { bg: '#dcfce7', text: '#166534' },
-    paid: { bg: '#dbeafe', text: '#1e40af' },
+    paid: { bg: '#ffe5e5', text: '#991b1b' },
     rejected: { bg: '#fee2e2', text: '#991b1b' },
     cancelled: { bg: '#f3f4f6', text: '#374151' }
   }
@@ -1565,7 +1565,7 @@ function AffiliateTab({ user, profile }) {
                 <path d="M12 6v6l4 2" />
               </svg>
             ), 
-            color: '#2563eb' 
+            color: '#ff1717' 
           },
           { 
             label: 'Conversions', 
@@ -1665,7 +1665,7 @@ function AffiliateTab({ user, profile }) {
               fontWeight: activeSubTab === t.id ? 700 : 500,
               fontSize: 13,
               cursor: 'pointer',
-              color: activeSubTab === t.id ? '#2563eb' : '#64748b',
+              color: activeSubTab === t.id ? '#ff1717' : '#64748b',
               borderRadius: 8,
               boxShadow: activeSubTab === t.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
               transition: 'all 0.15s',
@@ -1680,12 +1680,12 @@ function AffiliateTab({ user, profile }) {
       {activeSubTab === 'overview' && (
         <div>
           {/* Share CTA */}
-          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontWeight: 700, fontSize: 15, color: '#1e40af', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+            <div style={{ fontWeight: 700, fontSize: 15, color: '#991b1b', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19l7-7 3 3-10 10-10-10 3-3 7 7zm0-16v11"/></svg>
               Share Your Link To Start Earning
             </div>
-            <p style={{ fontSize: 13, color: '#3b82f6', margin: '0 0 14px' }}>Every time someone buys through your link, you earn {affiliate?.commission_rate || 20}% of the sale.</p>
+            <p style={{ fontSize: 13, color: '#ff4d4d', margin: '0 0 14px' }}>Every time someone buys through your link, you earn {affiliate?.commission_rate || 20}% of the sale.</p>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {[
                 { label: 'WhatsApp', bg: '#25D366', url: `https://wa.me/?text=${encodeURIComponent(`Check out Donzen Accounting Hub - the best platform for bookkeeping and financial solutions! ${affiliateLink || ''}`)}` },
@@ -1702,13 +1702,13 @@ function AffiliateTab({ user, profile }) {
           {/* Recent commissions preview */}
           {commissions.length > 0 && (
             <div>
-              <div style={{ fontWeight: 700, color: '#0b1329', marginBottom: 12, fontSize: 15 }}>Recent Commissions</div>
+              <div style={{ fontWeight: 700, color: '#121212', marginBottom: 12, fontSize: 15 }}>Recent Commissions</div>
               {commissions.slice(0, 3).map(c => {
                 const sc = STATUS_COLORS[c.status] || STATUS_COLORS.pending
                 return (
                   <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8, marginBottom: 8 }}>
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: 13, color: '#0b1329' }}>Order #{c.orders?.reference?.slice(-8) || c.order_id}</div>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: '#121212' }}>Order #{c.orders?.reference?.slice(-8) || c.order_id}</div>
                       <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{new Date(c.created_at).toLocaleDateString()}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
@@ -1718,7 +1718,7 @@ function AffiliateTab({ user, profile }) {
                   </div>
                 )
               })}
-              <button onClick={() => setActiveSubTab('commissions')} style={{ background: 'none', border: 'none', color: '#2563eb', fontWeight: 700, fontSize: 13, cursor: 'pointer', padding: 0 }}>View all commissions →</button>
+              <button onClick={() => setActiveSubTab('commissions')} style={{ background: 'none', border: 'none', color: '#ff1717', fontWeight: 700, fontSize: 13, cursor: 'pointer', padding: 0 }}>View all commissions →</button>
             </div>
           )}
 
@@ -1729,7 +1729,7 @@ function AffiliateTab({ user, profile }) {
                   <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
                 </svg>
               </div>
-              <div style={{ fontWeight: 700, fontSize: 16, color: '#0b1329', marginBottom: 8 }}>No commissions yet</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: '#121212', marginBottom: 8 }}>No commissions yet</div>
               <div style={{ fontSize: 13, color: '#64748b' }}>Share your link to start earning. Every sale through your link earns you {affiliate?.commission_rate || 20}% commission!</div>
             </div>
           )}
@@ -1746,7 +1746,7 @@ function AffiliateTab({ user, profile }) {
                   <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
               </div>
-              <div style={{ fontWeight: 700, fontSize: 16, color: '#0b1329', marginBottom: 8 }}>No commissions yet</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: '#121212', marginBottom: 8 }}>No commissions yet</div>
               <div style={{ fontSize: 13, color: '#64748b' }}>Commissions appear here when someone buys through your referral link.</div>
             </div>
           ) : (
@@ -1764,7 +1764,7 @@ function AffiliateTab({ user, profile }) {
                     const sc = STATUS_COLORS[c.status] || STATUS_COLORS.pending
                     return (
                       <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '12px 16px', fontSize: 13, fontFamily: 'monospace', color: '#0b1329' }}>#{c.orders?.reference?.slice(-8) || '—'}</td>
+                        <td style={{ padding: '12px 16px', fontSize: 13, fontFamily: 'monospace', color: '#121212' }}>#{c.orders?.reference?.slice(-8) || '—'}</td>
                         <td style={{ padding: '12px 16px', fontSize: 12, color: '#64748b' }}>{new Date(c.created_at).toLocaleDateString()}</td>
                         <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 600 }}>{formatNGN(c.order_amount)}</td>
                         <td style={{ padding: '12px 16px', fontSize: 13, color: '#7c3aed', fontWeight: 700 }}>{c.commission_rate}%</td>
@@ -1798,7 +1798,7 @@ function AffiliateTab({ user, profile }) {
                   <path d="M3 21h18M3 10h18M5 10v11M19 10v11M12 10v11M4 6l8-4 8 4z" />
                 </svg>
               </div>
-              <div style={{ fontWeight: 700, fontSize: 16, color: '#0b1329' }}>No payouts yet</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: '#121212' }}>No payouts yet</div>
               <div style={{ fontSize: 13, color: '#64748b', marginTop: 8 }}>Payouts appear here once admin approves and processes your commissions.</div>
             </div>
           ) : (
@@ -1878,9 +1878,9 @@ function AffiliateTab({ user, profile }) {
             },
           ].map(item => (
             <div key={item.step} style={{ display: 'flex', gap: 16, padding: '20px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</div>
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed, #ff1717)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</div>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 15, color: '#0b1329', marginBottom: 4 }}>Step {item.step}: {item.title}</div>
+                <div style={{ fontWeight: 800, fontSize: 15, color: '#121212', marginBottom: 4 }}>Step {item.step}: {item.title}</div>
                 <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{item.desc}</div>
               </div>
             </div>
@@ -1991,7 +1991,7 @@ export default function LMSDashboard() {
         fontFamily: "var(--font)", zIndex: 9999
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-          <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, rgba(37,99,235,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(255, 23, 23,0.25) 0%, rgba(255, 23, 23,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
           <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(255,23,23,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
           <div className="premium-spinner" />
           <p style={{ color: '#94a3b8', marginTop: 16, fontSize: '14px', letterSpacing: '0.5px', position: 'relative', zIndex: 1 }}>Loading portal session...</p>
@@ -2001,8 +2001,8 @@ export default function LMSDashboard() {
             width: 32px;
             height: 32px;
             border: 3px solid rgba(255, 255, 255, 0.05);
-            border-top-color: #2563eb;
-            border-right-color: #3b82f6;
+            border-top-color: #ff1717;
+            border-right-color: #ff4d4d;
             border-radius: 50%;
             animation: spin-loader 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           }
@@ -2010,8 +2010,8 @@ export default function LMSDashboard() {
             to { transform: rotate(360deg); }
           }
           @keyframes logo-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(37,99,235,0.1)); }
-            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 16px rgba(37,99,235,0.4)); }
+            0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(255, 23, 23,0.1)); }
+            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 16px rgba(255, 23, 23,0.4)); }
           }
           @keyframes ambient-glow {
             0%, 100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
@@ -2060,7 +2060,7 @@ export default function LMSDashboard() {
       {/* Impersonation Banner */}
       {impersonatedUser && (
         <div style={{ 
-          background: 'linear-gradient(90deg, #2563eb 0%, #0b1329 100%)', 
+          background: 'linear-gradient(90deg, #ff1717 0%, #121212 100%)', 
           color: '#fff', 
           padding: '12px 24px', 
           display: 'flex', 
@@ -2081,7 +2081,7 @@ export default function LMSDashboard() {
             onClick={handleStopImpersonating}
             style={{ 
               background: '#fff', 
-              color: '#0b1329', 
+              color: '#121212', 
               border: 'none', 
               padding: '8px 16px', 
               fontWeight: 700, 
@@ -2104,7 +2104,7 @@ export default function LMSDashboard() {
             className="sidebar-toggle-btn"
             style={{ 
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 38, height: 38, background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, color: '#0b1329'
+              width: 38, height: 38, background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 4, color: '#121212'
             }}
             title="Toggle Menu"
           >
@@ -2141,7 +2141,7 @@ export default function LMSDashboard() {
                 <img
                   src={effectiveUser.user_metadata.avatar_url}
                   alt="Avatar"
-                  style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1.5px solid #2563eb' }}
+                  style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1.5px solid #ff1717' }}
                 />
               ) : (
                 <UserAvatar user={effectiveUser} size={36} />
@@ -2195,8 +2195,8 @@ export default function LMSDashboard() {
             {/* Avatar Upload Prompt Banner — shows only when no avatar uploaded yet */}
             {!effectiveUser?.user_metadata?.avatar_url && activeTab !== 'settings' && !avatarBannerDismissed && (
               <div style={{
-                background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)',
-                border: '1.5px solid #bfdbfe',
+                background: 'linear-gradient(135deg, #fff5f5 0%, #f0fdf4 100%)',
+                border: '1.5px solid #ffcccc',
                 borderRadius: 12,
                 padding: '16px 20px',
                 marginBottom: 24,
@@ -2221,7 +2221,7 @@ export default function LMSDashboard() {
                   <button
                     onClick={() => setActiveTab('settings')}
                     style={{
-                      background: '#2563eb', color: '#fff', border: 'none',
+                      background: '#ff1717', color: '#fff', border: 'none',
                       padding: '9px 18px', borderRadius: 8, fontWeight: 700,
                       fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap'
                     }}
@@ -2262,7 +2262,7 @@ export default function LMSDashboard() {
           min-height: 100vh;
           background-color: #f8fafc;
           font-family: var(--font);
-          color: #0b1329;
+          color: #121212;
           display: flex;
           flex-direction: column;
         }
@@ -2270,7 +2270,7 @@ export default function LMSDashboard() {
         .ud-sidebar {
           width: 260px;
           min-width: 260px;
-          background-color: #0b1329;
+          background-color: #121212;
           border-right: 1px solid #1e293b;
           color: #fff;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2311,7 +2311,7 @@ export default function LMSDashboard() {
         
         .ud-sidebar-item.active {
           color: #fff;
-          background: #2563eb; /* Brand Blue active item */
+          background: #ff1717; /* Brand Blue active item */
         }
         
         .ud-sidebar-item svg {
@@ -2328,7 +2328,7 @@ export default function LMSDashboard() {
         .ud-tab-title {
           font-size: 28px;
           font-weight: 700;
-          color: #0b1329;
+          color: #121212;
           margin: 0 0 28px;
           font-family: var(--font-heading) !important;
           letter-spacing: -0.5px;
@@ -2401,7 +2401,7 @@ export default function LMSDashboard() {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #0b1329;
+          color: #121212;
           font-size: 20px;
           text-decoration: none;
           box-shadow: 0 2px 8px rgba(0,0,0,0.25);
@@ -2422,7 +2422,7 @@ export default function LMSDashboard() {
         .ud-course-card-title {
           font-size: 15px;
           font-weight: 700;
-          color: #0b1329;
+          color: #121212;
           margin: 0 0 6px;
           line-height: 1.35;
           display: -webkit-box;
@@ -2456,7 +2456,7 @@ export default function LMSDashboard() {
         
         .ud-progress-bar-fill {
           height: 100%;
-          background: #2563eb;
+          background: #ff1717;
           border-radius: 2px;
         }
         
@@ -2469,7 +2469,7 @@ export default function LMSDashboard() {
         .ud-progress-text {
           font-size: 12px;
           font-weight: 700;
-          color: #0b1329;
+          color: #121212;
         }
         
         .ud-progress-label {
@@ -2480,9 +2480,9 @@ export default function LMSDashboard() {
         .ud-card-btn {
           display: block;
           text-align: center;
-          border: 1.5px solid #2563eb;
+          border: 1.5px solid #ff1717;
           background: transparent;
-          color: #2563eb;
+          color: #ff1717;
           padding: 8px 16px;
           font-weight: 700;
           font-size: 13.5px;
@@ -2494,7 +2494,7 @@ export default function LMSDashboard() {
         }
         
         .ud-card-btn:hover {
-          background: #2563eb;
+          background: #ff1717;
           color: #fff;
         }
         
@@ -2514,7 +2514,7 @@ export default function LMSDashboard() {
           display: block;
           font-size: 13.5px;
           font-weight: 700;
-          color: #0b1329;
+          color: #121212;
           margin-bottom: 8px;
         }
         
@@ -2523,7 +2523,7 @@ export default function LMSDashboard() {
           padding: 10px 14px;
           border: 1px solid #cbd5e1;
           font-size: 14.5px;
-          color: #0b1329;
+          color: #121212;
           outline: none;
           border-radius: 4px;
           box-sizing: border-box;
@@ -2532,14 +2532,14 @@ export default function LMSDashboard() {
         }
         
         .ud-form-input:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          border-color: #ff1717;
+          box-shadow: 0 0 0 3px rgba(255, 23, 23, 0.1);
         }
         
         .ud-form-submit {
-          background: #2563eb;
+          background: #ff1717;
           color: #fff;
-          border: 1px solid #2563eb;
+          border: 1px solid #ff1717;
           padding: 12px 24px;
           font-weight: 700;
           font-size: 14.5px;
@@ -2549,8 +2549,8 @@ export default function LMSDashboard() {
         }
         
         .ud-form-submit:hover {
-          background: #1d4ed8;
-          border-color: #1d4ed8;
+          background: #d91414;
+          border-color: #d91414;
         }
         
         .ud-form-submit:disabled {
@@ -2578,7 +2578,7 @@ export default function LMSDashboard() {
           background: #f8fafc;
           border-bottom: 1px solid #e2e8f0;
           padding: 14px 20px;
-          color: #0b1329;
+          color: #121212;
           font-weight: 700;
           font-size: 13.5px;
           font-family: var(--font);
@@ -2588,7 +2588,7 @@ export default function LMSDashboard() {
           border-bottom: 1px solid #e2e8f0;
           padding: 16px 20px;
           font-size: 14px;
-          color: #0b1329;
+          color: #121212;
           font-family: var(--font);
         }
         
@@ -2609,8 +2609,8 @@ export default function LMSDashboard() {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background: #eff6ff;
-          color: #2563eb;
+          background: #fff5f5;
+          color: #ff1717;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -2626,7 +2626,7 @@ export default function LMSDashboard() {
           font-size: 15px;
           font-weight: 700;
           margin: 0 0 4px;
-          color: #0b1329;
+          color: #121212;
           font-family: var(--font-heading) !important;
         }
         

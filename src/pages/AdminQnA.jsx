@@ -122,9 +122,9 @@ export default function AdminQnA() {
                 style={{ 
                   padding: 12, 
                   borderRadius: 6, 
-                  border: selectedQuestion?.id === q.id ? '1.5px solid #2563eb' : '1px solid #e3e8ee',
+                  border: selectedQuestion?.id === q.id ? '1.5px solid #ff1717' : '1px solid #e3e8ee',
                   cursor: 'pointer',
-                  background: selectedQuestion?.id === q.id ? 'rgba(37,99,235,0.04)' : '#fff',
+                  background: selectedQuestion?.id === q.id ? 'rgba(255, 23, 23,0.04)' : '#fff',
                   transition: 'all 0.15s'
                 }}
               >
@@ -171,7 +171,7 @@ export default function AdminQnA() {
                     <div key={a.id} style={{ padding: 12, background: '#f7f8f9', borderRadius: 6, border: '1px solid #e3e8ee' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                         <span style={{ fontWeight: 600, fontSize: 12, color: '#1a1f36' }}>
-                          {a.profiles?.full_name || 'Anonymous'} {a.profiles?.role === 'admin' && <strong style={{ color: '#2563eb', marginLeft: 4 }}>(Instructor)</strong>}
+                          {a.profiles?.full_name || 'Anonymous'} {a.profiles?.role === 'admin' && <strong style={{ color: '#ff1717', marginLeft: 4 }}>(Instructor)</strong>}
                         </span>
                         <span style={{ fontSize: 10, color: '#8792a2' }}>{new Date(a.created_at).toLocaleDateString()}</span>
                       </div>
@@ -193,7 +193,7 @@ export default function AdminQnA() {
                 <button 
                   type="submit" 
                   disabled={submittingAnswer}
-                  style={{ alignSelf: 'flex-end', background: '#2563eb', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, fontWeight: 500, cursor: submittingAnswer ? 'not-allowed' : 'pointer', fontSize: 13 }}
+                  style={{ alignSelf: 'flex-end', background: '#ff1717', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, fontWeight: 500, cursor: submittingAnswer ? 'not-allowed' : 'pointer', fontSize: 13 }}
                 >
                   {submittingAnswer ? 'Posting...' : 'Post Reply'}
                 </button>

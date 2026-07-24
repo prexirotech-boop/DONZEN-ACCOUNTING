@@ -218,7 +218,6 @@ export default function ServicesPage() {
             <div className="sv-hero-overlay" />
           </div>
           <div className={`sv-hero-inner ${heroVis ? 'sv-vis' : ''}`}>
-            <div className="sv-hero-badge">Our Services</div>
             <h1 className="sv-hero-title">
               Professional Financial<br />
               <span className="sv-hero-accent">Solutions for Your Business</span>

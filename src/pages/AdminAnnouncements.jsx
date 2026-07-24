@@ -86,7 +86,7 @@ export default function AdminAnnouncements() {
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
+          style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
         >
           + Send Broadcast
         </button>
@@ -177,7 +177,7 @@ export default function AdminAnnouncements() {
                 />
               </div>
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13 }}>
+                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13 }}>
                   {submitting ? 'Broadcasting...' : 'Send Broadcast'}
                 </button>
                 <button 

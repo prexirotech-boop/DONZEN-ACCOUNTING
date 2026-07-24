@@ -61,8 +61,8 @@ function CustomSingleSelect({ options, value, onChange, placeholder = 'Select pr
                   padding: '8px 12px',
                   fontSize: '13.5px',
                   cursor: 'pointer',
-                  background: value === opt.value ? '#eff6ff' : 'transparent',
-                  color: value === opt.value ? '#2563eb' : '#0f172a',
+                  background: value === opt.value ? '#fff5f5' : 'transparent',
+                  color: value === opt.value ? '#ff1717' : '#0f172a',
                   fontWeight: value === opt.value ? '600' : '400',
                   transition: 'background 0.1s'
                 }}
@@ -121,9 +121,9 @@ function CustomMultiSelect({ options, value = [], onChange, placeholder = 'Selec
               <span 
                 key={val} 
                 style={{
-                  background: '#eff6ff',
-                  color: '#2563eb',
-                  border: '1px solid #bfdbfe',
+                  background: '#fff5f5',
+                  color: '#ff1717',
+                  border: '1px solid #ffcccc',
                   padding: '2px 8px',
                   borderRadius: '4px',
                   fontSize: '12px',
@@ -809,7 +809,7 @@ export default function AdminAnalytics() {
               onClick={() => setTimeframe(t.id)}
               style={{
                 border: 'none',
-                background: timeframe === t.id ? '#2563eb' : 'transparent',
+                background: timeframe === t.id ? '#ff1717' : 'transparent',
                 color: timeframe === t.id ? '#fff' : '#64748b',
                 padding: '6px 12px',
                 borderRadius: 6,
@@ -827,7 +827,7 @@ export default function AdminAnalytics() {
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
-          <div className="premium-spinner" style={{ width: 40, height: 40, border: '4px solid #f3f3f3', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <div className="premium-spinner" style={{ width: 40, height: 40, border: '4px solid #f3f3f3', borderTop: '4px solid #ff1717', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
           <style dangerouslySetInnerHTML={{ __html: '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }' }} />
         </div>
       ) : (
@@ -887,8 +887,8 @@ export default function AdminAnalytics() {
                   padding: '12px 4px',
                   fontSize: 14,
                   fontWeight: 600,
-                  color: activeTab === tab.id ? '#2563eb' : '#64748b',
-                  borderBottom: activeTab === tab.id ? '2px solid #2563eb' : '2px solid transparent',
+                  color: activeTab === tab.id ? '#ff1717' : '#64748b',
+                  borderBottom: activeTab === tab.id ? '2px solid #ff1717' : '2px solid transparent',
                   cursor: 'pointer',
                   transition: 'all 0.15s',
                   paddingBottom: 10
@@ -918,7 +918,7 @@ export default function AdminAnalytics() {
                     <svg viewBox="0 0 800 460" className="funnel-svg" style={{ width: '100%', height: 'auto', display: 'block' }}>
                       <defs>
                         <linearGradient id="grad-stage-0" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#3b82f6" /><stop offset="100%" stopColor="#1d4ed8" />
+                          <stop offset="0%" stopColor="#ff4d4d" /><stop offset="100%" stopColor="#d91414" />
                         </linearGradient>
                         <linearGradient id="grad-stage-1" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="#10b981" /><stop offset="100%" stopColor="#047857" />
@@ -1117,7 +1117,7 @@ export default function AdminAnalytics() {
                         setShowCreateModal(true)
                       }}
                       style={{
-                        background: '#2563eb',
+                        background: '#ff1717',
                         color: '#fff',
                         padding: '8px 16px',
                         border: 'none',
@@ -1187,7 +1187,7 @@ export default function AdminAnalytics() {
 
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                             {[
-                              { label: 'Opt-in Rate', val: camp.signupCount, pct: camp.optInRate, color: '#3b82f6' },
+                              { label: 'Opt-in Rate', val: camp.signupCount, pct: camp.optInRate, color: '#ff4d4d' },
                               { label: 'Webinar Views', val: camp.webinarCount, pct: camp.webinarRate, color: '#8b5cf6' },
                               { label: 'Checkout Views', val: camp.checkoutCount, pct: camp.checkoutRate, color: '#ec4899' },
                               { label: 'Conversion', val: camp.completedSales, pct: camp.overallConversion, color: '#10b981', isOverall: true }
@@ -1260,7 +1260,7 @@ export default function AdminAnalytics() {
                           <td style={{ padding: '14px 8px', fontSize: 12.5, color: '#64748b' }}>{c.productTitle}</td>
                           <td style={{ padding: '14px 8px', textAlign: 'center' }}>{c.landerCount}</td>
                           <td style={{ padding: '14px 8px', textAlign: 'center' }}>{c.signupCount}</td>
-                          <td style={{ padding: '14px 8px', textAlign: 'center', color: '#3b82f6', fontWeight: 600 }}>{c.optInRate}%</td>
+                          <td style={{ padding: '14px 8px', textAlign: 'center', color: '#ff4d4d', fontWeight: 600 }}>{c.optInRate}%</td>
                           <td style={{ padding: '14px 8px', textAlign: 'center' }}>{c.webinarCount}</td>
                           <td style={{ padding: '14px 8px', textAlign: 'center' }}>{c.checkoutCount}</td>
                           <td style={{ padding: '14px 8px', textAlign: 'center' }}>{c.completedSales}</td>
@@ -1524,7 +1524,7 @@ export default function AdminAnalytics() {
                     setShowCreateModal(true)
                   }}
                   style={{
-                    background: '#2563eb',
+                    background: '#ff1717',
                     color: '#fff',
                     padding: '8px 16px',
                     border: 'none',
@@ -1598,7 +1598,7 @@ export default function AdminAnalytics() {
                                 style={{
                                   border: 'none',
                                   background: 'transparent',
-                                  color: '#2563eb',
+                                  color: '#ff1717',
                                   fontWeight: 600,
                                   fontSize: 12,
                                   cursor: 'pointer'
@@ -1788,7 +1788,7 @@ export default function AdminAnalytics() {
                       type="submit"
                       disabled={submitting}
                       style={{
-                        background: '#2563eb',
+                        background: '#ff1717',
                         color: '#fff',
                         padding: '10px 18px',
                         border: 'none',
@@ -1940,7 +1940,7 @@ export default function AdminAnalytics() {
                         setLinkGenCopied(true)
                       }}
                       style={{
-                        background: linkGenCopied ? '#10b981' : '#2563eb',
+                        background: linkGenCopied ? '#10b981' : '#ff1717',
                         color: '#fff',
                         padding: '10px 18px',
                         border: 'none',

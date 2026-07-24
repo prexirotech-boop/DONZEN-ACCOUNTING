@@ -102,7 +102,7 @@ export default function AdminCoupons() {
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
+          style={{ background: '#ff1717', color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.08)' }}
         >
           + Create Coupon
         </button>
@@ -131,7 +131,7 @@ export default function AdminCoupons() {
                 ) : (
                   coupons.map(c => (
                     <tr key={c.id} style={{ borderBottom: '1px solid #f7f8f9' }}>
-                      <td style={{ padding: '12px 20px', fontWeight: 600, color: '#2563eb', fontSize: 13.5, fontFamily: 'monospace' }}>{c.code}</td>
+                      <td style={{ padding: '12px 20px', fontWeight: 600, color: '#ff1717', fontSize: 13.5, fontFamily: 'monospace' }}>{c.code}</td>
                       <td style={{ padding: '12px 20px', fontSize: 13.5, color: '#1a1f36' }}>
                         {c.type === 'percentage' ? `${c.value}% off` : `₦${c.value.toLocaleString()} off`}
                       </td>
@@ -275,7 +275,7 @@ export default function AdminCoupons() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13 }}>
+                <button type="submit" disabled={submitting} style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px', borderRadius: 4, fontWeight: 500, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 13 }}>
                   {submitting ? 'Creating...' : 'Create Coupon'}
                 </button>
                 <button 

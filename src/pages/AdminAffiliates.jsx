@@ -171,8 +171,8 @@ function CustomSelect({ value, onChange, options, minWidth = 140 }) {
                 style={{
                   padding: '8px 12px',
                   borderRadius: 6,
-                  backgroundColor: isSelected ? '#eff6ff' : 'transparent',
-                  color: isSelected ? '#1e40af' : '#334155',
+                  backgroundColor: isSelected ? '#fff5f5' : 'transparent',
+                  color: isSelected ? '#991b1b' : '#334155',
                   fontSize: '13px',
                   fontWeight: isSelected ? 600 : 500,
                   cursor: 'pointer',
@@ -629,10 +629,10 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
               disabled={saving}
               style={{
                 flex: 2, padding: '11px',
-                background: saving ? 'var(--g200)' : 'linear-gradient(135deg, var(--g600), var(--g505, #2563eb))',
+                background: saving ? 'var(--g200)' : 'linear-gradient(135deg, var(--g600), var(--g505, #ff1717))',
                 border: 'none', borderRadius: 9,
                 color: '#fff', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer',
-                boxShadow: saving ? 'none' : '0 4px 12px rgba(37,99,235,0.3)',
+                boxShadow: saving ? 'none' : '0 4px 12px rgba(255, 23, 23,0.3)',
                 transition: 'all 0.2s',
               }}
             >
@@ -1097,10 +1097,10 @@ export default function AdminAffiliates() {
             label="Revenue via Affiliates"
             value={loading ? '—' : fmtNGN(stats.totalRevenue)}
             sub="All-time affiliate-driven sales"
-            gradient="linear-gradient(90deg, #3b82f6, #1d4ed8)"
-            iconBg="#eff6ff"
+            gradient="linear-gradient(90deg, #ff4d4d, #d91414)"
+            iconBg="#fff5f5"
             icon={
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" strokeWidth="2">
                 <line x1="12" y1="1" x2="12" y2="23"/>
                 <path d="M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/>
               </svg>
@@ -1403,7 +1403,7 @@ export default function AdminAffiliates() {
                             <IconBtn
                               onClick={() => profile?.id && window.open(`/admin/users?id=${profile.id}`, '_blank')}
                               title="View user profile"
-                              color="#0ea5e9" bg="#f0f9ff" hoverBg="#e0f2fe"
+                              color="#0ea5e9" bg="#fff6f6" hoverBg="#ffebeb"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                                 <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>

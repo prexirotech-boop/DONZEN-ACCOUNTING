@@ -18,8 +18,8 @@ const TYPE_CONFIG = {
   },
   post_purchase: { 
     label: 'Post-Purchase',    
-    color: '#2563eb', 
-    bg: '#eff6ff', 
+    color: '#ff1717', 
+    bg: '#fff5f5', 
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
         <circle cx="12" cy="12" r="10"/>
@@ -186,7 +186,7 @@ function Toggle({ checked, onChange, disabled }) {
         width: 40,
         height: 22,
         borderRadius: 11,
-        background: checked ? '#2563eb' : '#cbd5e1',
+        background: checked ? '#ff1717' : '#cbd5e1',
         position: 'relative',
         cursor: disabled ? 'not-allowed' : 'pointer',
         transition: 'background 0.2s',
@@ -225,9 +225,9 @@ function PlacementCheckboxes({ value = [], onChange }) {
             style={{
               padding: '5px 12px',
               borderRadius: 20,
-              border: `1.5px solid ${active ? '#2563eb' : '#cbd5e1'}`,
-              background: active ? '#eff6ff' : '#f8fafc',
-              color: active ? '#2563eb' : '#697386',
+              border: `1.5px solid ${active ? '#ff1717' : '#cbd5e1'}`,
+              background: active ? '#fff5f5' : '#f8fafc',
+              color: active ? '#ff1717' : '#697386',
               fontSize: 12.5,
               fontWeight: active ? 600 : 400,
               cursor: 'pointer',
@@ -323,7 +323,7 @@ function PreviewModal({ offer, onClose }) {
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 10 }}>
                   {product && (
                     <>
-                      <span style={{ fontSize: 20, fontWeight: 800, color: '#2563eb' }}>
+                      <span style={{ fontSize: 20, fontWeight: 800, color: '#ff1717' }}>
                         {fmt(discountedKobo)}
                       </span>
                       {hasDiscount && (
@@ -345,7 +345,7 @@ function PreviewModal({ offer, onClose }) {
             <button style={{
               marginTop: 16,
               width: '100%',
-              background: 'linear-gradient(135deg, #2563eb, #4f46e5)',
+              background: 'linear-gradient(135deg, #ff1717, #4f46e5)',
               color: '#fff',
               border: 'none',
               borderRadius: 8,
@@ -474,8 +474,8 @@ function CustomSelect({ value, onChange, options, placeholder = "Select an optio
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '2px',
-                  backgroundColor: isSelected ? '#eff6ff' : 'transparent',
-                  color: isSelected ? '#1e40af' : '#1a1f36',
+                  backgroundColor: isSelected ? '#fff5f5' : 'transparent',
+                  color: isSelected ? '#991b1b' : '#1a1f36',
                   cursor: 'pointer',
                   transition: 'background-color 0.15s, color 0.15s',
                   userSelect: 'none',
@@ -493,14 +493,14 @@ function CustomSelect({ value, onChange, options, placeholder = "Select an optio
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: isSelected ? 600 : 500 }}>
                   {opt.icon && (
-                    <span style={{ display: 'inline-flex', flexShrink: 0, color: opt.iconColor || (isSelected ? '#1d4ed8' : '#6b7280') }}>
+                    <span style={{ display: 'inline-flex', flexShrink: 0, color: opt.iconColor || (isSelected ? '#d91414' : '#6b7280') }}>
                       {opt.icon}
                     </span>
                   )}
                   <span>{opt.label}</span>
                 </div>
                 {opt.subtitle && (
-                  <div style={{ fontSize: '11px', color: isSelected ? '#3b82f6' : '#64748b', marginLeft: opt.icon ? '22px' : '0' }}>
+                  <div style={{ fontSize: '11px', color: isSelected ? '#ff4d4d' : '#64748b', marginLeft: opt.icon ? '22px' : '0' }}>
                     {opt.subtitle}
                   </div>
                 )}
@@ -910,7 +910,7 @@ function OfferModal({ editOffer, products, onClose, onSaved }) {
               disabled={submitting}
               style={{
                 flex: 1,
-                background: submitting ? '#94a3b8' : 'linear-gradient(135deg, #2563eb, #4f46e5)',
+                background: submitting ? '#94a3b8' : 'linear-gradient(135deg, #ff1717, #4f46e5)',
                 color: '#fff',
                 border: 'none',
                 padding: '12px',
@@ -918,7 +918,7 @@ function OfferModal({ editOffer, products, onClose, onSaved }) {
                 fontWeight: 700,
                 fontSize: 14,
                 cursor: submitting ? 'not-allowed' : 'pointer',
-                boxShadow: submitting ? 'none' : '0 4px 14px rgba(37,99,235,0.35)',
+                boxShadow: submitting ? 'none' : '0 4px 14px rgba(255, 23, 23,0.35)',
                 transition: 'all 0.2s',
               }}
             >
@@ -1067,9 +1067,9 @@ export default function AdminUpsells() {
   const pillBtnStyle = (active) => ({
     padding: '6px 14px',
     borderRadius: 20,
-    border: `1.5px solid ${active ? '#2563eb' : '#e2e8f0'}`,
-    background: active ? '#eff6ff' : '#fff',
-    color: active ? '#2563eb' : '#697386',
+    border: `1.5px solid ${active ? '#ff1717' : '#e2e8f0'}`,
+    background: active ? '#fff5f5' : '#fff',
+    color: active ? '#ff1717' : '#697386',
     fontSize: 12.5,
     fontWeight: active ? 600 : 400,
     cursor: 'pointer',
@@ -1093,7 +1093,7 @@ export default function AdminUpsells() {
         <button
           onClick={openCreate}
           style={{
-            background: 'linear-gradient(135deg, #2563eb, #4f46e5)',
+            background: 'linear-gradient(135deg, #ff1717, #4f46e5)',
             color: '#fff',
             border: 'none',
             padding: '11px 20px',
@@ -1101,7 +1101,7 @@ export default function AdminUpsells() {
             fontWeight: 700,
             fontSize: 14,
             cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
+            boxShadow: '0 4px 14px rgba(255, 23, 23,0.3)',
             display: 'flex',
             alignItems: 'center',
             gap: 8,
@@ -1116,7 +1116,7 @@ export default function AdminUpsells() {
       <div style={{ display: 'flex', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
         <StatCard icon="🎁" label="Total Offers"         value={totalOffers}                                              accent="#7c3aed" />
         <StatCard icon="✅" label="Active Offers"        value={activeOffers}    sub={`${totalOffers - activeOffers} paused`} accent="#059669" />
-        <StatCard icon="👁️" label="Total Impressions"    value={totalImpressions.toLocaleString()}                        accent="#2563eb" />
+        <StatCard icon="👁️" label="Total Impressions"    value={totalImpressions.toLocaleString()}                        accent="#ff1717" />
         <StatCard icon="🎯" label="Conversions"          value={totalConversions.toLocaleString()} sub={`${overallConvRate}% conv. rate`} accent="#d97706" />
         <StatCard icon="💸" label="Revenue from Upsells" value={fmt(totalRevenue)}                                        accent="#dc2626" />
       </div>
@@ -1171,7 +1171,7 @@ export default function AdminUpsells() {
             <button
               onClick={openCreate}
               style={{
-                background: 'linear-gradient(135deg, #2563eb, #4f46e5)',
+                background: 'linear-gradient(135deg, #ff1717, #4f46e5)',
                 color: '#fff', border: 'none', padding: '12px 24px',
                 borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: 'pointer',
               }}
@@ -1277,7 +1277,7 @@ export default function AdminUpsells() {
                                 {offer.offered_product.title}
                               </div>
                               <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, marginTop: 2 }}>
-                                <span style={{ fontSize: 13, fontWeight: 700, color: '#2563eb' }}>
+                                <span style={{ fontSize: 13, fontWeight: 700, color: '#ff1717' }}>
                                   {fmt(discountedKobo)}
                                 </span>
                                 {offer.discount_type !== 'none' && offer.discount_value && (
@@ -1379,8 +1379,8 @@ export default function AdminUpsells() {
                                 <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z" />
                               </svg>
                             } 
-                            color="#2563eb" 
-                            bg="#eff6ff" 
+                            color="#ff1717" 
+                            bg="#fff5f5" 
                             onClick={() => openEdit(offer)} 
                           />
                           <ActionBtn 

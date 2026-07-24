@@ -541,7 +541,7 @@ export default function LMSCourse() {
       fontFamily: "var(--font)", zIndex: 9999
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-        <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, rgba(37,99,235,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(255, 23, 23,0.25) 0%, rgba(255, 23, 23,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
         <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(255,23,23,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
         <div className="premium-spinner" />
         <p style={{ color: '#94a3b8', marginTop: 16, fontSize: '14px', letterSpacing: '0.5px', position: 'relative', zIndex: 1 }}>Loading learning center...</p>
@@ -551,14 +551,14 @@ export default function LMSCourse() {
           width: 32px;
           height: 32px;
           border: 3px solid rgba(255, 255, 255, 0.05);
-          border-top-color: #2563eb;
+          border-top-color: #ff1717;
           border-radius: 50%;
           animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes logo-pulse {
-          0%, 100% { transform: scale(0.97); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(37,99,235,0.1)); }
-          50% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 16px rgba(37,99,235,0.45)); }
+          0%, 100% { transform: scale(0.97); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(255, 23, 23,0.1)); }
+          50% { transform: scale(1.03); opacity: 1; filter: drop-shadow(0 0 16px rgba(255, 23, 23,0.45)); }
         }
         @keyframes ambient-glow {
           0%, 100% { opacity: 0.6; }
@@ -574,8 +574,8 @@ export default function LMSCourse() {
 
   if (!currentModule || !lesson) return (
     <div className="lms-not-found" style={{ textAlign: 'center', padding: '100px', background: '#f8fafc', height: '100vh', fontFamily: 'var(--font)' }}>
-      <h2 style={{ fontFamily: 'var(--font-heading)', color: '#0b1329' }}>Lesson not found or course is empty.</h2>
-      <Link to="/dashboard" style={{ color: '#2563eb', fontWeight: 'bold' }}>Back to Dashboard</Link>
+      <h2 style={{ fontFamily: 'var(--font-heading)', color: '#121212' }}>Lesson not found or course is empty.</h2>
+      <Link to="/dashboard" style={{ color: '#ff1717', fontWeight: 'bold' }}>Back to Dashboard</Link>
     </div>
   )
 
@@ -594,7 +594,7 @@ export default function LMSCourse() {
       {/* Impersonation Banner */}
       {impersonatedUser && (
         <div style={{ 
-          background: 'linear-gradient(90deg, #2563eb 0%, #0b1329 100%)', 
+          background: 'linear-gradient(90deg, #ff1717 0%, #121212 100%)', 
           color: '#fff', 
           padding: '12px 24px', 
           display: 'flex', 
@@ -618,7 +618,7 @@ export default function LMSCourse() {
             }}
             style={{ 
               background: '#fff', 
-              color: '#0b1329', 
+              color: '#121212', 
               border: 'none', 
               padding: '6px 12px', 
               fontWeight: 700, 
@@ -633,7 +633,7 @@ export default function LMSCourse() {
       )}
 
       {/* Top Navbar */}
-      <nav className="lms-nav" style={{ display: theaterMode ? 'none' : 'flex', background: '#0b1329', borderBottom: '1px solid #1e293b', height: 72, padding: '0 24px', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, position: 'relative' }}>
+      <nav className="lms-nav" style={{ display: theaterMode ? 'none' : 'flex', background: '#121212', borderBottom: '1px solid #1e293b', height: 72, padding: '0 24px', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, position: 'relative' }}>
         <div className="lms-nav-left" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <button 
             type="button" 
@@ -688,7 +688,7 @@ export default function LMSCourse() {
         {/* Swapped Sidebar to the LEFT side of screen, collapsible on desktop and mobile */}
         {!theaterMode && (
           <div className={`lms-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-            <div className="lms-sidebar-header" style={{ flexDirection: 'column', alignItems: 'stretch', padding: '16px 20px 0', borderBottom: '1px solid #1e293b', background: '#0b1329' }}>
+            <div className="lms-sidebar-header" style={{ flexDirection: 'column', alignItems: 'stretch', padding: '16px 20px 0', borderBottom: '1px solid #1e293b', background: '#121212' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-heading)' }}>Course Index</h3>
                 <button className="lms-close-sidebar" onClick={() => setSidebarOpen(false)} style={{ display: 'flex', color: '#94a3b8', border: 'none', background: 'none', cursor: 'pointer', fontSize: 18, padding: 0 }}>×</button>
@@ -699,8 +699,8 @@ export default function LMSCourse() {
                   onClick={() => setRightSidebarTab('lessons')} 
                   style={{
                     flex: 1, padding: '12px', border: 'none', background: 'none', fontSize: 13, fontWeight: 700,
-                    color: rightSidebarTab === 'lessons' ? '#3b82f6' : '#94a3b8',
-                    borderBottom: rightSidebarTab === 'lessons' ? '2px solid #2563eb' : '2px solid transparent',
+                    color: rightSidebarTab === 'lessons' ? '#ff4d4d' : '#94a3b8',
+                    borderBottom: rightSidebarTab === 'lessons' ? '2px solid #ff1717' : '2px solid transparent',
                     cursor: 'pointer',
                     fontFamily: 'var(--font)'
                   }}
@@ -712,8 +712,8 @@ export default function LMSCourse() {
                   onClick={() => setRightSidebarTab('qna')} 
                   style={{
                     flex: 1, padding: '12px', border: 'none', background: 'none', fontSize: 13, fontWeight: 700,
-                    color: rightSidebarTab === 'qna' ? '#3b82f6' : '#94a3b8',
-                    borderBottom: rightSidebarTab === 'qna' ? '2px solid #2563eb' : '2px solid transparent',
+                    color: rightSidebarTab === 'qna' ? '#ff4d4d' : '#94a3b8',
+                    borderBottom: rightSidebarTab === 'qna' ? '2px solid #ff1717' : '2px solid transparent',
                     cursor: 'pointer',
                     fontFamily: 'var(--font)'
                   }}
@@ -724,7 +724,7 @@ export default function LMSCourse() {
             </div>
             
             {rightSidebarTab === 'lessons' ? (
-              <div className="lms-accordion-list" style={{ background: '#0b1329', padding: '16px 12px' }}>
+              <div className="lms-accordion-list" style={{ background: '#121212', padding: '16px 12px' }}>
                 {modules.map((mod, i) => {
                   const isExpanded = expandedModules[mod.id]
                   const completedInMod = mod.lessons.filter(l => savedProgress.includes(l.id)).length
@@ -733,10 +733,10 @@ export default function LMSCourse() {
                     <div key={mod.id} className="lms-accordion-section" style={{ background: '#fff', border: '1px solid #1e293b', borderRadius: '4px', marginBottom: 8, overflow: 'hidden' }}>
                       <button type="button" className="lms-accordion-header" onClick={() => toggleModule(mod.id)} style={{ background: '#f8fafc', padding: '14px 16px' }}>
                         <div className="lms-accordion-title">
-                          <h4 style={{ margin: '0 0 2px', fontSize: 13, fontWeight: 700, color: '#0b1329', fontFamily: 'var(--font-heading)' }}>Section {i + 1}: {mod.title}</h4>
+                          <h4 style={{ margin: '0 0 2px', fontSize: 13, fontWeight: 700, color: '#121212', fontFamily: 'var(--font-heading)' }}>Section {i + 1}: {mod.title}</h4>
                           <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>{completedInMod} / {mod.lessons.length} complete</span>
                         </div>
-                        <svg className={`chevron ${isExpanded ? 'up' : 'down'}`} viewBox="0 0 24 24" fill="none" stroke="#0b1329" strokeWidth="2" style={{ width: 14, height: 14 }}><path d="M6 9l6 6 6-6"/></svg>
+                        <svg className={`chevron ${isExpanded ? 'up' : 'down'}`} viewBox="0 0 24 24" fill="none" stroke="#121212" strokeWidth="2" style={{ width: 14, height: 14 }}><path d="M6 9l6 6 6-6"/></svg>
                       </button>
                       
                       {isExpanded && (
@@ -771,13 +771,13 @@ export default function LMSCourse() {
                               <Link key={les.id} to={`/course/${courseId}/${les.id}`} className={`lms-lesson-item ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none', borderBottom: '1px solid #f1f5f9', display: 'flex', gap: 12, padding: '12px 16px', alignItems: 'center' }}>
                                 <div className="lms-checkbox" onClick={(e) => toggleLessonCompletion(e, les.id)} style={{ width: 16, height: 16, cursor: 'pointer' }}>
                                   {isDone ? (
-                                    <svg viewBox="0 0 24 24" fill="#2563eb" stroke="#2563eb" style={{ width: 16, height: 16 }}><circle cx="12" cy="12" r="10"></circle><path stroke="#fff" strokeWidth="2" d="M8 12l3 3 5-5"></path></svg>
+                                    <svg viewBox="0 0 24 24" fill="#ff1717" stroke="#ff1717" style={{ width: 16, height: 16 }}><circle cx="12" cy="12" r="10"></circle><path stroke="#fff" strokeWidth="2" d="M8 12l3 3 5-5"></path></svg>
                                   ) : (
                                     <div className="empty-circle" style={{ width: 14, height: 14, border: '2px solid #cbd5e1', borderRadius: '50%' }}></div>
                                   )}
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                  <span className="lms-lesson-title" style={{ fontSize: 13, color: isActive ? '#1e3a8a' : '#334155', fontWeight: isActive ? 700 : 500, display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{j + 1}. {les.title}</span>
+                                  <span className="lms-lesson-title" style={{ fontSize: 13, color: isActive ? '#7f1d1d' : '#334155', fontWeight: isActive ? 700 : 500, display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{j + 1}. {les.title}</span>
                                   <span className="lms-lesson-time" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#64748b', marginTop: 2 }}>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 2 }}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                     <span>{les.duration || 'Video'}</span>
@@ -793,7 +793,7 @@ export default function LMSCourse() {
                 })}
               </div>
             ) : (
-              <div className="lms-sidebar-scroll" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', background: '#0b1329', padding: '16px 12px' }}>
+              <div className="lms-sidebar-scroll" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', background: '#121212', padding: '16px 12px' }}>
                 <style dangerouslySetInnerHTML={{__html: `
                   .lms-sidebar-scroll::-webkit-scrollbar { display: none; }
                   .lms-sidebar-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -809,7 +809,7 @@ export default function LMSCourse() {
                   <button 
                     type="submit"
                     disabled={submittingQuestion || !newQuestionText.trim()}
-                    style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', opacity: submittingQuestion ? 0.7 : 1, width: '100%' }}
+                    style={{ background: '#ff1717', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', opacity: submittingQuestion ? 0.7 : 1, width: '100%' }}
                   >
                     {submittingQuestion ? 'Submitting...' : 'Post Question'}
                   </button>
@@ -823,20 +823,20 @@ export default function LMSCourse() {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {questions.map(q => (
-                      <div key={q.id} style={{ background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4, padding: 12, color: '#0b1329' }}>
+                      <div key={q.id} style={{ background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4, padding: 12, color: '#121212' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: '#0b1329' }}>{q.profiles?.full_name || 'Student'}</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#121212' }}>{q.profiles?.full_name || 'Student'}</span>
                           <span style={{ fontSize: 9, color: '#64748b' }}>{new Date(q.created_at).toLocaleDateString()}</span>
                         </div>
-                        <p style={{ margin: '0 0 8px', fontSize: 12.5, color: '#0b1329', whiteSpace: 'pre-wrap' }}>{q.question}</p>
+                        <p style={{ margin: '0 0 8px', fontSize: 12.5, color: '#121212', whiteSpace: 'pre-wrap' }}>{q.question}</p>
 
                         {/* Answers List */}
                         {q.qna_answers && q.qna_answers.length > 0 && (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, borderLeft: '2px solid #2563eb', paddingLeft: 8, marginBottom: 8, marginLeft: 2 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, borderLeft: '2px solid #ff1717', paddingLeft: 8, marginBottom: 8, marginLeft: 2 }}>
                             {q.qna_answers.map(ans => (
                               <div key={ans.id} style={{ fontSize: 11.5 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                                  <strong style={{ color: '#0b1329' }}>{ans.profiles?.full_name || 'User'}</strong>
+                                  <strong style={{ color: '#121212' }}>{ans.profiles?.full_name || 'User'}</strong>
                                   <span style={{ fontSize: 8, color: '#64748b' }}>{new Date(ans.created_at).toLocaleDateString()}</span>
                                 </div>
                                 <p style={{ margin: 0, color: '#334155' }}>{ans.answer}</p>
@@ -858,7 +858,7 @@ export default function LMSCourse() {
                             <button 
                               type="submit"
                               disabled={submittingAnswer[q.id] || !(newAnswerText[q.id] || '').trim()}
-                              style={{ background: '#0b1329', color: '#fff', border: 'none', borderRadius: 4, padding: '5px 12px', fontSize: 10.5, fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s' }}
+                              style={{ background: '#121212', color: '#fff', border: 'none', borderRadius: 4, padding: '5px 12px', fontSize: 10.5, fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s' }}
                             >
                               Reply
                             </button>
@@ -931,9 +931,9 @@ export default function LMSCourse() {
                                           optionColor = '#f87171'
                                         }
                                       } else if (isSelected) {
-                                        optionBg = 'rgba(37, 99, 235, 0.15)'
-                                        optionBorder = '#2563eb'
-                                        optionColor = '#60a5fa'
+                                        optionBg = 'rgba(255, 23, 23, 0.15)'
+                                        optionBorder = '#ff1717'
+                                        optionColor = '#ff6666'
                                       }
 
                                       return (
@@ -974,7 +974,7 @@ export default function LMSCourse() {
                                 onClick={handleSubmitQuiz}
                                 disabled={Object.keys(selectedOptions).length < quizQuestions.length}
                                 style={{
-                                  background: '#2563eb', color: '#fff', border: 'none', borderRadius: 4,
+                                  background: '#ff1717', color: '#fff', border: 'none', borderRadius: 4,
                                   padding: '12px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer',
                                   alignSelf: 'flex-start', marginTop: 8, transition: 'all 0.2s',
                                   opacity: Object.keys(selectedOptions).length < quizQuestions.length ? 0.5 : 1,
@@ -1050,7 +1050,7 @@ export default function LMSCourse() {
                 })()
               ) : (
                 <div className="lms-video-placeholder" style={{ fontFamily: 'var(--font)' }}>
-                  <div className="play-icon" style={{ width: 64, height: 64, background: '#2563eb', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 24, cursor: 'pointer' }}>▶</div>
+                  <div className="play-icon" style={{ width: 64, height: 64, background: '#ff1717', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 24, cursor: 'pointer' }}>▶</div>
                   <p style={{ fontWeight: 700 }}>{lesson.title}</p>
                   <span style={{ color: '#64748b', fontSize: 12 }}>(No video URL provided)</span>
                 </div>
@@ -1073,9 +1073,9 @@ export default function LMSCourse() {
                     justifyContent: 'space-between', 
                     gap: 16 
                   }}>
-                    <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: '#0b1329', fontFamily: 'var(--font-heading)', margin: 0 }}>{lesson.title}</h2>
+                    <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: '#121212', fontFamily: 'var(--font-heading)', margin: 0 }}>{lesson.title}</h2>
                     <div className="lms-lesson-controls" style={{ display: 'flex', gap: 8, width: isMobile ? '100%' : 'auto' }}>
-                      {prevLesson && <button onClick={(e) => handlePrevClick(e, prevLesson.id)} className="lms-btn" style={{ flex: isMobile ? 1 : 'none', background: '#f1f5f9', color: '#0b1329', border: '1px solid #d1d7dc', padding: '10px 16px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', textAlign: 'center' }}>Prev</button>}
+                      {prevLesson && <button onClick={(e) => handlePrevClick(e, prevLesson.id)} className="lms-btn" style={{ flex: isMobile ? 1 : 'none', background: '#f1f5f9', color: '#121212', border: '1px solid #d1d7dc', padding: '10px 16px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', textAlign: 'center' }}>Prev</button>}
                       {(() => {
                         const isCurrentDone = savedProgress.includes(lessonId);
                         if (!isCurrentDone && !isAdmin) {
@@ -1107,7 +1107,7 @@ export default function LMSCourse() {
                               className="lms-btn next-lesson-btn" 
                               style={{ 
                                 flex: isMobile ? 1 : 'none', 
-                                background: '#2563eb', 
+                                background: '#ff1717', 
                                 color: '#fff', 
                                 border: 'none', 
                                 padding: '10px 18px', 
@@ -1153,10 +1153,10 @@ export default function LMSCourse() {
                 <div className="lms-content-footer" style={{ maxWidth: 1000, margin: '0 auto', width: '100%', padding: '24px 24px 32px', fontFamily: 'var(--font)' }}>
                   <div className="lms-tabs" style={{ display: 'flex', gap: 24, borderBottom: '1px solid #cbd5e1', marginBottom: 24 }}>
                     {hasOverview && (
-                      <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')} style={{ paddingBottom: 10, fontSize: 14, fontWeight: 700, color: activeTab === 'overview' ? '#2563eb' : '#64748b', borderBottom: activeTab === 'overview' ? '3px solid #2563eb' : '3px solid transparent' }}>Overview</button>
+                      <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')} style={{ paddingBottom: 10, fontSize: 14, fontWeight: 700, color: activeTab === 'overview' ? '#ff1717' : '#64748b', borderBottom: activeTab === 'overview' ? '3px solid #ff1717' : '3px solid transparent' }}>Overview</button>
                     )}
                     {hasResources && (
-                      <button className={activeTab === 'resources' ? 'active' : ''} onClick={() => setActiveTab('resources')} style={{ paddingBottom: 10, fontSize: 14, fontWeight: 700, color: activeTab === 'resources' ? '#2563eb' : '#64748b', borderBottom: activeTab === 'resources' ? '3px solid #2563eb' : '3px solid transparent' }}>Resources</button>
+                      <button className={activeTab === 'resources' ? 'active' : ''} onClick={() => setActiveTab('resources')} style={{ paddingBottom: 10, fontSize: 14, fontWeight: 700, color: activeTab === 'resources' ? '#ff1717' : '#64748b', borderBottom: activeTab === 'resources' ? '3px solid #ff1717' : '3px solid transparent' }}>Resources</button>
                     )}
                   </div>
 
@@ -1168,12 +1168,12 @@ export default function LMSCourse() {
                       <div className="lms-resources" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         {lesson.resources.map((res, i) => (
                           <div key={i} className="lms-resource-item" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 16, border: '1px solid #cbd5e1', borderRadius: 4, background: '#fff', maxWidth: 600 }}>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" style={{ width: 24, height: 24 }}><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" style={{ width: 24, height: 24 }}><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
                             <div style={{ flex: 1 }}>
-                              <h4 style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: '#0b1329' }}>{res.title}</h4>
+                              <h4 style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: '#121212' }}>{res.title}</h4>
                               <span style={{ fontSize: 12, color: '#64748b' }}>{res.type || 'Resource'}</span>
                             </div>
-                            <a href={res.url} target="_blank" rel="noreferrer" style={{ background: '#0b1329', color: '#fff', textDecoration: 'none', padding: '6px 12px', borderRadius: 4, fontSize: 12, fontWeight: 700 }}>Download</a>
+                            <a href={res.url} target="_blank" rel="noreferrer" style={{ background: '#121212', color: '#fff', textDecoration: 'none', padding: '6px 12px', borderRadius: 4, fontSize: 12, fontWeight: 700 }}>Download</a>
                           </div>
                         ))}
                       </div>
@@ -1199,9 +1199,9 @@ export default function LMSCourse() {
                 fontFamily: 'var(--font)',
                 gap: 16
               }}>
-                <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: '#0b1329', fontFamily: 'var(--font-heading)', margin: 0 }}>{lesson.title}</h2>
+                <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: '#121212', fontFamily: 'var(--font-heading)', margin: 0 }}>{lesson.title}</h2>
                 <div className="lms-lesson-controls" style={{ display: 'flex', gap: 8, width: isMobile ? '100%' : 'auto' }}>
-                  {prevLesson && <button onClick={(e) => handlePrevClick(e, prevLesson.id)} className="lms-btn" style={{ flex: isMobile ? 1 : 'none', background: '#f1f5f9', color: '#0b1329', border: '1px solid #d1d7dc', padding: '10px 16px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', textAlign: 'center' }}>Prev</button>}
+                  {prevLesson && <button onClick={(e) => handlePrevClick(e, prevLesson.id)} className="lms-btn" style={{ flex: isMobile ? 1 : 'none', background: '#f1f5f9', color: '#121212', border: '1px solid #d1d7dc', padding: '10px 16px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', textAlign: 'center' }}>Prev</button>}
                   {(() => {
                     const isCurrentDone = savedProgress.includes(lessonId);
                     if (!isCurrentDone && !isAdmin) {
@@ -1233,7 +1233,7 @@ export default function LMSCourse() {
                           className="lms-btn next-lesson-btn" 
                           style={{ 
                             flex: isMobile ? 1 : 'none', 
-                            background: '#2563eb', 
+                            background: '#ff1717', 
                             color: '#fff', 
                             border: 'none', 
                             padding: '10px 18px', 
@@ -1281,8 +1281,8 @@ export default function LMSCourse() {
         <button 
           onClick={() => setSidebarOpen(true)}
           style={{
-            position: 'fixed', left: 24, bottom: 24, background: '#0b1329', color: '#fff',
-            border: '1px solid #1e3a8a', padding: '12px 24px', borderRadius: '50px',
+            position: 'fixed', left: 24, bottom: 24, background: '#121212', color: '#fff',
+            border: '1px solid #7f1d1d', padding: '12px 24px', borderRadius: '50px',
             fontWeight: 600, cursor: 'pointer', zIndex: 99, display: 'flex',
             alignItems: 'center', gap: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
             fontFamily: 'var(--font)'
@@ -1316,17 +1316,17 @@ export default function LMSCourse() {
               ×
             </button>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="1.5" style={{ marginBottom: 12, display: 'inline-block' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="1.5" style={{ marginBottom: 12, display: 'inline-block' }}>
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                 <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
               </svg>
-              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#0b1329', margin: '12px 0 8px', fontFamily: 'var(--font-heading)' }}>Congratulations!</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#121212', margin: '12px 0 8px', fontFamily: 'var(--font-heading)' }}>Congratulations!</h2>
               <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>You have completed 100% of this course. Share your feedback with other students!</p>
             </div>
 
             <form onSubmit={handleSubmitReview}>
               <div style={{ marginBottom: 20, textAlign: 'center' }}>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0b1329', marginBottom: 8 }}>YOUR RATING</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#121212', marginBottom: 8 }}>YOUR RATING</label>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -1342,13 +1342,13 @@ export default function LMSCourse() {
               </div>
 
               <div style={{ marginBottom: 24 }}>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#0b1329', marginBottom: 8 }}>YOUR REVIEW</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#121212', marginBottom: 8 }}>YOUR REVIEW</label>
                 <textarea
                   value={reviewText}
                   onChange={e => handleReviewTextChange(e.target.value)}
                   placeholder="What did you think of the course? Any feedback helps us improve."
                   required
-                  style={{ width: '100%', height: 96, padding: 12, borderRadius: 4, border: '1px solid #cbd5e1', outline: 'none', resize: 'none', fontSize: 13.5, fontFamily: 'inherit', color: '#0b1329' }}
+                  style={{ width: '100%', height: 96, padding: 12, borderRadius: 4, border: '1px solid #cbd5e1', outline: 'none', resize: 'none', fontSize: 13.5, fontFamily: 'inherit', color: '#121212' }}
                 />
               </div>
 
@@ -1356,9 +1356,9 @@ export default function LMSCourse() {
                 type="submit"
                 disabled={submittingReview}
                 style={{
-                  width: '100%', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 4,
+                  width: '100%', background: '#ff1717', color: '#fff', border: 'none', borderRadius: 4,
                   padding: '12px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer',
-                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                  boxShadow: '0 4px 6px -1px rgba(255, 23, 23, 0.2)'
                 }}
               >
                 {submittingReview ? 'Submitting...' : 'Submit Feedback & Claim Certificate'}
@@ -1380,7 +1380,7 @@ export default function LMSCourse() {
         .lms-sidebar {
           width: 350px;
           min-width: 350px;
-          background: #0b1329;
+          background: #121212;
           color: #fff;
           border-right: 1px solid #1e293b;
           display: flex;
@@ -1430,7 +1430,7 @@ export default function LMSCourse() {
           margin: 0 0 2px;
           font-size: 13.5px;
           font-weight: 700;
-          color: #0b1329;
+          color: #121212;
           font-family: var(--font-heading) !important;
         }
         
@@ -1450,10 +1450,10 @@ export default function LMSCourse() {
         }
         
         .lms-lesson-item.active {
-          background: #eff6ff;
-          border-left: 4px solid #2563eb;
+          background: #fff5f5;
+          border-left: 4px solid #ff1717;
           padding-left: 14px;
-          color: #1e3a8a;
+          color: #7f1d1d;
         }
         
         .lms-checkbox {
@@ -1463,8 +1463,8 @@ export default function LMSCourse() {
         }
         
         .lms-lesson-item:hover .empty-circle {
-          border-color: #2563eb !important;
-          background: rgba(37, 99, 235, 0.05);
+          border-color: #ff1717 !important;
+          background: rgba(255, 23, 23, 0.05);
         }
         
         .lms-lesson-title {

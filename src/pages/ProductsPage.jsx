@@ -139,7 +139,6 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="lib-hero">
         <div className="lib-hero-content">
-          <p className="lib-overline">Donzen Accounting Catalog</p>
           <h1 className="lib-title">Courses, Programs &<br />Accounting Resources</h1>
           <p className="lib-subtitle">
             Hands-on practical accounting, QuickBooks, Excel, and bookkeeping courses designed for SMEs, entrepreneurs, and finance professionals.
