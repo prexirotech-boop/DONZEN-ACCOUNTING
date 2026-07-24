@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { useCurrency } from '../context/CurrencyContext'
 
 // ─── HIGH-GRADE SVG ICONS (NO EMOJIS) ───────────────────────────────────────
 const Icons = {
@@ -66,62 +68,15 @@ const Icons = {
   )
 }
 
-// 8 Verified Nigerian Client Testimonials
-const TESTIMONIALS = [
-  {
-    initials: 'AO',
-    name: 'Adewale O.',
-    role: 'Founder, Retail Logistics Enterprise · Lagos',
-    quote: 'Before working with Donzen Accounting, managing inventory across 3 retail outlets in Lagos was a nightmare. Their team set up QuickBooks and now handles our monthly reconciliations smoothly.'
-  },
-  {
-    initials: 'CN',
-    name: 'Chidinma N.',
-    role: 'Managing Director, Tech Services Ltd · Abuja',
-    quote: 'Donzen handled our FIRS tax filing and monthly PAYE for our staff with total precision. They saved us from heavy compliance fines and clarified our financial position.'
-  },
-  {
-    initials: 'SO',
-    name: 'Samuel O.',
-    role: 'CEO, E-Commerce Brand · Lekki, Lagos',
-    quote: 'The Profit and Loss DIY template from Donzen is super clear! Even as a non-accountant, I can now track daily petty cash and know my exact monthly profits.'
-  },
-  {
-    initials: 'FA',
-    name: 'Funke A.',
-    role: 'Managing Director, Hospitality Hub · Ikeja, Lagos',
-    quote: 'Donzen Accounting Hub reconciled 14 months of backlogged transactions in less than two weeks. Exceptional corporate service and dedicated responsiveness!'
-  },
-  {
-    initials: 'IK',
-    name: 'Ibrahim K.',
-    role: 'Founder, AgriTech Processing Co. · Kano',
-    quote: 'Their CAC incorporation and monthly VAT remittance package is top notch. We got our Tax Clearance Certificate without stress or unnecessary delays.'
-  },
-  {
-    initials: 'BE',
-    name: 'Blessing E.',
-    role: 'Head of Operations, Logistics Firm · Port Harcourt',
-    quote: 'Having a dedicated account manager from Donzen who reviews our P&L statement every month gave us total confidence to pitch for bank financing.'
-  },
-  {
-    initials: 'VM',
-    name: 'Victor M.',
-    role: 'CEO, Construction Solutions Ltd · Abuja',
-    quote: 'QuickBooks setup and staff corporate accounting training provided by Donzen transformed our internal controls completely. Highly recommended!'
-  },
-  {
-    initials: 'NU',
-    name: 'Ngozi U.',
-    role: 'Founder, Fashion & Lifestyle Brand · Victoria Island, Lagos',
-    quote: 'Professional, trustworthy, and cost-effective. Donzen Accounting Hub gives SME owners true peace of mind regarding financial recordkeeping.'
-  }
-]
-
 export default function HomePage() {
+  const { formatPrice } = useCurrency()
+  
   // State for Interactive Business Calculator / Service Selector
   const [businessType, setBusinessType] = useState('sme')
   const [txVolume, setTxVolume] = useState('medium')
+  
+  // Real Database Products State
+  const [products, setProducts] = useState([])
 
   // State for FAQ Accordion
   const [openFaq, setOpenFaq] = useState(null)
@@ -149,19 +104,33 @@ export default function HomePage() {
     return () => hiddenElements.forEach((el) => observer.unobserve(el))
   }, [])
 
-  // Dynamic recommendation calculation
+  // Fetch real product prices from DB
+  useEffect(() => {
+    const loadProducts = async () => {
+      const { data } = await supabase.from('products').select('slug, price')
+      if (data) setProducts(data)
+    }
+    loadProducts()
+  }, [])
+
+  const getProductPrice = (slug, fallback) => {
+    const prod = products.find(p => p.slug === slug)
+    return prod ? formatPrice(prod.price) : fallback
+  }
+
+  // Dynamic recommendation calculation using Real Data
   const getRecommendation = () => {
     if (businessType === 'micro' || txVolume === 'low') {
       return {
         title: 'Donzen DIY Remote Bookkeeping',
-        price: '₦80,000',
+        price: getProductPrice('donzen-diy-remote', '₦80,000'),
         subtext: 'Ideal for small businesses processing up to 350 transactions monthly.',
         link: '/resources'
       }
     } else if (businessType === 'sme' || txVolume === 'medium') {
       return {
         title: 'Donzen Done-For-You Accounting',
-        price: '₦120,000',
+        price: getProductPrice('donzen-done-for-you', '₦120,000'),
         subtext: 'Full-service bookkeeping, payroll, tax computation & monthly advisory.',
         link: '/resources'
       }
@@ -588,35 +557,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 6. AUTO-SCROLLING HORIZONTAL MARQUEE TESTIMONIALS (SLOWED DOWN) ─── */}
-      <section className="testimonials-section">
-        <div className="section-header scroll-reveal">
-          <span className="section-pretitle">CLIENT SUCCESS STORIES</span>
-          <h2 className="section-title">Trusted By Entrepreneurs & Business Leaders</h2>
-          <p className="section-subtitle">Hover over any testimonial card to pause scrolling and read client experiences.</p>
-        </div>
-
-        <div className="marquee-wrapper">
-          <div className="marquee-track">
-            {/* Duplicated list for infinite seamless marquee loop */}
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, idx) => (
-              <div key={idx} className="testimonial-card">
-                <div className="stars-row">
-                  <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
-                </div>
-                <p className="testimonial-quote">"{t.quote}"</p>
-                <div className="client-info">
-                  <div className="client-avatar">{t.initials}</div>
-                  <div>
-                    <div className="client-name">{t.name}</div>
-                    <div className="client-role">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Testimonials removed to strictly use real database data */}
 
       {/* ─── 7. FREQUENTLY ASKED QUESTIONS (SEO ACCORDION) ───────────── */}
       <section className="faq-section">
