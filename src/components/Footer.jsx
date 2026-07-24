@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Footer() {
   const location = useLocation()
-  const [subscribed, setSubscribed] = useState(false)
-  const [email, setEmail] = useState('')
 
   const hideFooterOn = [
     '/dashboard',
@@ -20,15 +18,6 @@ export default function Footer() {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   const year = new Date().getFullYear()
-
-  const handleSubscribe = (e) => {
-    e.preventDefault()
-    if (email.trim()) {
-      setSubscribed(true)
-      setEmail('')
-      setTimeout(() => setSubscribed(false), 5000)
-    }
-  }
 
   return (
     <footer style={{
@@ -63,7 +52,7 @@ export default function Footer() {
         {/* Footer Navigation & Brand Columns */}
         <div className="footer-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(280px, 1.8fr) 1fr 1fr 1.6fr',
+          gridTemplateColumns: 'minmax(280px, 1.8fr) 1fr 1fr 1.4fr',
           gap: '48px 36px'
         }}>
           
@@ -103,7 +92,7 @@ export default function Footer() {
               A bookkeeping firm and community dedicated to fostering the right skills, principles, and commitments for SME and corporate financial advancement. <strong>We Are Bookkeeping For Africa.</strong>
             </p>
 
-            {/* Social Icons */}
+            {/* Social SVG Icons (No Emojis) */}
             <div style={{ display: 'flex', gap: 12, marginTop: 4 }}>
               {[
                 { 
@@ -164,6 +153,7 @@ export default function Footer() {
                 { label: 'Home', path: '/' },
                 { label: 'About Us', path: '/about' },
                 { label: 'Services', path: '/services' },
+                { label: 'Products & Templates', path: '/products' },
                 { label: 'Resources & Pricing', path: '/resources' },
                 { label: 'FAQs', path: '/faq' },
                 { label: 'Contact Us', path: '/contact' }
@@ -184,7 +174,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 3: Direct Bank Details & Legal */}
+          {/* Column 3: Legal & Corporate Policies (Clean, No Bank Box) */}
           <div>
             <h4 style={{
               fontSize: '12px',
@@ -193,47 +183,22 @@ export default function Footer() {
               textTransform: 'uppercase',
               letterSpacing: '2px',
               marginBottom: 20
-            }}>Direct Payment</h4>
-            
-            <div style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,23,23,0.2)',
-              borderRadius: 10,
-              padding: 14,
-              fontSize: '13px',
-              color: '#e2e8f0',
-              lineHeight: 1.6,
-              marginBottom: 20
-            }}>
-              <div style={{ fontWeight: 700, color: '#ff1717', marginBottom: 4 }}>Zenith Bank Transfer</div>
-              <div>Account Name: <strong>Donzen Accounting Hub</strong></div>
-              <div>Account No: <strong style={{ color: '#fff', fontSize: '14px', letterSpacing: '1px' }}>1211575347</strong></div>
-              <div>Bank: <strong>Zenith Bank</strong></div>
-            </div>
-
-            <h4 style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'rgba(255,255,255,0.4)',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              marginBottom: 10
-            }}>Legal Policies</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            }}>Legal & Policies</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
                 { label: 'Terms of Service', path: '/terms' },
                 { label: 'Privacy Policy', path: '/privacy' },
                 { label: 'Refund Policy', path: '/refund' }
               ].map(({ label, path }) => (
                 <Link key={label} to={path} onClick={scrollToTop} className="footer-nav-link"
-                  style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', textDecoration: 'none' }}>
+                  style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', textDecoration: 'none' }}>
                   {label}
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* Column 4: Contact & Google Map Embed */}
+          {/* Column 4: Contact Us (Clean SVG Icons, No Map Widget) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <h4 style={{
               fontSize: '12px',
@@ -244,40 +209,31 @@ export default function Footer() {
               marginBottom: 4
             }}>Contact Us</h4>
             
-            <div style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.85)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                <span style={{ color: '#ff1717', flexShrink: 0 }}>📍</span>
+            <div style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.85)', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
                 <span>Ikota Shopping Complex, Eti-Osa, Lekki 101001, Lagos, Nigeria</span>
               </div>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <span style={{ color: '#ff1717', flexShrink: 0 }}>✉️</span>
-                <a href="mailto:info@donzenaccountinghub.com" style={{ color: '#fff', textDecoration: 'underline' }}>info@donzenaccountinghub.com</a>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <a href="mailto:info@donzenaccountinghub.com" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}>
+                  info@donzenaccountinghub.com
+                </a>
               </div>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <span style={{ color: '#ff1717', flexShrink: 0 }}>📞</span>
-                <a href="tel:+2347039999842" style={{ color: '#fff', fontWeight: 600 }}>+234 703 9999 842</a>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <a href="tel:+2347039999842" style={{ color: '#fff', fontWeight: 600, textDecoration: 'none' }}>
+                  +234 703 9999 842
+                </a>
               </div>
-            </div>
-
-            {/* Google Map Embed for Ikota Shopping Complex Lekki */}
-            <div style={{
-              width: '100%',
-              height: '140px',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              border: '1px solid rgba(255,23,23,0.3)',
-              marginTop: 6
-            }}>
-              <iframe
-                title="Donzen Accounting Hub Google Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.673890288825!2d3.5590000000000006!3d6.435000000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf705c7428f65%3A0xc3412cb7f784e1b8!2sIkota%20Shopping%20Complex%2C%20Lekki!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
             </div>
 
           </div>
@@ -304,9 +260,9 @@ export default function Footer() {
             &copy; {year} <strong style={{ color: '#fff', fontWeight: 600 }}>Donzen Accounting Hub</strong>. All rights reserved.
           </p>
           <div style={{ display: 'flex', gap: 20 }}>
-            <Link to="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Privacy Policy</Link>
-            <Link to="/terms" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Terms of Service</Link>
-            <Link to="/contact" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>Contact</Link>
+            <Link to="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Privacy Policy</Link>
+            <Link to="/terms" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Terms of Service</Link>
+            <Link to="/contact" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Contact</Link>
           </div>
         </div>
       </div>

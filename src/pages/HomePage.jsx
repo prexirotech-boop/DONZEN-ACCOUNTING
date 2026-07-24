@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 // ─── HIGH-GRADE SVG ICONS (NO EMOJIS) ───────────────────────────────────────
@@ -6,6 +6,12 @@ const Icons = {
   Check: () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+  CheckCircle: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
     </svg>
   ),
   ArrowRight: () => (
@@ -124,6 +130,25 @@ export default function HomePage() {
     setOpenFaq(openFaq === index ? null : index)
   }
 
+  // Smooth Scroll Reveal Animation Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('scroll-reveal-visible')
+          }
+        })
+      },
+      { threshold: 0.12 }
+    )
+
+    const hiddenElements = document.querySelectorAll('.scroll-reveal')
+    hiddenElements.forEach((el) => observer.observe(el))
+
+    return () => hiddenElements.forEach((el) => observer.unobserve(el))
+  }, [])
+
   // Dynamic recommendation calculation
   const getRecommendation = () => {
     if (businessType === 'micro' || txVolume === 'low') {
@@ -164,7 +189,7 @@ export default function HomePage() {
         <div className="hero-container">
           
           {/* Left Text Column */}
-          <div className="hero-text-col">
+          <div className="hero-text-col scroll-reveal">
             <h1 className="hero-headline">
               Executive Bookkeeping, Accounting & Tax Compliance <span className="highlight-text">For Growing Businesses</span>
             </h1>
@@ -199,7 +224,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Quick Stats Bar — Mobile Grid Optimized */}
+            {/* Quick Stats Bar */}
             <div className="hero-stats-row">
               <div className="stat-card">
                 <span className="stat-number">3,500+</span>
@@ -218,8 +243,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero Visual Column — Big Full-Height Executive Box */}
-          <div className="hero-visual-col">
+          {/* Hero Visual Column */}
+          <div className="hero-visual-col scroll-reveal">
             <div className="image-frame-hero">
               <img 
                 src="/hero-corporate.jpg" 
@@ -248,8 +273,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 2. TRUST / CORPORATE COMPLIANCE BAR (NO EMOJIS) ───────────── */}
-      <section className="trust-bar-section">
+      {/* ─── 2. TRUST / CORPORATE COMPLIANCE BAR ───────────────────────── */}
+      <section className="trust-bar-section scroll-reveal">
         <div className="trust-container">
           <span className="trust-label">TRUSTED BOOKKEEPING & ACCOUNTING PARTNER FOR NIGERIAN BUSINESSES</span>
           <div className="trust-badges-row">
@@ -273,11 +298,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION (BALANCED 6 CARDS) ───── */}
+      {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION (6 CARDS) ──────────────── */}
       <section className="services-section">
         <div className="services-pattern-bg" />
         
-        <div className="section-header">
+        <div className="section-header scroll-reveal">
           <span className="section-pretitle">OUR SERVICE OFFERINGS</span>
           <h2 className="section-title">Comprehensive Accounting Solutions Tailored To Your Growth</h2>
           <p className="section-subtitle">
@@ -285,11 +310,10 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Exactly 6 Service Cards — Perfectly Fills Desktop Grid (2 Rows x 3 Columns) */}
         <div className="services-grid">
           
           {/* Card 01 */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">01</div>
               <span className="service-tag">Monthly Retainer</span>
@@ -310,7 +334,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 02 */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">02</div>
               <span className="service-tag">Tax & Legal</span>
@@ -331,7 +355,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 03 */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">03</div>
               <span className="service-tag">Software Setup</span>
@@ -352,7 +376,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 04 */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">04</div>
               <span className="service-tag">DIY Templates</span>
@@ -373,7 +397,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 05 */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">05</div>
               <span className="service-tag">Audit & Statements</span>
@@ -394,7 +418,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 06 — Donzen Academy Bootcamp */}
-          <div className="service-card">
+          <div className="service-card scroll-reveal">
             <div className="service-card-header">
               <div className="service-num">06</div>
               <span className="service-tag highlight">Academy & Training</span>
@@ -418,7 +442,7 @@ export default function HomePage() {
       {/* ─── 4. EXECUTIVE WHY CHOOSE DONZEN SECTION ───────────────────── */}
       <section className="why-section">
         <div className="why-container">
-          <div className="why-img-col">
+          <div className="why-img-col scroll-reveal">
             <img 
               src="/advisory-team.jpg" 
               alt="Donzen Accounting Advisory Team Consultation" 
@@ -430,7 +454,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="why-text-col">
+          <div className="why-text-col scroll-reveal">
             <span className="section-pretitle">THE DONZEN ADVANTAGE</span>
             <h2 className="why-heading">Why Leading Businesses Choose Donzen Accounting Hub</h2>
             <p className="why-lead-para">
@@ -466,9 +490,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 5. INTERACTIVE PLAN SELECTOR (REDESIGNED PIXEL PERFECT) ──── */}
+      {/* ─── 5. INTERACTIVE PLAN SELECTOR (REDESIGNED ULTRA-CLEAN UI) ──── */}
       <section className="estimator-section">
-        <div className="estimator-container">
+        <div className="estimator-container scroll-reveal">
           <div className="estimator-header">
             <span className="section-pretitle text-center">INTERACTIVE SERVICE RECOMMENDATION</span>
             <h2>Find The Right Accounting Plan For Your Business</h2>
@@ -487,6 +511,7 @@ export default function HomePage() {
                     className={`choice-btn ${businessType === 'micro' ? 'active' : ''}`}
                     onClick={() => setBusinessType('micro')}
                   >
+                    <span className="choice-radio">{businessType === 'micro' && <Icons.CheckCircle />}</span>
                     <span>Sole Proprietor / Freelancer</span>
                   </button>
                   <button 
@@ -494,6 +519,7 @@ export default function HomePage() {
                     className={`choice-btn ${businessType === 'sme' ? 'active' : ''}`}
                     onClick={() => setBusinessType('sme')}
                   >
+                    <span className="choice-radio">{businessType === 'sme' && <Icons.CheckCircle />}</span>
                     <span>Growing SME / Startup</span>
                   </button>
                   <button 
@@ -501,6 +527,7 @@ export default function HomePage() {
                     className={`choice-btn ${businessType === 'corporate' ? 'active' : ''}`}
                     onClick={() => setBusinessType('corporate')}
                   >
+                    <span className="choice-radio">{businessType === 'corporate' && <Icons.CheckCircle />}</span>
                     <span>Limited Liability Company / NGO</span>
                   </button>
                 </div>
@@ -508,13 +535,14 @@ export default function HomePage() {
 
               {/* Control 2 */}
               <div className="control-group">
-                <label className="control-label">2. Monthly Transaction Volume</label>
+                <label className="control-label">2. Monthly Transaction Scale</label>
                 <div className="button-group">
                   <button 
                     type="button"
                     className={`choice-btn ${txVolume === 'low' ? 'active' : ''}`}
                     onClick={() => setTxVolume('low')}
                   >
+                    <span className="choice-radio">{txVolume === 'low' && <Icons.CheckCircle />}</span>
                     <span>Up to 150 Transactions</span>
                   </button>
                   <button 
@@ -522,6 +550,7 @@ export default function HomePage() {
                     className={`choice-btn ${txVolume === 'medium' ? 'active' : ''}`}
                     onClick={() => setTxVolume('medium')}
                   >
+                    <span className="choice-radio">{txVolume === 'medium' && <Icons.CheckCircle />}</span>
                     <span>150 – 1,000 Transactions</span>
                   </button>
                   <button 
@@ -529,6 +558,7 @@ export default function HomePage() {
                     className={`choice-btn ${txVolume === 'high' ? 'active' : ''}`}
                     onClick={() => setTxVolume('high')}
                   >
+                    <span className="choice-radio">{txVolume === 'high' && <Icons.CheckCircle />}</span>
                     <span>1,000+ Transactions</span>
                   </button>
                 </div>
@@ -536,12 +566,19 @@ export default function HomePage() {
 
             </div>
 
-            {/* Recommendation Result Box */}
+            {/* Recommendation Result Box (Fixed Mobile Layout) */}
             <div className="estimator-result">
               <div className="result-header">RECOMMENDED SOLUTION</div>
               <h3 className="result-title">{rec.title}</h3>
-              <div className="result-price">{rec.price} <span className="period-text">/ month</span></div>
+              
+              {/* Price Line Flex Container — Prevents Overlap */}
+              <div className="result-price-row">
+                <span className="result-price">{rec.price}</span>
+                {rec.price !== 'Custom Quote' && <span className="period-text">/ month</span>}
+              </div>
+
               <p className="result-subtext">{rec.subtext}</p>
+              
               <Link to={rec.link} className="btn-primary-cta full-width">
                 <span>Proceed With This Package</span>
                 <Icons.ArrowRight />
@@ -551,9 +588,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 6. AUTO-SCROLLING HORIZONTAL MARQUEE TESTIMONIALS (PAUSE ON HOVER) ─── */}
+      {/* ─── 6. AUTO-SCROLLING HORIZONTAL MARQUEE TESTIMONIALS (SLOWED DOWN) ─── */}
       <section className="testimonials-section">
-        <div className="section-header">
+        <div className="section-header scroll-reveal">
           <span className="section-pretitle">CLIENT SUCCESS STORIES</span>
           <h2 className="section-title">Trusted By Entrepreneurs & Business Leaders</h2>
           <p className="section-subtitle">Hover over any testimonial card to pause scrolling and read client experiences.</p>
@@ -583,7 +620,7 @@ export default function HomePage() {
 
       {/* ─── 7. FREQUENTLY ASKED QUESTIONS (SEO ACCORDION) ───────────── */}
       <section className="faq-section">
-        <div className="faq-container">
+        <div className="faq-container scroll-reveal">
           <div className="section-header text-center">
             <span className="section-pretitle">HAVE QUESTIONS?</span>
             <h2 className="section-title">Frequently Asked Questions</h2>
@@ -630,7 +667,7 @@ export default function HomePage() {
       {/* ─── 8. FINAL EXECUTIVE CTA BANNER (BACKGROUND IMAGE OVERLAY & 2 BUTTONS) ─── */}
       <section className="final-cta-section">
         <div className="final-cta-overlay" />
-        <div className="final-cta-container">
+        <div className="final-cta-container scroll-reveal">
           <span className="section-pretitle light">YOUR BUSINESS IS OUR SUCCESS</span>
           <h2 className="final-cta-heading">Ready To Upgrade Your Business Financial Management?</h2>
           <p className="final-cta-desc">
@@ -664,6 +701,17 @@ export default function HomePage() {
           color: #0f172a;
           line-height: 1.6;
           overflow-x: hidden;
+        }
+
+        /* Scroll Reveal Animation Styling */
+        .scroll-reveal {
+          opacity: 0;
+          transform: translateY(28px);
+          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scroll-reveal-visible {
+          opacity: 1;
+          transform: translateY(0);
         }
 
         /* Keyframe Animations */
@@ -1211,7 +1259,7 @@ export default function HomePage() {
           line-height: 1.6;
         }
 
-        /* ── ESTIMATOR WIDGET (PIXEL PERFECT REDESIGN) ── */
+        /* ── ESTIMATOR WIDGET (ULTRA-CLEAN PIXEL PERFECT UI) ── */
         .estimator-section {
           padding: 92px 24px;
           background: #f8fafc;
@@ -1274,6 +1322,22 @@ export default function HomePage() {
           cursor: pointer;
           transition: all 0.2s;
           box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .choice-radio {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 1.5px solid #cbd5e1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .choice-btn.active .choice-radio {
+          border-color: #ff1717;
         }
         .choice-btn:hover {
           border-color: #0f172a;
@@ -1307,20 +1371,29 @@ export default function HomePage() {
           font-size: 1.4rem;
           font-weight: 800;
           color: #ffffff;
-          margin: 0 0 12px;
+          margin: 0 0 14px;
           line-height: 1.3;
         }
+        
+        /* Flex row for price line to avoid overlapping text on mobile */
+        .result-price-row {
+          display: flex;
+          align-items: baseline;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
+        }
         .result-price {
-          font-size: 2.4rem;
+          font-size: 2.2rem;
           font-weight: 900;
           color: #ffffff;
-          margin-bottom: 8px;
           letter-spacing: -0.5px;
+          line-height: 1;
         }
         .period-text {
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           color: #94a3b8;
-          font-weight: 500;
+          font-weight: 600;
         }
         .result-subtext {
           font-size: 0.88rem;
@@ -1329,7 +1402,7 @@ export default function HomePage() {
           margin: 0 0 24px;
         }
 
-        /* ── AUTO-SCROLLING HORIZONTAL TESTIMONIAL MARQUEE (PAUSE ON HOVER) ── */
+        /* ── AUTO-SCROLLING HORIZONTAL TESTIMONIAL MARQUEE (SLOWED TO 65s) ── */
         .testimonials-section {
           padding: 92px 0;
           background: #ffffff;
@@ -1346,7 +1419,7 @@ export default function HomePage() {
           display: flex;
           gap: 28px;
           width: max-content;
-          animation: marquee-scroll 35s linear infinite;
+          animation: marquee-scroll 65s linear infinite;
         }
         .marquee-wrapper:hover .marquee-track {
           animation-play-state: paused;
@@ -1517,7 +1590,7 @@ export default function HomePage() {
           .why-container,
           .estimator-card {
             grid-template-columns: 1fr;
-            gap: 40px;
+            gap: 36px;
           }
           .services-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -1537,6 +1610,16 @@ export default function HomePage() {
         @media (max-width: 768px) {
           .services-grid {
             grid-template-columns: 1fr;
+          }
+          .estimator-card {
+            padding: 24px 18px;
+            gap: 28px;
+          }
+          .estimator-result {
+            padding: 28px 20px;
+          }
+          .result-price {
+            font-size: 1.8rem;
           }
           .hero-section {
             padding: 48px 18px 56px;
