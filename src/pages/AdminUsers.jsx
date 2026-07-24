@@ -742,7 +742,7 @@ export default function AdminUsers() {
                   onChange={e => setInviteEmail(e.target.value)} 
                   style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #d0d5dd', fontSize: 14, outline: 'none', transition: 'border-color 0.15s ease-in-out' }} 
                   required 
-                  placeholder="staff@amplifiedskills.com"
+                  placeholder="staff@donzenaccountinghub.com"
                 />
               </div>
               <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>

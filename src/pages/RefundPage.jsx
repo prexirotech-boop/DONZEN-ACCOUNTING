@@ -16,7 +16,7 @@ export default function RefundPage() {
         {/* Content Details */}
         <div className="policy-card">
           <p className="policy-intro">
-            At <strong>Amplified Skills</strong>, we are committed to providing you with the highest quality training programs, resources, and digital blueprints to build a highly profitable freelance and digital service business.
+            At <strong>Donzen Accounting Hub</strong>, we are committed to providing you with the highest quality training programs, bookkeeping resources, and financial advisory to build a highly profitable business.
           </p>
 
           <section className="policy-section">

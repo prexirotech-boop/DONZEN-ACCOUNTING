@@ -536,7 +536,7 @@ export default function PlaybookSalesPage() {
       <header className="nav">
         <div className="navrow">
           <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/logo.png" alt="Amplified Skills" style={{ height: '36px', width: 'auto', filter: 'brightness(0.1)' }} />
+            <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: '36px', width: 'auto', filter: 'brightness(0.1)' }} />
           </div>
           <nav className="navlinks">
             <a href="#inside">What's Inside</a>
@@ -737,7 +737,7 @@ export default function PlaybookSalesPage() {
           <div>
             <div className="eyebrow">WHO'S TEACHING THIS</div>
             <h3>Nnanta Precious</h3>
-            <div className="role">FOUNDER, AMPLIFIED SKILLS</div>
+            <div className="role">FOUNDER, DONZEN ACCOUNTING HUB</div>
             <p>I've spent years running my own web design agency while also coaching freelancers and business owners across the world — and if there's one conversation I've watched derail more good freelancers than any other single thing, it's the pricing conversation.</p>
             <p>Not because they weren't skilled. Because nobody ever taught them what's actually happening in a client's head between "here's my price" and "that's too expensive." I built this playbook because I got tired of watching talented people undercharge, over-explain, and quietly resent clients who were only ever responding to a pitch that hadn't done its job yet.</p>
           </div>
@@ -850,7 +850,7 @@ export default function PlaybookSalesPage() {
             <h2 className="h-lg" style={{ color: 'var(--cream)' }}>Everything you get today</h2>
           </div>
           <div className="receipt">
-            <div className="rtitle">Amplified Skills</div>
+            <div className="rtitle">Donzen Accounting Hub</div>
             <div className="rsub">ORDER SUMMARY</div>
             
             <div className="rline">
@@ -1018,7 +1018,7 @@ export default function PlaybookSalesPage() {
       {/* FOOTER with Meta and Google Ads disclaimers */}
       <footer>
         <div>
-          <p>&copy; {new Date().getFullYear()} Amplified Skills · Nnanta Precious</p>
+          <p>&copy; {new Date().getFullYear()} Donzen Accounting Hub · Samuel Onainor</p>
           <div style={{ marginTop: '24px', fontSize: '11px', color: '#6A6252', lineHeight: '1.5', maxWidth: '800px', margin: '24px auto 0', padding: '0 20px', textAlign: 'center' }}>
             <p>Disclaimer: This site is not a part of the Meta website, Facebook Inc., Google LLC, or Alphabet Inc. Additionally, this site is NOT endorsed by Meta, Facebook, Google, or Alphabet in any way. Facebook and Google are trademarks of their respective owners.</p>
             <p style={{ marginTop: '8px' }}>Any financial representations or earnings referenced here are illustrative of potential outcomes and should not be considered guarantees of actual performance. Succeeding as a service provider depends on individual effort, skill, market factors, and economic conditions.</p>

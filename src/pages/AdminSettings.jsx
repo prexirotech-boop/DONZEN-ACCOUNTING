@@ -20,8 +20,8 @@ export default function AdminSettings() {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   // Platform styling fields
-  const [brandName, setBrandName] = useState('Amplified Skills')
-  const [supportEmail, setSupportEmail] = useState('support@amplifiedskills.com')
+  const [brandName, setBrandName] = useState('Donzen Accounting Hub')
+  const [supportEmail, setSupportEmail] = useState('info@donzenaccountinghub.com')
 
   // Payment Configuration fields
   const [paystackPublicKey, setPaystackPublicKey] = useState('')
@@ -64,8 +64,8 @@ export default function AdminSettings() {
         if (data) {
           const siteConfig = data.find(s => s.id === 'site_config')
           if (siteConfig?.value) {
-            setBrandName(siteConfig.value.platform_name || 'Amplified Skills')
-            setSupportEmail(siteConfig.value.support_email || 'support@amplifiedskills.com')
+            setBrandName(siteConfig.value.platform_name || 'Donzen Accounting Hub')
+            setSupportEmail(siteConfig.value.support_email || 'info@donzenaccountinghub.com')
             setEnablePaymentPlans(!!siteConfig.value.enable_payment_plans)
           }
           const payConfig = data.find(s => s.id === 'payment_config')
@@ -651,7 +651,7 @@ export default function AdminSettings() {
                       type="text" 
                       value={newAccName} 
                       onChange={e => setNewAccName(e.target.value)} 
-                      placeholder="e.g. AMPLIFIED SKILLS LTD"
+                      placeholder="e.g. DONZEN ACCOUNTING HUB LTD"
                       style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>

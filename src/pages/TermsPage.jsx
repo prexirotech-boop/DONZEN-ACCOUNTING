@@ -16,40 +16,40 @@ export default function TermsPage() {
         {/* Content Details */}
         <div className="policy-card">
           <p className="policy-intro">
-            Welcome to <strong>Amplified Skills</strong> ("the Platform," "we," "us," or "our"). These Terms & Conditions govern your access to our website, purchase of digital courses or blueprints, and use of our student learning dashboard.
+            Welcome to <strong>Donzen Accounting Hub</strong> ("the Platform," "we," "us," or "our"). These Terms & Conditions govern your access to our website, purchase of digital courses or templates, and use of our client dashboard.
           </p>
 
           <section className="policy-section">
             <h2 className="section-title">1. Acceptance of Terms</h2>
             <p>
-              By accessing this website, registering a student account, or purchasing any of our materials, you acknowledge that you have read, understood, and accept these Terms & Conditions in full. If you do not agree with any part of these terms, please discontinue use of the website immediately.
+              By accessing this website, registering an account, or purchasing any of our materials, you acknowledge that you have read, understood, and accept these Terms & Conditions in full. If you do not agree with any part of these terms, please discontinue use of the website immediately.
             </p>
           </section>
 
           <section className="policy-section">
             <h2 className="section-title">2. Digital Products License & Use</h2>
             <p>
-              All materials available on Amplified Skills (including video lessons, worksheets, templates, code samples, and course guides) are digital assets. 
+              All materials available on Donzen Accounting Hub (including video lessons, worksheets, templates, spreadsheets, and course guides) are digital assets. 
             </p>
             <p>
-              Upon purchase, we grant you a single, non-transferable, non-sublicensable, personal license to use the materials for educational purposes only. You may not distribute, reproduce, share credentials, resell, or publicly display any content from our platform without our explicit prior written consent.
+              Upon purchase, we grant you a single, non-transferable, non-sublicensable, personal license to use the materials for educational and business recordkeeping purposes only. You may not distribute, reproduce, share credentials, resell, or publicly display any content from our platform without our explicit prior written consent.
             </p>
           </section>
 
           <section className="policy-section">
             <h2 className="section-title">3. Earnings & Performance Disclaimer</h2>
             <p>
-              Amplified Skills is an educational academy. We teach strategies, practical web design techniques, and freelance systems. 
+              Donzen Accounting Hub is a professional bookkeeping and financial consulting platform. We teach strategies, practical accounting techniques, and provide business templates. 
             </p>
             <p>
-              We explicitly do not guarantee that you will make any specific amount of money or secure global clients. Your business success depends entirely on your own effort, execution, skill implementation, and external market variables.
+              We explicitly do not guarantee that you will make any specific amount of money. Your business success depends entirely on your own effort, execution, skill implementation, and external market variables.
             </p>
           </section>
 
           <section className="policy-section">
             <h2 className="section-title">4. Limitation of Liability</h2>
             <p>
-              In no event shall Amplified Skills, Nnanta Precious, or any of our representatives be liable for any direct, indirect, consequential, or incidental damages or financial losses arising out of your implementation of the strategies taught on our website or within our digital blueprints.
+              In no event shall Donzen Accounting Hub, Samuel Onainor, or any of our representatives be liable for any direct, indirect, consequential, or incidental damages or financial losses arising out of your implementation of the strategies taught on our website or within our digital blueprints.
             </p>
           </section>
         </div>

@@ -509,7 +509,7 @@ function PurchaseHistoryTab({ user, profile }) {
             <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
             
             <div class="header">
-              <img class="logo" src="${window.location.origin}/logo.png" alt="Amplified Skills" />
+              <img class="logo" src="${window.location.origin}/logo.png" alt="Donzen Accounting Hub" />
               <div style="text-align: right;">
                 <h1 class="title">Receipt</h1>
                 <span class="status-badge">Paid</span>
@@ -564,8 +564,8 @@ function PurchaseHistoryTab({ user, profile }) {
             </div>
             
             <div class="footer-note">
-              <p style="font-weight: 600; color: #0f172a; margin-bottom: 4px;">Thank you for studying with Amplified Skills!</p>
-              <p style="margin: 0; font-size: 12px;">This receipt is generated automatically. For questions, reach out to support@amplifiedskills.com</p>
+              <p style="font-weight: 600; color: #0f172a; margin-bottom: 4px;">Thank you for studying with Donzen Accounting Hub!</p>
+              <p style="margin: 0; font-size: 12px;">This receipt is generated automatically. For questions, reach out to info@donzenaccountinghub.com</p>
             </div>
           </div>
         </body>
@@ -1688,9 +1688,9 @@ function AffiliateTab({ user, profile }) {
             <p style={{ fontSize: 13, color: '#3b82f6', margin: '0 0 14px' }}>Every time someone buys through your link, you earn {affiliate?.commission_rate || 20}% of the sale.</p>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {[
-                { label: 'WhatsApp', bg: '#25D366', url: `https://wa.me/?text=${encodeURIComponent(`Check out Amplified Skills - the best platform to learn in-demand skills! ${affiliateLink || ''}`)}` },
+                { label: 'WhatsApp', bg: '#25D366', url: `https://wa.me/?text=${encodeURIComponent(`Check out Donzen Accounting Hub - the best platform for bookkeeping and financial solutions! ${affiliateLink || ''}`)}` },
                 { label: 'Facebook', bg: '#1877F2', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(affiliateLink || window.location.origin)}` },
-                { label: 'Twitter/X', bg: '#000', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I just discovered @AmplifiedSkills - amazing courses for career growth! ${affiliateLink || ''}`)}` },
+                { label: 'Twitter/X', bg: '#000', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I just discovered Donzen Accounting Hub - amazing bookkeeping and financial resources! ${affiliateLink || ''}`)}` },
               ].map(s => (
                 <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                   <button style={{ background: s.bg, color: '#fff', border: 'none', padding: '9px 16px', borderRadius: 8, fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>{s.label}</button>
@@ -1992,7 +1992,7 @@ export default function LMSDashboard() {
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
           <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, rgba(37,99,235,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
-          <img src="/logo.png" alt="Amplified Skills" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(37,99,235,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
+          <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(255,23,23,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
           <div className="premium-spinner" />
           <p style={{ color: '#94a3b8', marginTop: 16, fontSize: '14px', letterSpacing: '0.5px', position: 'relative', zIndex: 1 }}>Loading portal session...</p>
         </div>

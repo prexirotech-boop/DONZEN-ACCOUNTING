@@ -1933,8 +1933,8 @@ export default function AdminDashboard() {
       flexDirection: 'column', 
       height: '100%', 
       padding: '20px 0 0 0', 
-      background: '#0F172A', 
-      borderRight: '1px solid #1E293B',
+      background: '#09090b', 
+      borderRight: '1px solid #1c1c22',
       color: '#fff',
       transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
     }}>
@@ -1952,8 +1952,7 @@ export default function AdminDashboard() {
               objectPosition: 'left center',
               flexShrink: 0,
               transition: 'all 0.3s ease',
-              display: 'block',
-              filter: 'brightness(0) invert(1)'
+              display: 'block'
             }} 
           />
         </div>
@@ -1982,19 +1981,20 @@ export default function AdminDashboard() {
                   style={{
                     width: '100%',
                     border: 'none',
-                    background: isParentActive ? '#1E293B' : 'transparent',
+                    background: isParentActive ? '#ff1717' : 'transparent',
                     padding: '10px 14px',
-                    color: isParentActive ? '#fff' : '#94a3b8',
+                    color: '#fff',
                     cursor: 'pointer',
-                    fontWeight: 500,
-                    borderRadius: 6,
+                    fontWeight: isParentActive ? 700 : 500,
+                    borderRadius: 8,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: sidebarCollapsed ? 'center' : 'space-between',
                     gap: 12,
                     fontSize: 13.5,
                     textAlign: 'left',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    boxShadow: isParentActive ? '0 4px 12px rgba(255,23,23,0.3)' : 'none'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -2014,7 +2014,7 @@ export default function AdminDashboard() {
                       style={{ 
                         transform: isExpanded ? 'rotate(90deg)' : 'none', 
                         transition: 'transform 0.2s', 
-                        color: '#64748b' 
+                        color: isParentActive ? '#fff' : '#64748b' 
                       }}
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -2027,17 +2027,18 @@ export default function AdminDashboard() {
                   title={sidebarCollapsed ? t.name : undefined}
                   style={{
                     padding: '10px 14px',
-                    color: location.pathname === t.path ? '#fff' : '#94a3b8',
+                    color: '#fff',
                     textDecoration: 'none',
-                    fontWeight: 500,
-                    background: location.pathname === t.path ? '#1E293B' : 'transparent',
-                    borderRadius: 6,
+                    fontWeight: location.pathname === t.path ? 700 : 500,
+                    background: location.pathname === t.path ? '#ff1717' : 'transparent',
+                    borderRadius: 8,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
                     gap: 12,
                     fontSize: 13.5,
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    boxShadow: location.pathname === t.path ? '0 4px 12px rgba(255,23,23,0.3)' : 'none'
                   }}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: 18, height: 18, flexShrink: 0 }}>
@@ -2054,7 +2055,7 @@ export default function AdminDashboard() {
                   flexDirection: 'column', 
                   gap: 2, 
                   marginLeft: 26, 
-                  borderLeft: '1px solid #334155', 
+                  borderLeft: '1px solid #27272a', 
                   paddingLeft: 12,
                   marginTop: 2,
                   marginBottom: 4
@@ -2067,12 +2068,12 @@ export default function AdminDashboard() {
                         to={sub.path}
                         style={{
                           padding: '6px 12px',
-                          color: isSubActive ? '#fff' : '#94a3b8',
+                          color: isSubActive ? '#ff1717' : '#a1a1aa',
                           textDecoration: 'none',
                           fontSize: 12.5,
-                          fontWeight: 500,
+                          fontWeight: isSubActive ? 700 : 500,
                           borderRadius: 4,
-                          background: isSubActive ? 'rgba(255,255,255,0.04)' : 'transparent',
+                          background: isSubActive ? 'rgba(255,23,23,0.1)' : 'transparent',
                           transition: 'color 0.2s, background-color 0.2s'
                         }}
                       >
@@ -2090,24 +2091,24 @@ export default function AdminDashboard() {
       {/* Bottom Profile Details */}
       <div style={{ 
         padding: '16px', 
-        borderTop: '1px solid #1E293B', 
+        borderTop: '1px solid #1c1c22', 
         display: 'flex', 
         flexDirection: 'column', 
         gap: 16,
-        background: '#0B0F19' 
+        background: '#040405' 
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, overflow: 'hidden' }}>
           <img 
             src={profile?.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} 
             alt="Admin Profile" 
-            style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1.5px solid #2563eb' }} 
+            style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1.5px solid #ff1717' }} 
           />
           {!sidebarCollapsed && (
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {profile?.full_name || 'Admin'}
               </div>
-              <div style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 500 }}>Super Admin</div>
+              <div style={{ fontSize: 10.5, color: '#ff1717', fontWeight: 600 }}>Super Admin</div>
             </div>
           )}
         </div>

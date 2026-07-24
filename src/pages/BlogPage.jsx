@@ -87,7 +87,7 @@ export default function BlogPage() {
             Resource Hub & Tutorials
           </span>
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 850, letterSpacing: '-1.5px', color: '#0f172a', margin: '0 0 16px', lineHeight: 1.15 }}>
-            Amplified Skills <span style={{ color: '#2563eb' }}>Blueprint Blog</span>
+            Donzen Accounting Hub <span style={{ color: '#ff1717' }}>Insight Blog</span>
           </h1>
           <p style={{ fontSize: 17, color: '#64748b', maxWidth: 600, margin: '0 auto 32px', lineHeight: 1.6 }}>
             Premium articles, student onboarding guides, and business blueprints compiled by Precious.

@@ -110,7 +110,7 @@ const FAQS = [
   },
   {
     q: 'What products can I promote?',
-    a: 'You can promote every published product on Amplified Skills — all courses, ebooks, and digital downloads. New products are added regularly, giving you fresh content to promote.',
+    a: 'You can promote every published product on Donzen Accounting Hub — all courses, templates, and bookkeeping services. New resources are added regularly, giving you fresh content to promote.',
   },
   {
     q: 'Is there a limit on how much I can earn?',
@@ -118,7 +118,7 @@ const FAQS = [
   },
   {
     q: 'How do I get my affiliate link?',
-    a: 'Simply create a free account on Amplified Skills. Your personal affiliate link is generated automatically and available instantly in your dashboard under the "Affiliate" tab.',
+    a: 'Simply create a free account on Donzen Accounting Hub. Your personal affiliate link is generated automatically and available instantly in your dashboard under the "Affiliate" tab.',
   },
   {
     q: 'Can I track my referrals in real time?',
@@ -341,7 +341,7 @@ export default function AffiliatePage() {
             fontSize: '13px', fontWeight: 700, color: '#c4b5fd',
             marginBottom: '30px', letterSpacing: '0.4px',
           }}>
-            💰 Amplified Skills Affiliate Program
+            💰 Donzen Accounting Hub Affiliate Program
           </div>
 
           {/* Headline */}
@@ -351,7 +351,7 @@ export default function AffiliatePage() {
             background: 'linear-gradient(135deg, #ffffff 0%, #c4b5fd 45%, #818cf8 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
-            Earn Money<br />Sharing Skills
+            Earn Money<br />Sharing Resources
           </h1>
 
           {/* Subheadline */}
@@ -360,7 +360,7 @@ export default function AffiliatePage() {
             lineHeight: 1.75, marginBottom: '32px',
             maxWidth: '560px', margin: '0 auto 32px',
           }}>
-            Join the Amplified Skills Affiliate Program and earn up to{' '}
+            Join the Donzen Accounting Hub Affiliate Program and earn up to{' '}
             <strong style={{ color: '#c4b5fd', fontWeight: 800 }}>35% commission</strong> on every
             sale you refer. No experience needed, no upfront cost — just share and earn.
           </p>

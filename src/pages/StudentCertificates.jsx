@@ -223,7 +223,7 @@ export default function StudentCertificates({ user }) {
           </div>
           <div class="certificate-container">
             <div class="certificate-border-accent"></div>
-            <div class="logo">AMPLIFIED SKILLS</div>
+            <div class="logo">DONZEN ACCOUNTING HUB</div>
             <div class="title">CERTIFICATE</div>
             <div class="subtitle">of completion</div>
             <div class="presented-to">This is proudly presented to</div>
@@ -241,7 +241,7 @@ export default function StudentCertificates({ user }) {
               <div class="signature-block">
                 <div style="font-family: 'Cinzel', serif; font-size: 18px; color: #1e3a8a; font-weight: 800;">APPROVED</div>
                 <div class="signature-line" style="margin-top: 15px;"></div>
-                <div class="signature-title">Amplified Skills Board</div>
+                <div class="signature-title">Donzen Executive Board</div>
               </div>
             </div>
             

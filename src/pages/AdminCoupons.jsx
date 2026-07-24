@@ -189,7 +189,7 @@ export default function AdminCoupons() {
                   onChange={e => setForm({ ...form, code: e.target.value })} 
                   style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }} 
                   required 
-                  placeholder="e.g. AMPLIFIED50"
+                  placeholder="e.g. DONZEN50"
                 />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>

@@ -590,7 +590,7 @@ export default function LandingPage() {
       {/* SECTION 10 — FOOTER */}
       <footer className="lp-footer">
         <div className="lp-footer-inner">
-          <p>© 2026 Amplified Skills | All Rights Reserved</p>
+          <p>© 2026 Donzen Accounting Hub | All Rights Reserved</p>
           <p className="lp-footer-disclaimer">
             This site is not affiliated with Facebook, Google, or Meta in any way. Results mentioned on this page are not typical and individual results will vary. This training is 100% free. No hidden fees or charges.
           </p>

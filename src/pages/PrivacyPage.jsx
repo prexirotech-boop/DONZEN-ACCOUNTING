@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         {/* Content Details */}
         <div className="policy-card">
           <p className="policy-intro">
-            This Privacy Policy document describes how <strong>Amplified Skills</strong> ("the Platform," "we," "us," or "our") collects, uses, records, and protects your personal information when you access our website, enroll in our training programs, or buy our digital blueprints.
+            This Privacy Policy document describes how <strong>Donzen Accounting Hub</strong> ("the Platform," "we," "us," or "our") collects, uses, records, and protects your personal information when you access our website, enroll in our training programs, or buy our digital blueprints.
           </p>
 
           <section className="policy-section">

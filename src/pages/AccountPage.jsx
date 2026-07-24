@@ -38,7 +38,7 @@ export default function AccountPage() {
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
           <div style={{ position: 'absolute', width: 160, height: 160, background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, rgba(37,99,235,0) 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(24px)', animation: 'ambient-glow 3s ease-in-out infinite' }} />
-          <img src="/logo.png" alt="Amplified Skills" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(37,99,235,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
+          <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: 64, width: 'auto', maxWidth: 220, objectFit: 'contain', marginBottom: 36, filter: 'drop-shadow(0 0 10px rgba(255,23,23,0.15))', animation: 'logo-pulse 2.2s ease-in-out infinite' }} />
           <div className="premium-spinner" />
           <p style={{ color: '#94a3b8', marginTop: 16, fontSize: '14px', letterSpacing: '0.5px', position: 'relative', zIndex: 1 }}>Loading Account...</p>
         </div>
@@ -47,8 +47,8 @@ export default function AccountPage() {
             width: 32px;
             height: 32px;
             border: 3px solid rgba(255, 255, 255, 0.05);
-            border-top-color: #2563eb;
-            border-right-color: #3b82f6;
+            border-top-color: #ff1717;
+            border-right-color: #d91414;
             border-radius: 50%;
             animation: spin-loader 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           }
@@ -56,8 +56,8 @@ export default function AccountPage() {
             to { transform: rotate(360deg); }
           }
           @keyframes logo-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(37,99,235,0.1)); }
-            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 16px rgba(37,99,235,0.4)); }
+            0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 8px rgba(255,23,23,0.1)); }
+            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 16px rgba(255,23,23,0.4)); }
           }
           @keyframes ambient-glow {
             0%, 100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
@@ -79,8 +79,8 @@ export default function AccountPage() {
       <nav className="std-nav">
         <div className="std-nav-left">
           <Link to="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div className="std-brand-logo">AS</div>
-            <span className="std-brand-name" style={{ color: '#1c1d1f' }}>Amplified Skills</span>
+            <div className="std-brand-logo">DAH</div>
+            <span className="std-brand-name" style={{ color: '#1c1d1f' }}>Donzen Accounting Hub</span>
           </Link>
         </div>
         <div className="std-nav-right">

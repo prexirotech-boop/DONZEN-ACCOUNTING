@@ -136,7 +136,7 @@ export default function SalesPage() {
             <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#000', fontWeight: 'bold' }}>NP</div>
             <div>
               <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>By Nnanta Precious</p>
-              <p style={{ color: 'var(--gold)', fontSize: '.9rem' }}>Founder, Amplified Skills</p>
+              <p style={{ color: 'var(--gold)', fontSize: '.9rem' }}>Founder, Donzen Accounting Hub</p>
               <p style={{ color: '#888', fontSize: '.8rem' }}>📍 7:43 PM, Lagos</p>
             </div>
           </div>
