@@ -976,9 +976,15 @@ export default function PaymentPage() {
         }
         .sp-logo-wrapper {
           margin-bottom: 24px;
+          display: inline-flex;
+          background-color: #09090b;
+          padding: 8px 16px;
+          border-radius: 8px;
+          align-items: center;
+          justify-content: center;
         }
         .sp-logo {
-          max-height: 34px;
+          max-height: 26px;
           width: auto;
         }
         

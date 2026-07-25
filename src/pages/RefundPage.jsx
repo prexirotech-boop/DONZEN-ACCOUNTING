@@ -42,7 +42,7 @@ export default function RefundPage() {
               If you have any questions about the content of our blueprints, need help navigating the student area, or have any issues with your payment, please reach out to our dedicated support helpdesk at:
             </p>
             <div className="policy-support-box">
-              <strong>Email Support:</strong> <a href="mailto:nprecious.official@gmail.com">nprecious.official@gmail.com</a>
+              <strong>Email Support:</strong> <a href="mailto:info@donzenaccountinghub.com">info@donzenaccountinghub.com</a>
             </div>
             <p>
               Our response team is active Monday through Friday, and we aim to respond to all technical queries within 24 hours.
