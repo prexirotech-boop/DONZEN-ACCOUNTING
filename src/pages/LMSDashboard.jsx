@@ -2118,8 +2118,8 @@ export default function LMSDashboard() {
               <span style={{ width: 18, height: 2, background: 'currentColor', borderRadius: 10, transition: 'all 0.3s ease', transformOrigin: 'left center', transform: sidebarOpen ? 'rotate(-45deg) translate(2px, 1px)' : 'none' }}></span>
             </div>
           </button>
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-            <img src="/logo.png" alt="Logo" style={{ height: 40, width: 'auto', display: 'block' }} />
+          <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', backgroundColor: '#09090b', padding: '6px 12px', borderRadius: '8px' }}>
+            <img src="/logo.png" alt="Logo" style={{ height: 26, width: 'auto', display: 'block' }} />
           </Link>
         </div>
         
