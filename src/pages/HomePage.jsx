@@ -127,12 +127,33 @@ const FaqItem = ({ question, answer }) => {
 export default function HomePage() {
   const { formatPrice } = useCurrency();
 
+  const heroImages = [
+    '/images/home-hero.jpg',
+    '/images/home-hero-2.jpg',
+    '/images/home-hero-3.jpg'
+  ];
+  const [currentHeroIdx, setCurrentHeroIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentHeroIdx(prev => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="hp-wrapper">
       {/* 1. HERO */}
       <section className="hp-hero">
         <div className="hp-hero-bg">
-          <img src="/images/home-hero.jpg" alt="Donzen Accounting Hub Office" className="hp-hero-img" />
+          {heroImages.map((src, idx) => (
+            <img 
+              key={src} 
+              src={src} 
+              alt="Donzen Accounting Hub Office" 
+              className={`hp-hero-img ${idx === currentHeroIdx ? 'active' : ''}`} 
+            />
+          ))}
           <div className="hp-hero-overlay"></div>
         </div>
         <div className="hp-container hp-hero-content">
@@ -513,9 +534,17 @@ export default function HomePage() {
           z-index: 0;
         }
         .hp-hero-img {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
+          opacity: 0;
+          transition: opacity 1.5s ease-in-out;
+        }
+        .hp-hero-img.active {
+          opacity: 1;
         }
         .hp-hero-overlay {
           position: absolute;

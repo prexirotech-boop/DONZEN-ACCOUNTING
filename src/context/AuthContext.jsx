@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext({})
@@ -8,10 +8,13 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const userRef = useRef(null)
+
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      userRef.current = session?.user?.id ?? null
       if (session?.user) {
         fetchProfile(session.user.id)
       } else {
@@ -23,9 +26,13 @@ export const AuthProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        if (_event === 'SIGNED_IN') setLoading(true)
+        if (userRef.current !== session.user.id) {
+          setLoading(true)
+        }
+        userRef.current = session.user.id
         fetchProfile(session.user.id)
       } else {
+        userRef.current = null
         setProfile(null)
         setLoading(false)
       }
