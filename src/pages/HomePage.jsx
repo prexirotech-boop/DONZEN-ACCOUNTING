@@ -1,1631 +1,936 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { useCurrency } from '../context/CurrencyContext'
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 
-// ─── HIGH-GRADE SVG ICONS (NO EMOJIS) ───────────────────────────────────────
-const Icons = {
-  Check: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  ),
-  CheckCircle: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-      <polyline points="22 4 12 14.01 9 11.01" />
-    </svg>
-  ),
-  ArrowRight: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-      <polyline points="12 5 19 12 12 19"></polyline>
-    </svg>
-  ),
-  Building: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-      <line x1="9" y1="6" x2="9" y2="6.01" />
-      <line x1="15" y1="6" x2="15" y2="6.01" />
-      <line x1="9" y1="10" x2="9" y2="10.01" />
-      <line x1="15" y1="10" x2="15" y2="10.01" />
-      <line x1="9" y1="14" x2="9" y2="14.01" />
-      <line x1="15" y1="14" x2="15" y2="14.01" />
-      <path d="M9 18h6v4H9z" />
-    </svg>
-  ),
-  Scale: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3v18M3 7h18M5 7l-2 7h6L7 7M19 7l-2 7h6l-2-7" />
-    </svg>
-  ),
-  ChartTrend: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-      <polyline points="17 6 23 6 23 12" />
-    </svg>
-  ),
-  Briefcase: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-    </svg>
-  ),
-  WhatsApp: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-    </svg>
-  ),
-  Star: () => (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  ),
-  ChevronDown: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  )
+// --- Hooks ---
+function useReveal() {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        if (ref.current) observer.unobserve(ref.current);
+      }
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, []);
+
+  return [ref, isVisible];
 }
 
+const Reveal = ({ children, delay = 0, className = '' }) => {
+  const [ref, isVisible] = useReveal();
+  return (
+    <div 
+      ref={ref} 
+      className={`hp-reveal-base ${isVisible ? 'hp-reveal-visible' : ''} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const Counter = ({ target, prefix = '', suffix = '', duration = 2000 }) => {
+  const [count, setCount] = useState(0);
+  const [ref, isVisible] = useReveal();
+
+  useEffect(() => {
+    if (!isVisible) return;
+    
+    let startTime = null;
+    let animationFrameId = null;
+
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      
+      // Ease out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(easeProgress * target));
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [isVisible, target, duration]);
+
+  return <span ref={ref} className="hp-counter">{prefix}{count}{suffix}</span>;
+};
+
+// --- Icons ---
+const IconCheck = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+);
+const IconArrowRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+);
+const IconBookkeeping = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+);
+const IconTax = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+);
+const IconBriefcase = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+);
+const IconFileText = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+);
+const IconGraduationCap = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+);
+const IconStar = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ff1717" stroke="#ff1717" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+);
+const IconChevronDown = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+);
+const IconShield = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+);
+const IconUsers = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+);
+
+// --- Components ---
+const FaqItem = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="hp-faq-item">
+      <button className="hp-faq-question" onClick={() => setIsOpen(!isOpen)}>
+        <span>{question}</span>
+        <IconChevronDown className={`hp-faq-icon ${isOpen ? 'hp-faq-icon-open' : ''}`} />
+      </button>
+      <div className={`hp-faq-answer ${isOpen ? 'hp-faq-answer-open' : ''}`}>
+        <div className="hp-faq-answer-inner">{answer}</div>
+      </div>
+    </div>
+  );
+};
+
 export default function HomePage() {
-  const { formatPrice } = useCurrency()
-  
-  // State for Interactive Business Calculator / Service Selector
-  const [businessType, setBusinessType] = useState('sme')
-  const [txVolume, setTxVolume] = useState('medium')
-  
-  // Real Database Products State
-  const [products, setProducts] = useState([])
-
-  // State for FAQ Accordion
-  const [openFaq, setOpenFaq] = useState(null)
-
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index)
-  }
-
-  // Smooth Scroll Reveal Animation Observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('scroll-reveal-visible')
-          }
-        })
-      },
-      { threshold: 0.12 }
-    )
-
-    const hiddenElements = document.querySelectorAll('.scroll-reveal')
-    hiddenElements.forEach((el) => observer.observe(el))
-
-    return () => hiddenElements.forEach((el) => observer.unobserve(el))
-  }, [])
-
-  // Fetch real product prices from DB
-  useEffect(() => {
-    const loadProducts = async () => {
-      const { data } = await supabase.from('products').select('slug, price')
-      if (data) setProducts(data)
-    }
-    loadProducts()
-  }, [])
-
-  const getProductPrice = (slug, fallback) => {
-    const prod = products.find(p => p.slug === slug)
-    return prod ? formatPrice(prod.price) : fallback
-  }
-
-  // Dynamic recommendation calculation using Real Data
-  const getRecommendation = () => {
-    if (businessType === 'micro' || txVolume === 'low') {
-      return {
-        title: 'Donzen DIY Remote Bookkeeping',
-        price: getProductPrice('donzen-diy-remote', '₦80,000'),
-        subtext: 'Ideal for small businesses processing up to 350 transactions monthly.',
-        link: '/resources'
-      }
-    } else if (businessType === 'sme' || txVolume === 'medium') {
-      return {
-        title: 'Donzen Done-For-You Accounting',
-        price: getProductPrice('donzen-done-for-you', '₦120,000'),
-        subtext: 'Full-service bookkeeping, payroll, tax computation & monthly advisory.',
-        link: '/resources'
-      }
-    } else {
-      return {
-        title: 'Premium Corporate Consulting & Audit Support',
-        price: 'Custom Quote',
-        subtext: 'Tailored corporate tax advisory, audited financials & system setup.',
-        link: '/contact'
-      }
-    }
-  }
-
-  const rec = getRecommendation()
+  const { formatPrice } = useCurrency();
 
   return (
-    <div className="home-corporate-root">
-
-      {/* ─── 1. HERO SECTION ────────────────────────────────────────────── */}
-      <section className="hero-section">
-        <div className="hero-bg-grid" />
-        <div className="hero-shape-glow glow-1" />
-        <div className="hero-shape-glow glow-2" />
-
-        <div className="hero-container">
-          
-          {/* Left Text Column */}
-          <div className="hero-text-col scroll-reveal">
-            <h1 className="hero-headline">
-              Executive Bookkeeping, Accounting & Tax Compliance <span className="highlight-text">For Growing Businesses</span>
+    <div className="hp-wrapper">
+      {/* 1. HERO */}
+      <section className="hp-hero">
+        <div className="hp-hero-bg">
+          <img src="/images/home-hero.jpg" alt="Donzen Accounting Hub Office" className="hp-hero-img" />
+          <div className="hp-hero-overlay"></div>
+        </div>
+        <div className="hp-container hp-hero-content">
+          <Reveal>
+            <h1 className="hp-hero-title">
+              Expert Bookkeeping &amp; Tax Compliance For <span className="hp-text-accent">Growing Businesses</span>
             </h1>
-
-            <p className="hero-description">
-              We empower startups, SMEs, and corporate entities with accurate financial recordkeeping, payroll management, FIRS/LIRS tax compliance, and cloud accounting systems designed for sustainable profitability.
+          </Reveal>
+          <Reveal delay={100}>
+            <p className="hp-hero-subtitle">
+              We provide remote-first accounting solutions, DIY templates, and expert advisory to help Nigerian businesses thrive financially.
             </p>
-
-            {/* Value Checklist */}
-            <div className="hero-checklist">
-              <div className="check-item">
-                <Icons.Check />
-                <span>FIRS & State Tax Compliance (CIT, WHT, VAT, PAYE)</span>
-              </div>
-              <div className="check-item">
-                <Icons.Check />
-                <span>24/7 Access to Real-Time P&L & Balance Sheets</span>
-              </div>
-              <div className="check-item">
-                <Icons.Check />
-                <span>QuickBooks & Custom Excel Financial Systems</span>
-              </div>
+          </Reveal>
+          <Reveal delay={200}>
+            <div className="hp-hero-ctas">
+              <Link to="/contact" className="hp-btn hp-btn-primary">Book Free Consultation</Link>
+              <Link to="/services" className="hp-btn hp-btn-secondary">Explore Services</Link>
             </div>
-
-            <div className="hero-cta-group">
-              <Link to="/contact" className="btn-primary-cta">
-                <span>Request Service Consultation</span>
-                <Icons.ArrowRight />
-              </Link>
-              <Link to="/resources" className="btn-secondary-cta">
-                View Retainer Plans
-              </Link>
-            </div>
-
-            {/* Quick Stats Bar */}
-            <div className="hero-stats-row">
-              <div className="stat-card">
-                <span className="stat-number">3,500+</span>
-                <span className="stat-label">Clients & Alumni</span>
-              </div>
-              <div className="stat-divider" />
-              <div className="stat-card">
-                <span className="stat-number">99.8%</span>
-                <span className="stat-label">Filing Accuracy</span>
-              </div>
-              <div className="stat-divider" />
-              <div className="stat-card">
-                <span className="stat-number">₦5B+</span>
-                <span className="stat-label">Reconciled Volume</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Hero Visual Column */}
-          <div className="hero-visual-col scroll-reveal">
-            <div className="image-frame-hero">
-              <img 
-                src="/hero-corporate.jpg" 
-                alt="Donzen Accounting Hub Corporate Executive Reviewing Financial Reports" 
-                className="hero-img-full"
-              />
-              
-              {/* Overlay Glass Card */}
-              <div className="floating-metric-card float-anim">
-                <div className="metric-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                  </svg>
-                </div>
-                <div>
-                  <div className="metric-title">24/7 Financial Visibility</div>
-                  <div className="metric-desc">Audited Reports & Tax Computation</div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─── 2. TRUST / CORPORATE COMPLIANCE BAR ───────────────────────── */}
-      <section className="trust-bar-section scroll-reveal">
-        <div className="trust-container">
-          <span className="trust-label">TRUSTED BOOKKEEPING & ACCOUNTING PARTNER FOR NIGERIAN BUSINESSES</span>
-          <div className="trust-badges-row">
-            <div className="trust-item">
-              <Icons.Building />
-              <span>CAC Business Incorporation</span>
-            </div>
-            <div className="trust-item">
-              <Icons.Scale />
-              <span>FIRS & LIRS Tax Compliance</span>
-            </div>
-            <div className="trust-item">
-              <Icons.ChartTrend />
-              <span>QuickBooks Pro Certified</span>
-            </div>
-            <div className="trust-item">
-              <Icons.Briefcase />
-              <span>Monthly Financial Statements</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 3. CORE SERVICES & SOLUTIONS SECTION (6 CARDS) ──────────────── */}
-      <section className="services-section">
-        <div className="services-pattern-bg" />
-        
-        <div className="section-header scroll-reveal">
-          <span className="section-pretitle">OUR SERVICE OFFERINGS</span>
-          <h2 className="section-title">Comprehensive Accounting Solutions Tailored To Your Growth</h2>
-          <p className="section-subtitle">
-            From daily transaction recording to end-of-year tax returns, Donzen Accounting Hub delivers reliable financial management so you can focus on scaling.
-          </p>
-        </div>
-
-        <div className="services-grid">
+          </Reveal>
           
-          {/* Card 01 */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">01</div>
-              <span className="service-tag">Monthly Retainer</span>
+          <Reveal delay={400}>
+            <div className="hp-hero-stats">
+              <div className="hp-stat-item">
+                <div className="hp-stat-number"><Counter target={500} suffix="+" /></div>
+                <div className="hp-stat-label">Businesses Served</div>
+              </div>
+              <div className="hp-stat-item">
+                <div className="hp-stat-number"><Counter target={98} suffix="%" /></div>
+                <div className="hp-stat-label">Client Satisfaction</div>
+              </div>
+              <div className="hp-stat-item">
+                <div className="hp-stat-number"><Counter target={6} suffix="+" /></div>
+                <div className="hp-stat-label">Years Experience</div>
+              </div>
+              <div className="hp-stat-item">
+                <div className="hp-stat-number"><Counter target={36} /></div>
+                <div className="hp-stat-label">States Covered</div>
+              </div>
             </div>
-            <h3 className="service-title">Done-For-You Bookkeeping & Monthly Financial Accounting</h3>
-            <p className="service-desc">
-              We manage day-to-day transaction entries, accounts receivable, payables, inventory up to 350 items, petty cash, and monthly bank reconciliations with real-time financial reporting.
-            </p>
-            <ul className="service-bullets">
-              <li>General Ledger & COA Classification</li>
-              <li>Bank Statement & Merchant Reconciliation</li>
-              <li>Monthly Profit & Loss & Balance Sheet</li>
-            </ul>
-            <Link to="/services" className="service-link">
-              <span>Explore Bookkeeping Plans</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
-          {/* Card 02 */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">02</div>
-              <span className="service-tag">Tax & Legal</span>
-            </div>
-            <h3 className="service-title">Tax Advisory & Corporate Compliance (FIRS / LIRS / CAC)</h3>
-            <p className="service-desc">
-              Stay fully compliant with Federal & State tax regulations. We calculate and file CIT, Withholding Tax (WHT), Value Added Tax (VAT), and PAYE for your employees on time.
-            </p>
-            <ul className="service-bullets">
-              <li>Monthly VAT & WHT Remittance</li>
-              <li>Annual CIT & Tax Clearance Certificates</li>
-              <li>CAC Business Incorporation & Audit Support</li>
-            </ul>
-            <Link to="/services" className="service-link">
-              <span>Learn Tax Solutions</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
-          {/* Card 03 */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">03</div>
-              <span className="service-tag">Software Setup</span>
-            </div>
-            <h3 className="service-title">Accounting Systems Setup & QuickBooks Integration</h3>
-            <p className="service-desc">
-              Transition from manual recordkeeping to automated cloud systems. We configure QuickBooks Online, Desktop, or customized Excel systems tailored specifically for your business workflow.
-            </p>
-            <ul className="service-bullets">
-              <li>Chart of Accounts & System Migration</li>
-              <li>Staff Training & User Access Control</li>
-              <li>Multi-Currency & Inventory Configuration</li>
-            </ul>
-            <Link to="/services" className="service-link">
-              <span>Request System Setup</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
-          {/* Card 04 */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">04</div>
-              <span className="service-tag">DIY Templates</span>
-            </div>
-            <h3 className="service-title">Donzen DIY Accounting Tools & Spreadsheet Templates</h3>
-            <p className="service-desc">
-              Designed for non-accountant business owners. Manage income, expenses, accounts payable, receivables, and vendor ledgers easily using our pre-formatted financial templates.
-            </p>
-            <ul className="service-bullets">
-              <li>Profit & Loss DIY Template (₦55,000)</li>
-              <li>Vendor Management Sheet (₦40,000)</li>
-              <li>Client Receivables Ledger (₦40,000)</li>
-            </ul>
-            <Link to="/resources" className="service-link">
-              <span>Browse Templates</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
-          {/* Card 05 */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">05</div>
-              <span className="service-tag">Audit & Statements</span>
-            </div>
-            <h3 className="service-title">Corporate Financial Statements & Year-End Audits</h3>
-            <p className="service-desc">
-              Prepare investor-ready financial reports and audited financial statements required for corporate loans, investor due diligence, annual returns, and official statutory filings.
-            </p>
-            <ul className="service-bullets">
-              <li>Audited Balance Sheets & Cash Flow</li>
-              <li>Management Reports & KPI Review</li>
-              <li>Bank Loan & Investor Due Diligence</li>
-            </ul>
-            <Link to="/services" className="service-link">
-              <span>Request Audit Support</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
-          {/* Card 06 — Donzen Academy Bootcamp */}
-          <div className="service-card scroll-reveal">
-            <div className="service-card-header">
-              <div className="service-num">06</div>
-              <span className="service-tag highlight">Academy & Training</span>
-            </div>
-            <h3 className="service-title">Donzen Accounting Experience Bootcamp (30-Day Academy)</h3>
-            <p className="service-desc">
-              Our flagship 30-Day Online Practical Accounting Bootcamp equips bookkeepers, finance graduates, and SME owners with real-world QuickBooks, Excel, and corporate skills.
-            </p>
-            <div className="price-tag" style={{ margin: '8px 0 16px', fontSize: '1.6rem', fontWeight: 900, color: '#0f172a' }}>
-              ₦50,000 <span style={{ fontSize: '0.9rem', color: '#94a3b8', textDecoration: 'line-through' }}>₦100,000</span>
-            </div>
-            <Link to="/products" className="service-link">
-              <span>Register For Bootcamp</span>
-              <Icons.ArrowRight />
-            </Link>
-          </div>
-
+          </Reveal>
         </div>
       </section>
 
-      {/* ─── 4. EXECUTIVE WHY CHOOSE DONZEN SECTION ───────────────────── */}
-      <section className="why-section">
-        <div className="why-container">
-          <div className="why-img-col scroll-reveal">
-            <img 
-              src="/advisory-team.jpg" 
-              alt="Donzen Accounting Advisory Team Consultation" 
-              className="why-img"
-            />
-            <div className="experience-badge">
-              <div className="exp-num">10+</div>
-              <div className="exp-text">Years Combined Industry Leadership</div>
-            </div>
-          </div>
-
-          <div className="why-text-col scroll-reveal">
-            <span className="section-pretitle">THE DONZEN ADVANTAGE</span>
-            <h2 className="why-heading">Why Leading Businesses Choose Donzen Accounting Hub</h2>
-            <p className="why-lead-para">
-              We bridge the gap between complex accounting regulations and practical business management. Our structured methodology ensures your books are accurate, compliant, and ready for bank loans, investors, or tax audits.
-            </p>
-
-            <div className="advantages-list">
-              <div className="advantage-item">
-                <div className="adv-icon-box">01</div>
-                <div>
-                  <h4 className="adv-title">Dedicated Account Manager</h4>
-                  <p className="adv-desc">You are assigned a qualified lead accountant who understands your specific industry nuances, revenue model, and operational needs.</p>
-                </div>
-              </div>
-
-              <div className="advantage-item">
-                <div className="adv-icon-box">02</div>
-                <div>
-                  <h4 className="adv-title">Tax Protection & Fraud Prevention</h4>
-                  <p className="adv-desc">Internal accounting controls, double-entry verification, and routine reconciliations prevent inventory leakage and eliminate tax penalty risks.</p>
-                </div>
-              </div>
-
-              <div className="advantage-item">
-                <div className="adv-icon-box">03</div>
-                <div>
-                  <h4 className="adv-title">Decisions Backed By Data</h4>
-                  <p className="adv-desc">Receive monthly financial performance breakdowns detailing your gross margins, operating overheads, net cash flow, and tax liabilities.</p>
-                </div>
-              </div>
-            </div>
+      {/* 2. TRUST BAR */}
+      <section className="hp-trust-bar">
+        <div className="hp-container">
+          <div className="hp-trust-grid">
+            <div className="hp-trust-item"><IconShield /> FIRS Compliant</div>
+            <div className="hp-trust-item"><IconCheck /> QuickBooks Certified Partner</div>
+            <div className="hp-trust-item"><IconUsers /> Remote-First Firm</div>
+            <div className="hp-trust-item"><IconBriefcase /> CAC Registered</div>
           </div>
         </div>
       </section>
 
-      {/* ─── 5. INTERACTIVE PLAN SELECTOR (REDESIGNED ULTRA-CLEAN UI) ──── */}
-      <section className="estimator-section">
-        <div className="estimator-container scroll-reveal">
-          <div className="estimator-header">
-            <span className="section-pretitle text-center">INTERACTIVE SERVICE RECOMMENDATION</span>
-            <h2>Find The Right Accounting Plan For Your Business</h2>
-            <p>Select your business structure and transaction scale to instantly view our recommended retainer package.</p>
+      {/* 3. SERVICES OVERVIEW */}
+      <section className="hp-section hp-bg-light">
+        <div className="hp-container">
+          <div className="hp-section-header">
+            <Reveal>
+              <h2 className="hp-section-title">Comprehensive Financial Solutions</h2>
+              <p className="hp-section-desc">Tailored accounting and tax services to streamline your operations and ensure compliance.</p>
+            </Reveal>
           </div>
-
-          <div className="estimator-card">
-            <div className="estimator-controls">
-              
-              {/* Control 1 */}
-              <div className="control-group">
-                <label className="control-label">1. Business Structure</label>
-                <div className="button-group">
-                  <button 
-                    type="button"
-                    className={`choice-btn ${businessType === 'micro' ? 'active' : ''}`}
-                    onClick={() => setBusinessType('micro')}
-                  >
-                    <span className="choice-radio">{businessType === 'micro' && <Icons.CheckCircle />}</span>
-                    <span>Sole Proprietor / Freelancer</span>
-                  </button>
-                  <button 
-                    type="button"
-                    className={`choice-btn ${businessType === 'sme' ? 'active' : ''}`}
-                    onClick={() => setBusinessType('sme')}
-                  >
-                    <span className="choice-radio">{businessType === 'sme' && <Icons.CheckCircle />}</span>
-                    <span>Growing SME / Startup</span>
-                  </button>
-                  <button 
-                    type="button"
-                    className={`choice-btn ${businessType === 'corporate' ? 'active' : ''}`}
-                    onClick={() => setBusinessType('corporate')}
-                  >
-                    <span className="choice-radio">{businessType === 'corporate' && <Icons.CheckCircle />}</span>
-                    <span>Limited Liability Company / NGO</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Control 2 */}
-              <div className="control-group">
-                <label className="control-label">2. Monthly Transaction Scale</label>
-                <div className="button-group">
-                  <button 
-                    type="button"
-                    className={`choice-btn ${txVolume === 'low' ? 'active' : ''}`}
-                    onClick={() => setTxVolume('low')}
-                  >
-                    <span className="choice-radio">{txVolume === 'low' && <Icons.CheckCircle />}</span>
-                    <span>Up to 150 Transactions</span>
-                  </button>
-                  <button 
-                    type="button"
-                    className={`choice-btn ${txVolume === 'medium' ? 'active' : ''}`}
-                    onClick={() => setTxVolume('medium')}
-                  >
-                    <span className="choice-radio">{txVolume === 'medium' && <Icons.CheckCircle />}</span>
-                    <span>150 – 1,000 Transactions</span>
-                  </button>
-                  <button 
-                    type="button"
-                    className={`choice-btn ${txVolume === 'high' ? 'active' : ''}`}
-                    onClick={() => setTxVolume('high')}
-                  >
-                    <span className="choice-radio">{txVolume === 'high' && <Icons.CheckCircle />}</span>
-                    <span>1,000+ Transactions</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Recommendation Result Box (Fixed Mobile Layout) */}
-            <div className="estimator-result">
-              <div className="result-header">RECOMMENDED SOLUTION</div>
-              <h3 className="result-title">{rec.title}</h3>
-              
-              {/* Price Line Flex Container — Prevents Overlap */}
-              <div className="result-price-row">
-                <span className="result-price">{rec.price}</span>
-                {rec.price !== 'Custom Quote' && <span className="period-text">/ month</span>}
-              </div>
-
-              <p className="result-subtext">{rec.subtext}</p>
-              
-              <Link to={rec.link} className="btn-primary-cta full-width">
-                <span>Proceed With This Package</span>
-                <Icons.ArrowRight />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials removed to strictly use real database data */}
-
-      {/* ─── 7. FREQUENTLY ASKED QUESTIONS (SEO ACCORDION) ───────────── */}
-      <section className="faq-section">
-        <div className="faq-container scroll-reveal">
-          <div className="section-header text-center">
-            <span className="section-pretitle">HAVE QUESTIONS?</span>
-            <h2 className="section-title">Frequently Asked Questions</h2>
-            <p className="section-subtitle">Everything you need to know about our bookkeeping packages, tax advisory, and bank transfer options.</p>
-          </div>
-
-          <div className="faq-list">
+          
+          <div className="hp-services-grid">
             {[
-              {
-                q: "What is included in the Donzen DIY Remote vs. Done-For-You accounting plan?",
-                a: "The DIY Remote plan (₦80,000/mo) is designed for business owners who want to record daily entries themselves using our tools, while we perform monthly bank reconciliations, inventory audits, tax calculations, and financial review. The Done-For-You plan (₦120,000/mo) is a hands-off service where our dedicated accountants handle all daily transaction entries, staff payroll, receivables/payables, and tax filings for you."
-              },
-              {
-                q: "How does Donzen ensure FIRS and LIRS tax compliance for my business?",
-                a: "Our team computes Company Income Tax (CIT), Value Added Tax (VAT), Withholding Tax (WHT), and PAYE according to current Nigerian tax laws. We prepare schedules for monthly tax remittances so your business avoids penalties and easily obtains Tax Clearance Certificates (TCC)."
-              },
-              {
-                q: "Can I pay via Direct Bank Transfer in Nigeria?",
-                a: "Yes! You can pay directly into our official corporate bank account:\nAccount Name: Donzen Accounting Hub\nAccount Number: 1211575347\nBank: Zenith Bank\nAfter transferring, simply send your receipt to +234 703 9999 842 on WhatsApp or info@donzenaccountinghub.com for instant confirmation."
-              },
-              {
-                q: "Where is Donzen Accounting Hub located?",
-                a: "Our corporate headquarters is located at Ikota Shopping Complex, Eti-Osa, Lekki 101001, Lagos, Nigeria. We serve clients physically across Lagos and remotely across Nigeria and Africa."
-              }
-            ].map((faq, idx) => (
-              <div key={idx} className={`faq-item ${openFaq === idx ? 'open' : ''}`}>
-                <button className="faq-question" onClick={() => toggleFaq(idx)}>
-                  <span>{faq.q}</span>
-                  <span className={`faq-toggle-icon ${openFaq === idx ? 'rotated' : ''}`}>
-                    <Icons.ChevronDown />
-                  </span>
-                </button>
-                {openFaq === idx && (
-                  <div className="faq-answer">
-                    <p>{faq.a}</p>
-                  </div>
-                )}
-              </div>
+              { title: "Bookkeeping & Accounting", desc: "Accurate daily transaction recording, bank reconciliation, and financial reporting.", icon: <IconBookkeeping /> },
+              { title: "Done-For-You Accounting", desc: "Complete outsourced financial management for businesses that want a hands-off approach.", icon: <IconCheck /> },
+              { title: "Tax Advisory & Compliance", desc: "Strategic tax planning and timely filing to ensure full compliance with FIRS regulations.", icon: <IconTax /> },
+              { title: "Business Incorporation", desc: "Seamless CAC registration and post-incorporation services for new and existing businesses.", icon: <IconBriefcase /> },
+              { title: "DIY Accounting Templates", desc: "Easy-to-use spreadsheet templates designed for small businesses to manage finances independently.", icon: <IconFileText /> },
+              { title: "Accounting Experience Programme", desc: "Practical bootcamp training for aspiring accountants to gain real-world industry skills.", icon: <IconGraduationCap /> }
+            ].map((service, idx) => (
+              <Reveal key={idx} delay={idx * 100}>
+                <div className="hp-card hp-service-card">
+                  <div className="hp-service-icon">{service.icon}</div>
+                  <h3 className="hp-service-title">{service.title}</h3>
+                  <p className="hp-service-desc">{service.desc}</p>
+                  <Link to="/services" className="hp-service-link">Learn more <IconArrowRight /></Link>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── 8. FINAL EXECUTIVE CTA BANNER (BACKGROUND IMAGE OVERLAY & 2 BUTTONS) ─── */}
-      <section className="final-cta-section">
-        <div className="final-cta-overlay" />
-        <div className="final-cta-container scroll-reveal">
-          <span className="section-pretitle light">YOUR BUSINESS IS OUR SUCCESS</span>
-          <h2 className="final-cta-heading">Ready To Upgrade Your Business Financial Management?</h2>
-          <p className="final-cta-desc">
-            Speak directly with our senior accounting consultants today or request a custom proposal tailored to your operational budget.
-          </p>
-
-          {/* EXACTLY TWO BUTTONS */}
-          <div className="final-cta-two-buttons">
-            <Link to="/contact" className="btn-primary-cta">
-              <span>Schedule A Free Consultation</span>
-              <Icons.ArrowRight />
-            </Link>
-            <a 
-              href="https://wa.me/message/XUEP2CGZ4FM6E1" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="btn-whatsapp-cta"
-            >
-              <Icons.WhatsApp />
-              <span>WhatsApp Direct Message</span>
-            </a>
+      {/* 4. WHY CHOOSE US */}
+      <section className="hp-section">
+        <div className="hp-container">
+          <div className="hp-why-split">
+            <Reveal className="hp-why-image-col">
+              <img src="/images/home-why.jpg" alt="Our Advisory Team" className="hp-why-img" />
+              <div className="hp-why-image-accent"></div>
+            </Reveal>
+            <div className="hp-why-content-col">
+              <Reveal>
+                <h2 className="hp-section-title hp-text-left">Why Businesses Trust Donzen</h2>
+                <p className="hp-section-desc hp-text-left">We go beyond mere number crunching. We provide strategic insights to help you grow.</p>
+                <ul className="hp-why-list">
+                  <li>
+                    <div className="hp-why-list-icon"><IconCheck /></div>
+                    <div>
+                      <h4 className="hp-why-list-title">Industry Expertise</h4>
+                      <p className="hp-why-list-desc">Deep understanding of the Nigerian business landscape and tax regulations.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="hp-why-list-icon"><IconUsers /></div>
+                    <div>
+                      <h4 className="hp-why-list-title">Remote-First &amp; Reliable</h4>
+                      <p className="hp-why-list-desc">Seamless communication and document management no matter where you are located.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="hp-why-list-icon"><IconShield /></div>
+                    <div>
+                      <h4 className="hp-why-list-title">Transparent Pricing</h4>
+                      <p className="hp-why-list-desc">Clear, upfront service packages with no hidden fees or unexpected charges.</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="hp-why-list-icon"><IconBriefcase /></div>
+                    <div>
+                      <h4 className="hp-why-list-title">Dedicated Account Managers</h4>
+                      <p className="hp-why-list-desc">A single point of contact who understands your business inside and out.</p>
+                    </div>
+                  </li>
+                </ul>
+              </Reveal>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── STYLESHEET ────────────────────────────────── */}
-      <style>{`
-        .home-corporate-root {
-          font-family: var(--font, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+      {/* 5. TESTIMONIALS */}
+      <section className="hp-section hp-bg-dark">
+        <div className="hp-container">
+          <div className="hp-section-header hp-text-white">
+            <Reveal>
+              <h2 className="hp-section-title">Client Success Stories</h2>
+              <p className="hp-section-desc">Hear what our clients have to say about working with Donzen Accounting Hub.</p>
+            </Reveal>
+          </div>
+          
+          <div className="hp-testimonials-wrapper">
+            <div className="hp-testimonials-grid">
+              {[
+                { name: "Adeola K.", role: "Founder, OVE Naturals", quote: "Donzen transformed our financial tracking. Their team is exceptionally responsive and professional. Highly recommended for any growing business.", img: "/testimonial_1.png" },
+                { name: "Chinedu M.", role: "CEO, ChiTech Solutions", quote: "Since partnering with Donzen, our tax compliance issues are a thing of the past. Their proactive approach has saved us both time and money.", img: "/testimonial_2.png" },
+                { name: "Bukola F.", role: "Director, BukoFinance", quote: "The DIY templates provided by Donzen gave us the clarity we needed before we were ready for full outsourced accounting. Brilliant service.", img: "/testimonial_3.png" }
+              ].map((test, idx) => (
+                <Reveal key={idx} delay={idx * 150} className="hp-testimonial-card-wrapper">
+                  <div className="hp-card hp-testimonial-card">
+                    <div className="hp-stars">
+                      <IconStar /><IconStar /><IconStar /><IconStar /><IconStar />
+                    </div>
+                    <p className="hp-testimonial-quote">"{test.quote}"</p>
+                    <div className="hp-testimonial-author">
+                      <img src={test.img} alt={test.name} className="hp-testimonial-img" />
+                      <div>
+                        <h4 className="hp-testimonial-name">{test.name}</h4>
+                        <p className="hp-testimonial-role">{test.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. PRICING PREVIEW */}
+      <section className="hp-section hp-bg-light">
+        <div className="hp-container">
+          <div className="hp-section-header">
+            <Reveal>
+              <h2 className="hp-section-title">Transparent Accounting Packages</h2>
+              <p className="hp-section-desc">Choose the perfect plan to support your business operations and growth.</p>
+            </Reveal>
+          </div>
+          
+          <div className="hp-pricing-grid">
+            {[
+              { name: "Starter", price: 35000, desc: "Perfect for sole proprietors and new businesses.", features: ["Monthly Bank Reconciliation", "Income & Expense Tracking", "Basic Financial Reports"], isPopular: false },
+              { name: "Growth", price: 75000, desc: "Ideal for growing SMEs needing robust tracking.", features: ["Bi-weekly Reconciliation", "Payroll Processing", "Tax Compliance (VAT/PAYE)", "Management Accounts"], isPopular: true },
+              { name: "Enterprise", price: 150000, desc: "Comprehensive solutions for established companies.", features: ["Weekly Bank Reconciliation", "Dedicated Account Manager", "Strategic Tax Advisory", "Audit Preparation"], isPopular: false }
+            ].map((plan, idx) => (
+              <Reveal key={idx} delay={idx * 100}>
+                <div className={`hp-card hp-pricing-card ${plan.isPopular ? 'hp-pricing-popular' : ''}`}>
+                  {plan.isPopular && <div className="hp-pricing-badge">Most Popular</div>}
+                  <h3 className="hp-pricing-name">{plan.name}</h3>
+                  <p className="hp-pricing-desc">{plan.desc}</p>
+                  <div className="hp-pricing-amount">
+                    <span className="hp-price-val">{formatPrice(plan.price)}</span>
+                    <span className="hp-price-period">/mo</span>
+                  </div>
+                  <ul className="hp-pricing-features">
+                    {plan.features.map((feat, i) => (
+                      <li key={i}><IconCheck /> {feat}</li>
+                    ))}
+                  </ul>
+                  <Link to="/resources" className={`hp-btn hp-btn-block ${plan.isPopular ? 'hp-btn-primary' : 'hp-btn-outline'}`}>
+                    View Details
+                  </Link>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. FAQ */}
+      <section className="hp-section">
+        <div className="hp-container hp-faq-container">
+          <div className="hp-section-header">
+            <Reveal>
+              <h2 className="hp-section-title">Frequently Asked Questions</h2>
+            </Reveal>
+          </div>
+          <Reveal>
+            <div className="hp-faq-list">
+              <FaqItem question="What services does Donzen offer?" answer="We offer comprehensive bookkeeping, tax advisory and compliance, business incorporation with the CAC, accounting DIY templates, and practical accounting training bootcamps." />
+              <FaqItem question="Do you work with businesses outside Lagos?" answer="Yes! We are a remote-first accounting firm and successfully partner with businesses across all 36 states of Nigeria." />
+              <FaqItem question="What accounting software do you use?" answer="We are certified partners with QuickBooks Online, but we also work proficiently with Xero, Sage, and other standard accounting ERP systems based on client needs." />
+              <FaqItem question="How long does onboarding take?" answer="Our onboarding process is streamlined. Once the initial consultation is complete and the agreement is signed, we typically have your account setup and ready within 3 to 5 business days." />
+              <FaqItem question="Can I switch plans later?" answer="Absolutely. As your business grows, your accounting needs will change. You can upgrade or adjust your service package at the beginning of any billing cycle." />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 8. BOTTOM CTA */}
+      <section className="hp-cta-section">
+        <div className="hp-container">
+          <Reveal>
+            <div className="hp-cta-box">
+              <h2 className="hp-cta-title">Ready to Take Control of Your Business Finances?</h2>
+              <p className="hp-cta-desc">Schedule a free consultation today to discuss your business needs and discover how our expertise can drive your growth.</p>
+              <div className="hp-cta-actions">
+                <Link to="/contact" className="hp-btn hp-btn-primary hp-btn-large">Book a Consultation</Link>
+                <a href="https://wa.me/message/XUEP2CGZ4FM6E1" target="_blank" rel="noopener noreferrer" className="hp-btn hp-btn-secondary hp-btn-large">Chat on WhatsApp</a>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* --- SCOPED CSS --- */
+        .hp-wrapper {
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          color: #09090b;
           background-color: #ffffff;
-          color: #0f172a;
-          line-height: 1.6;
           overflow-x: hidden;
         }
-
-        /* Scroll Reveal Animation Styling */
-        .scroll-reveal {
-          opacity: 0;
-          transform: translateY(28px);
-          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        
+        .hp-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
         }
-        .scroll-reveal-visible {
+
+        .hp-section {
+          padding: 5rem 0;
+        }
+        
+        .hp-bg-light { background-color: #f8fafc; }
+        .hp-bg-dark { background-color: #09090b; }
+        .hp-text-white * { color: #ffffff !important; }
+        .hp-text-accent { color: #ff1717; }
+        .hp-text-left { text-align: left !important; }
+
+        /* Typography */
+        .hp-section-title {
+          font-size: 2.25rem;
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 1rem;
+          color: #09090b;
+        }
+        .hp-section-desc {
+          font-size: 1.125rem;
+          color: #64748b;
+          text-align: center;
+          max-width: 600px;
+          margin: 0 auto 3rem;
+          line-height: 1.6;
+        }
+
+        /* Buttons */
+        .hp-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          cursor: pointer;
+          border: 2px solid transparent;
+        }
+        .hp-btn-primary {
+          background-color: #ff1717;
+          color: #ffffff !important;
+        }
+        .hp-btn-primary:hover {
+          background-color: #d11111;
+        }
+        .hp-btn-secondary {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #ffffff !important;
+          backdrop-filter: blur(8px);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .hp-btn-secondary:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+        .hp-btn-outline {
+          background-color: transparent;
+          border-color: #e2e8f0;
+          color: #09090b;
+        }
+        .hp-btn-outline:hover {
+          border-color: #09090b;
+        }
+        .hp-btn-block {
+          width: 100%;
+        }
+        .hp-btn-large {
+          padding: 1rem 2rem;
+          font-size: 1.125rem;
+        }
+
+        /* Reveal Animation */
+        .hp-reveal-base {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hp-reveal-visible {
           opacity: 1;
           transform: translateY(0);
         }
 
-        /* Keyframe Animations */
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.1); }
-        }
-        @keyframes marquee-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        .float-anim {
-          animation: float-slow 3s ease-in-out infinite;
-        }
-
-        /* Common Utility Styles */
-        .section-pretitle {
-          font-size: 0.78rem;
-          font-weight: 800;
-          color: #ff1717;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          display: block;
-          margin-bottom: 8px;
-        }
-        .section-pretitle.light {
-          color: #ff1717;
-        }
-        .section-pretitle.text-center {
-          text-align: center;
-        }
-
-        .section-header {
-          max-width: 760px;
-          margin: 0 auto 52px;
-          text-align: center;
-        }
-        .section-title {
-          font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-          font-weight: 900;
-          color: #0f172a;
-          letter-spacing: -0.8px;
-          line-height: 1.2;
-          margin: 0 0 14px;
-        }
-        .section-subtitle {
-          font-size: 1.05rem;
-          color: #64748b;
-          margin: 0;
-        }
-
-        /* Buttons */
-        .btn-primary-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: #ff1717;
-          color: #ffffff;
-          padding: 15px 32px;
-          border-radius: 8px;
-          font-weight: 700;
-          font-size: 0.98rem;
-          text-decoration: none;
-          transition: all 0.2s ease;
-          box-shadow: 0 4px 14px rgba(255, 23, 23, 0.35);
-        }
-        .btn-primary-cta:hover {
-          background: #d91414;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(255, 23, 23, 0.45);
-        }
-
-        .btn-secondary-cta {
-          display: inline-flex;
-          align-items: center;
+        /* Cards */
+        .hp-card {
           background: #ffffff;
-          color: #0f172a;
-          padding: 15px 28px;
-          border-radius: 8px;
-          font-weight: 700;
-          font-size: 0.98rem;
-          text-decoration: none;
-          border: 1px solid #cbd5e1;
-          transition: all 0.2s ease;
+          border-radius: 1rem;
+          padding: 2rem;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+          border: 1px solid #f1f5f9;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .btn-secondary-cta:hover {
-          background: #f8fafc;
-          border-color: #0f172a;
+        .hp-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        .btn-whatsapp-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #16a34a;
-          color: #ffffff;
-          padding: 15px 28px;
-          border-radius: 8px;
-          font-weight: 700;
-          font-size: 0.98rem;
-          text-decoration: none;
-          transition: background 0.2s;
-        }
-        .btn-whatsapp-cta:hover {
-          background: #15803d;
-        }
-
-        /* ── HERO STYLING ── */
-        .hero-section {
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 70%, #090d16 100%);
-          color: #ffffff;
-          padding: 80px 24px 72px;
-          border-bottom: 3px solid #ff1717;
+        /* 1. Hero */
+        .hp-hero {
           position: relative;
-          overflow: hidden;
+          min-height: 90vh;
+          display: flex;
+          align-items: center;
+          padding: 6rem 0;
         }
-        
-        .hero-bg-grid {
+        .hp-hero-bg {
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-          background-size: 28px 28px;
-          opacity: 0.6;
-          pointer-events: none;
+          z-index: 0;
         }
-        .hero-shape-glow {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(80px);
-          pointer-events: none;
-        }
-        .glow-1 {
-          top: -10%;
-          right: 5%;
-          width: 500px;
-          height: 500px;
-          background: radial-gradient(circle, rgba(255,23,23,0.18) 0%, transparent 70%);
-          animation: pulse-glow 6s ease-in-out infinite;
-        }
-        .glow-2 {
-          bottom: -15%;
-          left: -5%;
-          width: 450px;
-          height: 450px;
-          background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
-          animation: pulse-glow 8s ease-in-out infinite;
-        }
-
-        .hero-container {
-          max-width: 1280px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 48px;
-          align-items: stretch;
-          position: relative;
-          z-index: 2;
-        }
-
-        .hero-headline {
-          font-size: clamp(2.4rem, 4.2vw, 3.6rem);
-          font-weight: 900;
-          line-height: 1.14;
-          letter-spacing: -1.2px;
-          color: #ffffff;
-          margin: 0 0 20px;
-        }
-        .highlight-text {
-          color: #ff1717;
-        }
-        .hero-description {
-          font-size: 1.1rem;
-          color: #94a3b8;
-          line-height: 1.7;
-          margin: 0 0 28px;
-          max-width: 620px;
-        }
-        .hero-checklist {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin-bottom: 32px;
-        }
-        .check-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 0.95rem;
-          color: #e2e8f0;
-          font-weight: 600;
-        }
-        .hero-cta-group {
-          display: flex;
-          gap: 16px;
-          flex-wrap: wrap;
-          margin-bottom: 40px;
-        }
-
-        /* Quick Stats Bar */
-        .hero-stats-row {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-          padding-top: 24px;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .stat-card {
-          display: flex;
-          flex-direction: column;
-        }
-        .stat-number {
-          font-size: 1.6rem;
-          font-weight: 900;
-          color: #ffffff;
-          letter-spacing: -0.5px;
-        }
-        .stat-label {
-          font-size: 0.78rem;
-          color: #94a3b8;
-          font-weight: 500;
-        }
-        .stat-divider {
-          width: 1px;
-          height: 36px;
-          background: rgba(255, 255, 255, 0.12);
-        }
-
-        /* Hero Image Frame - Full Big Column Size */
-        .hero-visual-col {
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-        }
-        .image-frame-hero {
-          position: relative;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          height: 100%;
-          min-height: 480px;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          background: #0f172a;
-        }
-        .hero-img-full {
-          position: absolute;
-          inset: 0;
+        .hp-hero-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: center;
-          transition: transform 0.6s ease;
         }
-        .image-frame-hero:hover .hero-img-full {
-          transform: scale(1.03);
+        .hp-hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to right, rgba(9, 9, 11, 0.9) 0%, rgba(9, 9, 11, 0.7) 100%);
         }
-
-        .floating-metric-card {
+        .hp-hero-content {
           position: relative;
-          z-index: 3;
-          margin: 20px;
-          background: rgba(15, 23, 42, 0.92);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 14px;
-          padding: 20px 24px;
-          display: flex;
-          align-items: center;
-          gap: 18px;
-          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-        }
-        .metric-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
-          background: rgba(255, 23, 23, 0.15);
-          border: 1px solid rgba(255, 23, 23, 0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .metric-title {
-          font-weight: 800;
-          color: #ffffff;
-          font-size: 1rem;
-        }
-        .metric-desc {
-          font-size: 0.84rem;
-          color: #94a3b8;
-        }
-
-        /* ── TRUST BAR ── */
-        .trust-bar-section {
-          background: #f8fafc;
-          border-bottom: 1px solid #e2e8f0;
-          padding: 28px 24px;
-        }
-        .trust-container {
-          max-width: 1240px;
+          z-index: 1;
+          max-width: 800px;
           margin: 0 auto;
           text-align: center;
         }
-        .trust-label {
-          font-size: 0.75rem;
+        .hp-hero-title {
+          font-size: 3.5rem;
           font-weight: 800;
-          color: #64748b;
-          letter-spacing: 1.5px;
-          display: block;
-          margin-bottom: 20px;
+          color: #ffffff;
+          line-height: 1.2;
+          margin-bottom: 1.5rem;
         }
-        .trust-badges-row {
+        .hp-hero-subtitle {
+          font-size: 1.25rem;
+          color: #cbd5e1;
+          margin-bottom: 2.5rem;
+          line-height: 1.6;
+        }
+        .hp-hero-ctas {
           display: flex;
+          gap: 1rem;
           justify-content: center;
-          align-items: center;
-          gap: 40px;
-          flex-wrap: wrap;
+          margin-bottom: 4rem;
         }
-        .trust-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 0.92rem;
-          font-weight: 700;
-          color: #0f172a;
-        }
-
-        /* ── SERVICES SECTION (PERFECT 6-CARD GRID) ── */
-        .services-section {
-          padding: 92px 24px;
-          background: #f8fafc;
-          position: relative;
-          overflow: hidden;
-        }
-        .services-pattern-bg {
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-          background-size: 32px 32px;
-          pointer-events: none;
-        }
-
-        .services-grid {
-          max-width: 1240px;
-          margin: 0 auto;
+        .hp-hero-stats {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 32px;
-          position: relative;
-          z-index: 2;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 2rem;
+          padding-top: 3rem;
+          border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .service-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 18px;
-          padding: 36px 30px;
-          display: flex;
-          flex-direction: column;
-          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+        .hp-stat-item {
+          color: #ffffff;
         }
-        .service-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.07);
-          border-color: #ff1717;
+        .hp-stat-number {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #ff1717;
+          margin-bottom: 0.5rem;
         }
-        .service-card-header {
+        .hp-stat-label {
+          font-size: 0.875rem;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        /* 2. Trust Bar */
+        .hp-trust-bar {
+          background-color: #1e293b;
+          padding: 1.5rem 0;
+          border-bottom: 1px solid #334155;
+        }
+        .hp-trust-grid {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
+          flex-wrap: wrap;
+          gap: 1rem;
         }
-        .service-num {
-          font-size: 1.8rem;
-          font-weight: 900;
-          color: #0f172a;
-          opacity: 0.18;
-        }
-        .service-tag {
-          font-size: 0.75rem;
-          font-weight: 800;
-          padding: 5px 14px;
-          border-radius: 20px;
-          background: #f1f5f9;
-          color: #475569;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        .service-tag.highlight {
-          background: rgba(255, 23, 23, 0.1);
-          color: #ff1717;
-        }
-        .service-title {
-          font-size: 1.22rem;
-          font-weight: 800;
-          color: #0f172a;
-          margin: 0 0 12px;
-          line-height: 1.35;
-        }
-        .service-desc {
-          font-size: 0.94rem;
-          color: #64748b;
-          line-height: 1.65;
-          margin: 0 0 20px;
-          flex: 1;
-        }
-        .service-bullets {
-          list-style: none;
-          padding: 0;
-          margin: 0 0 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .service-bullets li {
-          font-size: 0.88rem;
-          color: #334155;
-          font-weight: 600;
+        .hp-trust-item {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 0.5rem;
+          color: #94a3b8;
+          font-weight: 500;
+          font-size: 0.9375rem;
         }
-        .service-bullets li::before {
-          content: '•';
-          color: #ff1717;
-          font-weight: bold;
+
+        /* 3. Services Overview */
+        .hp-services-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
         }
-        .service-link {
-          font-size: 0.92rem;
-          font-weight: 800;
+        .hp-service-icon {
           color: #ff1717;
-          text-decoration: none;
+          margin-bottom: 1.5rem;
+        }
+        .hp-service-icon svg {
+          width: 32px;
+          height: 32px;
+        }
+        .hp-service-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: 0.75rem;
+          color: #09090b;
+        }
+        .hp-service-desc {
+          color: #64748b;
+          margin-bottom: 1.5rem;
+          line-height: 1.6;
+          font-size: 0.9375rem;
+        }
+        .hp-service-link {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          transition: gap 0.2s;
+          gap: 0.5rem;
+          color: #ff1717;
+          font-weight: 600;
+          text-decoration: none;
+          font-size: 0.9375rem;
         }
-        .service-link:hover {
-          gap: 10px;
-        }
+        .hp-service-link:hover { text-decoration: underline; }
+        .hp-service-link svg { width: 16px; height: 16px; }
 
-        /* ── WHY CHOOSE DONZEN SECTION ── */
-        .why-section {
-          padding: 92px 24px;
-          background: #ffffff;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
-        }
-        .why-container {
-          max-width: 1240px;
-          margin: 0 auto;
+        /* 4. Why Choose Us */
+        .hp-why-split {
           display: grid;
-          grid-template-columns: 0.9fr 1.1fr;
-          gap: 64px;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
           align-items: center;
         }
-        .why-img-col {
+        .hp-why-image-col {
           position: relative;
         }
-        .why-img {
+        .hp-why-img {
           width: 100%;
-          border-radius: 16px;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-          border: 1px solid #e2e8f0;
+          border-radius: 1rem;
+          object-fit: cover;
+          aspect-ratio: 4/5;
+          position: relative;
+          z-index: 2;
         }
-        .experience-badge {
+        .hp-why-image-accent {
           position: absolute;
-          bottom: -20px;
-          right: -20px;
-          background: #0f172a;
-          color: #ffffff;
+          top: -1rem;
+          left: -1rem;
+          width: 100%;
+          height: 100%;
           border: 2px solid #ff1717;
-          border-radius: 14px;
-          padding: 20px 24px;
-          max-width: 200px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          border-radius: 1rem;
+          z-index: 1;
         }
-        .exp-num {
-          font-size: 2.2rem;
-          font-weight: 900;
-          color: #ff1717;
-          line-height: 1;
-        }
-        .exp-text {
-          font-size: 0.82rem;
-          color: #e2e8f0;
-          font-weight: 600;
-          margin-top: 4px;
-        }
-
-        .why-heading {
-          font-size: 2.2rem;
-          font-weight: 900;
-          color: #0f172a;
-          margin: 0 0 16px;
-          letter-spacing: -0.5px;
-        }
-        .why-lead-para {
-          font-size: 1.05rem;
-          color: #64748b;
-          line-height: 1.7;
-          margin-bottom: 32px;
-        }
-        .advantages-list {
+        .hp-why-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
           display: flex;
           flex-direction: column;
-          gap: 24px;
+          gap: 2rem;
         }
-        .advantage-item {
+        .hp-why-list li {
           display: flex;
-          gap: 20px;
+          gap: 1rem;
         }
-        .adv-icon-box {
-          width: 44px;
-          height: 44px;
-          border-radius: 10px;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          color: #ff1717;
-          font-weight: 900;
-          font-size: 1.1rem;
+        .hp-why-list-icon {
+          flex-shrink: 0;
+          width: 48px;
+          height: 48px;
+          background: #fef2f2;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-shrink: 0;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+          color: #ff1717;
         }
-        .adv-title {
-          font-size: 1.1rem;
-          font-weight: 800;
-          color: #0f172a;
-          margin: 0 0 4px;
+        .hp-why-list-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          color: #09090b;
         }
-        .adv-desc {
-          font-size: 0.92rem;
+        .hp-why-list-desc {
           color: #64748b;
+          font-size: 0.9375rem;
+          line-height: 1.5;
+        }
+
+        /* 5. Testimonials */
+        .hp-testimonials-wrapper {
+          overflow-x: auto;
+          padding-bottom: 1rem;
+          scrollbar-width: none;
+        }
+        .hp-testimonials-wrapper::-webkit-scrollbar { display: none; }
+        .hp-testimonials-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+          min-width: 100%;
+        }
+        .hp-testimonial-card {
+          background-color: #18181b;
+          border-color: #27272a;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        .hp-stars {
+          display: flex;
+          gap: 0.25rem;
+          margin-bottom: 1.5rem;
+        }
+        .hp-testimonial-quote {
+          font-size: 1rem;
+          line-height: 1.6;
+          color: #e4e4e7;
+          margin-bottom: 2rem;
+          flex-grow: 1;
+        }
+        .hp-testimonial-author {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .hp-testimonial-img {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+        .hp-testimonial-name {
+          font-weight: 600;
+          color: #ffffff;
+          font-size: 1rem;
           margin: 0;
+        }
+        .hp-testimonial-role {
+          color: #a1a1aa;
+          font-size: 0.875rem;
+          margin: 0;
+        }
+
+        /* 6. Pricing */
+        .hp-pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2rem;
+          align-items: center;
+        }
+        .hp-pricing-card {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+        .hp-pricing-popular {
+          border-color: #ff1717;
+          box-shadow: 0 10px 25px -5px rgba(255, 23, 23, 0.1);
+          transform: scale(1.05);
+        }
+        .hp-pricing-popular:hover { transform: scale(1.05) translateY(-5px); }
+        .hp-pricing-badge {
+          position: absolute;
+          top: -12px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #ff1717;
+          color: white;
+          padding: 0.25rem 1rem;
+          border-radius: 999px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+        .hp-pricing-name {
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        .hp-pricing-desc {
+          color: #64748b;
+          font-size: 0.9375rem;
+          margin-bottom: 2rem;
+        }
+        .hp-pricing-amount {
+          margin-bottom: 2rem;
+          display: flex;
+          align-items: baseline;
+        }
+        .hp-price-val {
+          font-size: 2.5rem;
+          font-weight: 800;
+          color: #09090b;
+        }
+        .hp-price-period {
+          color: #64748b;
+          margin-left: 0.25rem;
+        }
+        .hp-pricing-features {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 2rem 0;
+          flex-grow: 1;
+        }
+        .hp-pricing-features li {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+          color: #334155;
+          font-size: 0.9375rem;
+        }
+        .hp-pricing-features li svg {
+          color: #ff1717;
+          flex-shrink: 0;
+          width: 18px;
+          height: 18px;
+        }
+
+        /* 7. FAQ */
+        .hp-faq-container {
+          max-width: 800px;
+        }
+        .hp-faq-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .hp-faq-item {
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
+          background: #ffffff;
+          overflow: hidden;
+        }
+        .hp-faq-question {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          background: none;
+          border: none;
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: #09090b;
+          cursor: pointer;
+          text-align: left;
+        }
+        .hp-faq-icon {
+          transition: transform 0.3s ease;
+          color: #64748b;
+        }
+        .hp-faq-icon-open {
+          transform: rotate(180deg);
+        }
+        .hp-faq-answer {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+        }
+        .hp-faq-answer-open {
+          max-height: 500px; /* arbitrary large value */
+        }
+        .hp-faq-answer-inner {
+          padding: 0 1.5rem 1.5rem;
+          color: #64748b;
           line-height: 1.6;
         }
 
-        /* ── ESTIMATOR WIDGET (ULTRA-CLEAN PIXEL PERFECT UI) ── */
-        .estimator-section {
-          padding: 92px 24px;
-          background: #f8fafc;
+        /* 8. Bottom CTA */
+        .hp-cta-section {
+          padding: 6rem 0;
+          background-color: #09090b;
+          background-image: radial-gradient(circle at center, #1f1f23 0%, #09090b 100%);
         }
-        .estimator-container {
-          max-width: 1080px;
-          margin: 0 auto;
-        }
-        .estimator-header {
+        .hp-cta-box {
           text-align: center;
-          margin-bottom: 44px;
-        }
-        .estimator-header h2 {
-          font-size: 2.2rem;
-          font-weight: 900;
-          color: #0f172a;
-          margin: 0 0 10px;
-        }
-        .estimator-header p {
-          font-size: 1.05rem;
-          color: #64748b;
-        }
-
-        .estimator-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          border-radius: 20px;
-          padding: 40px;
-          display: grid;
-          grid-template-columns: 1.2fr 0.8fr;
-          gap: 40px;
-          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
-        }
-        .estimator-controls {
-          display: flex;
-          flex-direction: column;
-          gap: 28px;
-        }
-        .control-label {
-          font-size: 0.95rem;
-          font-weight: 800;
-          color: #0f172a;
-          margin-bottom: 12px;
-          display: block;
-        }
-        .button-group {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .choice-btn {
-          padding: 14px 20px;
-          border: 1px solid #e2e8f0;
-          background: #ffffff;
-          border-radius: 10px;
-          font-size: 0.92rem;
-          font-weight: 600;
-          color: #334155;
-          text-align: left;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .choice-radio {
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          border: 1.5px solid #cbd5e1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .choice-btn.active .choice-radio {
-          border-color: #ff1717;
-        }
-        .choice-btn:hover {
-          border-color: #0f172a;
-        }
-        .choice-btn.active {
-          border-color: #ff1717;
-          background: rgba(255, 23, 23, 0.05);
-          color: #ff1717;
-          font-weight: 800;
-          box-shadow: 0 0 0 1px #ff1717;
-        }
-
-        .estimator-result {
-          background: #0f172a;
-          color: #ffffff;
-          border-radius: 16px;
-          padding: 36px 30px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          box-shadow: 0 16px 36px rgba(0,0,0,0.2);
-        }
-        .result-header {
-          font-size: 0.75rem;
-          font-weight: 800;
-          color: #ff1717;
-          letter-spacing: 1.5px;
-          margin-bottom: 12px;
-        }
-        .result-title {
-          font-size: 1.4rem;
-          font-weight: 800;
-          color: #ffffff;
-          margin: 0 0 14px;
-          line-height: 1.3;
-        }
-        
-        /* Flex row for price line to avoid overlapping text on mobile */
-        .result-price-row {
-          display: flex;
-          align-items: baseline;
-          gap: 8px;
-          flex-wrap: wrap;
-          margin-bottom: 12px;
-        }
-        .result-price {
-          font-size: 2.2rem;
-          font-weight: 900;
-          color: #ffffff;
-          letter-spacing: -0.5px;
-          line-height: 1;
-        }
-        .period-text {
-          font-size: 0.95rem;
-          color: #94a3b8;
-          font-weight: 600;
-        }
-        .result-subtext {
-          font-size: 0.88rem;
-          color: #94a3b8;
-          line-height: 1.5;
-          margin: 0 0 24px;
-        }
-
-        /* ── AUTO-SCROLLING HORIZONTAL TESTIMONIAL MARQUEE (SLOWED TO 65s) ── */
-        .testimonials-section {
-          padding: 92px 0;
-          background: #ffffff;
-          border-top: 1px solid #e2e8f0;
-          overflow: hidden;
-        }
-        .marquee-wrapper {
-          width: 100%;
-          overflow: hidden;
-          position: relative;
-          padding: 10px 0 20px;
-        }
-        .marquee-track {
-          display: flex;
-          gap: 28px;
-          width: max-content;
-          animation: marquee-scroll 65s linear infinite;
-        }
-        .marquee-wrapper:hover .marquee-track {
-          animation-play-state: paused;
-        }
-
-        .testimonial-card {
-          width: 360px;
-          flex-shrink: 0;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 32px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-          transition: transform 0.25s ease, border-color 0.25s ease;
-        }
-        .testimonial-card:hover {
-          transform: translateY(-4px);
-          border-color: #ff1717;
-        }
-        .stars-row {
-          display: flex;
-          gap: 4px;
-          margin-bottom: 16px;
-        }
-        .testimonial-quote {
-          font-size: 0.95rem;
-          color: #334155;
-          line-height: 1.65;
-          font-style: italic;
-          margin: 0 0 24px;
-        }
-        .client-info {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-        }
-        .client-avatar {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: #0f172a;
-          color: #ffffff;
-          font-weight: 800;
-          font-size: 0.92rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 2px solid #ff1717;
-          flex-shrink: 0;
-        }
-        .client-name {
-          font-weight: 800;
-          color: #0f172a;
-          font-size: 0.95rem;
-        }
-        .client-role {
-          font-size: 0.8rem;
-          color: #64748b;
-        }
-
-        /* ── FAQ SECTION ── */
-        .faq-section {
-          padding: 88px 24px;
-          background: #f8fafc;
-          border-top: 1px solid #e2e8f0;
-        }
-        .faq-container {
-          max-width: 860px;
+          max-width: 800px;
           margin: 0 auto;
         }
-        .faq-list {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-        }
-        .faq-item {
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          background: #ffffff;
-          overflow: hidden;
-          transition: border-color 0.2s;
-        }
-        .faq-item.open {
-          border-color: #ff1717;
-        }
-        .faq-question {
-          width: 100%;
-          padding: 20px 24px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: none;
-          border: none;
-          font-size: 1.05rem;
+        .hp-cta-title {
+          font-size: 2.5rem;
           font-weight: 800;
-          color: #0f172a;
-          text-align: left;
-          cursor: pointer;
-        }
-        .faq-toggle-icon {
-          color: #ff1717;
-          display: flex;
-          align-items: center;
-          transition: transform 0.2s ease;
-        }
-        .faq-toggle-icon.rotated {
-          transform: rotate(180deg);
-        }
-        .faq-answer {
-          padding: 0 24px 20px;
-          color: #475569;
-          font-size: 0.95rem;
-          line-height: 1.65;
-          white-space: pre-line;
-        }
-
-        /* ── FINAL EXECUTIVE CTA BANNER (WITH BACKGROUND IMAGE OVERLAY & EXACTLY 2 BUTTONS) ── */
-        .final-cta-section {
-          position: relative;
-          background-image: url('/hero-corporate.jpg');
-          background-size: cover;
-          background-position: center;
           color: #ffffff;
-          padding: 100px 24px;
-          text-align: center;
-          border-top: 4px solid #ff1717;
-          overflow: hidden;
+          margin-bottom: 1.5rem;
         }
-        .final-cta-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.96) 100%);
-          z-index: 1;
+        .hp-cta-desc {
+          font-size: 1.25rem;
+          color: #a1a1aa;
+          margin-bottom: 2.5rem;
         }
-        .final-cta-container {
-          max-width: 840px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 2;
-        }
-        .final-cta-heading {
-          font-size: clamp(2rem, 3.8vw, 3rem);
-          font-weight: 900;
-          margin: 12px 0 16px;
-          letter-spacing: -0.8px;
-          color: #ffffff;
-        }
-        .final-cta-desc {
-          font-size: 1.1rem;
-          color: #cbd5e1;
-          margin: 0 0 40px;
-          line-height: 1.7;
-        }
-        .final-cta-two-buttons {
+        .hp-cta-actions {
           display: flex;
+          gap: 1rem;
           justify-content: center;
-          align-items: center;
-          gap: 20px;
-          flex-wrap: wrap;
         }
 
-        /* ── RESPONSIVE BREAKPOINTS (TABLET & MOBILE) ── */
+        /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 1024px) {
-          .hero-container,
-          .why-container,
-          .estimator-card {
-            grid-template-columns: 1fr;
-            gap: 36px;
-          }
-          .services-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .image-frame-hero {
-            min-height: 380px;
-          }
-          .experience-badge {
-            position: relative;
-            bottom: auto;
-            right: auto;
-            margin-top: 16px;
-            max-width: 100%;
-          }
+          .hp-hero-title { font-size: 3rem; }
+          .hp-services-grid { grid-template-columns: repeat(2, 1fr); }
+          .hp-why-split { gap: 2rem; }
+          .hp-pricing-grid { grid-template-columns: repeat(3, 1fr); }
+          .hp-pricing-popular { transform: none; }
+          .hp-pricing-popular:hover { transform: translateY(-5px); }
         }
 
         @media (max-width: 768px) {
-          .services-grid {
-            grid-template-columns: 1fr;
+          .hp-hero-title { font-size: 2.25rem; }
+          .hp-hero-subtitle { font-size: 1.125rem; }
+          .hp-hero-ctas { flex-direction: column; }
+          .hp-hero-stats { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+          .hp-trust-grid { justify-content: center; }
+          .hp-services-grid { grid-template-columns: 1fr; }
+          .hp-why-split { grid-template-columns: 1fr; }
+          .hp-pricing-grid { grid-template-columns: 1fr; }
+          .hp-testimonials-grid { 
+            grid-template-columns: repeat(3, 300px); 
+            gap: 1rem;
           }
-          .estimator-card {
-            padding: 24px 18px;
-            gap: 28px;
-          }
-          .estimator-result {
-            padding: 28px 20px;
-          }
-          .result-price {
-            font-size: 1.8rem;
-          }
-          .hero-section {
-            padding: 48px 18px 56px;
-          }
-          .hero-headline {
-            font-size: 2.2rem;
-            line-height: 1.2;
-          }
-          .hero-description {
-            font-size: 1rem;
-          }
-          .hero-cta-group {
-            flex-direction: column;
-            width: 100%;
-          }
-          .btn-primary-cta, .btn-secondary-cta {
-            width: 100%;
-            justify-content: center;
-          }
-
-          /* Mobile Stats Grid - Perfect 3-Column Fit */
-          .hero-stats-row {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 8px !important;
-            padding-top: 20px !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-            width: 100% !important;
-          }
-          .stat-card {
-            align-items: center;
-            text-align: center;
-          }
-          .stat-number {
-            font-size: 1.25rem !important;
-            line-height: 1.2;
-          }
-          .stat-label {
-            font-size: 0.68rem !important;
-            line-height: 1.3;
-            margin-top: 2px;
-          }
-          .stat-divider {
-            display: none !important;
-          }
-
-          .image-frame-hero {
-            min-height: 320px;
-          }
-          .floating-metric-card {
-            margin: 12px;
-            padding: 14px 16px;
-          }
-          .final-cta-two-buttons {
-            flex-direction: column;
-            width: 100%;
-          }
-          .final-cta-two-buttons .btn-primary-cta,
-          .final-cta-two-buttons .btn-whatsapp-cta {
-            width: 100%;
-            justify-content: center;
-          }
+          .hp-cta-title { font-size: 2rem; }
+          .hp-cta-actions { flex-direction: column; }
         }
-      `}</style>
 
+        @media (max-width: 480px) {
+          .hp-hero-stats { grid-template-columns: 1fr; }
+          .hp-hero { padding: 4rem 0; }
+        }
+      ` }} />
     </div>
-  )
+  );
 }
