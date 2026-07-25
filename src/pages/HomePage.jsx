@@ -367,19 +367,24 @@ export default function HomePage() {
       </section>
 
       {/* 8. BOTTOM CTA */}
-      <section className="hp-cta-section">
-        <div className="hp-container">
-          <Reveal>
-            <div className="hp-cta-box">
-              <h2 className="hp-cta-title">Ready to Take Control of Your Business Finances?</h2>
-              <p className="hp-cta-desc">Schedule a free consultation today to discuss your business needs and discover how our expertise can drive your growth.</p>
-              <div className="hp-cta-actions">
-                <Link to="/contact" className="hp-btn hp-btn-primary hp-btn-large">Book a Consultation</Link>
-                <a href="https://wa.me/message/XUEP2CGZ4FM6E1" target="_blank" rel="noopener noreferrer" className="hp-btn hp-btn-secondary hp-btn-large">Chat on WhatsApp</a>
-              </div>
+      <section className="hp-bottom-cta">
+        <Reveal>
+          <div className="hp-bottom-cta-inner">
+            <h2>Ready to Take Control of Your Finances?</h2>
+            <p>
+              Whether you are a startup founder, a sole proprietor, or a growing SME — we are here to give you financial clarity and peace of mind.
+            </p>
+            <div className="hp-bottom-btns">
+              <Link to="/contact" className="hp-cta-btn hp-btn-red">
+                Get a Free Consultation
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </Link>
+              <a href="https://wa.me/message/XUEP2CGZ4FM6E1" target="_blank" rel="noopener noreferrer" className="hp-cta-btn hp-btn-glass">
+                Chat on WhatsApp
+              </a>
             </div>
-          </Reveal>
-        </div>
+          </div>
+        </Reveal>
       </section>
 
       <style dangerouslySetInnerHTML={{ __html: `
@@ -872,31 +877,81 @@ export default function HomePage() {
         }
 
         /* 8. Bottom CTA */
-        .hp-cta-section {
-          padding: 6rem 0;
-          background-color: #09090b;
-          background-image: radial-gradient(circle at center, #1f1f23 0%, #09090b 100%);
-        }
-        .hp-cta-box {
+        .hp-bottom-cta {
+          padding: 80px 24px;
+          background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%);
           text-align: center;
-          max-width: 800px;
+          position: relative;
+          overflow: hidden;
+        }
+        .hp-bottom-cta::before {
+          content: '';
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,23,23,0.1), transparent 70%);
+          bottom: -250px;
+          left: 50%;
+          transform: translateX(-50%);
+          pointer-events: none;
+        }
+        .hp-bottom-cta-inner {
+          max-width: 650px;
           margin: 0 auto;
+          position: relative;
+          z-index: 2;
         }
-        .hp-cta-title {
-          font-size: 2.5rem;
-          font-weight: 800;
-          color: #ffffff;
-          margin-bottom: 1.5rem;
+        .hp-bottom-cta h2 {
+          font-size: clamp(1.8rem, 4vw, 2.6rem);
+          font-weight: 900;
+          color: #fff;
+          margin: 0 0 16px;
+          letter-spacing: -1px;
         }
-        .hp-cta-desc {
-          font-size: 1.25rem;
-          color: #a1a1aa;
-          margin-bottom: 2.5rem;
+        .hp-bottom-cta p {
+          font-size: 1.05rem;
+          color: rgba(255,255,255,0.55);
+          line-height: 1.7;
+          margin: 0 0 36px;
         }
-        .hp-cta-actions {
+        .hp-bottom-btns {
           display: flex;
-          gap: 1rem;
           justify-content: center;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+        .hp-cta-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 14px 28px;
+          border-radius: 12px;
+          font-size: 0.92rem;
+          font-weight: 700;
+          font-family: inherit;
+          text-decoration: none;
+          transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+          cursor: pointer;
+          border: none;
+        }
+        .hp-btn-red {
+          background: #ff1717;
+          color: #fff;
+        }
+        .hp-btn-red:hover {
+          background: #d91414;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
+        }
+        .hp-btn-glass {
+          background: rgba(255,255,255,0.08);
+          color: #fff;
+          border: 1px solid rgba(255,255,255,0.2);
+        }
+        .hp-btn-glass:hover {
+          background: rgba(255,255,255,0.15);
+          transform: translateY(-2px);
         }
 
         /* --- RESPONSIVE DESIGN --- */
