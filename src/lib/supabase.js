@@ -9,19 +9,20 @@ export function triggerConfirmationEmail(payload) {
       const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-confirmation`
       const apikey = CONFIG.SUPABASE_KEY
       
-      // Directly invoke fetch with an attached .catch to handle CORS or network preflight blocks immediately
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': apikey,
-          'Authorization': `Bearer ${apikey}`
-        },
-        body: JSON.stringify({ record: payload })
-      }).catch((err) => {
+      let response = null
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': apikey,
+            'Authorization': `Bearer ${apikey}`
+          },
+          body: JSON.stringify({ record: payload })
+        })
+      } catch (err) {
         console.warn('[Email Confirmation] Ignored network or CORS preflight error:', err?.message || err)
-        return null
-      })
+      }
 
       if (response && response.ok) {
         console.log('[Email Confirmation] Request completed successfully')
