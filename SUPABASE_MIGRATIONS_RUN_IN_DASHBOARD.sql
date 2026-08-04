@@ -217,7 +217,6 @@ CREATE OR REPLACE FUNCTION public.auto_confirm_user_email()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.email_confirmed_at = NOW();
-  NEW.confirmed_at = NOW();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -233,8 +232,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.status = 'paid' THEN
     UPDATE auth.users
-    SET email_confirmed_at = NOW(),
-        confirmed_at = NOW()
+    SET email_confirmed_at = NOW()
     WHERE LOWER(email) = LOWER(NEW.customer_email);
   END IF;
   RETURN NEW;
