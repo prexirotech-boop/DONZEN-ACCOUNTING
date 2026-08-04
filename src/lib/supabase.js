@@ -205,14 +205,16 @@ export async function completeOrder({
       enrolled = await createEnrollment({ userId, courseId: productId })
     }
 
-    // ── 3. Fire confirmation email (non-blocking, silently ignore 401/errors) ─
-    triggerConfirmationEmail({
-      reference,
-      customer_name: name,
-      customer_email: email,
-      customer_phone: phone,
-      product_id: productId,
-    })
+    // ── 3. Confirmation email disabled until Edge Function is deployed ─────────
+    // To re-enable: deploy the send-confirmation Edge Function via Supabase CLI,
+    // then uncomment the triggerConfirmationEmail() call below.
+    // triggerConfirmationEmail({
+    //   reference,
+    //   customer_name: name,
+    //   customer_email: email,
+    //   customer_phone: phone,
+    //   product_id: productId,
+    // })
 
     return { success: true, enrolled }
   } catch (err) {
@@ -359,13 +361,14 @@ export async function saveOrder({ reference, name, email, phone, isEbook = false
       await createEnrollment({ userId, courseId: productId })
     }
 
-    triggerConfirmationEmail({
-      reference,
-      customer_name: name,
-      customer_email: email,
-      customer_phone: phone,
-      product_id: productId,
-    })
+    // Confirmation email disabled until Edge Function is deployed
+    // triggerConfirmationEmail({
+    //   reference,
+    //   customer_name: name,
+    //   customer_email: email,
+    //   customer_phone: phone,
+    //   product_id: productId,
+    // })
 
     return true
   } catch (err) {

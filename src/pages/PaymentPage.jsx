@@ -583,15 +583,15 @@ export default function PaymentPage() {
       localStorage.removeItem('checkout_email')
       localStorage.removeItem('checkout_phone')
 
-      // Fire pending confirmation email notification edge function (safely non-blocking)
-      triggerConfirmationEmail({
-        reference: ref,
-        customer_name: name,
-        customer_email: email,
-        customer_phone: phone,
-        product_id: product?.id,
-        payment_method: 'bank_transfer'
-      })
+      // Confirmation email disabled until Edge Function is deployed
+      // triggerConfirmationEmail({
+      //   reference: ref,
+      //   customer_name: name,
+      //   customer_email: email,
+      //   customer_phone: phone,
+      //   product_id: product?.id,
+      //   payment_method: 'bank_transfer'
+      // })
 
       setLoading(false)
 
