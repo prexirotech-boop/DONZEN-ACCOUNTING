@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ─── RESET & BASE ──────────────────────────────────────────────────────── */
 @font-face {
@@ -48,9 +49,9 @@
   --n600: #3F3F46; --n500: #71717A; --n400: #A1A1AA;
   --n300: #D4D4D8; --n200: #E4E4E7; --n100: #F4F4F5; --n50: #F7F3F5;
   /* Type */
-  --font: 'Inter', sans-serif;
-  --font-heading: 'Inter', sans-serif;
-  --font-sub: 'Inter', sans-serif;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-sub: 'Plus Jakarta Sans', sans-serif;
   /* Radius */
   --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px; --r-2xl: 32px;
   /* Shadows */

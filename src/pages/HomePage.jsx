@@ -194,7 +194,8 @@ export default function HomePage() {
         <div className="hp-container hp-hero-content">
           <Reveal delay={150}>
             <h1 className="hp-hero-title">
-              Become Job-Ready. Build Real Workplace Accounting Skills That Employers Need.
+              Become Job-Ready. <br />
+              <span className="hp-text-accent">Build Real Workplace Accounting Skills</span> That Employers Need.
             </h1>
           </Reveal>
           <Reveal delay={300}>
@@ -1310,19 +1311,39 @@ export default function HomePage() {
           z-index: 2;
           box-shadow: 0 0 0 6px #ffffff;
           text-transform: uppercase;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hp-timeline-card {
           width: 85%;
           background: #ffffff;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e2e8f0;
+          border-left: 4px solid #cbd5e1;
           padding: 2rem;
           border-radius: 1.25rem;
           box-shadow: 0 4px 20px rgba(0,0,0,0.01);
           margin-right: 2rem;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          cursor: pointer;
+        }
+        .hp-timeline-card:hover {
+          transform: translateY(-5px) scale(1.02);
+          border-color: #ff1717;
+          border-left-color: #ff1717;
+          box-shadow: 0 12px 30px rgba(255, 23, 23, 0.08);
+        }
+        .hp-timeline-item:hover .hp-timeline-badge {
+          transform: translate(-50%, -50%) scale(1.15);
+          box-shadow: 0 0 0 8px rgba(255, 23, 23, 0.15);
         }
         .hp-timeline-item.right .hp-timeline-card {
           margin-right: 0;
           margin-left: 2rem;
+          border-left: none;
+          border-right: 4px solid #cbd5e1;
+        }
+        .hp-timeline-item.right .hp-timeline-card:hover {
+          border-color: #ff1717;
+          border-right-color: #ff1717;
         }
         .hp-timeline-card h3 {
           font-size: 1.3rem;
@@ -1992,7 +2013,8 @@ export default function HomePage() {
           .hp-timeline-item { padding-right: 0; padding-left: 40px; justify-content: flex-start; }
           .hp-timeline-item.right { padding-left: 40px; }
           .hp-timeline-badge { left: 16px; top: 20px; }
-          .hp-timeline-card { width: 100%; margin-left: 0 !important; }
+          .hp-timeline-card { width: 100%; margin-left: 0 !important; border-right: none !important; border-left: 4px solid #cbd5e1 !important; }
+          .hp-timeline-card:hover { border-left-color: #ff1717 !important; }
         }
 
         @media (max-width: 480px) {
