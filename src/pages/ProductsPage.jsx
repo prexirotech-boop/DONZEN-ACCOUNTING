@@ -116,6 +116,15 @@ export default function ProductsPage() {
 
   const searchQueryParam = searchParams.get('search') || ''
 
+  const hasCourses = products.some(p => p.type === 'course')
+  const hasTemplates = products.some(p => p.type === 'template')
+  const hasEbooks = products.some(p => p.type === 'ebook' || p.type === 'blueprint')
+
+  const availableFilters = ['All']
+  if (hasCourses) availableFilters.push('Courses')
+  if (hasTemplates) availableFilters.push('Templates')
+  if (hasEbooks) availableFilters.push('E-Books')
+
   const filtered = products.filter(p => {
     let typeMatches = true
     if (activeFilter === 'Courses') typeMatches = p.type === 'course'
@@ -139,9 +148,9 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="lib-hero">
         <div className="lib-hero-content">
-          <h1 className="lib-title">Courses, Programs &<br />Accounting Resources</h1>
+          <h1 className="lib-title">Become Job-Ready.<br />Build Real Workplace Accounting Skills.</h1>
           <p className="lib-subtitle">
-            Hands-on practical accounting, QuickBooks, Excel, and bookkeeping courses designed for SMEs, entrepreneurs, and finance professionals.
+            Learn bookkeeping, financial reporting, inventory accounting, Excel, Sage, QuickBooks and cloud accounting by working on real business scenarios, not classroom theory.
           </p>
           <div className="lib-stats">
             <div className="lib-stat"><span className="lib-stat-num">3,500+</span><span>Trained Professionals</span></div>
@@ -157,7 +166,7 @@ export default function ProductsPage() {
       <div className="lib-filterbar">
         <div className="lib-filterbar-inner">
           <div className="lib-filters">
-            {FILTERS.map(f => (
+            {availableFilters.map(f => (
               <button
                 key={f}
                 className={`lib-filter-btn ${activeFilter === f ? 'active' : ''}`}
@@ -743,6 +752,22 @@ export default function ProductsPage() {
           .lib-stats { padding: 12px 20px; gap: 16px; }
           .lib-stat-divider { display: none; }
           .lib-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+          .lib-filterbar-inner {
+            flex-direction: column;
+            height: auto;
+            padding: 12px 20px;
+            gap: 12px;
+            align-items: flex-start;
+          }
+          .lib-filters {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+          }
+          .lib-filters::-webkit-scrollbar {
+            display: none;
+          }
         }
         @media (max-width: 520px) {
           .lib-grid { grid-template-columns: 1fr; }

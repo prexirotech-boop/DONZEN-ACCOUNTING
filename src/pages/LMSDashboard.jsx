@@ -2463,7 +2463,7 @@ export default function LMSDashboard() {
             <h2 className="ud-tab-title">{tabLabels[activeTab]}</h2>
             {activeTab === 'learning' && <MyLearningTab user={effectiveUser} />}
             {activeTab === 'wishlist' && <WishlistTab user={effectiveUser} />}
-            {activeTab === 'certificates' && <StudentCertificates user={effectiveUser} />}
+            {activeTab === 'certificates' && <StudentCertificates user={effectiveUser} profile={profile} />}
             {activeTab === 'notifications' && <NotificationsTab user={effectiveUser} />}
             {activeTab === 'history' && <PurchaseHistoryTab user={effectiveUser} profile={profile} />}
             {activeTab === 'billing' && <BillingTab user={effectiveUser} />}

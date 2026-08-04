@@ -33,6 +33,7 @@ import LMSCourse from './pages/LMSCourse'
 import AccountPage from './pages/AccountPage'
 import AdminDashboard from './pages/AdminDashboard'
 import FAQPage from './pages/FAQPage'
+import BlogPage from './pages/BlogPage'
 import WhatsAppWidget from './components/WhatsAppWidget'
 
 import { useState, useEffect } from 'react'
@@ -104,7 +105,7 @@ function AppLayout() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/pricing" element={<PricingPage />} />
-        <Route path="/resources" element={<PricingPage />} />
+        <Route path="/resources" element={<BlogPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FAQPage />} />
         

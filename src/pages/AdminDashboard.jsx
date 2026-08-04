@@ -18,6 +18,7 @@ import AdminPayouts from './AdminPayouts'
 import AdminUpsells from './AdminUpsells'
 import AdminAnalytics from './AdminAnalytics'
 import AdminPlatformAnalytics from './AdminPlatformAnalytics'
+import AdminBlog from './AdminBlog'
 import { getPages } from '../lib/pagesScanner'
 
 function AdminOverview() {
@@ -1912,7 +1913,8 @@ export default function AdminDashboard() {
       subItems: [
         { name: 'Platform Settings', path: '/admin/settings' },
         { name: 'Certificates', path: '/admin/certificates' },
-        { name: 'Broadcast Emails', path: '/admin/announcements' }
+        { name: 'Broadcast Emails', path: '/admin/announcements' },
+        { name: 'Insight Blog', path: '/admin/blog' }
       ]
     },
     { 
@@ -2443,6 +2445,7 @@ export default function AdminDashboard() {
             <Route path="/affiliates" element={<AdminAffiliates />} />
             <Route path="/payouts" element={<AdminPayouts />} />
             <Route path="/upsells" element={<AdminUpsells />} />
+            <Route path="/blog" element={<AdminBlog />} />
           </Routes>
         </main>
       </div>

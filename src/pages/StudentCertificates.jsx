@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
-export default function StudentCertificates({ user }) {
+export default function StudentCertificates({ user, profile }) {
   const [certificates, setCertificates] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -227,7 +227,7 @@ export default function StudentCertificates({ user }) {
             <div class="title">CERTIFICATE</div>
             <div class="subtitle">of completion</div>
             <div class="presented-to">This is proudly presented to</div>
-            <div class="name">${user.user_metadata?.full_name || 'Alumnus'}</div>
+            <div class="name">${profile?.full_name || user.user_metadata?.full_name || 'Alumnus'}</div>
             <div class="reason">
               for successfully completing the core training curriculum and executing the project blueprints for
               <br><span class="course-title">${cert.courses?.products?.title || 'Advanced Masterclass'}</span>

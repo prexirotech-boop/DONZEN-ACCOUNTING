@@ -47,7 +47,7 @@ export default function BlogPage() {
     fetchPosts()
   }, [])
 
-  const categories = ['All', 'Strategy', 'Onboarding', 'Marketing', 'Mindset']
+  const categories = ['All', 'Cash Flow', 'Excel', 'QuickBooks', 'Financial Reporting', 'Inventory', 'Career']
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = 
@@ -55,25 +55,22 @@ export default function BlogPage() {
       (post.summary || '').toLowerCase().includes(search.toLowerCase()) ||
       post.content.toLowerCase().includes(search.toLowerCase())
     
-    // In our DB, we can match category from summaries/tags or just group them dynamically
-    const categoryLower = activeCategory.toLowerCase()
     const matchesCategory = 
       activeCategory === 'All' || 
-      (post.summary || '').toLowerCase().includes(categoryLower) ||
-      post.title.toLowerCase().includes(categoryLower)
+      (post.category || '').toLowerCase() === activeCategory.toLowerCase()
     
     return matchesSearch && matchesCategory
   })
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#334155', fontFamily: "'Outfit', 'Inter', sans-serif", padding: '80px 20px 80px' }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#334155', fontFamily: "var(--font)", padding: '80px 20px 80px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
           <span style={{ 
-            background: 'rgba(37, 99, 235, 0.06)', 
-            color: '#2563eb', 
+            background: 'rgba(225, 43, 43, 0.06)', 
+            color: '#e12b2b', 
             padding: '6px 16px', 
             borderRadius: 50, 
             fontSize: 12, 
@@ -82,12 +79,12 @@ export default function BlogPage() {
             textTransform: 'uppercase', 
             display: 'inline-block',
             marginBottom: 20,
-            border: '1px solid rgba(37, 99, 235, 0.15)'
+            border: '1px solid rgba(225, 43, 43, 0.15)'
           }}>
             Resource Hub & Tutorials
           </span>
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 850, letterSpacing: '-1.5px', color: '#0f172a', margin: '0 0 16px', lineHeight: 1.15 }}>
-            Donzen Accounting Hub <span style={{ color: '#ff1717' }}>Insight Blog</span>
+            Donzen Accounting Hub <span style={{ color: '#e12b2b' }}>Insight Blog</span>
           </h1>
           <p style={{ fontSize: 17, color: '#64748b', maxWidth: 600, margin: '0 auto 32px', lineHeight: 1.6 }}>
             Premium articles, student onboarding guides, and business blueprints compiled by Precious.
@@ -115,8 +112,8 @@ export default function BlogPage() {
                   boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
                 }}
                 onFocus={e => {
-                  e.target.style.borderColor = '#2563eb'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.12)'
+                  e.target.style.borderColor = '#e12b2b'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(225, 43, 43, 0.12)'
                 }}
                 onBlur={e => {
                   e.target.style.borderColor = '#e2e8f0'
@@ -144,8 +141,8 @@ export default function BlogPage() {
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   style={{
-                    background: activeCategory === cat ? '#2563eb' : '#ffffff',
-                    border: activeCategory === cat ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                    background: activeCategory === cat ? '#e12b2b' : '#ffffff',
+                    border: activeCategory === cat ? '1px solid #e12b2b' : '1px solid #e2e8f0',
                     padding: '8px 18px',
                     borderRadius: 50,
                     fontSize: 13,
@@ -178,7 +175,7 @@ export default function BlogPage() {
         {/* Content Section */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '80px 0', color: '#64748b' }}>
-            <div style={{ width: 40, height: 40, border: '3px solid rgba(0,0,0,0.05)', borderTopColor: '#2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }} />
+            <div style={{ width: 40, height: 40, border: '3px solid rgba(0,0,0,0.05)', borderTopColor: '#e12b2b', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }} />
             Loading resources...
           </div>
         ) : filteredPosts.length === 0 ? (
@@ -215,7 +212,7 @@ export default function BlogPage() {
                       className="blog-card-img"
                     />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#ffffff', fontWeight: 800, fontSize: 32 }}>
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #e12b2b 0%, #b91c1c 100%)', color: '#ffffff', fontWeight: 800, fontSize: 32 }}>
                       AS
                     </div>
                   )}
@@ -223,9 +220,9 @@ export default function BlogPage() {
                     position: 'absolute',
                     top: 16,
                     left: 16,
-                    background: 'rgba(37, 99, 235, 0.08)',
-                    border: '1px solid rgba(37, 99, 235, 0.15)',
-                    color: '#2563eb',
+                    background: 'rgba(225, 43, 43, 0.08)',
+                    border: '1px solid rgba(225, 43, 43, 0.15)',
+                    color: '#e12b2b',
                     padding: '4px 10px',
                     borderRadius: 4,
                     fontSize: 11,
@@ -249,7 +246,7 @@ export default function BlogPage() {
                     {post.summary || 'No summary available. Click to open and read full article contents.'}
                   </p>
                   
-                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: '#2563eb', fontSize: 13.5, fontWeight: 700 }}>
+                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: '#e12b2b', fontSize: 13.5, fontWeight: 700 }}>
                     Read Blueprint
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
                   </div>
@@ -280,7 +277,7 @@ export default function BlogPage() {
                 {selectedPost.cover_image ? (
                   <img src={selectedPost.cover_image} alt={selectedPost.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#ffffff', fontWeight: 800, fontSize: 48 }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #e12b2b 0%, #b91c1c 100%)', color: '#ffffff', fontWeight: 800, fontSize: 48 }}>
                     AS
                   </div>
                 )}
@@ -324,7 +321,7 @@ export default function BlogPage() {
                   {selectedPost.title}
                 </h2>
                 
-                <p style={{ fontSize: 16, color: '#475569', lineHeight: 1.7, fontStyle: 'italic', paddingLeft: 16, borderLeft: '3px solid #2563eb', margin: '0 0 32px' }}>
+                <p style={{ fontSize: 16, color: '#475569', lineHeight: 1.7, fontStyle: 'italic', paddingLeft: 16, borderLeft: '3px solid #e12b2b', margin: '0 0 32px' }}>
                   {selectedPost.summary}
                 </p>
 
@@ -376,15 +373,15 @@ export default function BlogPage() {
           @keyframes spin { to { transform: rotate(360deg); } }
           .blog-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(37, 99, 235, 0.3) !important;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08), 0 0 15px rgba(37, 99, 235, 0.04) !important;
+            border-color: rgba(225, 43, 43, 0.3) !important;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08), 0 0 15px rgba(225, 43, 43, 0.04) !important;
             background: #ffffff !important;
           }
           .blog-card:hover .blog-card-img {
             transform: scale(1.05);
           }
           .blog-card:hover .blog-title {
-            color: #2563eb !important;
+            color: #e12b2b !important;
           }
         `}} />
 

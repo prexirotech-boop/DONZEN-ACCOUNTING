@@ -4,6 +4,26 @@
 -- It is safe to re-run (idempotent using IF NOT EXISTS / OR REPLACE)
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- ─── STEP 0: Create update_updated_at helper if it does not exist ─────────────
+
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN COALESCE(
+    (SELECT role = 'admin' FROM profiles WHERE id = auth.uid()),
+    false
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- ─── STEP 1: Extend existing tables ──────────────────────────────────────────
 
 -- Add affiliate_code and status to profiles

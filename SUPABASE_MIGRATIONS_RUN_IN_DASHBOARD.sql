@@ -183,5 +183,34 @@ DROP POLICY IF EXISTS "lessons_public_read" ON lessons;
 
 CREATE POLICY "lessons_public_read" ON lessons FOR SELECT USING (true);
 
+-- ─── 9. BLOG POSTS TABLE ──────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  summary TEXT,
+  content TEXT NOT NULL,
+  cover_image TEXT,
+  category TEXT DEFAULT 'General',
+  is_published BOOLEAN DEFAULT true,
+  author TEXT DEFAULT 'Instructor Precious',
+  read_time INT DEFAULT 5,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to published posts" ON blog_posts;
+DROP POLICY IF EXISTS "Allow admin full access to blog posts" ON blog_posts;
+
+CREATE POLICY "Allow public read access to published posts" ON blog_posts
+  FOR SELECT USING (is_published = true);
+
+CREATE POLICY "Allow admin full access to blog posts" ON blog_posts
+  FOR ALL TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
 -- ─── DONE ────────────────────────────────────────────────────────────────────
 -- All migrations applied. Your platform is ready.
