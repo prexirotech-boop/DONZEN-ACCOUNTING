@@ -32,22 +32,23 @@
 
 :root {
   /* Donzen Accounting Brand Colors */
-  --brand-red: #ff1717;
-  --brand-dark: #101010;
-  --brand-light: #F7F3F5;
-  --brand-white: #FFFFFF;
+  --brand-red: #e12b2b;
+  --brand-dark: #18181b;
+  --brand-light: #f8fafc;
+  --brand-white: #ffffff;
 
   /* Primary Brand Theme Mapping */
-  --g900: #101010; --g800: #18181b; --g700: #990f0f;
-  --g600: #d91414; --g500: #ff1717; --g400: #ff4d4d;
-  --g200: #ffb3b3; --g100: #ffe6e6; --g50:  #F7F3F5;
-  --gold: #f59e0b; --gold-d: #b45309; --gold-l: #fef3c7;
-  --red:  #ff1717; --red-l: #fff0f0;
+  --g900: #121214; --g800: #18181b; --g700: #b91c1c;
+  --g600: #dc2626; --g500: #e12b2b; --g400: #ef4444;
+  --g200: #fca5a5; --g100: #fee2e2; --g50:  #f8fafc;
+  --gold: #d97706; --gold-d: #92400e; --gold-l: #fef3c7;
+  --red:  #e12b2b; --red-l: #fef2f2;
   /* Neutrals */
-  --w: #FFFFFF; --k: #101010;
-  --n900: #101010; --n800: #18181B; --n700: #27272A;
-  --n600: #3F3F46; --n500: #71717A; --n400: #A1A1AA;
-  --n300: #D4D4D8; --n200: #E4E4E7; --n100: #F4F4F5; --n50: #F7F3F5;
+  --w: #ffffff; --k: #18181b;
+  --n900: #18181b; --n800: #27272a; --n700: #3f3f46;
+  --n600: #52525b; --n500: #71717a; --n400: #a1a1aa;
+  --n300: #d4d4d8; --n200: #e4e4e7; --n100: #f4f4f5; --n50: #fafafa;
+
   /* Type */
   --font: 'Plus Jakarta Sans', sans-serif;
   --font-heading: 'Plus Jakarta Sans', sans-serif;

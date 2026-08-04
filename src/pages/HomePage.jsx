@@ -807,11 +807,22 @@ export default function HomePage() {
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
+        /* Color Variables */
+        :root {
+          --hp-red: #e12b2b;
+          --hp-red-dark: #b91c1c;
+          --hp-black: #121214;
+          --hp-black-light: #18181b;
+          --hp-black-slate: #0f172a;
+          --hp-white: #ffffff;
+          --hp-bg-light: #f8fafc;
+        }
+
         /* --- SCOPED CSS --- */
         .hp-wrapper {
           font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-          color: #09090b;
-          background-color: #ffffff;
+          color: var(--hp-black);
+          background-color: var(--hp-white);
           overflow-x: hidden;
         }
         
@@ -825,10 +836,10 @@ export default function HomePage() {
           padding: 6rem 0;
         }
         
-        .hp-bg-light { background-color: #f8fafc; }
-        .hp-bg-dark { background-color: #09090b; }
-        .hp-text-white * { color: #ffffff !important; }
-        .hp-text-accent { color: #ff1717; }
+        .hp-bg-light { background-color: var(--hp-bg-light); }
+        .hp-bg-dark { background-color: var(--hp-black); }
+        .hp-text-white * { color: var(--hp-white) !important; }
+        .hp-text-accent { color: var(--hp-red); }
         .hp-text-left { text-align: left !important; }
 
         /* Typography */
@@ -837,7 +848,7 @@ export default function HomePage() {
           font-weight: 800;
           text-align: center;
           margin-bottom: 1rem;
-          color: #09090b;
+          color: var(--hp-black);
           letter-spacing: -0.03em;
         }
         .hp-section-desc {
@@ -858,7 +869,7 @@ export default function HomePage() {
           margin-bottom: 1rem;
         }
         .hp-section-subtitle-tag.red {
-          color: #ff1717;
+          color: var(--hp-red);
         }
 
         /* Buttons */
@@ -877,17 +888,17 @@ export default function HomePage() {
           font-family: inherit;
         }
         .hp-btn-primary {
-          background-color: #ff1717;
-          color: #ffffff !important;
+          background-color: var(--hp-red);
+          color: var(--hp-white) !important;
         }
         .hp-btn-primary:hover {
-          background-color: #d11111;
+          background-color: var(--hp-red-dark);
           transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(255, 23, 23, 0.25);
+          box-shadow: 0 8px 20px rgba(225, 43, 43, 0.25);
         }
         .hp-btn-secondary {
           background-color: rgba(255, 255, 255, 0.1);
-          color: #ffffff !important;
+          color: var(--hp-white) !important;
           backdrop-filter: blur(8px);
           border: 2px solid rgba(255, 255, 255, 0.2);
         }
@@ -898,11 +909,11 @@ export default function HomePage() {
         .hp-btn-outline {
           background-color: transparent;
           border-color: #e2e8f0;
-          color: #09090b;
+          color: var(--hp-black);
         }
         .hp-btn-outline:hover {
-          border-color: #09090b;
-          background-color: #f8fafc;
+          border-color: var(--hp-black);
+          background-color: var(--hp-bg-light);
         }
         .hp-btn-block {
           width: 100%;
@@ -931,7 +942,7 @@ export default function HomePage() {
           display: flex;
           align-items: center;
           padding: 8rem 0;
-          background: #09090b;
+          background: var(--hp-black);
         }
         .hp-hero-bg {
           position: absolute;
@@ -956,7 +967,7 @@ export default function HomePage() {
         .hp-hero-overlay {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at 30% 50%, rgba(9, 9, 11, 0.8) 0%, rgba(9, 9, 11, 0.95) 100%);
+          background: radial-gradient(circle at center, rgba(18, 18, 20, 0.75) 0%, rgba(18, 18, 20, 0.95) 100%);
         }
         .hp-hero-content {
           position: relative;
@@ -967,9 +978,9 @@ export default function HomePage() {
         }
         .hp-hero-badge {
           display: inline-block;
-          background: rgba(255, 23, 23, 0.15);
-          border: 1px solid rgba(255, 23, 23, 0.3);
-          color: #ff1717;
+          background: rgba(225, 43, 43, 0.15);
+          border: 1px solid rgba(225, 43, 43, 0.3);
+          color: var(--hp-red);
           font-size: 0.8rem;
           font-weight: 800;
           padding: 6px 16px;
@@ -980,7 +991,7 @@ export default function HomePage() {
         .hp-hero-title {
           font-size: clamp(2.2rem, 5vw, 4.2rem);
           font-weight: 800;
-          color: #ffffff;
+          color: var(--hp-white);
           line-height: 1.15;
           margin-bottom: 2rem;
           letter-spacing: -0.04em;
@@ -1002,7 +1013,7 @@ export default function HomePage() {
 
         /* 2. Stats Bar */
         .hp-stats-bar {
-          background-color: #09090b;
+          background-color: var(--hp-black-light);
           border-top: 1px solid rgba(255,255,255,0.08);
           border-bottom: 1px solid rgba(255,255,255,0.08);
           padding: 3rem 0;
@@ -1020,14 +1031,14 @@ export default function HomePage() {
         }
         .hp-counter {
           font-size: clamp(2rem, 3.5vw, 3.2rem);
-          font-weight: 900;
-          color: #ffffff;
+          font-weight: 800;
+          color: var(--hp-white);
           line-height: 1;
           margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
         }
         .hp-stat-item.font-highlight .hp-counter {
-          color: #ff1717;
+          color: var(--hp-red);
         }
         .hp-stat-label {
           font-size: 0.85rem;
@@ -1048,7 +1059,7 @@ export default function HomePage() {
           display: flex;
         }
         .hp-pathway-card {
-          background: #ffffff;
+          background: var(--hp-white);
           border-radius: 1.5rem;
           padding: 3rem 2rem;
           box-shadow: 0 4px 30px rgba(0,0,0,0.02);
@@ -1062,11 +1073,11 @@ export default function HomePage() {
         .hp-pathway-card:hover {
           transform: translateY(-8px);
           box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-          border-color: rgba(255, 23, 23, 0.15);
+          border-color: rgba(225, 43, 43, 0.15);
         }
         .hp-pathway-card.popular {
-          border-color: #ff1717;
-          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.05);
+          border-color: var(--hp-red);
+          box-shadow: 0 10px 30px rgba(225, 43, 43, 0.05);
         }
         .hp-pathway-card.popular::before {
           content: '';
@@ -1075,7 +1086,7 @@ export default function HomePage() {
           left: 0;
           right: 0;
           height: 6px;
-          background: #ff1717;
+          background: var(--hp-red);
         }
         .hp-pathway-badge {
           display: inline-block;
@@ -1087,22 +1098,22 @@ export default function HomePage() {
           margin-bottom: 1.5rem;
         }
         .hp-pathway-badge.popular-badge {
-          color: #ff1717;
+          color: var(--hp-red);
         }
         .hp-pathway-icon-box {
           width: 52px;
           height: 52px;
-          background: #f8fafc;
+          background: var(--hp-bg-light);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #ff1717;
+          color: var(--hp-red);
           margin-bottom: 2rem;
           border: 1px solid #f1f5f9;
         }
         .hp-pathway-card.popular .hp-pathway-icon-box {
-          background: rgba(255, 23, 23, 0.05);
+          background: rgba(225, 43, 43, 0.05);
         }
         .hp-pathway-card h3 {
           font-size: 1.6rem;
@@ -1133,7 +1144,7 @@ export default function HomePage() {
           color: #334155;
         }
         .hp-pathway-list li svg {
-          color: #ff1717;
+          color: var(--hp-red);
           flex-shrink: 0;
         }
         .hp-pathway-link {
@@ -1143,7 +1154,7 @@ export default function HomePage() {
           gap: 8px;
           font-size: 1rem;
           font-weight: 700;
-          color: #ff1717;
+          color: var(--hp-red);
           text-decoration: none;
           transition: transform 0.2s;
         }
@@ -1160,7 +1171,7 @@ export default function HomePage() {
         }
         .hp-why-title {
           font-size: 2.8rem;
-          font-weight: 900;
+          font-weight: 800;
           line-height: 1.15;
           margin-top: 0;
           margin-bottom: 1.5rem;
@@ -1183,9 +1194,9 @@ export default function HomePage() {
         }
         .hp-outcome-num {
           font-size: 1.25rem;
-          font-weight: 900;
-          color: #ff1717;
-          background: rgba(255, 23, 23, 0.05);
+          font-weight: 800;
+          color: var(--hp-red);
+          background: rgba(225, 43, 43, 0.05);
           width: 44px;
           height: 44px;
           border-radius: 50%;
@@ -1193,13 +1204,13 @@ export default function HomePage() {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          border: 1px solid rgba(255, 23, 23, 0.1);
+          border: 1px solid rgba(225, 43, 43, 0.1);
         }
         .hp-outcome-item h4 {
           font-size: 1.2rem;
           font-weight: 800;
           margin: 0 0 0.5rem;
-          color: #09090b;
+          color: var(--hp-black);
         }
         .hp-outcome-item p {
           font-size: 0.95rem;
@@ -1224,7 +1235,7 @@ export default function HomePage() {
           right: -20px;
           bottom: 20px;
           left: 20px;
-          background: radial-gradient(circle, rgba(255, 23, 23, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(225, 43, 43, 0.08) 0%, transparent 70%);
           filter: blur(20px);
           z-index: 0;
         }
@@ -1247,11 +1258,11 @@ export default function HomePage() {
           transition: all 0.25s ease;
         }
         .hp-workplace-card:hover {
-          border-color: rgba(255, 23, 23, 0.3);
+          border-color: rgba(225, 43, 43, 0.3);
           background: rgba(255,255,255,0.05);
         }
         .hp-workplace-icon {
-          color: #ff1717;
+          color: var(--hp-red);
           margin-bottom: 1.5rem;
         }
         .hp-workplace-card h4 {
@@ -1302,20 +1313,20 @@ export default function HomePage() {
           top: 20px;
           left: 50%;
           transform: translate(-50%, -50%);
-          background: #ff1717;
-          color: #ffffff;
+          background: var(--hp-red);
+          color: var(--hp-white);
           font-size: 0.75rem;
           font-weight: 800;
           padding: 6px 14px;
           border-radius: 50px;
           z-index: 2;
-          box-shadow: 0 0 0 6px #ffffff;
+          box-shadow: 0 0 0 6px var(--hp-white);
           text-transform: uppercase;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hp-timeline-card {
           width: 85%;
-          background: #ffffff;
+          background: var(--hp-white);
           border: 1px solid #e2e8f0;
           border-left: 4px solid #cbd5e1;
           padding: 2rem;
@@ -1327,13 +1338,13 @@ export default function HomePage() {
         }
         .hp-timeline-card:hover {
           transform: translateY(-5px) scale(1.02);
-          border-color: #ff1717;
-          border-left-color: #ff1717;
-          box-shadow: 0 12px 30px rgba(255, 23, 23, 0.08);
+          border-color: var(--hp-red);
+          border-left-color: var(--hp-red);
+          box-shadow: 0 12px 30px rgba(225, 43, 43, 0.08);
         }
         .hp-timeline-item:hover .hp-timeline-badge {
           transform: translate(-50%, -50%) scale(1.15);
-          box-shadow: 0 0 0 8px rgba(255, 23, 23, 0.15);
+          box-shadow: 0 0 0 8px rgba(225, 43, 43, 0.15);
         }
         .hp-timeline-item.right .hp-timeline-card {
           margin-right: 0;
@@ -1342,14 +1353,14 @@ export default function HomePage() {
           border-right: 4px solid #cbd5e1;
         }
         .hp-timeline-item.right .hp-timeline-card:hover {
-          border-color: #ff1717;
-          border-right-color: #ff1717;
+          border-color: var(--hp-red);
+          border-right-color: var(--hp-red);
         }
         .hp-timeline-card h3 {
           font-size: 1.3rem;
           font-weight: 800;
           margin: 0 0 0.75rem;
-          color: #09090b;
+          color: var(--hp-black);
         }
         .hp-timeline-card p {
           font-size: 0.95rem;
@@ -1368,7 +1379,7 @@ export default function HomePage() {
           display: flex;
         }
         .hp-service-card {
-          background: #ffffff;
+          background: var(--hp-white);
           border: 1px solid #e2e8f0;
           padding: 2.5rem 2rem;
           border-radius: 1.25rem;
@@ -1377,12 +1388,12 @@ export default function HomePage() {
           flex-direction: column;
         }
         .hp-service-card:hover {
-          border-color: #ff1717;
-          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.03);
+          border-color: var(--hp-red);
+          box-shadow: 0 10px 30px rgba(225, 43, 43, 0.03);
           transform: translateY(-4px);
         }
         .hp-service-icon {
-          color: #ff1717;
+          color: var(--hp-red);
           margin-bottom: 1.5rem;
         }
         .hp-service-card h4 {
@@ -1398,7 +1409,7 @@ export default function HomePage() {
         }
         .hp-service-link {
           margin-top: auto;
-          color: #ff1717;
+          color: var(--hp-red);
           font-weight: 700;
           font-size: 0.95rem;
           text-decoration: none;
@@ -1406,7 +1417,7 @@ export default function HomePage() {
 
         /* 8. Bootcamp Highlight Box */
         .hp-bootcamp-highlight {
-          background: #f8fafc;
+          background: var(--hp-bg-light);
           padding: 7rem 0;
         }
         .hp-bootcamp-split {
@@ -1428,8 +1439,8 @@ export default function HomePage() {
           position: absolute;
           bottom: 20px;
           right: 20px;
-          background: #09090b;
-          color: #ffffff;
+          background: var(--hp-black-light);
+          color: var(--hp-white);
           font-size: 0.72rem;
           font-weight: 800;
           padding: 8px 18px;
@@ -1438,7 +1449,7 @@ export default function HomePage() {
         }
         .hp-bootcamp-title {
           font-size: 2.8rem;
-          font-weight: 900;
+          font-weight: 800;
           letter-spacing: -0.03em;
           margin-top: 0;
           margin-bottom: 1.5rem;
@@ -1467,7 +1478,7 @@ export default function HomePage() {
           color: #334155;
         }
         .hp-bootcamp-highlights li svg {
-          color: #ff1717;
+          color: var(--hp-red);
           flex-shrink: 0;
         }
         .hp-bootcamp-actions {
@@ -1489,7 +1500,7 @@ export default function HomePage() {
           display: flex;
           align-items: center;
           gap: 16px;
-          background: #ffffff;
+          background: var(--hp-white);
           padding: 1.5rem;
           border-radius: 1rem;
           border: 1px solid #f1f5f9;
@@ -1498,8 +1509,8 @@ export default function HomePage() {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: rgba(255,23,23,0.05);
-          color: #ff1717;
+          background: rgba(225, 43, 43, 0.05);
+          color: var(--hp-red);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1514,15 +1525,15 @@ export default function HomePage() {
         /* 10. Lead Generation/Conversion Funnel Box */
         .hp-lead-section {
           padding: 5rem 0;
-          background-color: #ffffff;
+          background-color: var(--hp-white);
         }
         .hp-lead-card {
-          background: #09090b;
+          background: var(--hp-black-slate);
           border-radius: 2rem;
           padding: 4rem;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
         }
         .hp-lead-card::before {
           content: '';
@@ -1532,7 +1543,7 @@ export default function HomePage() {
           width: 400px;
           height: 400px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,23,23,0.15) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(225, 43, 43, 0.15) 0%, transparent 70%);
           pointer-events: none;
         }
         .hp-lead-grid {
@@ -1545,8 +1556,8 @@ export default function HomePage() {
         }
         .hp-lead-info h3 {
           font-size: 2.2rem;
-          font-weight: 900;
-          color: #ffffff;
+          font-weight: 800;
+          color: var(--hp-white);
           margin-top: 0;
           margin-bottom: 1rem;
           letter-spacing: -0.02em;
@@ -1568,13 +1579,13 @@ export default function HomePage() {
           gap: 12px;
           font-size: 0.95rem;
           font-weight: 700;
-          color: #ffffff;
+          color: var(--hp-white);
         }
         .hp-lead-feat-item svg {
-          color: #ff1717;
+          color: var(--hp-red);
         }
         .hp-lead-form-box {
-          background: #ffffff;
+          background: var(--hp-white);
           padding: 3rem 2.5rem;
           border-radius: 1.5rem;
           box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -1586,7 +1597,7 @@ export default function HomePage() {
         .hp-lead-success-msg h4 {
           font-size: 1.4rem;
           font-weight: 800;
-          color: #09090b;
+          color: var(--hp-black);
           margin-top: 0;
           margin-bottom: 0.75rem;
         }
@@ -1628,13 +1639,13 @@ export default function HomePage() {
           padding: 0 1rem;
           font-family: inherit;
           font-size: 0.95rem;
-          color: #09090b;
+          color: var(--hp-black);
           outline: none;
-          background: #ffffff;
+          background: var(--hp-white);
         }
         .hp-form-select:focus, .hp-form-input:focus {
-          border-color: #ff1717;
-          box-shadow: 0 0 0 3px rgba(255,23,23,0.08);
+          border-color: var(--hp-red);
+          box-shadow: 0 0 0 3px rgba(225, 43, 43, 0.08);
         }
 
         /* 11. Testimonials Section */
@@ -1684,7 +1695,7 @@ export default function HomePage() {
           font-size: 1rem;
           font-weight: 800;
           margin: 0 0 2px;
-          color: #ffffff;
+          color: var(--hp-white);
         }
         .hp-author-role {
           font-size: 0.8rem;
@@ -1694,7 +1705,7 @@ export default function HomePage() {
 
         /* 12. Meet The Founder Section */
         .hp-founder-section {
-          background: #ffffff;
+          background: var(--hp-white);
           padding: 6rem 0;
         }
         .hp-founder-split {
@@ -1705,7 +1716,7 @@ export default function HomePage() {
         }
         .hp-founder-title {
           font-size: 2.8rem;
-          font-weight: 900;
+          font-weight: 800;
           letter-spacing: -0.03em;
           margin-top: 0;
           margin-bottom: 2rem;
@@ -1719,7 +1730,7 @@ export default function HomePage() {
           gap: 1.25rem;
         }
         .hp-founder-letter strong {
-          color: #09090b;
+          color: var(--hp-black);
         }
         .hp-image-frame-founder {
           position: relative;
@@ -1736,7 +1747,7 @@ export default function HomePage() {
           position: absolute;
           bottom: -20px;
           left: 30px;
-          background: #ffffff;
+          background: var(--hp-white);
           box-shadow: 0 10px 30px rgba(0,0,0,0.08);
           border: 1px solid #f1f5f9;
           border-radius: 1rem;
@@ -1765,14 +1776,14 @@ export default function HomePage() {
           gap: 1rem;
         }
         .hp-faq-item {
-          background: #ffffff;
+          background: var(--hp-white);
           border: 1px solid #e2e8f0;
           border-radius: 0.75rem;
           overflow: hidden;
           transition: border-color 0.25s ease;
         }
         .hp-faq-item:hover {
-          border-color: #ff1717;
+          border-color: var(--hp-red);
         }
         .hp-faq-question {
           width: 100%;
@@ -1784,7 +1795,7 @@ export default function HomePage() {
           border: none;
           font-size: 1.1rem;
           font-weight: 800;
-          color: #09090b;
+          color: var(--hp-black);
           cursor: pointer;
           text-align: left;
           font-family: inherit;
@@ -1814,7 +1825,7 @@ export default function HomePage() {
         /* 14. Bottom CTA (About page matching) */
         .hp-bottom-cta {
           padding: 100px 24px;
-          background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%);
+          background: linear-gradient(135deg, var(--hp-black) 0%, var(--hp-black-slate) 100%);
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -1825,7 +1836,7 @@ export default function HomePage() {
           width: 600px;
           height: 600px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,23,23,0.12), transparent 70%);
+          background: radial-gradient(circle, rgba(225,43,43,0.12), transparent 70%);
           bottom: -300px;
           left: 50%;
           transform: translateX(-50%);
@@ -1839,8 +1850,8 @@ export default function HomePage() {
         }
         .hp-bottom-cta h2 {
           font-size: clamp(1.8rem, 4vw, 3rem);
-          font-weight: 900;
-          color: #fff;
+          font-weight: 800;
+          color: var(--hp-white);
           margin: 0 0 1.5rem;
           letter-spacing: -0.04em;
         }
@@ -1871,17 +1882,17 @@ export default function HomePage() {
           border: none;
         }
         .hp-btn-red {
-          background: #ff1717;
-          color: #fff;
+          background: var(--hp-red);
+          color: var(--hp-white);
         }
         .hp-btn-red:hover {
-          background: #d91414;
+          background: var(--hp-red-dark);
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
+          box-shadow: 0 8px 24px rgba(225,43,43,0.3);
         }
         .hp-btn-glass {
           background: rgba(255,255,255,0.08);
-          color: #fff;
+          color: var(--hp-white);
           border: 1px solid rgba(255,255,255,0.2);
           backdrop-filter: blur(4px);
         }
@@ -1903,7 +1914,7 @@ export default function HomePage() {
           padding: 1.5rem;
         }
         .hp-modal-box {
-          background: #ffffff;
+          background: var(--hp-white);
           width: 100%;
           max-width: 650px;
           border-radius: 1.5rem;
