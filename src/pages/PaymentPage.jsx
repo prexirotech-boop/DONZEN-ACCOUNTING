@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { CONFIG } from '../lib/config'
 import { useCurrency } from '../context/CurrencyContext'
-import { supabase, createPendingOrder, completeOrder } from '../lib/supabase'
+import { supabase, createPendingOrder, completeOrder, triggerConfirmationEmail } from '../lib/supabase'
 import { trackEvent } from '../lib/analytics'
 import OrderBump from '../components/OrderBump'
 import { useAffiliate } from '../hooks/useAffiliate'
@@ -586,20 +586,15 @@ export default function PaymentPage() {
       localStorage.removeItem('checkout_email')
       localStorage.removeItem('checkout_phone')
 
-      // Fire pending confirmation email notification edge function (non-blocking)
-      supabase.functions
-        .invoke('send-confirmation', {
-          body: {
-            record: {
-              reference: ref,
-              customer_name: name,
-              customer_phone: phone,
-              product_id: product?.id,
-              payment_method: 'bank_transfer'
-            }
-          }
-        })
-        .catch(() => { /* Email notification is optional — silently skip on failure */ })
+      // Fire pending confirmation email notification edge function (safely non-blocking)
+      triggerConfirmationEmail({
+        reference: ref,
+        customer_name: name,
+        customer_email: email,
+        customer_phone: phone,
+        product_id: product?.id,
+        payment_method: 'bank_transfer'
+      })
 
       setLoading(false)
 
@@ -693,6 +688,7 @@ export default function PaymentPage() {
       productId: product?.id || null,
       productType: product?.type || (isEbook ? 'ebook' : 'course'),
       name,
+      email,
       phone,
     })
 

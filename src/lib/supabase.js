@@ -3,6 +3,32 @@ import { CONFIG } from './config'
 
 export const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY)
 
+/**
+ * Safely trigger the confirmation email Edge Function without blocking the UI or throwing CORS/network errors.
+ */
+export function triggerConfirmationEmail(payload) {
+  setTimeout(() => {
+    try {
+      supabase.functions
+        .invoke('send-confirmation', {
+          body: { record: payload }
+        })
+        .then(({ data, error }) => {
+          if (error) {
+            console.warn('[Email Confirmation] Edge function returned error:', error)
+          } else {
+            console.log('[Email Confirmation] Request sent successfully:', data)
+          }
+        })
+        .catch((err) => {
+          console.warn('[Email Confirmation] Ignored CORS or network preflight error:', err?.message || err)
+        })
+    } catch (e) {
+      console.warn('[Email Confirmation] Failed to invoke edge function:', e)
+    }
+  }, 0)
+}
+
 // ─── SUPABASE DB HELPERS ──────────────────────────────────────────────────────
 //
 // WooCommerce-style order lifecycle:
@@ -100,6 +126,7 @@ export async function completeOrder({
   productId,
   productType,
   name,
+  email,
   phone,
 }) {
   let enrolled = false
@@ -134,8 +161,7 @@ export async function completeOrder({
     }
 
     // ── 1. Mark all orders as paid (main and bumps) ───────────────────────────
-    // PostgREST .or() needs comma-separated filters in a single string
-    const { data: updatedOrders, error: updateErr } = await supabase
+    const { error: updateErr } = await supabase
       .from('orders')
       .update({ 
         status: 'paid', 
@@ -143,19 +169,23 @@ export async function completeOrder({
         ...extraUpdates
       })
       .or(`reference.eq.${reference},reference.like.${reference}-bump-%`)
-      .select('product_id, products(type)')
 
     if (updateErr) {
-      console.error('[completeOrder] Failed to mark order paid:', updateErr)
-      // Fallback: try updating by reference only (no like pattern)
+      console.error('[completeOrder] Failed to mark order paid (bulk):', updateErr)
+      // Fallback: try updating by reference only
       await supabase
         .from('orders')
         .update({ status: 'paid', paid_at: new Date().toISOString() })
         .eq('reference', reference)
-        .select('product_id')
     } else {
       console.log('[completeOrder] ✅ Orders marked as paid:', reference)
     }
+
+    // Now select the updated orders to get product information via a separate clean select query
+    const { data: updatedOrders } = await supabase
+      .from('orders')
+      .select('product_id, products(type)')
+      .or(`reference.eq.${reference},reference.like.${reference}-bump-%`)
 
     // ── 2. Create enrollments for all courses in the transaction ─────────────
     if (userId && updatedOrders) {
@@ -170,18 +200,13 @@ export async function completeOrder({
     }
 
     // ── 3. Fire confirmation email (non-blocking, silently ignore 401/errors) ─
-    supabase.functions
-      .invoke('send-confirmation', {
-        body: {
-          record: {
-            reference,
-            customer_name: name,
-            customer_phone: phone,
-            product_id: productId,
-          }
-        }
-      })
-      .catch(() => { /* Email notification is optional — silently skip on failure */ })
+    triggerConfirmationEmail({
+      reference,
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      product_id: productId,
+    })
 
     return { success: true, enrolled }
   } catch (err) {
@@ -328,11 +353,13 @@ export async function saveOrder({ reference, name, email, phone, isEbook = false
       await createEnrollment({ userId, courseId: productId })
     }
 
-    supabase.functions
-      .invoke('send-confirmation', {
-        body: { record: { reference, customer_name: name, customer_phone: phone, product_id: productId } }
-      })
-      .catch(e => console.warn('[saveOrder] Email edge function skipped:', e?.message))
+    triggerConfirmationEmail({
+      reference,
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      product_id: productId,
+    })
 
     return true
   } catch (err) {
