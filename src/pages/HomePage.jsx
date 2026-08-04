@@ -174,7 +174,7 @@ export default function HomePage() {
 
   return (
     <div className="hp-wrapper">
-      {/* 1. HERO SECTION (Become Job-Ready & repositioned) */}
+      {/* 1. HERO SECTION (Become Job-Ready & Center Aligned) */}
       <section className="hp-hero">
         <div className="hp-hero-bg">
           {heroImages.map((src, idx) => (
@@ -192,9 +192,6 @@ export default function HomePage() {
         </div>
         
         <div className="hp-container hp-hero-content">
-          <Reveal>
-            <div className="hp-hero-badge">NIGERIA{"'"}S WORKPLACE ACCOUNTING PLATFORM</div>
-          </Reveal>
           <Reveal delay={150}>
             <h1 className="hp-hero-title">
               Become Job-Ready. <br />
@@ -219,36 +216,47 @@ export default function HomePage() {
             </div>
           </Reveal>
         </div>
-      </section>
 
-      {/* 2. STATS BAR (Early positioning) */}
-      <section className="hp-stats-bar">
-        <div className="hp-container hp-stats-grid">
-          <div className="hp-stat-item">
-            <Counter target={500} suffix="+" />
-            <span className="hp-stat-label">Professionals Trained</span>
-          </div>
-          <div className="hp-stat-item">
-            <Counter target={50} suffix="+" />
-            <span className="hp-stat-label">Industries Served</span>
-          </div>
-          <div className="hp-stat-item">
-            <Counter target={10} suffix="+" />
-            <span className="hp-stat-label">Years Experience</span>
-          </div>
-          <div className="hp-stat-item">
-            <Counter target={95} suffix="%" />
-            <span className="hp-stat-label">Student Satisfaction</span>
-          </div>
-          <div className="hp-stat-item font-highlight">
-            <Counter target={1500} suffix="+" />
-            <span className="hp-stat-label">Hours of Practical Training</span>
-          </div>
+        {/* Beautiful curve bottom divider shape */}
+        <div className="hp-section-divider">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,32L120,42.7C240,53,480,75,720,74.7C960,75,1200,53,1320,42.7L1440,32L1440,120L1320,120C1200,120,960,120,720,120C480,120,240,120,120,120L0,120Z" fill="#ffffff" />
+          </svg>
         </div>
       </section>
 
+      {/* 2. STATS BAR (Overlapping modern floating card layout) */}
+      <div className="hp-stats-bar-wrapper">
+        <div className="hp-container">
+          <section className="hp-stats-bar">
+            <div className="hp-stats-grid">
+              <div className="hp-stat-item">
+                <Counter target={500} suffix="+" />
+                <span className="hp-stat-label">Professionals Trained</span>
+              </div>
+              <div className="hp-stat-item">
+                <Counter target={50} suffix="+" />
+                <span className="hp-stat-label">Industries Served</span>
+              </div>
+              <div className="hp-stat-item">
+                <Counter target={10} suffix="+" />
+                <span className="hp-stat-label">Years Experience</span>
+              </div>
+              <div className="hp-stat-item">
+                <Counter target={95} suffix="%" />
+                <span className="hp-stat-label">Student Satisfaction</span>
+              </div>
+              <div className="hp-stat-item font-highlight">
+                <Counter target={1500} suffix="+" />
+                <span className="hp-stat-label">Hours of Practical Training</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
       {/* 3. THREE PATHWAYS SECTION (Coursera/HubSpot Academy select style) */}
-      <section id="pathways" className="hp-section hp-bg-light">
+      <section id="pathways" className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container">
           <div className="hp-section-header">
             <Reveal>
@@ -336,9 +344,6 @@ export default function HomePage() {
       <section className="hp-section hp-why-section">
         <div className="hp-container hp-why-split">
           <div className="hp-why-content-col">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">THE DONZEN OUTCOME</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-why-title">Focusing on Real Career &amp; Business Outcomes</h2>
             </Reveal>
@@ -388,17 +393,14 @@ export default function HomePage() {
       </section>
 
       {/* 5. WORKPLACE EXPERIENCE SHOWCASE (Simulation showcase) */}
-      <section className="hp-section hp-bg-dark hp-text-white">
+      <section className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container">
           <div className="hp-section-header hp-text-left">
-            <Reveal>
-              <span className="hp-section-subtitle-tag red">COMPETITIVE ADVANTAGE</span>
-            </Reveal>
             <Reveal delay={100}>
-              <h2 className="hp-section-title text-white">Experience Real Workplace Simulation</h2>
+              <h2 className="hp-section-title hp-text-left">Experience Real Workplace Simulation</h2>
             </Reveal>
             <Reveal delay={200}>
-              <p className="hp-section-desc text-white">Instead of classroom theory, our students and clients learn and execute directly within real cloud-based business configurations.</p>
+              <p className="hp-section-desc hp-text-left">Instead of classroom theory, our students and clients learn and execute directly within real cloud-based business configurations.</p>
             </Reveal>
           </div>
 
@@ -427,9 +429,6 @@ export default function HomePage() {
       <section className="hp-section">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">THE TIMELINE</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Your Workplace Learning Journey</h2>
             </Reveal>
@@ -460,12 +459,9 @@ export default function HomePage() {
       </section>
 
       {/* 7. SERVICES OVERVIEW */}
-      <section className="hp-section hp-bg-light">
+      <section className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">SERVICES CATALOGUE</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Corporate Accounting Services</h2>
             </Reveal>
@@ -507,9 +503,6 @@ export default function HomePage() {
           </Reveal>
           
           <div className="hp-bootcamp-content-col">
-            <Reveal>
-              <span className="hp-section-subtitle-tag red">THE ACADEMY</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-bootcamp-title">The Donzen Accounting Experience Programme</h2>
             </Reveal>
@@ -535,12 +528,9 @@ export default function HomePage() {
       </section>
 
       {/* 9. WHY EMPLOYERS HIRE OUR STUDENTS */}
-      <section className="hp-section hp-bg-light">
+      <section className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container hp-skills-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">EMPLOYABILITY</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Why Employers Hire Our Graduates</h2>
             </Reveal>
@@ -643,18 +633,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 11. TESTIMONIALS & SUCCESS STORIES */}
-      <section className="hp-section hp-bg-dark hp-text-white">
+      {/* 11. TESTIMONIALS & SUCCESS STORIES (Styled light and modern) */}
+      <section className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag red">STUDENT SUCCESS</span>
-            </Reveal>
             <Reveal delay={100}>
-              <h2 className="hp-section-title text-white">What Our Alumni &amp; Clients Say</h2>
+              <h2 className="hp-section-title">What Our Alumni &amp; Clients Say</h2>
             </Reveal>
             <Reveal delay={200}>
-              <p className="hp-section-desc text-white">Read stories of career transitions and accounting processes automated by Donzen.</p>
+              <p className="hp-section-desc">Read stories of career transitions and accounting processes automated by Donzen.</p>
             </Reveal>
           </div>
 
@@ -710,13 +697,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 12. MEET THE FOUNDER (Samuel Onainor story) */}
+      {/* 12. MEET THE FOUNDER (Samuel Onainor story with custom image) */}
       <section className="hp-section hp-founder-section">
         <div className="hp-container hp-founder-split">
           <div className="hp-founder-content-col">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">MEET THE FOUNDER</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-founder-title">A Message From Samuel Onainor</h2>
             </Reveal>
@@ -743,7 +727,7 @@ export default function HomePage() {
           
           <Reveal className="hp-founder-image-col" delay={200}>
             <div className="hp-image-frame-founder">
-              <img src="/founder_portrait.jpg" alt="Samuel Onainor - Founder of Donzen Accounting Hub" className="hp-founder-img" />
+              <img src="/donzen-man.jpeg" alt="Samuel Onainor - Founder of Donzen Accounting Hub" className="hp-founder-img" />
               <div className="hp-founder-signature-box">
                 <h4>Samuel Onainor</h4>
                 <p>Founder &amp; Lead Consultant</p>
@@ -754,7 +738,7 @@ export default function HomePage() {
       </section>
 
       {/* 13. FAQ */}
-      <section className="hp-section hp-bg-light">
+      <section className="hp-section hp-bg-light hp-curved-section">
         <div className="hp-container hp-faq-container">
           <div className="hp-section-header">
             <Reveal>
@@ -773,7 +757,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 14. BOTTOM CTA (About page matching) */}
+      {/* 14. BOTTOM CTA (HubSpot-like friendly gradient style) */}
       <section className="hp-bottom-cta">
         <Reveal>
           <div className="hp-bottom-cta-inner">
@@ -794,7 +778,7 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* 15. WATCH FREE DEMO MODAL (Glassmorphic popup for Hero secondary CTA) */}
+      {/* 15. WATCH FREE DEMO MODAL */}
       {showDemoModal && (
         <div className="hp-modal-overlay" onClick={() => setShowDemoModal(false)}>
           <div className="hp-modal-box" onClick={e => e.stopPropagation()}>
@@ -823,10 +807,12 @@ export default function HomePage() {
 
       {/* --- Styles --- */}
       <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         /* --- SCOPED CSS --- */
         .hp-wrapper {
-          font-family: 'Inter', system-ui, -apple-system, sans-serif;
-          color: #09090b;
+          font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+          color: #1e293b;
           background-color: #ffffff;
           overflow-x: hidden;
         }
@@ -838,43 +824,31 @@ export default function HomePage() {
         }
 
         .hp-section {
-          padding: 6rem 0;
+          padding: 7rem 0;
+          position: relative;
         }
         
         .hp-bg-light { background-color: #f8fafc; }
-        .hp-bg-dark { background-color: #09090b; }
-        .hp-text-white * { color: #ffffff !important; }
         .hp-text-accent { color: #ff1717; }
-        .hp-text-left { text-align: left !important; }
+        .hp-text-left { text-align: center !important; }
 
         /* Typography */
         .hp-section-title {
-          font-size: 2.5rem;
+          font-size: clamp(2rem, 3.5vw, 2.75rem);
           font-weight: 800;
           text-align: center;
-          margin-bottom: 1rem;
-          color: #09090b;
+          margin-bottom: 1.25rem;
+          color: #0f172a;
           letter-spacing: -0.03em;
+          line-height: 1.2;
         }
         .hp-section-desc {
           font-size: 1.15rem;
-          color: #64748b;
+          color: #475569;
           text-align: center;
-          max-width: 700px;
-          margin: 0 auto 3rem;
+          max-width: 750px;
+          margin: 0 auto 3.5rem;
           line-height: 1.6;
-        }
-        .hp-section-subtitle-tag {
-          display: inline-block;
-          font-size: 0.8rem;
-          font-weight: 800;
-          color: #64748b;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          margin-bottom: 1rem;
-        }
-        .hp-section-subtitle-tag.red {
-          color: #ff1717;
         }
 
         /* Buttons */
@@ -899,13 +873,13 @@ export default function HomePage() {
         .hp-btn-primary:hover {
           background-color: #d11111;
           transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(255, 23, 23, 0.25);
+          box-shadow: 0 8px 20px rgba(255, 23, 23, 0.2);
         }
         .hp-btn-secondary {
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: rgba(255, 255, 255, 0.15);
           color: #ffffff !important;
           backdrop-filter: blur(8px);
-          border: 2px solid rgba(255, 255, 255, 0.2);
+          border: 2px solid rgba(255, 255, 255, 0.25);
         }
         .hp-btn-secondary:hover {
           background-color: rgba(255, 255, 255, 0.25);
@@ -914,10 +888,10 @@ export default function HomePage() {
         .hp-btn-outline {
           background-color: transparent;
           border-color: #e2e8f0;
-          color: #09090b;
+          color: #1e293b;
         }
         .hp-btn-outline:hover {
-          border-color: #09090b;
+          border-color: #0f172a;
           background-color: #f8fafc;
         }
         .hp-btn-block {
@@ -925,7 +899,7 @@ export default function HomePage() {
         }
         .hp-btn-large {
           padding: 1rem 2rem;
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           border-radius: 12px;
         }
 
@@ -943,11 +917,12 @@ export default function HomePage() {
         /* 1. Hero Section */
         .hp-hero {
           position: relative;
-          min-height: 95vh;
+          min-height: 90vh;
           display: flex;
           align-items: center;
-          padding: 8rem 0;
-          background: #09090b;
+          padding: 10rem 0 12rem;
+          background: #0f172a;
+          overflow: hidden;
         }
         .hp-hero-bg {
           position: absolute;
@@ -964,7 +939,7 @@ export default function HomePage() {
           object-fit: cover;
           opacity: 0;
           transition: opacity 1.5s ease-in-out;
-          filter: brightness(0.4);
+          filter: brightness(0.35);
         }
         .hp-hero-img.active {
           opacity: 1;
@@ -972,39 +947,27 @@ export default function HomePage() {
         .hp-hero-overlay {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at 30% 50%, rgba(9, 9, 11, 0.8) 0%, rgba(9, 9, 11, 0.95) 100%);
+          background: radial-gradient(circle at center, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.96) 100%);
         }
         .hp-hero-content {
           position: relative;
           z-index: 1;
-          max-width: 900px;
-          margin-left: 0;
-          text-align: left;
-        }
-        .hp-hero-badge {
-          display: inline-block;
-          background: rgba(255, 23, 23, 0.15);
-          border: 1px solid rgba(255, 23, 23, 0.3);
-          color: #ff1717;
-          font-size: 0.8rem;
-          font-weight: 800;
-          padding: 6px 16px;
-          border-radius: 50px;
-          letter-spacing: 0.1em;
-          margin-bottom: 2rem;
+          max-width: 850px;
+          margin: 0 auto;
+          text-align: center;
         }
         .hp-hero-title {
-          font-size: clamp(2.2rem, 5vw, 4.2rem);
-          font-weight: 900;
+          font-size: clamp(2.2rem, 4.8vw, 3.8rem);
+          font-weight: 800;
           color: #ffffff;
-          line-height: 1.1;
+          line-height: 1.15;
           margin-bottom: 2rem;
           letter-spacing: -0.04em;
         }
         .hp-hero-subtitle {
-          font-size: clamp(1.1rem, 2vw, 1.4rem);
-          color: #cbd5e1;
-          margin-bottom: 3rem;
+          font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+          color: #e2e8f0;
+          margin: 0 auto 3.5rem;
           line-height: 1.6;
           font-weight: 400;
           max-width: 750px;
@@ -1012,20 +975,42 @@ export default function HomePage() {
         .hp-hero-ctas {
           display: flex;
           gap: 1.2rem;
+          justify-content: center;
           flex-wrap: wrap;
+        }
+        .hp-section-divider {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          overflow: hidden;
+          line-height: 0;
+          transform: rotate(180deg);
+        }
+        .hp-section-divider svg {
+          position: relative;
+          display: block;
+          width: calc(100% + 1.3px);
+          height: 80px;
         }
 
         /* 2. Stats Bar */
+        .hp-stats-bar-wrapper {
+          position: relative;
+          z-index: 20;
+          margin-top: -80px;
+        }
         .hp-stats-bar {
-          background-color: #09090b;
-          border-top: 1px solid rgba(255,255,255,0.08);
-          border-bottom: 1px solid rgba(255,255,255,0.08);
-          padding: 3rem 0;
+          background-color: #ffffff;
+          border-radius: 20px;
+          padding: 2.5rem 2rem;
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+          border: 1px solid #f1f5f9;
         }
         .hp-stats-grid {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          gap: 2rem;
+          gap: 1.5rem;
           text-align: center;
         }
         .hp-stat-item {
@@ -1034,9 +1019,9 @@ export default function HomePage() {
           align-items: center;
         }
         .hp-counter {
-          font-size: clamp(2rem, 3.5vw, 3.2rem);
-          font-weight: 900;
-          color: #ffffff;
+          font-size: clamp(1.8rem, 3vw, 2.75rem);
+          font-weight: 800;
+          color: #0f172a;
           line-height: 1;
           margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
@@ -1045,8 +1030,8 @@ export default function HomePage() {
           color: #ff1717;
         }
         .hp-stat-label {
-          font-size: 0.85rem;
-          color: #94a3b8;
+          font-size: 0.8rem;
+          color: #64748b;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -1066,8 +1051,8 @@ export default function HomePage() {
           background: #ffffff;
           border-radius: 1.5rem;
           padding: 3rem 2rem;
-          box-shadow: 0 4px 30px rgba(0,0,0,0.02);
-          border: 1px solid #f1f5f9;
+          box-shadow: 0 4px 30px rgba(15, 23, 42, 0.015);
+          border: 1px solid #e2e8f0;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           display: flex;
           flex-direction: column;
@@ -1076,8 +1061,8 @@ export default function HomePage() {
         }
         .hp-pathway-card:hover {
           transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-          border-color: rgba(255, 23, 23, 0.15);
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+          border-color: rgba(255, 23, 23, 0.2);
         }
         .hp-pathway-card.popular {
           border-color: #ff1717;
@@ -1114,19 +1099,20 @@ export default function HomePage() {
           justify-content: center;
           color: #ff1717;
           margin-bottom: 2rem;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e2e8f0;
         }
         .hp-pathway-card.popular .hp-pathway-icon-box {
           background: rgba(255, 23, 23, 0.05);
         }
         .hp-pathway-card h3 {
-          font-size: 1.6rem;
+          font-size: 1.5rem;
           font-weight: 800;
           margin: 0 0 1rem;
+          color: #0f172a;
           letter-spacing: -0.02em;
         }
         .hp-pathway-intro {
-          font-size: 1rem;
+          font-size: 0.95rem;
           color: #64748b;
           line-height: 1.6;
           margin-bottom: 2rem;
@@ -1143,9 +1129,9 @@ export default function HomePage() {
           display: flex;
           align-items: center;
           gap: 12px;
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           font-weight: 600;
-          color: #334155;
+          color: #475569;
         }
         .hp-pathway-list li svg {
           color: #ff1717;
@@ -1156,7 +1142,7 @@ export default function HomePage() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 700;
           color: #ff1717;
           text-decoration: none;
@@ -1164,6 +1150,13 @@ export default function HomePage() {
         }
         .hp-pathway-link:hover svg {
           transform: translateX(4px);
+        }
+
+        /* Friendly Curved Sections */
+        .hp-curved-section {
+          border-radius: 40px;
+          margin: 2rem 0;
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
         }
 
         /* 4. Why Section (Outcome-focused) */
@@ -1174,16 +1167,17 @@ export default function HomePage() {
           align-items: center;
         }
         .hp-why-title {
-          font-size: 2.8rem;
-          font-weight: 900;
-          line-height: 1.15;
+          font-size: clamp(2rem, 3.5vw, 2.75rem);
+          font-weight: 800;
+          line-height: 1.2;
           margin-top: 0;
           margin-bottom: 1.5rem;
           letter-spacing: -0.03em;
+          color: #0f172a;
         }
         .hp-why-intro-text {
           font-size: 1.15rem;
-          color: #64748b;
+          color: #475569;
           line-height: 1.6;
           margin-bottom: 3rem;
         }
@@ -1197,8 +1191,8 @@ export default function HomePage() {
           gap: 1.5rem;
         }
         .hp-outcome-num {
-          font-size: 1.25rem;
-          font-weight: 900;
+          font-size: 1.1rem;
+          font-weight: 800;
           color: #ff1717;
           background: rgba(255, 23, 23, 0.05);
           width: 44px;
@@ -1208,13 +1202,13 @@ export default function HomePage() {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          border: 1px solid rgba(255, 23, 23, 0.1);
+          border: 1px solid rgba(255, 23, 23, 0.15);
         }
         .hp-outcome-item h4 {
-          font-size: 1.2rem;
+          font-size: 1.15rem;
           font-weight: 800;
           margin: 0 0 0.5rem;
-          color: #09090b;
+          color: #0f172a;
         }
         .hp-outcome-item p {
           font-size: 0.95rem;
@@ -1229,7 +1223,7 @@ export default function HomePage() {
           width: 100%;
           height: auto;
           border-radius: 2rem;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+          box-shadow: 0 10px 40px rgba(15, 23, 42, 0.06);
           z-index: 1;
           position: relative;
         }
@@ -1239,12 +1233,12 @@ export default function HomePage() {
           right: -20px;
           bottom: 20px;
           left: 20px;
-          background: radial-gradient(circle, rgba(255, 23, 23, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255, 23, 23, 0.05) 0%, transparent 70%);
           filter: blur(20px);
           z-index: 0;
         }
 
-        /* 5. Workplace Experience Showcase */
+        /* 5. Workplace Experience Showcase (Light, Modern) */
         .hp-workplace-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -1255,28 +1249,31 @@ export default function HomePage() {
           display: flex;
         }
         .hp-workplace-card {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
           padding: 2.5rem 2rem;
           border-radius: 1.5rem;
           transition: all 0.25s ease;
+          box-shadow: 0 4px 20px rgba(15, 23, 42, 0.01);
         }
         .hp-workplace-card:hover {
-          border-color: rgba(255, 23, 23, 0.3);
-          background: rgba(255,255,255,0.05);
+          border-color: #ff1717;
+          box-shadow: 0 15px 30px rgba(15, 23, 42, 0.04);
+          transform: translateY(-4px);
         }
         .hp-workplace-icon {
           color: #ff1717;
           margin-bottom: 1.5rem;
         }
         .hp-workplace-card h4 {
-          font-size: 1.25rem;
+          font-size: 1.2rem;
           font-weight: 800;
           margin: 0 0 1rem;
+          color: #0f172a;
         }
         .hp-workplace-card p {
           font-size: 0.95rem;
-          color: #94a3b8;
+          color: #64748b;
           line-height: 1.6;
           margin: 0;
         }
@@ -1294,7 +1291,7 @@ export default function HomePage() {
           bottom: 0;
           left: 50%;
           width: 3px;
-          background: #f1f5f9;
+          background: #e2e8f0;
           transform: translateX(-50%);
         }
         .hp-timeline-item {
@@ -1330,7 +1327,7 @@ export default function HomePage() {
         .hp-timeline-card {
           width: 85%;
           background: #ffffff;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e2e8f0;
           padding: 2rem;
           border-radius: 1.25rem;
           box-shadow: 0 4px 20px rgba(0,0,0,0.01);
@@ -1341,10 +1338,10 @@ export default function HomePage() {
           margin-left: 2rem;
         }
         .hp-timeline-card h3 {
-          font-size: 1.3rem;
+          font-size: 1.25rem;
           font-weight: 800;
           margin: 0 0 0.75rem;
-          color: #09090b;
+          color: #0f172a;
         }
         .hp-timeline-card p {
           font-size: 0.95rem;
@@ -1373,7 +1370,7 @@ export default function HomePage() {
         }
         .hp-service-card:hover {
           border-color: #ff1717;
-          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.03);
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
           transform: translateY(-4px);
         }
         .hp-service-icon {
@@ -1381,9 +1378,10 @@ export default function HomePage() {
           margin-bottom: 1.5rem;
         }
         .hp-service-card h4 {
-          font-size: 1.3rem;
+          font-size: 1.25rem;
           font-weight: 800;
           margin: 0 0 1rem;
+          color: #0f172a;
         }
         .hp-service-card p {
           font-size: 0.95rem;
@@ -1403,6 +1401,7 @@ export default function HomePage() {
         .hp-bootcamp-highlight {
           background: #f8fafc;
           padding: 7rem 0;
+          border-radius: 40px;
         }
         .hp-bootcamp-split {
           display: grid;
@@ -1417,13 +1416,13 @@ export default function HomePage() {
           width: 100%;
           height: auto;
           border-radius: 2rem;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
         }
         .hp-badge-bootcamp {
           position: absolute;
           bottom: 20px;
           right: 20px;
-          background: #09090b;
+          background: #0f172a;
           color: #ffffff;
           font-size: 0.72rem;
           font-weight: 800;
@@ -1432,16 +1431,17 @@ export default function HomePage() {
           letter-spacing: 0.05em;
         }
         .hp-bootcamp-title {
-          font-size: 2.8rem;
-          font-weight: 900;
+          font-size: clamp(2rem, 3.5vw, 2.75rem);
+          font-weight: 800;
           letter-spacing: -0.03em;
           margin-top: 0;
           margin-bottom: 1.5rem;
-          line-height: 1.15;
+          line-height: 1.2;
+          color: #0f172a;
         }
         .hp-bootcamp-desc {
-          font-size: 1.15rem;
-          color: #64748b;
+          font-size: 1.1rem;
+          color: #475569;
           line-height: 1.6;
           margin-bottom: 2rem;
         }
@@ -1457,7 +1457,7 @@ export default function HomePage() {
           display: flex;
           align-items: center;
           gap: 12px;
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 600;
           color: #334155;
         }
@@ -1487,7 +1487,7 @@ export default function HomePage() {
           background: #ffffff;
           padding: 1.5rem;
           border-radius: 1rem;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e2e8f0;
         }
         .hp-skill-check-icon {
           width: 32px;
@@ -1512,12 +1512,12 @@ export default function HomePage() {
           background-color: #ffffff;
         }
         .hp-lead-card {
-          background: #09090b;
+          background: #0f172a;
           border-radius: 2rem;
           padding: 4rem;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
         }
         .hp-lead-card::before {
           content: '';
@@ -1540,7 +1540,7 @@ export default function HomePage() {
         }
         .hp-lead-info h3 {
           font-size: 2.2rem;
-          font-weight: 900;
+          font-weight: 800;
           color: #ffffff;
           margin-top: 0;
           margin-bottom: 1rem;
@@ -1581,7 +1581,7 @@ export default function HomePage() {
         .hp-lead-success-msg h4 {
           font-size: 1.4rem;
           font-weight: 800;
-          color: #09090b;
+          color: #0f172a;
           margin-top: 0;
           margin-bottom: 0.75rem;
         }
@@ -1623,7 +1623,7 @@ export default function HomePage() {
           padding: 0 1rem;
           font-family: inherit;
           font-size: 0.95rem;
-          color: #09090b;
+          color: #0f172a;
           outline: none;
           background: #ffffff;
         }
@@ -1632,7 +1632,7 @@ export default function HomePage() {
           box-shadow: 0 0 0 3px rgba(255,23,23,0.08);
         }
 
-        /* 11. Testimonials Section */
+        /* 11. Testimonials Section (Light friendly styling) */
         .hp-testimonials-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -1643,8 +1643,8 @@ export default function HomePage() {
           display: flex;
         }
         .hp-testimonial-card {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
           padding: 2.5rem 2rem;
           border-radius: 1.5rem;
           display: flex;
@@ -1656,9 +1656,9 @@ export default function HomePage() {
           margin-bottom: 1.5rem;
         }
         .hp-testimonial-text {
-          font-size: 1rem;
+          font-size: 0.95rem;
           line-height: 1.6;
-          color: #cbd5e1;
+          color: #475569;
           font-style: italic;
           margin: 0 0 2rem;
         }
@@ -1673,17 +1673,17 @@ export default function HomePage() {
           height: 48px;
           border-radius: 50%;
           object-fit: cover;
-          border: 2px solid rgba(255,255,255,0.1);
+          border: 2px solid #e2e8f0;
         }
         .hp-author-name {
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 800;
           margin: 0 0 2px;
-          color: #ffffff;
+          color: #0f172a;
         }
         .hp-author-role {
           font-size: 0.8rem;
-          color: #94a3b8;
+          color: #64748b;
           margin: 0;
         }
 
@@ -1699,22 +1699,23 @@ export default function HomePage() {
           align-items: center;
         }
         .hp-founder-title {
-          font-size: 2.8rem;
-          font-weight: 900;
+          font-size: clamp(2rem, 3.5vw, 2.75rem);
+          font-weight: 800;
           letter-spacing: -0.03em;
           margin-top: 0;
           margin-bottom: 2rem;
+          color: #0f172a;
         }
         .hp-founder-letter {
           color: #475569;
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           line-height: 1.7;
           display: flex;
           flex-direction: column;
           gap: 1.25rem;
         }
         .hp-founder-letter strong {
-          color: #09090b;
+          color: #0f172a;
         }
         .hp-image-frame-founder {
           position: relative;
@@ -1723,7 +1724,7 @@ export default function HomePage() {
           width: 100%;
           height: auto;
           border-radius: 2rem;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+          box-shadow: 0 10px 40px rgba(15, 23, 42, 0.05);
           position: relative;
           z-index: 1;
         }
@@ -1739,7 +1740,7 @@ export default function HomePage() {
           z-index: 2;
         }
         .hp-founder-signature-box h4 {
-          font-size: 1.15rem;
+          font-size: 1.1rem;
           font-weight: 800;
           margin: 0 0 4px;
         }
@@ -1777,9 +1778,9 @@ export default function HomePage() {
           padding: 1.5rem;
           background: none;
           border: none;
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           font-weight: 800;
-          color: #09090b;
+          color: #0f172a;
           cursor: pointer;
           text-align: left;
           font-family: inherit;
@@ -1806,13 +1807,15 @@ export default function HomePage() {
           font-size: 0.95rem;
         }
 
-        /* 14. Bottom CTA (About page matching) */
+        /* 14. Bottom CTA (HubSpot Academy friendly light gradient style) */
         .hp-bottom-cta {
           padding: 100px 24px;
-          background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%);
+          background: linear-gradient(135deg, #f8fafc 0%, #fff1f2 100%);
           text-align: center;
           position: relative;
           overflow: hidden;
+          border-top: 1px solid #e2e8f0;
+          border-radius: 40px 40px 0 0;
         }
         .hp-bottom-cta::before {
           content: '';
@@ -1820,7 +1823,7 @@ export default function HomePage() {
           width: 600px;
           height: 600px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,23,23,0.12), transparent 70%);
+          background: radial-gradient(circle, rgba(255,23,23,0.03), transparent 70%);
           bottom: -300px;
           left: 50%;
           transform: translateX(-50%);
@@ -1833,15 +1836,15 @@ export default function HomePage() {
           z-index: 2;
         }
         .hp-bottom-cta h2 {
-          font-size: clamp(1.8rem, 4vw, 3rem);
-          font-weight: 900;
-          color: #fff;
+          font-size: clamp(1.8rem, 4vw, 2.75rem);
+          font-weight: 800;
+          color: #0f172a;
           margin: 0 0 1.5rem;
           letter-spacing: -0.04em;
         }
         .hp-bottom-cta p {
-          font-size: 1.15rem;
-          color: rgba(255,255,255,0.6);
+          font-size: 1.1rem;
+          color: #475569;
           line-height: 1.7;
           margin: 0 0 3rem;
         }
@@ -1872,16 +1875,16 @@ export default function HomePage() {
         .hp-btn-red:hover {
           background: #d91414;
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
+          box-shadow: 0 8px 24px rgba(255,23,23,0.25);
         }
         .hp-btn-glass {
-          background: rgba(255,255,255,0.08);
-          color: #fff;
-          border: 1px solid rgba(255,255,255,0.2);
-          backdrop-filter: blur(4px);
+          background: #ffffff;
+          color: #0f172a;
+          border: 1px solid #cbd5e1;
         }
         .hp-btn-glass:hover {
-          background: rgba(255,255,255,0.16);
+          background: #f8fafc;
+          border-color: #0f172a;
           transform: translateY(-2px);
         }
 
@@ -1889,7 +1892,7 @@ export default function HomePage() {
         .hp-modal-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(5, 11, 20, 0.65);
+          background: rgba(15, 23, 42, 0.5);
           backdrop-filter: blur(8px);
           z-index: 9999;
           display: flex;
@@ -1904,7 +1907,7 @@ export default function HomePage() {
           border-radius: 1.5rem;
           padding: 2.5rem;
           position: relative;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+          box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
           border: 1px solid #f1f5f9;
         }
         .hp-modal-close {
@@ -1912,7 +1915,7 @@ export default function HomePage() {
           top: 1.5rem;
           right: 1.5rem;
           background: #f8fafc;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e2e8f0;
           width: 36px;
           height: 36px;
           border-radius: 50%;
@@ -1929,11 +1932,12 @@ export default function HomePage() {
           border-color: #ff1717;
         }
         .hp-modal-header h3 {
-          font-size: 1.5rem;
+          font-size: 1.4rem;
           font-weight: 800;
           margin-top: 0;
           margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
+          color: #0f172a;
         }
         .hp-modal-header p {
           font-size: 0.95rem;
@@ -1944,14 +1948,14 @@ export default function HomePage() {
         .hp-modal-video-placeholder {
           width: 100%;
           aspect-ratio: 16/9;
-          background: #09090b;
+          background: #0f172a;
           border-radius: 1rem;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
           position: relative;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #cbd5e1;
         }
         .hp-video-overlay-play {
           display: flex;
@@ -1969,7 +1973,7 @@ export default function HomePage() {
           box-shadow: 0 8px 24px rgba(255, 23, 23, 0.4);
         }
         .hp-video-overlay-play span {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-weight: 700;
           letter-spacing: 0.05em;
           text-transform: uppercase;
