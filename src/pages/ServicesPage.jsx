@@ -433,9 +433,9 @@ export default function ServicesPage() {
       <style dangerouslySetInnerHTML={{ __html: `
         /* ─── ROOT ─── */
         .sv-root {
-          --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          --red: #ff1717;
-          --dark: #09090b;
+          --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          --red: #e12b2b;
+          --dark: #121214;
           font-family: var(--font);
           color: #0f172a;
           background: #fff;
@@ -454,7 +454,7 @@ export default function ServicesPage() {
           display: inline-block;
           font-size: 0.76rem;
           font-weight: 700;
-          color: #ff1717;
+          color: var(--red);
           text-transform: uppercase;
           letter-spacing: 2px;
           margin-bottom: 12px;
@@ -491,13 +491,13 @@ export default function ServicesPage() {
           border: none;
         }
         .sv-btn-red {
-          background: #ff1717;
+          background: var(--red);
           color: #fff;
         }
         .sv-btn-red:hover {
-          background: #d91414;
+          background: var(--hp-red-dark, #b91c1c);
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
+          box-shadow: 0 8px 24px rgba(225,43,43,0.25);
         }
         .sv-btn-glass {
           background: rgba(255,255,255,0.08);
@@ -508,12 +508,21 @@ export default function ServicesPage() {
           background: rgba(255,255,255,0.15);
           transform: translateY(-2px);
         }
+        .sv-btn-white {
+          background: #fff;
+          color: var(--dark);
+        }
+        .sv-btn-white:hover {
+          background: #f1f5f9;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
 
 
         /* ════ HERO ════ */
         .sv-hero {
           position: relative;
-          min-height: 520px;
+          min-height: 560px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -595,9 +604,10 @@ export default function ServicesPage() {
         }
 
 
+
         /* ════ TRUST BAR ════ */
         .sv-trust-bar {
-          background: #09090b;
+          background: var(--dark);
           padding: 0 24px;
         }
         .sv-trust-inner {
@@ -888,7 +898,7 @@ export default function ServicesPage() {
         /* ════ WHY CHOOSE US ════ */
         .sv-why {
           padding: 100px 24px;
-          background: #09090b;
+          background: var(--dark);
           position: relative;
           overflow: hidden;
         }
@@ -1035,7 +1045,7 @@ export default function ServicesPage() {
         /* ════ BOTTOM CTA ════ */
         .sv-cta {
           padding: 80px 24px;
-          background: linear-gradient(135deg, #09090b, #1a1a2e);
+          background: linear-gradient(135deg, var(--dark), var(--hp-black-slate, #0f172a));
           text-align: center;
           position: relative;
           overflow: hidden;

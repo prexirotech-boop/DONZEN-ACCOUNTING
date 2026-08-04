@@ -68,29 +68,16 @@ export function useAffiliate() {
 
   async function recordClick(affiliateCode, landingPage) {
     try {
-      // Find the affiliate
-      const { data: affiliate } = await supabase
-        .from('affiliates')
-        .select('id')
-        .eq('affiliate_code', affiliateCode)
-        .eq('status', 'active')
-        .maybeSingle()
-      
-      if (!affiliate) return
-
-      // Record the click
-      await supabase.from('affiliate_referrals').insert({
-        affiliate_id: affiliate.id,
-        affiliate_code: affiliateCode,
-        landing_page: landingPage || window.location.href,
-        user_agent: navigator.userAgent
+      const { data, error } = await supabase.rpc('track_affiliate_click', {
+        p_affiliate_code: affiliateCode,
+        p_landing_page: landingPage || window.location.href,
+        p_user_agent: navigator.userAgent
       })
-
-      // Increment click count
-      await supabase.rpc('increment_affiliate_clicks', { p_affiliate_id: affiliate.id })
-        .catch(() => {}) // ignore if RPC not available
+      if (error) throw error
+      return data
     } catch(e) {
       console.warn('[useAffiliate] recordClick error:', e)
+      return false
     }
   }
 

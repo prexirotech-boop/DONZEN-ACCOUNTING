@@ -156,7 +156,8 @@ export default function Footer() {
                 { label: 'Products & Templates', path: '/products' },
                 { label: 'Resources & Pricing', path: '/resources' },
                 { label: 'FAQs', path: '/faq' },
-                { label: 'Contact Us', path: '/contact' }
+                { label: 'Contact Us', path: '/contact' },
+                { label: 'Affiliate Program', path: '/affiliate' }
               ].map(({ label, path }) => (
                 <Link key={label} to={path} onClick={scrollToTop} className="footer-nav-link"
                   style={{

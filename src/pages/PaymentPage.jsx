@@ -136,10 +136,7 @@ export default function PaymentPage() {
       if (code) {
         try {
           const { data } = await supabase
-            .from('affiliates')
-            .select('id, affiliate_code')
-            .eq('affiliate_code', code)
-            .eq('status', 'active')
+            .rpc('check_affiliate_code', { p_code: code })
             .maybeSingle()
           if (data) setAffiliateData(data)
         } catch (e) {

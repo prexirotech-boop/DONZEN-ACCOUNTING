@@ -42,6 +42,7 @@ import { AuthProvider } from './context/AuthContext'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { trackEvent } from './lib/analytics'
 import { getPages } from './lib/pagesScanner'
+import { useAffiliate } from './hooks/useAffiliate'
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -53,11 +54,22 @@ function ScrollToTop() {
 
 function AppLayout() {
   const location = useLocation()
+  const { storeReferral, recordClick } = useAffiliate()
   
   // Track PageView on location changes for Facebook Pixel & DB Analytics
   useEffect(() => {
     trackEvent('page_view')
   }, [location])
+
+  // Track and store affiliate referrals on page views
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const refCode = params.get('ref')
+    if (refCode) {
+      storeReferral(refCode)
+      recordClick(refCode, window.location.href)
+    }
+  }, [location.search, storeReferral, recordClick])
 
   const hideHeaderFooter = 
     location.pathname.startsWith('/admin') || 

@@ -23,16 +23,16 @@ export default function FAQPage() {
         <div>
           <p style={{ margin: '0 0 12px' }}>You can proceed to check out and complete your purchase online. Also, you can pay using direct bank transfer into:</p>
           <div style={{
-            background: 'rgba(255,23,23,0.06)',
-            border: '1px solid rgba(255,23,23,0.2)',
+            background: 'rgba(225,43,43,0.06)',
+            border: '1px solid rgba(225,43,43,0.2)',
             borderRadius: '10px',
             padding: '16px',
             fontWeight: 600,
-            color: '#101010'
+            color: 'var(--k)'
           }}>
-            <div style={{ color: '#ff1717', fontWeight: 800, marginBottom: '4px' }}>Bank Transfer Account Details:</div>
+            <div style={{ color: 'var(--brand-red)', fontWeight: 800, marginBottom: '4px' }}>Bank Transfer Account Details:</div>
             <div>Account Name: <strong>Donzen Accounting Hub</strong></div>
-            <div>Account No: <strong style={{ color: '#ff1717', fontSize: '1.1rem', letterSpacing: '1px' }}>1211575347</strong></div>
+            <div>Account No: <strong style={{ color: 'var(--brand-red)', fontSize: '1.1rem', letterSpacing: '1px' }}>1211575347</strong></div>
             <div>Bank: <strong>Zenith Bank</strong></div>
           </div>
         </div>
@@ -59,8 +59,8 @@ export default function FAQPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 50 }}>
           <span style={{ 
-            background: 'rgba(255, 23, 23, 0.1)', 
-            color: '#ff1717', 
+            background: 'rgba(225, 43, 43, 0.1)', 
+            color: 'var(--brand-red)', 
             padding: '6px 18px', 
             borderRadius: 50, 
             fontSize: 13, 
@@ -72,8 +72,8 @@ export default function FAQPage() {
           }}>
             Explore The Latest Updates On Our Services
           </span>
-          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 900, color: '#101010', margin: '0 0 16px', lineHeight: 1.2 }}>
-            Frequently Asked <span style={{ color: '#ff1717' }}>Questions</span>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 900, color: 'var(--k)', margin: '0 0 16px', lineHeight: 1.2 }}>
+            Frequently Asked <span style={{ color: 'var(--brand-red)' }}>Questions</span>
           </h1>
           <p style={{ fontSize: 16, color: '#71717A', maxWidth: 620, margin: '0 auto', lineHeight: 1.6 }}>
             Learn more about Donzen Virtual Bookkeeping & Accounting Services, client account access, payments, and advisory.
@@ -89,11 +89,11 @@ export default function FAQPage() {
                 key={idx}
                 style={{
                   background: '#ffffff',
-                  border: isOpen ? '1.5px solid #ff1717' : '1px solid #E4E4E7',
+                  border: isOpen ? '1.5px solid var(--brand-red)' : '1px solid #E4E4E7',
                   borderRadius: 14,
                   overflow: 'hidden',
                   transition: 'all 0.25s ease',
-                  boxShadow: isOpen ? '0 8px 24px rgba(255, 23, 23, 0.08)' : '0 2px 6px rgba(0, 0, 0, 0.02)'
+                  boxShadow: isOpen ? '0 8px 24px rgba(225, 43, 43, 0.08)' : '0 2px 6px rgba(0, 0, 0, 0.02)'
                 }}
               >
                 <button
@@ -108,7 +108,7 @@ export default function FAQPage() {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: '#101010',
+                    color: 'var(--k)',
                     fontSize: '1.1rem',
                     fontWeight: 800,
                     gap: 16
@@ -116,7 +116,7 @@ export default function FAQPage() {
                 >
                   <span>{faq.question}</span>
                   <span style={{
-                    color: isOpen ? '#ff1717' : '#71717A',
+                    color: isOpen ? 'var(--brand-red)' : '#71717A',
                     fontSize: 22,
                     fontWeight: '700',
                     transition: 'transform 0.25s ease',
@@ -147,13 +147,13 @@ export default function FAQPage() {
 
         {/* Contact CTA */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #101010 0%, #18181B 100%)', 
+          background: 'linear-gradient(135deg, var(--g900) 0%, var(--g800) 100%)', 
           borderRadius: 18, 
           padding: '44px 32px', 
           textAlign: 'center',
           color: '#FFFFFF',
           boxShadow: '0 12px 36px rgba(0,0,0,0.15)',
-          borderBottom: '3px solid #ff1717'
+          borderBottom: '3px solid var(--brand-red)'
         }}>
           <h3 style={{ fontSize: 22, color: '#ffffff', fontWeight: 900, margin: '0 0 10px' }}>Still Have Questions?</h3>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15, margin: '0 0 24px', lineHeight: 1.6, maxWidth: 540, marginInline: 'auto' }}>
@@ -163,14 +163,14 @@ export default function FAQPage() {
             <Link 
               to="/contact" 
               style={{ 
-                background: '#ff1717', 
+                background: 'var(--brand-red)', 
                 color: '#ffffff', 
                 padding: '14px 32px', 
                 borderRadius: 8, 
                 fontWeight: 800, 
                 fontSize: 15, 
                 textDecoration: 'none',
-                boxShadow: '0 6px 20px rgba(255,23,23,0.3)'
+                boxShadow: '0 6px 20px rgba(225,43,43,0.25)'
               }}
             >
               Contact Our Team

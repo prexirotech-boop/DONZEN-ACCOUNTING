@@ -363,9 +363,9 @@ export default function AboutPage() {
       <style dangerouslySetInnerHTML={{ __html: `
         /* ─── ROOT ─── */
         .ab-root {
-          --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          --red: #ff1717;
-          --dark: #09090b;
+          --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          --red: #e12b2b;
+          --dark: #121214;
           --slate: #64748b;
           font-family: var(--font);
           color: #0f172a;
@@ -385,7 +385,7 @@ export default function AboutPage() {
           display: inline-block;
           font-size: 0.76rem;
           font-weight: 700;
-          color: #ff1717;
+          color: var(--red);
           text-transform: uppercase;
           letter-spacing: 2px;
           margin-bottom: 12px;
@@ -422,13 +422,13 @@ export default function AboutPage() {
           border: none;
         }
         .ab-btn-red {
-          background: #ff1717;
+          background: var(--red);
           color: #fff;
         }
         .ab-btn-red:hover {
-          background: #d91414;
+          background: var(--hp-red-dark, #b91c1c);
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
+          box-shadow: 0 8px 24px rgba(225,43,43,0.25);
         }
         .ab-btn-glass {
           background: rgba(255,255,255,0.08);
@@ -441,7 +441,7 @@ export default function AboutPage() {
         }
         .ab-btn-white {
           background: #fff;
-          color: #09090b;
+          color: var(--dark);
         }
         .ab-btn-white:hover {
           background: #f1f5f9;
@@ -473,7 +473,7 @@ export default function AboutPage() {
         .ab-hero-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(170deg, rgba(9,9,11,0.93) 0%, rgba(9,9,11,0.8) 45%, rgba(9,9,11,0.9) 100%);
+          background: linear-gradient(170deg, rgba(18,18,20,0.93) 0%, rgba(18,18,20,0.8) 45%, rgba(18,18,20,0.9) 100%);
         }
         .ab-hero-inner {
           position: relative;
@@ -484,9 +484,9 @@ export default function AboutPage() {
         }
         .ab-hero-badge {
           display: inline-block;
-          background: rgba(255,23,23,0.12);
-          border: 1px solid rgba(255,23,23,0.2);
-          color: #ff1717;
+          background: rgba(225,43,43,0.12);
+          border: 1px solid rgba(225,43,43,0.2);
+          color: var(--red);
           font-size: 0.76rem;
           font-weight: 700;
           text-transform: uppercase;
@@ -504,7 +504,7 @@ export default function AboutPage() {
           margin: 0 0 20px;
         }
         .ab-hero-accent {
-          background: linear-gradient(135deg, #ff1717, #ff6b4a);
+          background: linear-gradient(135deg, var(--red), #f43f5e);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -527,7 +527,7 @@ export default function AboutPage() {
           width: 450px;
           height: 450px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,23,23,0.1) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(225,43,43,0.1) 0%, transparent 70%);
           top: -120px;
           right: -120px;
           z-index: 1;
@@ -548,7 +548,7 @@ export default function AboutPage() {
 
         /* ════ STATS BAR ════ */
         .ab-stats-bar {
-          background: #09090b;
+          background: var(--dark);
           padding: 0 24px;
           position: relative;
           z-index: 5;
@@ -661,7 +661,7 @@ export default function AboutPage() {
           object-position: center 20%;
         }
         .ab-founder-nameplate {
-          background: #09090b;
+          background: var(--dark);
           padding: 16px 24px;
           border-radius: 14px;
           margin-top: -40px;
@@ -930,7 +930,7 @@ export default function AboutPage() {
         /* ════ BOOTCAMP ════ */
         .ab-bootcamp {
           padding: 100px 24px;
-          background: #09090b;
+          background: var(--dark);
           position: relative;
           overflow: hidden;
         }
@@ -1002,7 +1002,7 @@ export default function AboutPage() {
         /* ════ BOTTOM CTA ════ */
         .ab-bottom-cta {
           padding: 80px 24px;
-          background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%);
+          background: linear-gradient(135deg, var(--dark) 0%, var(--hp-black-slate, #0f172a) 100%);
           text-align: center;
           position: relative;
           overflow: hidden;

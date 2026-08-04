@@ -423,9 +423,9 @@ export default function ContactPage() {
       <style dangerouslySetInnerHTML={{ __html: `
         /* ─── ROOT ─── */
         .cp-root {
-          --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          --red: #ff1717;
-          --dark: #09090b;
+          --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          --red: #e12b2b;
+          --dark: #121214;
           --slate: #64748b;
           font-family: var(--font);
           color: #0f172a;
@@ -464,7 +464,7 @@ export default function ContactPage() {
         .cp-hero-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(165deg, rgba(9,9,11,0.92) 0%, rgba(9,9,11,0.78) 50%, rgba(9,9,11,0.88) 100%);
+          background: linear-gradient(165deg, rgba(18,18,20,0.92) 0%, rgba(18,18,20,0.78) 50%, rgba(18,18,20,0.88) 100%);
         }
         .cp-hero-content {
           position: relative;
@@ -475,15 +475,15 @@ export default function ContactPage() {
         }
         .cp-hero-badge {
           display: inline-block;
-          background: rgba(255,23,23,0.15);
-          color: #ff1717;
+          background: rgba(225,43,43,0.15);
+          color: var(--red);
           font-size: 0.78rem;
           font-weight: 700;
           letter-spacing: 1.5px;
           text-transform: uppercase;
           padding: 6px 20px;
           border-radius: 100px;
-          border: 1px solid rgba(255,23,23,0.25);
+          border: 1px solid rgba(225,43,43,0.25);
           margin-bottom: 24px;
         }
         .cp-hero-title {
@@ -495,7 +495,7 @@ export default function ContactPage() {
           letter-spacing: -1.5px;
         }
         .cp-hero-accent {
-          background: linear-gradient(135deg, #ff1717 0%, #ff6b4a 100%);
+          background: linear-gradient(135deg, var(--red) 0%, #f43f5e 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -734,7 +734,7 @@ export default function ContactPage() {
         .cp-submit-btn {
           width: 100%;
           padding: 16px 24px;
-          background: #09090b;
+          background: var(--dark);
           color: #fff;
           border: none;
           border-radius: 12px;
@@ -754,13 +754,13 @@ export default function ContactPage() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #ff1717 0%, #d91414 100%);
+          background: linear-gradient(135deg, var(--red) 0%, var(--hp-red-dark, #b91c1c) 100%);
           opacity: 0;
           transition: opacity 0.3s;
         }
         .cp-submit-btn:hover::before { opacity: 1; }
         .cp-submit-btn > * { position: relative; z-index: 1; }
-        .cp-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,23,23,0.25); }
+        .cp-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(225,43,43,0.25); }
         .cp-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         .cp-btn-loading { display: flex; align-items: center; gap: 10px; }
@@ -1108,7 +1108,7 @@ export default function ContactPage() {
         /* ─── BOTTOM CTA ─── */
         .cp-bottom-cta {
           padding: 80px 24px;
-          background: #09090b;
+          background: var(--dark);
           text-align: center;
           position: relative;
           overflow: hidden;

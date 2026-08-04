@@ -1341,6 +1341,71 @@ function AffiliateTab({ user, profile }) {
   const [copied, setCopied] = useState(false)
   const [activeSubTab, setActiveSubTab] = useState('overview')
 
+  const [payoutMethod, setPayoutMethod] = useState('bank_transfer')
+  const [bankName, setBankName] = useState('')
+  const [accountNumber, setAccountNumber] = useState('')
+  const [accountName, setAccountName] = useState('')
+  const [paypalEmail, setPaypalEmail] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState('')
+
+  useEffect(() => {
+    if (affiliate) {
+      setPayoutMethod(affiliate.payout_method || 'bank_transfer')
+      setBankName(affiliate.payout_details?.bank_name || '')
+      setAccountNumber(affiliate.payout_details?.account_number || '')
+      setAccountName(affiliate.payout_details?.account_name || '')
+      setPaypalEmail(affiliate.payout_details?.paypal_email || '')
+    }
+  }, [affiliate])
+
+  async function handleSaveSettings(e) {
+    e.preventDefault()
+    setSaving(true)
+    setSaveError('')
+    setSaveSuccess(false)
+
+    try {
+      const details = payoutMethod === 'bank_transfer' 
+        ? { bank_name: bankName.trim(), account_number: accountNumber.trim(), account_name: accountName.trim() }
+        : { paypal_email: paypalEmail.trim() }
+
+      if (payoutMethod === 'bank_transfer') {
+        if (!details.bank_name || !details.account_number || !details.account_name) {
+          throw new Error('All bank details are required.')
+        }
+      } else if (payoutMethod === 'paypal') {
+        if (!details.paypal_email) {
+          throw new Error('PayPal email is required.')
+        }
+      }
+
+      const { error } = await supabase
+        .from('affiliates')
+        .update({
+          payout_method: payoutMethod,
+          payout_details: details,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', affiliate.id)
+
+      if (error) throw error
+
+      setSaveSuccess(true)
+      setAffiliate(prev => ({
+        ...prev,
+        payout_method: payoutMethod,
+        payout_details: details
+      }))
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (err) {
+      setSaveError(err.message || 'Failed to update payout settings.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const affiliateLink = profile?.affiliate_code
     ? `${window.location.origin}/?ref=${profile.affiliate_code}`
     : null
@@ -1474,6 +1539,7 @@ function AffiliateTab({ user, profile }) {
     { id: 'overview', label: 'Overview' },
     { id: 'commissions', label: `Commissions (${commissions.length})` },
     { id: 'payouts', label: 'Payout History' },
+    { id: 'settings', label: 'Payout Settings' },
     { id: 'howto', label: 'How It Works' }
   ]
 
@@ -1827,6 +1893,158 @@ function AffiliateTab({ user, profile }) {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Payout Settings Sub-tab */}
+      {activeSubTab === 'settings' && (
+        <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '28px 24px', maxWidth: '600px' }}>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: 18, fontWeight: 800, color: '#1e293b' }}>Payout Configuration</h3>
+          <p style={{ margin: '0 0 24px 0', fontSize: 13, color: '#64748b', lineHeight: 1.5 }}>
+            Configure how you would like to receive your referral commissions. Payouts are made monthly for amounts above ₦5,000.
+          </p>
+
+          <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {saveError && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#991b1b', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                ⚠️ {saveError}
+              </div>
+            )}
+            {saveSuccess && (
+              <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', color: '#166534', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
+                ✅ Payout settings saved successfully!
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 700, color: '#475569' }}>Preferred Payout Method</label>
+              <select 
+                value={payoutMethod}
+                onChange={(e) => setPayoutMethod(e.target.value)}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  border: '1px solid #cbd5e1',
+                  fontSize: 14,
+                  background: '#f8fafc',
+                  color: '#1e293b',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  fontFamily: 'var(--font)'
+                }}
+              >
+                <option value="bank_transfer">Local Bank Transfer (NGN)</option>
+                <option value="paypal">PayPal (USD/EUR)</option>
+              </select>
+            </div>
+
+            {payoutMethod === 'bank_transfer' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: '#475569' }}>Bank Name</label>
+                  <input 
+                    type="text"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    placeholder="e.g. Zenith Bank, GTBank"
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 8,
+                      border: '1px solid #cbd5e1',
+                      fontSize: 14,
+                      outline: 'none',
+                      color: '#1e293b',
+                      transition: 'border-color 0.2s',
+                      fontFamily: 'var(--font)'
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: '#475569' }}>Account Number</label>
+                  <input 
+                    type="text"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    placeholder="10-digit NUBAN account number"
+                    maxLength={10}
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 8,
+                      border: '1px solid #cbd5e1',
+                      fontSize: 14,
+                      outline: 'none',
+                      color: '#1e293b',
+                      transition: 'border-color 0.2s',
+                      fontFamily: 'var(--font)'
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: '#475569' }}>Account Name</label>
+                  <input 
+                    type="text"
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value)}
+                    placeholder="Full name registered on the account"
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 8,
+                      border: '1px solid #cbd5e1',
+                      fontSize: 14,
+                      outline: 'none',
+                      color: '#1e293b',
+                      transition: 'border-color 0.2s',
+                      fontFamily: 'var(--font)'
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {payoutMethod === 'paypal' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <label style={{ fontSize: 13, fontWeight: 700, color: '#475569' }}>PayPal Email Address</label>
+                <input 
+                  type="email"
+                  value={paypalEmail}
+                  onChange={(e) => setPaypalEmail(e.target.value)}
+                  placeholder="your-email@example.com"
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    border: '1px solid #cbd5e1',
+                    fontSize: 14,
+                    outline: 'none',
+                    color: '#1e293b',
+                    transition: 'border-color 0.2s',
+                    fontFamily: 'var(--font)'
+                  }}
+                />
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={saving}
+              style={{
+                background: 'linear-gradient(135deg, #ff1717 0%, #d32f2f 100%)',
+                color: '#fff',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                alignSelf: 'flex-start',
+                marginTop: 8,
+                opacity: saving ? 0.7 : 1,
+                boxShadow: '0 4px 12px rgba(255,23,23,0.18)'
+              }}
+            >
+              {saving ? 'Saving Details...' : 'Save Payout Details'}
+            </button>
+          </form>
         </div>
       )}
 
