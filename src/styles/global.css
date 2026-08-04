@@ -74,19 +74,7 @@ h2, h3, h4, h5, h6,
   font-weight: 500 !important;
 }
 
-/* Headings 2 and below on public pages use Asimov font */
-.public-layout-root h2,
-.public-layout-root h3,
-.public-layout-root h4,
-.public-layout-root h5,
-.public-layout-root h6,
-.public-layout-root .h2,
-.public-layout-root .h3,
-.public-layout-root .h4,
-.public-layout-root .h5,
-.public-layout-root .h6 {
-  font-family: 'Asimov', var(--font-heading), sans-serif !important;
-}
+
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; touch-action: manipulation; }
 body { font-family: var(--font); background: var(--w); color: var(--n800); line-height: 1.6; overflow-x: hidden; width: 100%; -webkit-font-smoothing: antialiased; touch-action: manipulation; }
