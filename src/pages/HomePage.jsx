@@ -385,14 +385,14 @@ export default function HomePage() {
       </section>
 
       {/* 5. WORKPLACE EXPERIENCE SHOWCASE (Simulation showcase) */}
-      <section className="hp-section hp-bg-light">
+      <section className="hp-section hp-bg-dark hp-text-white">
         <div className="hp-container">
           <div className="hp-section-header hp-text-left">
             <Reveal delay={100}>
-              <h2 className="hp-section-title hp-text-left">Practical Skills &amp; Software You{"'"}ll Master</h2>
+              <h2 className="hp-section-title text-white">Experience Real Workplace Simulation</h2>
             </Reveal>
             <Reveal delay={200}>
-              <p className="hp-section-desc hp-text-left">Instead of classroom theory, our students and clients learn and execute directly within real cloud-based business configurations.</p>
+              <p className="hp-section-desc text-white">Instead of classroom theory, our students and clients learn and execute directly within real cloud-based business configurations.</p>
             </Reveal>
           </div>
 
@@ -629,14 +629,14 @@ export default function HomePage() {
       </section>
 
       {/* 11. TESTIMONIALS & SUCCESS STORIES */}
-      <section className="hp-section hp-bg-light">
+      <section className="hp-section hp-bg-dark hp-text-white">
         <div className="hp-container">
           <div className="hp-section-header">
             <Reveal delay={100}>
-              <h2 className="hp-section-title">What Our Alumni &amp; Clients Say</h2>
+              <h2 className="hp-section-title text-white">What Our Alumni &amp; Clients Say</h2>
             </Reveal>
             <Reveal delay={200}>
-              <p className="hp-section-desc">Read stories of career transitions and accounting processes automated by Donzen.</p>
+              <p className="hp-section-desc text-white">Read stories of career transitions and accounting processes automated by Donzen.</p>
             </Reveal>
           </div>
 
@@ -1002,9 +1002,9 @@ export default function HomePage() {
 
         /* 2. Stats Bar */
         .hp-stats-bar {
-          background-color: #f8fafc;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
+          background-color: #09090b;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          border-bottom: 1px solid rgba(255,255,255,0.08);
           padding: 3rem 0;
         }
         .hp-stats-grid {
@@ -1020,8 +1020,8 @@ export default function HomePage() {
         }
         .hp-counter {
           font-size: clamp(2rem, 3.5vw, 3.2rem);
-          font-weight: 800;
-          color: #0f172a;
+          font-weight: 900;
+          color: #ffffff;
           line-height: 1;
           margin-bottom: 0.5rem;
           letter-spacing: -0.02em;
@@ -1030,8 +1030,8 @@ export default function HomePage() {
           color: #ff1717;
         }
         .hp-stat-label {
-          font-size: 0.8rem;
-          color: #475569;
+          font-size: 0.85rem;
+          color: #94a3b8;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -1240,31 +1240,28 @@ export default function HomePage() {
           display: flex;
         }
         .hp-workplace-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
           padding: 2.5rem 2rem;
           border-radius: 1.5rem;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
+          transition: all 0.25s ease;
         }
         .hp-workplace-card:hover {
-          border-color: #ff1717;
-          transform: translateY(-5px);
-          box-shadow: 0 15px 30px rgba(15, 23, 42, 0.05);
+          border-color: rgba(255, 23, 23, 0.3);
+          background: rgba(255,255,255,0.05);
         }
         .hp-workplace-icon {
           color: #ff1717;
           margin-bottom: 1.5rem;
         }
         .hp-workplace-card h4 {
-          font-size: 1.2rem;
+          font-size: 1.25rem;
           font-weight: 800;
           margin: 0 0 1rem;
-          color: #0f172a;
         }
         .hp-workplace-card p {
           font-size: 0.95rem;
-          color: #475569;
+          color: #94a3b8;
           line-height: 1.6;
           margin: 0;
         }
@@ -1520,12 +1517,12 @@ export default function HomePage() {
           background-color: #ffffff;
         }
         .hp-lead-card {
-          background: #0f172a;
+          background: #09090b;
           border-radius: 2rem;
           padding: 4rem;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         .hp-lead-card::before {
           content: '';
@@ -1651,19 +1648,12 @@ export default function HomePage() {
           display: flex;
         }
         .hp-testimonial-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
           padding: 2.5rem 2rem;
           border-radius: 1.5rem;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .hp-testimonial-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 15px 30px rgba(15, 23, 42, 0.05);
-          border-color: #ff1717;
         }
         .hp-stars {
           display: flex;
@@ -1671,9 +1661,9 @@ export default function HomePage() {
           margin-bottom: 1.5rem;
         }
         .hp-testimonial-text {
-          font-size: 0.95rem;
+          font-size: 1rem;
           line-height: 1.6;
-          color: #475569;
+          color: #cbd5e1;
           font-style: italic;
           margin: 0 0 2rem;
         }
@@ -1688,17 +1678,17 @@ export default function HomePage() {
           height: 48px;
           border-radius: 50%;
           object-fit: cover;
-          border: 2px solid #e2e8f0;
+          border: 2px solid rgba(255,255,255,0.1);
         }
         .hp-author-name {
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 800;
           margin: 0 0 2px;
-          color: #0f172a;
+          color: #ffffff;
         }
         .hp-author-role {
           font-size: 0.8rem;
-          color: #64748b;
+          color: #94a3b8;
           margin: 0;
         }
 
@@ -1821,15 +1811,13 @@ export default function HomePage() {
           font-size: 0.95rem;
         }
 
-        /* 14. Bottom CTA (HubSpot-like friendly light gradient style) */
+        /* 14. Bottom CTA (About page matching) */
         .hp-bottom-cta {
           padding: 100px 24px;
-          background: linear-gradient(135deg, #f8fafc 0%, #fff1f2 100%);
+          background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%);
           text-align: center;
           position: relative;
           overflow: hidden;
-          border-top: 1px solid #e2e8f0;
-          border-radius: 40px 40px 0 0;
         }
         .hp-bottom-cta::before {
           content: '';
@@ -1837,7 +1825,7 @@ export default function HomePage() {
           width: 600px;
           height: 600px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,23,23,0.03), transparent 70%);
+          background: radial-gradient(circle, rgba(255,23,23,0.12), transparent 70%);
           bottom: -300px;
           left: 50%;
           transform: translateX(-50%);
@@ -1850,15 +1838,15 @@ export default function HomePage() {
           z-index: 2;
         }
         .hp-bottom-cta h2 {
-          font-size: clamp(1.8rem, 4vw, 2.75rem);
-          font-weight: 800;
-          color: #0f172a;
+          font-size: clamp(1.8rem, 4vw, 3rem);
+          font-weight: 900;
+          color: #fff;
           margin: 0 0 1.5rem;
           letter-spacing: -0.04em;
         }
         .hp-bottom-cta p {
-          font-size: 1.1rem;
-          color: #475569;
+          font-size: 1.15rem;
+          color: rgba(255,255,255,0.6);
           line-height: 1.7;
           margin: 0 0 3rem;
         }
@@ -1889,16 +1877,16 @@ export default function HomePage() {
         .hp-btn-red:hover {
           background: #d91414;
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(255,23,23,0.25);
+          box-shadow: 0 8px 24px rgba(255,23,23,0.3);
         }
         .hp-btn-glass {
-          background: #ffffff;
-          color: #0f172a;
-          border: 1px solid #cbd5e1;
+          background: rgba(255,255,255,0.08);
+          color: #fff;
+          border: 1px solid rgba(255,255,255,0.2);
+          backdrop-filter: blur(4px);
         }
         .hp-btn-glass:hover {
-          background: #f8fafc;
-          border-color: #0f172a;
+          background: rgba(255,255,255,0.16);
           transform: translateY(-2px);
         }
 
@@ -2028,14 +2016,18 @@ export default function HomePage() {
           .hp-timeline-card { width: 100%; margin-left: 0 !important; border-right: none !important; border-left: 4px solid #cbd5e1 !important; }
           .hp-timeline-card:hover { border-left-color: #ff1717 !important; }
           .hp-lead-card {
-            padding: 2.5rem 1.5rem !important;
+            padding: 2rem 1.25rem !important;
             border-radius: 1.5rem !important;
+          }
+          .hp-lead-form-box {
+            padding: 1.5rem 1rem !important;
+            border-radius: 1rem !important;
           }
           .hp-lead-grid {
             gap: 2rem !important;
           }
           .hp-lead-info h3 {
-            font-size: 1.75rem !important;
+            font-size: 1.8rem !important;
           }
         }
 
