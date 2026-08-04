@@ -192,13 +192,9 @@ export default function HomePage() {
         </div>
         
         <div className="hp-container hp-hero-content">
-          <Reveal>
-            <div className="hp-hero-badge">NIGERIA{"'"}S WORKPLACE ACCOUNTING PLATFORM</div>
-          </Reveal>
           <Reveal delay={150}>
             <h1 className="hp-hero-title">
-              Become Job-Ready. <br />
-              <span className="hp-text-accent">Build Real Workplace Accounting Skills</span> That Employers Need.
+              Become Job-Ready. Build Real Workplace Accounting Skills That Employers Need.
             </h1>
           </Reveal>
           <Reveal delay={300}>
@@ -391,9 +387,6 @@ export default function HomePage() {
       <section className="hp-section hp-bg-dark hp-text-white">
         <div className="hp-container">
           <div className="hp-section-header hp-text-left">
-            <Reveal>
-              <span className="hp-section-subtitle-tag red">COMPETITIVE ADVANTAGE</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title text-white">Experience Real Workplace Simulation</h2>
             </Reveal>
@@ -427,9 +420,6 @@ export default function HomePage() {
       <section className="hp-section">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">THE TIMELINE</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Your Workplace Learning Journey</h2>
             </Reveal>
@@ -463,9 +453,6 @@ export default function HomePage() {
       <section className="hp-section hp-bg-light">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">SERVICES CATALOGUE</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Corporate Accounting Services</h2>
             </Reveal>
@@ -538,9 +525,6 @@ export default function HomePage() {
       <section className="hp-section hp-bg-light">
         <div className="hp-container hp-skills-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag">EMPLOYABILITY</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title">Why Employers Hire Our Graduates</h2>
             </Reveal>
@@ -647,9 +631,6 @@ export default function HomePage() {
       <section className="hp-section hp-bg-dark hp-text-white">
         <div className="hp-container">
           <div className="hp-section-header">
-            <Reveal>
-              <span className="hp-section-subtitle-tag red">STUDENT SUCCESS</span>
-            </Reveal>
             <Reveal delay={100}>
               <h2 className="hp-section-title text-white">What Our Alumni &amp; Clients Say</h2>
             </Reveal>
@@ -823,9 +804,11 @@ export default function HomePage() {
 
       {/* --- Styles --- */}
       <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         /* --- SCOPED CSS --- */
         .hp-wrapper {
-          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
           color: #09090b;
           background-color: #ffffff;
           overflow-x: hidden;
@@ -978,8 +961,8 @@ export default function HomePage() {
           position: relative;
           z-index: 1;
           max-width: 900px;
-          margin-left: 0;
-          text-align: left;
+          margin: 0 auto;
+          text-align: center;
         }
         .hp-hero-badge {
           display: inline-block;
@@ -995,16 +978,16 @@ export default function HomePage() {
         }
         .hp-hero-title {
           font-size: clamp(2.2rem, 5vw, 4.2rem);
-          font-weight: 900;
+          font-weight: 800;
           color: #ffffff;
-          line-height: 1.1;
+          line-height: 1.15;
           margin-bottom: 2rem;
           letter-spacing: -0.04em;
         }
         .hp-hero-subtitle {
-          font-size: clamp(1.1rem, 2vw, 1.4rem);
+          font-size: clamp(1.1rem, 2vw, 1.3rem);
           color: #cbd5e1;
-          margin-bottom: 3rem;
+          margin: 0 auto 3rem;
           line-height: 1.6;
           font-weight: 400;
           max-width: 750px;
@@ -1013,6 +996,7 @@ export default function HomePage() {
           display: flex;
           gap: 1.2rem;
           flex-wrap: wrap;
+          justify-content: center;
         }
 
         /* 2. Stats Bar */

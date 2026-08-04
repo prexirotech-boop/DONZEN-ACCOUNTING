@@ -3,30 +3,35 @@ import { CONFIG } from './config'
 
 export const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY)
 
-/**
- * Safely trigger the confirmation email Edge Function without blocking the UI or throwing CORS/network errors.
- */
 export function triggerConfirmationEmail(payload) {
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
-      supabase.functions
-        .invoke('send-confirmation', {
-          body: { record: payload }
-        })
-        .then(({ data, error }) => {
-          if (error) {
-            console.warn('[Email Confirmation] Edge function returned error:', error)
-          } else {
-            console.log('[Email Confirmation] Request sent successfully:', data)
-          }
-        })
-        .catch((err) => {
-          console.warn('[Email Confirmation] Ignored CORS or network preflight error:', err?.message || err)
-        })
+      const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-confirmation`
+      const apikey = CONFIG.SUPABASE_KEY
+      
+      // Directly invoke fetch with an attached .catch to handle CORS or network preflight blocks immediately
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': apikey,
+          'Authorization': `Bearer ${apikey}`
+        },
+        body: JSON.stringify({ record: payload })
+      }).catch((err) => {
+        console.warn('[Email Confirmation] Ignored network or CORS preflight error:', err?.message || err)
+        return null
+      })
+
+      if (response && response.ok) {
+        console.log('[Email Confirmation] Request completed successfully')
+      } else if (response) {
+        console.warn('[Email Confirmation] Edge function returned status:', response.status)
+      }
     } catch (e) {
-      console.warn('[Email Confirmation] Failed to invoke edge function:', e)
+      console.warn('[Email Confirmation] Failed to trigger email:', e)
     }
-  }, 0)
+  }, 10)
 }
 
 // ─── SUPABASE DB HELPERS ──────────────────────────────────────────────────────
