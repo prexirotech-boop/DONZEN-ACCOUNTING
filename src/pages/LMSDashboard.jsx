@@ -509,7 +509,9 @@ function PurchaseHistoryTab({ user, profile }) {
             <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
             
             <div class="header">
-              <img class="logo" src="${window.location.origin}/logo-black.png" alt="Donzen Accounting Hub" />
+              <div style="background-color: #09090b; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center;">
+                <img class="logo" src="${window.location.origin}/logo.png" alt="Donzen Accounting Hub" style="height: 26px; width: auto; display: block;" />
+              </div>
               <div style="text-align: right;">
                 <h1 class="title">Receipt</h1>
                 <span class="status-badge">Paid</span>

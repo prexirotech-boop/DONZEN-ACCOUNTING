@@ -582,6 +582,8 @@ export default function PaymentPage() {
       localStorage.removeItem('checkout_name')
       localStorage.removeItem('checkout_email')
       localStorage.removeItem('checkout_phone')
+      localStorage.removeItem('amplified_cart')
+      window.dispatchEvent(new Event('cart_updated'))
 
       // Confirmation email disabled until Edge Function is deployed
       // triggerConfirmationEmail({
@@ -693,6 +695,8 @@ export default function PaymentPage() {
     localStorage.removeItem('checkout_name')
     localStorage.removeItem('checkout_email')
     localStorage.removeItem('checkout_phone')
+    localStorage.removeItem('amplified_cart')
+    window.dispatchEvent(new Event('cart_updated'))
 
     if (isEbook) {
       navigate('/success')
