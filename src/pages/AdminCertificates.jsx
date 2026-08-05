@@ -415,17 +415,16 @@ export default function AdminCertificates() {
               width: 60px;
               height: 60px;
               border-radius: 50%;
-              border: 1px dashed rgba(255,255,255,0.7);
+              border: 1px dashed rgba(0,0,0,0.3);
               display: flex;
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              color: #fff;
+              color: #000000;
               font-size: 9px;
               font-weight: 800;
               letter-spacing: 0.5px;
               text-align: center;
-              text-shadow: 0 1px 2px rgba(0,0,0,0.25);
             }
             .coursera-meta {
               display: flex;
@@ -461,12 +460,9 @@ export default function AdminCertificates() {
               border: 2px solid #b45309;
               pointer-events: none;
             }
-            .classic-logo {
-              font-family: 'Cinzel', serif;
-              font-size: 22px;
-              font-weight: 800;
-              color: #7f1d1d;
-              letter-spacing: 2px;
+            .classic-logo-container {
+              display: flex;
+              justify-content: center;
               margin-top: 10px;
             }
             .classic-title {
@@ -563,7 +559,9 @@ export default function AdminCertificates() {
               <div class="coursera-accent-bar"></div>
               
               <div class="coursera-logo">
-                <img src="${window.location.origin}/logo.png" alt="Logo" style="height: 32px; width: auto;" />
+                <div style="background-color: #09090b; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center;">
+                  <img src="${window.location.origin}/logo.png" alt="Logo" style="height: 26px; width: auto; display: block;" />
+                </div>
               </div>
               
               <div class="coursera-body">
@@ -613,7 +611,11 @@ export default function AdminCertificates() {
             <div class="certificate-container style-classic">
               <div class="classic-border-inner"></div>
               
-              <div class="classic-logo">DONZEN ACCOUNTING HUB</div>
+              <div class="classic-logo-container">
+                <div style="background-color: #09090b; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center;">
+                  <img src="${window.location.origin}/logo.png" alt="Logo" style="height: 26px; width: auto; display: block;" />
+                </div>
+              </div>
               <div class="classic-title">CERTIFICATE</div>
               <div class="classic-subtitle">of completion</div>
               
