@@ -434,13 +434,130 @@ function InlineRateEditor({ affiliateId, value, onSave }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function EditAffiliateModal({ affiliate, onClose, onSaved }) {
-  const [rate, setRate] = useState(affiliate?.commission_rate ?? 10)
+  const [modalTab, setModalTab] = useState('settings') // 'settings' | 'payouts' | 'referrals'
+  const [rate, setRate] = useState(affiliate?.commission_rate ?? 20)
   const [tier, setTier] = useState(affiliate?.tier || 'bronze')
-  const [notes, setNotes] = useState(affiliate?.admin_notes || '')
+  const [notes, setNotes] = useState(affiliate?.notes || '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
+  // Payout states
+  const [payoutLoading, setPayoutLoading] = useState(false)
+
+  // Referrals & auditing state
+  const [commissions, setCommissions] = useState([])
+  const [loadingCommissions, setLoadingCommissions] = useState(false)
+
   const profile = affiliate?.profiles
+  const earnings = Number(affiliate?.total_earnings || 0)
+  const paid = Number(affiliate?.total_paid || 0)
+  const unpaidBalance = Math.max(0, earnings - paid)
+
+  const method = affiliate?.payout_method || 'none'
+  const details = affiliate?.payout_details || {}
+
+  useEffect(() => {
+    if (modalTab === 'referrals') {
+      fetchCommissions()
+    }
+  }, [modalTab])
+
+  async function fetchCommissions() {
+    setLoadingCommissions(true)
+    setError('')
+    try {
+      const { data, error: err } = await supabase
+        .from('affiliate_commissions')
+        .select(`
+          id,
+          order_amount,
+          commission_amount,
+          commission_rate,
+          status,
+          created_at,
+          orders(reference, name, email, status)
+        `)
+        .eq('affiliate_id', affiliate.id)
+        .order('created_at', { ascending: false })
+      if (!err && data) {
+        setCommissions(data)
+      } else if (err) {
+        throw err
+      }
+    } catch (e) {
+      setError('Failed to fetch referrals: ' + e.message)
+    } finally {
+      setLoadingCommissions(false)
+    }
+  }
+
+  async function handleUpdateCommissionStatus(commId, newStatus) {
+    setError('')
+    try {
+      const { error: err } = await supabase
+        .from('affiliate_commissions')
+        .update({ status: newStatus })
+        .eq('id', commId)
+      if (err) throw err
+      
+      // Re-fetch list
+      fetchCommissions()
+      if (onSaved) {
+        onSaved() // triggers list refresh in background
+      }
+    } catch (e) {
+      setError('Failed to update commission: ' + e.message)
+    }
+  }
+
+  const handleRecordPayout = async () => {
+    setPayoutLoading(true)
+    setError('')
+    try {
+      // 1. Create payout record
+      const { data: payoutData, error: payoutErr } = await supabase
+        .from('affiliate_payouts')
+        .insert({
+          affiliate_id: affiliate.id,
+          amount: unpaidBalance,
+          payout_method: method,
+          payout_details: details,
+          status: 'paid',
+          notes: 'Recorded manually by administrator.',
+          paid_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (payoutErr) throw payoutErr
+
+      // 2. Update affiliates table total_paid
+      const { error: updateErr } = await supabase
+        .from('affiliates')
+        .update({
+          total_paid: paid + unpaidBalance
+        })
+        .eq('id', affiliate.id)
+
+      if (updateErr) throw updateErr
+
+      // 3. Mark pending/approved commissions as paid
+      await supabase
+        .from('affiliate_commissions')
+        .update({ status: 'paid', payout_id: payoutData.id })
+        .eq('affiliate_id', affiliate.id)
+        .in('status', ['pending', 'approved'])
+
+      if (onSaved) {
+        onSaved()
+      }
+      onClose()
+    } catch(err) {
+      setError('Payout record error: ' + err.message)
+    } finally {
+      setPayoutLoading(false)
+    }
+  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -453,11 +570,11 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
     }
     const { error: err } = await supabase
       .from('affiliates')
-      .update({ commission_rate: parsed, tier, admin_notes: notes, updated_at: new Date().toISOString() })
+      .update({ commission_rate: parsed, tier, notes, updated_at: new Date().toISOString() })
       .eq('id', affiliate.id)
     setSaving(false)
     if (err) { setError(err.message); return }
-    onSaved({ ...affiliate, commission_rate: parsed, tier, admin_notes: notes })
+    onSaved()
     onClose()
   }
 
@@ -471,10 +588,11 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
     }}>
       <div style={{
         background: '#fff', borderRadius: 20,
-        width: '100%', maxWidth: 500,
+        width: '100%', maxWidth: 520,
         boxShadow: '0 32px 64px rgba(0,0,0,0.25)',
         overflow: 'hidden',
         animation: 'slideUp 0.2s ease',
+        display: 'flex', flexDirection: 'column'
       }}>
         {/* Header */}
         <div style={{
@@ -483,7 +601,7 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-heading)' }}>Edit Affiliate</h2>
+            <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-heading)' }}>Edit & Audit Affiliate</h2>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-sub)' }}>
               {profile?.full_name || profile?.email || 'Unnamed'}
             </p>
@@ -497,111 +615,280 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
               cursor: 'pointer', color: '#fff', fontSize: 16, lineHeight: 1,
               transition: 'background 0.2s',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           >×</button>
         </div>
 
-        {/* Body */}
-        <div style={{ padding: '28px 28px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {/* Commission Rate */}
-          <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              Commission Rate (%)
-            </label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <input
-                type="number"
-                min={0} max={100} step={0.5}
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-                style={{
-                  width: 100, padding: '10px 14px',
-                  border: '1.5px solid #d1d5db', borderRadius: 9,
-                  fontSize: 16, fontWeight: 700, color: '#1e293b',
-                  outline: 'none', textAlign: 'center',
-                  transition: 'border-color 0.15s',
-                }}
-                onFocus={(e) => (e.target.style.borderColor = '#6366f1')}
-                onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
-              />
-              <span style={{ fontSize: 20, fontWeight: 700, color: '#6366f1' }}>%</span>
-              <span style={{ fontSize: 13, color: '#94a3b8', marginLeft: 4 }}>Standard platform rate is 10%</span>
-            </div>
-          </div>
+        {/* Tab Selection */}
+        <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', padding: '0 16px' }}>
+          {[
+            { id: 'settings', label: 'Settings' },
+            { id: 'payouts', label: 'Payout & Bank Info' },
+            { id: 'referrals', label: 'Referrals & Auditing' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setModalTab(tab.id)}
+              style={{
+                padding: '12px 16px',
+                border: 'none',
+                background: 'none',
+                borderBottom: modalTab === tab.id ? '2.5px solid #ff1717' : '2.5px solid transparent',
+                color: modalTab === tab.id ? '#ff1717' : '#64748b',
+                fontWeight: modalTab === tab.id ? 700 : 500,
+                fontSize: 13,
+                cursor: 'pointer',
+                transition: 'all 0.15s'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Tier */}
-          <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              Affiliate Tier
-            </label>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {['bronze', 'silver', 'gold', 'platinum'].map((t) => {
-                const c = TIER_COLORS[t]
-                const selected = tier === t
-                return (
-                  <button
-                    key={t}
-                    onClick={() => setTier(t)}
+        {/* Body */}
+        <div style={{ padding: '24px 24px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+          
+          {modalTab === 'settings' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Commission Rate */}
+              <div>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
+                  Commission Rate (%)
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input
+                    type="number"
+                    min={0} max={100} step={0.5}
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
                     style={{
-                      padding: '7px 16px',
-                      background: selected ? c.bg : '#f8fafc',
-                      border: `2px solid ${selected ? c.border : '#e2e8f0'}`,
-                      borderRadius: 20,
-                      color: selected ? c.text : '#64748b',
-                      fontWeight: selected ? 700 : 500,
-                      fontSize: 12.5,
-                      cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      transition: 'all 0.15s',
+                      width: 100, padding: '10px 14px',
+                      border: '1.5px solid #d1d5db', borderRadius: 9,
+                      fontSize: 16, fontWeight: 700, color: '#1e293b',
+                      outline: 'none', textAlign: 'center',
+                    }}
+                  />
+                  <span style={{ fontSize: 20, fontWeight: 700, color: '#ff1717' }}>%</span>
+                  <span style={{ fontSize: 13, color: '#94a3b8', marginLeft: 4 }}>Standard rate is 20%</span>
+                </div>
+              </div>
+
+              {/* Tier */}
+              <div>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
+                  Affiliate Tier
+                </label>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {['bronze', 'silver', 'gold', 'platinum'].map((t) => {
+                    const c = TIER_COLORS[t]
+                    const selected = tier === t
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => setTier(t)}
+                        style={{
+                          padding: '7px 16px',
+                          background: selected ? c.bg : '#f8fafc',
+                          border: `2px solid ${selected ? c.border : '#e2e8f0'}`,
+                          borderRadius: 20,
+                          color: selected ? c.text : '#64748b',
+                          fontWeight: selected ? 700 : 500,
+                          fontSize: 12.5,
+                          cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: 6,
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        <TierIcon tier={t} color={selected ? c.text : '#64748b'} />
+                        {t.charAt(0).toUpperCase() + t.slice(1)}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Admin Notes */}
+              <div>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
+                  Admin Notes <span style={{ color: '#94a3b8', fontWeight: 400 }}>(internal only)</span>
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={3}
+                  placeholder="E.g. Negotiated custom rate, VIP performer…"
+                  style={{
+                    width: '100%', padding: '10px 14px',
+                    border: '1.5px solid #d1d5db', borderRadius: 9,
+                    fontSize: 13.5, color: '#374151', resize: 'vertical',
+                    outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
+                    lineHeight: 1.5,
+                  }}
+                />
+              </div>
+
+              {/* Affiliate stats read-only */}
+              <div style={{
+                background: '#f8fafc', borderRadius: 10, padding: '14px 16px',
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12,
+              }}>
+                {[
+                  { label: 'Clicks', val: (affiliate?.total_clicks || 0).toLocaleString() },
+                  { label: 'Referrals', val: (affiliate?.total_referrals || 0).toLocaleString() },
+                  { label: 'Total Earned', val: fmtNGN(affiliate?.total_earnings || 0) },
+                ].map(({ label, val }) => (
+                  <div key={label} style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>{val}</div>
+                    <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {modalTab === 'payouts' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ background: '#f8fafc', borderRadius: 12, padding: 16, border: '1px solid #e2e8f0' }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: 12.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
+                  Credentials: {method === 'bank_transfer' ? '🏆 Direct Bank Transfer' : method === 'paypal' ? '💳 PayPal Account' : '❌ None Configured'}
+                </h4>
+                
+                {method === 'bank_transfer' ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13.5, color: '#334155' }}>
+                    <div><strong>Bank Name:</strong> {details.bank_name || '—'}</div>
+                    <div><strong>Account Number:</strong> {details.account_number || '—'}</div>
+                    <div><strong>Account Name:</strong> {details.account_name || '—'}</div>
+                  </div>
+                ) : method === 'paypal' ? (
+                  <div style={{ fontSize: 13.5, color: '#334155' }}>
+                    <strong>PayPal Email:</strong> {details.paypal_email || '—'}
+                  </div>
+                ) : (
+                  <p style={{ margin: 0, fontSize: 13, color: '#64748b', fontStyle: 'italic' }}>
+                    This affiliate has not configured their payment details.
+                  </p>
+                )}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: 14 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: '#166534', fontWeight: 600, textTransform: 'uppercase' }}>Paid Balance</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#166534', marginTop: 2 }}>{fmtNGN(paid)}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: '#9a3412', fontWeight: 600, textTransform: 'uppercase' }}>Unpaid Balance</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#9a3412', marginTop: 2 }}>{fmtNGN(unpaidBalance)}</div>
+                </div>
+              </div>
+
+              {unpaidBalance > 0 && method !== 'none' && (
+                <div>
+                  <button
+                    onClick={handleRecordPayout}
+                    disabled={payoutLoading}
+                    style={{
+                      width: '100%', padding: '12px',
+                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      border: 'none', borderRadius: 9,
+                      color: '#fff', fontWeight: 700, fontSize: 13.5,
+                      cursor: payoutLoading ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 4px 12px rgba(16,185,129,0.2)',
+                      transition: 'all 0.2s',
                     }}
                   >
-                    <TierIcon tier={t} color={selected ? c.text : '#64748b'} />
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                    {payoutLoading ? 'Processing...' : `Mark ${fmtNGN(unpaidBalance)} as Paid`}
                   </button>
-                )
-              })}
+                  <p style={{ margin: '8px 0 0', fontSize: 11, color: '#94a3b8', textAlign: 'center' }}>
+                    Clicking this button sets the unpaid balance to ₦0, clears the pending commissions, and adds a payout log entry.
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
-          {/* Admin Notes */}
-          <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              Admin Notes <span style={{ color: '#94a3b8', fontWeight: 400 }}>(internal only)</span>
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder="E.g. Top performer — negotiated custom rate, VIP treatment…"
-              style={{
-                width: '100%', padding: '10px 14px',
-                border: '1.5px solid #d1d5db', borderRadius: 9,
-                fontSize: 13.5, color: '#374151', resize: 'vertical',
-                outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
-                transition: 'border-color 0.15s', lineHeight: 1.5,
-              }}
-              onFocus={(e) => (e.target.style.borderColor = '#6366f1')}
-              onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
-            />
-          </div>
-
-          {/* Affiliate stats read-only */}
-          <div style={{
-            background: '#f8fafc', borderRadius: 10, padding: '14px 16px',
-            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12,
-          }}>
-            {[
-              { label: 'Total Clicks', val: (affiliate?.total_clicks || 0).toLocaleString() },
-              { label: 'Conversions', val: (affiliate?.total_referrals || 0).toLocaleString() },
-              { label: 'Total Earned', val: fmtNGN(affiliate?.total_earnings || 0) },
-            ].map(({ label, val }) => (
-              <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1e293b' }}>{val}</div>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>{label}</div>
+          {modalTab === 'referrals' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ fontSize: 12.5, color: '#64748b' }}>
+                Verify referral customer accounts, transaction references, and audit matching orders for commission fraud.
               </div>
-            ))}
-          </div>
+
+              {loadingCommissions ? (
+                <div style={{ padding: '30px 0', textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
+                  Retrieving referral history...
+                </div>
+              ) : commissions.length === 0 ? (
+                <div style={{ padding: '30px 0', textAlign: 'center', color: '#94a3b8', fontSize: 13, border: '1px dashed #cbd5e1', borderRadius: 8 }}>
+                  No referrals recorded yet.
+                </div>
+              ) : (
+                <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: 8 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                    <thead>
+                      <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 1 }}>
+                        <th style={{ padding: '8px 12px', textAlign: 'left', color: '#64748b', fontWeight: 600 }}>Customer</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'right', color: '#64748b', fontWeight: 600 }}>Order</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'right', color: '#64748b', fontWeight: 600 }}>Commission</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>Status</th>
+                        <th style={{ padding: '8px 12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {commissions.map(c => {
+                        const ord = c.orders || {}
+                        return (
+                          <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                            <td style={{ padding: '8px 12px', verticalAlign: 'middle' }}>
+                              <div style={{ fontWeight: 700, color: '#334155' }}>{ord.name || 'Student'}</div>
+                              <div style={{ fontSize: 10, color: '#94a3b8' }}>{ord.email || '—'}</div>
+                            </td>
+                            <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: 600, color: '#475569', verticalAlign: 'middle' }}>
+                              {fmtNGN(c.order_amount)}
+                              <div style={{ fontSize: 9.5, color: '#94a3b8', fontFamily: 'monospace' }}>{ord.reference || '—'}</div>
+                            </td>
+                            <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: 600, color: '#166534', verticalAlign: 'middle' }}>
+                              {fmtNGN(c.commission_amount)}
+                              <div style={{ fontSize: 9, color: '#94a3b8' }}>({c.commission_rate}%)</div>
+                            </td>
+                            <td style={{ padding: '8px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+                              <span style={{
+                                padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700,
+                                background: c.status === 'approved' ? '#dcfce7' : c.status === 'rejected' ? '#fee2e2' : c.status === 'paid' ? '#e0f2fe' : '#fef9c3',
+                                color: c.status === 'approved' ? '#166534' : c.status === 'rejected' ? '#991b1b' : c.status === 'paid' ? '#0369a1' : '#854d0e'
+                              }}>
+                                {c.status.toUpperCase()}
+                              </span>
+                            </td>
+                            <td style={{ padding: '8px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+                              {c.status === 'pending' ? (
+                                <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                                  <button
+                                    onClick={() => handleUpdateCommissionStatus(c.id, 'approved')}
+                                    title="Approve"
+                                    style={{ background: '#10b981', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                                  >
+                                    ✓
+                                  </button>
+                                  <button
+                                    onClick={() => handleUpdateCommissionStatus(c.id, 'rejected')}
+                                    title="Flag Fraud / Reject"
+                                    style={{ background: '#ef4444', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                                  >
+                                    ✗
+                                  </button>
+                                </div>
+                              ) : (
+                                <span style={{ fontSize: 10, color: '#94a3b8' }}>Settled</span>
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
 
           {error && (
             <div style={{
@@ -612,32 +899,34 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
             </div>
           )}
 
-          {/* Actions */}
+          {/* Footer Actions (Only show for Settings tab, cancel for others) */}
           <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
             <button
               onClick={onClose}
               style={{
                 flex: 1, padding: '11px', background: '#f8fafc',
                 border: '1.5px solid #e2e8f0', borderRadius: 9,
-                color: '#475569', fontWeight: 600, fontSize: 14, cursor: 'pointer',
+                color: '#475569', fontWeight: 600, fontSize: 13.5, cursor: 'pointer',
               }}
             >
-              Cancel
+              Close
             </button>
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              style={{
-                flex: 2, padding: '11px',
-                background: saving ? 'var(--g200)' : 'linear-gradient(135deg, var(--g600), var(--g505, #ff1717))',
-                border: 'none', borderRadius: 9,
-                color: '#fff', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer',
-                boxShadow: saving ? 'none' : '0 4px 12px rgba(255, 23, 23,0.3)',
-                transition: 'all 0.2s',
-              }}
-            >
-              {saving ? 'Saving…' : 'Save Changes'}
-            </button>
+            {modalTab === 'settings' && (
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                style={{
+                  flex: 2, padding: '11px',
+                  background: saving ? 'var(--g200)' : 'linear-gradient(135deg, var(--g600), var(--g505, #ff1717))',
+                  border: 'none', borderRadius: 9,
+                  color: '#fff', fontWeight: 700, fontSize: 13.5, cursor: saving ? 'not-allowed' : 'pointer',
+                  boxShadow: saving ? 'none' : '0 4px 12px rgba(255, 23, 23,0.3)',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {saving ? 'Saving…' : 'Save Changes'}
+              </button>
+            )}
           </div>
         </div>
       </div>

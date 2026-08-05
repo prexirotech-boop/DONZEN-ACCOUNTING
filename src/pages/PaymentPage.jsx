@@ -122,7 +122,7 @@ export default function PaymentPage() {
 
   // Affiliate & Order Bump states
   const [selectedBumps, setSelectedBumps] = useState([])
-  const { getReferralCode } = useAffiliate()
+  const { referralCode } = useAffiliate()
   const [affiliateData, setAffiliateData] = useState(null)
 
   // Payment Plans checkout states
@@ -132,7 +132,11 @@ export default function PaymentPage() {
 
   useEffect(() => {
     async function checkReferral() {
-      const code = getReferralCode()
+      // Check URL parameters directly first, fallback to context state
+      const params = new URLSearchParams(window.location.search)
+      const urlCode = params.get('ref')
+      const code = urlCode || referralCode
+      
       if (code) {
         try {
           const { data } = await supabase
@@ -145,7 +149,7 @@ export default function PaymentPage() {
       }
     }
     checkReferral()
-  }, [])
+  }, [referralCode])
 
   // Derived attributes
   const isEbook = product ? product.type === 'ebook' : false

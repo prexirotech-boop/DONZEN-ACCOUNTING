@@ -1762,7 +1762,7 @@ function AffiliateTab({ user, profile }) {
       </div>
 
       {/* Sub-tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 24, padding: 4, background: '#f1f5f9', borderRadius: 10, width: 'fit-content', overflowX: 'auto', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }} className="no-scrollbar">
+      <div style={{ display: 'flex', gap: 6, marginBottom: 24, padding: 4, background: '#f1f5f9', borderRadius: 10, width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflowX: 'auto', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }} className="no-scrollbar">
         {subTabs.map(t => (
           <button
             key={t.id}
