@@ -32,6 +32,31 @@ export default function AdminCertificates() {
     localStorage.setItem('draft_certIssue', JSON.stringify(issueForm))
   }, [issueForm])
 
+  const [emailSuggestions, setEmailSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+
+  const handleEmailChange = async (val) => {
+    setIssueForm(f => ({ ...f, user_email: val }))
+    if (!val.trim()) {
+      setEmailSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .ilike('email', `%${val}%`)
+        .limit(6)
+      if (!error && data) {
+        setEmailSuggestions(data)
+        setShowSuggestions(data.length > 0)
+      }
+    } catch (err) {
+      console.error('Error fetching email suggestions:', err)
+    }
+  }
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -316,16 +341,43 @@ export default function AdminCertificates() {
             </div>
 
             <form onSubmit={handleIssue} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div>
+              <div style={{ position: 'relative' }}>
                 <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Student Email *</label>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  placeholder="student@example.com"
+                  placeholder="Type student email..."
                   value={issueForm.user_email || ''}
-                  onChange={e => setIssueForm(f => ({ ...f, user_email: e.target.value }))}
+                  onChange={e => handleEmailChange(e.target.value)}
+                  onFocus={() => { if (emailSuggestions.length > 0) setShowSuggestions(true) }}
+                  onBlur={() => { setTimeout(() => setShowSuggestions(false), 200) }}
                   style={{ width: '100%', padding: '9px 12px', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: 13, outline: 'none', boxSizing: 'border-box' }}
                 />
+                {showSuggestions && emailSuggestions.length > 0 && (
+                  <div style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0,
+                    backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: 6,
+                    maxHeight: 180, overflowY: 'auto', zIndex: 1010, marginTop: 4,
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                  }}>
+                    {emailSuggestions.map(s => (
+                      <div
+                        key={s.email}
+                        onClick={() => {
+                          setIssueForm(f => ({ ...f, user_email: s.email }))
+                          setEmailSuggestions([])
+                          setShowSuggestions(false)
+                        }}
+                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', fontSize: 12.5 }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#fff'}
+                      >
+                        <div style={{ fontWeight: 600, color: '#1e293b' }}>{s.email}</div>
+                        {s.full_name && <div style={{ fontSize: 11, color: '#64748b' }}>{s.full_name}</div>}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Course *</label>

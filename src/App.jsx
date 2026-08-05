@@ -34,6 +34,7 @@ import AccountPage from './pages/AccountPage'
 import AdminDashboard from './pages/AdminDashboard'
 import FAQPage from './pages/FAQPage'
 import BlogPage from './pages/BlogPage'
+import BlogPostPage from './pages/BlogPostPage'
 import WhatsAppWidget from './components/WhatsAppWidget'
 
 import { useState, useEffect } from 'react'
@@ -107,6 +108,7 @@ function AppLayout() {
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/resources" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FAQPage />} />
         
@@ -135,7 +137,7 @@ function AppLayout() {
             '/', '/services', '/pricing', '/resources', '/products', '/about', '/checkout', '/success',
             '/setup-account', '/login', '/register', '/forgot-password', '/reset-password',
             '/dashboard', '/course/:courseId', '/account', '/admin/*', '/terms', '/privacy',
-            '/refund', '/contact', '/faq'
+            '/refund', '/contact', '/faq', '/blog/:slug'
           ]
           if (staticPaths.includes(page.path)) return null;
           return <Route key={page.path} path={page.path} element={<page.component />} />
