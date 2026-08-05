@@ -639,7 +639,7 @@ export default function AdminOrders() {
             showToast(`Order status updated to ${newStatus}`)
           }
           await loadData()
-          if (selectedOrder?.id === order.id) setSelectedOrder(prev => ({ ...prev, status: newStatus }))
+          if (selectedOrder?.id === order.id) setSelectedOrder(prev => (prev ? { ...prev, status: newStatus } : null))
         } catch (err) {
           showToast('Failed to update order status', 'error')
         }

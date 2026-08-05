@@ -622,7 +622,7 @@ export default function PaymentPage() {
       const handler = window.PaystackPop.setup({
         key: CONFIG.PAYSTACK_PUBLIC_KEY,
         email,
-        amount: finalTotal * 100,
+        amount: Math.round(finalTotal * 100),
         currency: 'NGN',
         ref,
         metadata: {
