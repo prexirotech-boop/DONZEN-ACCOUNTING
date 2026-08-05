@@ -97,30 +97,16 @@ export default function PlaybookSalesPage() {
             Gain Real Workplace Accounting Experience in Just 30 Days—Without Waiting Years for Someone to Hire You.
           </p>
 
-          {/* Marketing Styled Video Sales Letter Container */}
+          {/* Real Embedded YouTube Video Sales Letter */}
           <div className="cf-vsl-wrapper">
             <div className="cf-vsl-player">
-              {!isVideoPlaying ? (
-                <div className="cf-vsl-poster" onClick={() => setIsVideoPlaying(true)}>
-                  <div className="cf-vsl-glow" />
-                  <img src="/images/about-hero.jpg" alt="Workplace simulation course preview" className="cf-poster-img" />
-                  <div className="cf-poster-overlay">
-                    <div className="cf-play-btn">
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="#fff">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                      </svg>
-                    </div>
-                    <span className="cf-play-text">PLAY VIDEO WORKPLACE PREVIEW (5 MINS)</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="cf-vsl-playing">
-                  <div className="cf-vsl-loader">
-                    <div className="cf-spinner" />
-                    <span>Loading Explainer Presentation Video...</span>
-                  </div>
-                </div>
-              )}
+              <iframe
+                className="cf-vsl-iframe"
+                src="https://www.youtube.com/embed/eVCCANkGYac?rel=0&modestbranding=1"
+                title="Donzen Accounting Hub Presentation"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
 
@@ -777,82 +763,17 @@ export default function PlaybookSalesPage() {
         .cf-vsl-player {
           aspect-ratio: 16/9;
           position: relative;
+          width: 100%;
           background: #000000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
-        .cf-vsl-poster {
+        .cf-vsl-iframe {
           position: absolute;
-          inset: 0;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .cf-poster-img {
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover;
-          opacity: 0.55;
-        }
-        .cf-poster-overlay {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          background: rgba(9, 9, 11, 0.45);
-          gap: 16px;
-        }
-        .cf-play-btn {
-          width: 86px;
-          height: 86px;
-          border-radius: 50%;
-          background: #ff1717;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.5);
-          transition: all 0.2s ease-in-out;
-        }
-        .cf-vsl-poster:hover .cf-play-btn {
-          transform: scale(1.08);
-          background: #e01212;
-        }
-        .cf-play-text {
-          color: #fff;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: 1.5px;
-          background: rgba(9, 9, 11, 0.85);
-          padding: 8px 18px;
-          border-radius: 4px;
-        }
-        .cf-vsl-playing {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #09090b;
-        }
-        .cf-vsl-loader {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 14px;
-          color: #a1a1aa;
-          font-size: 13px;
-        }
-        .cf-spinner {
-          width: 32px;
-          height: 32px;
-          border: 3px solid rgba(255,255,255,0.1);
-          border-top-color: #ff1717;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
+          border: 0;
+          border-radius: 12px;
         }
 
         /* Text Block copy style */

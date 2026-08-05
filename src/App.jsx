@@ -83,7 +83,8 @@ function AppLayout() {
     location.pathname === '/forgot-password' ||
     location.pathname === '/reset-password' ||
     location.pathname === '/setup-account' ||
-    location.pathname === '/30-days-accounting'
+    location.pathname === '/30-days-accounting' ||
+    location.pathname === '/the-pricing-and-negotiation-playbook'
 
   // Always show WhatsApp widget on public pages and checkout
   const showWhatsApp = !location.pathname.startsWith('/admin')
@@ -131,6 +132,8 @@ function AppLayout() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund" element={<RefundPage />} />
+        <Route path="/30-days-accounting" element={<PlaybookSalesPage />} />
+        <Route path="/the-pricing-and-negotiation-playbook" element={<PlaybookSalesPage />} />
 
         {/* Dynamic / Auto-registered user created pages */}
         {getPages().map(page => {
