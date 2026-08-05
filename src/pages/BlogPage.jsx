@@ -242,17 +242,20 @@ export default function BlogPage() {
           .blog-hero-bg {
             position: absolute;
             inset: 0;
+            z-index: 1;
           }
           .blog-hero-bg img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center 40%;
+            opacity: 0.28;
           }
           .blog-hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(170deg, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.85) 50%, rgba(9,9,11,0.95) 100%);
+            background: radial-gradient(circle at center, rgba(9,9,11,0.2) 0%, #09090b 80%),
+                        linear-gradient(to bottom, transparent 60%, #09090b 100%);
           }
           .blog-hero-inner {
             position: relative;

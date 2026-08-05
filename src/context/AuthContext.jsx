@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        if (userRef.current !== session.user.id) {
+        if (userRef.current !== session.user.id && window.location.pathname !== '/checkout') {
           setLoading(true)
         }
         userRef.current = session.user.id

@@ -192,7 +192,10 @@ export default function PricingPage() {
 
         {/* ════ HERO ════ */}
         <section className="pr-hero" ref={heroRef}>
-          <div className="pr-hero-bg" />
+          <div className="pr-hero-bg">
+            <img src="/images/about-hero.jpg" alt="" aria-hidden="true" />
+            <div className="pr-hero-overlay" />
+          </div>
           <div className={`pr-hero-inner ${heroVis ? 'pr-vis' : ''}`}>
             <div className="pr-hero-badge">Pricing & Resources</div>
             <h1 className="pr-hero-title">
@@ -506,7 +509,19 @@ export default function PricingPage() {
         .pr-hero-bg {
           position: absolute;
           inset: 0;
-          background: linear-gradient(170deg, #09090b 0%, #111827 60%, #09090b 100%);
+          z-index: 1;
+        }
+        .pr-hero-bg img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.28;
+        }
+        .pr-hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at center, rgba(9,9,11,0.2) 0%, #09090b 80%),
+                      linear-gradient(to bottom, transparent 60%, #09090b 100%);
         }
         .pr-hero-inner {
           position: relative;

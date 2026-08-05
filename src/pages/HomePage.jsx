@@ -205,10 +205,10 @@ export default function HomePage() {
           </Reveal>
           <Reveal delay={450}>
             <div className="hp-hero-ctas">
-              <a href="#pathways" className="hp-btn hp-btn-primary hp-btn-large">
+              <Link to="/products" className="hp-btn hp-btn-primary hp-btn-large">
                 Start Learning
                 <IconArrowRight />
-              </a>
+              </Link>
               <button onClick={() => setShowDemoModal(true)} className="hp-btn hp-btn-secondary hp-btn-large">
                 <IconPlay />
                 Watch Free Demo
@@ -296,7 +296,7 @@ export default function HomePage() {
                   <li><IconCheck /> Practical Cloud Software Training</li>
                   <li><IconCheck /> Remote Internships &amp; Placements</li>
                 </ul>
-                <Link to="/resources" className="hp-pathway-link">
+                <Link to="/products" className="hp-pathway-link">
                   Browse Curriculum
                   <IconArrowRight />
                 </Link>
@@ -319,7 +319,7 @@ export default function HomePage() {
                   <li><IconCheck /> Ready-made Invoice &amp; PO templates</li>
                   <li><IconCheck /> Chart of Accounts templates</li>
                 </ul>
-                <Link to="/products" className="hp-pathway-link">
+                <Link to="/resources" className="hp-pathway-link">
                   Download Tools
                   <IconArrowRight />
                 </Link>
@@ -514,7 +514,7 @@ export default function HomePage() {
             </ul>
             <Reveal delay={300}>
               <div className="hp-bootcamp-actions">
-                <Link to="/resources" className="hp-btn hp-btn-primary">Learn More &amp; Register</Link>
+                <Link to="/products" className="hp-btn hp-btn-primary">Learn More &amp; Register</Link>
                 <Link to="/faq" className="hp-btn hp-btn-outline">Ask Questions</Link>
               </div>
             </Reveal>
