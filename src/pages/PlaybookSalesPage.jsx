@@ -69,304 +69,547 @@ export default function PlaybookSalesPage() {
   }
 
   return (
-    <div className="vsl-root">
-      {/* Urgency Bar */}
-      <div className="vsl-urgency-bar">
-        <span className="vsl-alert-icon">⚡</span>
-        <span>SPECIAL ENROLLMENT: Spots filling fast! Price increases in <strong className="vsl-timer">{formatTime(timeLeft)}</strong></span>
+    <div className="cf-root">
+      {/* Top Warning Hook */}
+      <div className="cf-top-warning">
+        <span>⚠️ ATTENTION: Accounting Graduates, NYSC Members, Early-Career Professionals, Freelancers, &amp; Business Owners...</span>
       </div>
 
-      {/* Main Container */}
-      <div className="vsl-main-container">
+      {/* Evergreen Urgent Timer Banner */}
+      <div className="cf-timer-banner">
+        <span>⚡ SPECIAL ENROLLMENT: Spots filling fast! Price increases in <strong className="cf-timer">{formatTime(timeLeft)}</strong></span>
+      </div>
+
+      {/* Main Funnel Container */}
+      <div className="cf-container">
         
-        {/* Header Logo */}
-        <header className="vsl-header">
-          <img src="/logo.png" alt="Donzen Accounting Hub" className="vsl-logo" />
+        {/* Minimal Header */}
+        <header className="cf-header">
+          <img src="/logo.png" alt="Donzen Accounting Hub" className="cf-logo" />
         </header>
 
         {/* Hero Section */}
-        <section className="vsl-hero">
-          <div className="vsl-badge">FLAGSHIP PROGRAMME</div>
-          <h1 className="vsl-title">Become the Accountant Employers Trust</h1>
-          <p className="vsl-subtitle">
+        <section className="cf-hero">
+          <div className="cf-vsl-badge">TRAINING PROGRAMME</div>
+          <h1 className="cf-title">Become the Accountant Employers Trust</h1>
+          <p className="cf-subtitle">
             Gain Real Workplace Accounting Experience in Just 30 Days—Without Waiting Years for Someone to Hire You.
           </p>
 
-          {/* VSL Video Player Mock */}
-          <div className="vsl-video-wrapper">
-            <div className="vsl-video-player">
+          {/* Marketing Styled Video Sales Letter Container */}
+          <div className="cf-vsl-wrapper">
+            <div className="cf-vsl-player">
               {!isVideoPlaying ? (
-                <div className="vsl-video-poster" onClick={() => setIsVideoPlaying(true)}>
-                  <div className="vsl-video-glow" />
-                  <img src="/images/about-hero.jpg" alt="Workplace simulation course preview" className="vsl-poster-img" />
-                  <div className="vsl-poster-overlay">
-                    <div className="vsl-play-btn">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff">
+                <div className="cf-vsl-poster" onClick={() => setIsVideoPlaying(true)}>
+                  <div className="cf-vsl-glow" />
+                  <img src="/images/about-hero.jpg" alt="Workplace simulation course preview" className="cf-poster-img" />
+                  <div className="cf-poster-overlay">
+                    <div className="cf-play-btn">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="#fff">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                       </svg>
                     </div>
-                    <span className="vsl-play-text">WATCH THE EXPLAINER VIDEO (5 MINS)</span>
+                    <span className="cf-play-text">PLAY VIDEO WORKPLACE PREVIEW (5 MINS)</span>
                   </div>
                 </div>
               ) : (
-                <div className="vsl-video-playing">
-                  <div className="vsl-video-loader">
-                    <div className="vsl-spinner" />
-                    <span>Loading Video Stream...</span>
+                <div className="cf-vsl-playing">
+                  <div className="cf-vsl-loader">
+                    <div className="cf-spinner" />
+                    <span>Loading Explainer Presentation Video...</span>
                   </div>
                 </div>
               )}
             </div>
-            <div className="vsl-video-bar">
-              <span className="vsl-dot green" />
-              <span>Verified Programme Presentation &bull; Interactive Overview</span>
+            <div className="cf-vsl-status">
+              <span className="cf-status-dot green" />
+              <span>Interactive Program Video Walkthrough &bull; High Conversion Presentation</span>
             </div>
           </div>
 
-          <p className="vsl-hero-description">
-            Whether you are a fresh graduate, an accounting student, a bookkeeper, an entrepreneur, or an accountant looking to advance your career, the Donzen Accounting Experience Program equips you with the practical workplace skills, systems, confidence, and real-world experience employers value most.
-          </p>
-          <p className="vsl-hero-emphasis">
-            You will learn by doing—not just by watching. You will work on realistic business scenarios, use professional accounting tools, complete practical projects, and develop the confidence to perform like an experienced accountant from your very first day on the job.
-          </p>
+          {/* First Block of Content */}
+          <div className="cf-sales-intro-block">
+            <p>
+              Whether you are a fresh graduate, an accounting student, a bookkeeper, an entrepreneur, or an accountant looking to advance your career, the <strong>Donzen Accounting Experience Program</strong> equips you with the practical workplace skills, systems, confidence, and real-world experience employers value most.
+            </p>
+            <p className="cf-highlight-text">
+              You will learn by doing—not just by watching.
+            </p>
+            <p>
+              You will work on realistic business scenarios, use professional accounting tools, complete practical projects, and develop the confidence to perform like an experienced accountant from your very first day on the job.
+            </p>
+            <p>
+              Join hundreds of aspiring accountants, professionals, and business owners who have chosen practical experience over theory. Your journey from knowing accounting to doing accounting starts today.
+            </p>
+          </div>
 
-          <button className="vsl-cta-button" onClick={handleEnroll}>
-            ENROLL IN THE PROGRAMME NOW
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 8 }}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
+          {/* Primary CTA Button */}
+          <div style={{ marginTop: 40, marginBottom: 50 }}>
+            <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll}>
+              👉 ENROLL NOW &amp; GET INSTANT ACCESS 👈
+            </button>
+            <p className="cf-cta-subtext">Instant Activation &bull; 100% Secured Connection</p>
+          </div>
         </section>
 
-        {/* Section 2: Core Gap */}
-        <section className="vsl-section">
-          <div className="vsl-section-heading">
+        {/* Section 2: Core Exposure Gap */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
             <h2>More Than an Accounting Course.</h2>
-            <span className="vsl-section-subtitle red">This Is Your Workplace Accounting Experience</span>
+            <span className="cf-section-subtitle red">This Is Your Workplace Accounting Experience.</span>
           </div>
 
-          <div className="vsl-cards-grid">
-            <div className="vsl-card">
-              <h3>Academic vs. Practical Gap</h3>
-              <p>At Donzen Accounting Hub, we believe something fundamental is missing in accounting education. Most people do not struggle because they lack intelligence—they struggle because they lack exposure.</p>
-            </div>
-            <div className="vsl-card">
-              <h3>What Schools Do Not Teach</h3>
-              <p>Universities teach accounting principles. Professional bodies teach accounting standards. Textbooks explain accounting concepts. But very few teach you how accounting actually works inside a business.</p>
-            </div>
-            <div className="vsl-card">
-              <h3>What Employers Pay For</h3>
-              <p>Employers do not hire people simply because they understand debit and credit. They hire people who can confidently run business workflows, process payroll, file taxes, and reconcile statements.</p>
-            </div>
+          <div className="cf-text-block">
+            <p>At Donzen Accounting Hub, we believe something fundamental is missing in accounting education.</p>
+            <p>Most people do not struggle because they lack intelligence. They struggle because they lack exposure.</p>
+            <p>Universities teach accounting principles. Professional bodies teach accounting standards. Textbooks explain accounting concepts. But very few teach you how accounting actually works inside a business.</p>
+            <p className="cf-bold-callout">
+              Employers do not hire people simply because they understand debit and credit. They hire people who can confidently execute:
+            </p>
           </div>
 
-          <div className="vsl-capabilities-container">
-            <h4>Employers hire people who can confidently:</h4>
-            <div className="vsl-bullets-grid">
+          <div className="cf-bullets-container">
+            <div className="cf-bullets-grid">
               {[
-                'Process daily business transactions',
-                'Manage accounts receivable and accounts payable',
-                'Reconcile bank statements accurately',
-                'Prepare financial reports',
-                'Maintain inventory records',
-                'Process payroll correctly',
-                'Use accounting software efficiently',
-                'Solve accounting problems independently',
-                'Support business decision-making with reliable financial information'
+                'Process daily business transactions.',
+                'Manage accounts receivable and accounts payable.',
+                'Reconcile bank statements accurately.',
+                'Prepare financial reports.',
+                'Maintain inventory records.',
+                'Process payroll correctly.',
+                'Use accounting software efficiently.',
+                'Solve accounting problems independently.',
+                'Support business decision-making with reliable financial information.'
               ].map((bullet, i) => (
-                <div key={i} className="vsl-bullet-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="vsl-bullet-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <div key={i} className="cf-bullet-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="cf-bullet-icon"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>{bullet}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="cf-summary-box">
+            <p>This is the difference between learning accounting and practicing accounting. And that difference is exactly why Donzen exists.</p>
+          </div>
+        </section>
+
+        {/* Section 3: First Day Simulation */}
+        <section className="cf-section cf-bg-accent">
+          <div className="cf-section-heading">
+            <h2>Imagine Your First Day at Work…</h2>
+            <p className="cf-section-subtitle">Imagine walking into your new accounting job with confidence instead of fear.</p>
+          </div>
+
+          <div className="cf-text-block">
+            <p>Your manager asks you to:</p>
+            <div className="cf-checkbox-grid">
+              {[
+                'Prepare the month\'s bank reconciliation.',
+                'Record supplier invoices.',
+                'Process payroll.',
+                'Update inventory records.',
+                'Generate financial reports.',
+                'Follow up outstanding customer balances.',
+                'Organize accounting documents.',
+                'Prepare management reports.'
+              ].map((item, idx) => (
+                <div key={idx} className="cf-checkbox-item">
+                  <span className="cf-checked-icon">✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="cf-highlight-callout-box">
+              <p>
+                Instead of feeling overwhelmed... <strong>You smile.</strong>
+              </p>
+              <p style={{ margin: 0 }}>
+                Because you have already done these tasks before. Not in theory. Not on paper. But through structured workplace simulations designed to mirror the responsibilities of a modern accountant. That is the confidence Donzen helps you build.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4: The Reality */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
+            <h2>Why Thousands of Accounting Graduates Still Struggle to Find Good Jobs</h2>
+            <span className="cf-section-subtitle red">The Reality Nobody Talks About</span>
+          </div>
+
+          <div className="cf-text-block">
+            <p>Every year, thousands of talented accounting graduates complete their education with high hopes. They have earned degrees, passed professional exams, completed certifications, and attended seminars.</p>
+            <p>Yet many still hear the same frustrating response: <strong>&quot;We are looking for someone with practical experience.&quot;</strong></p>
+            <p>It feels unfair. How can you gain experience if every employer expects you to already have it?</p>
+
+            <div className="cf-target-box">
+              <h4>This challenge affects:</h4>
+              <div className="cf-target-list">
+                <span>&bull; Fresh graduates entering the workforce</span>
+                <span>&bull; NYSC members preparing for employment</span>
+                <span>&bull; Early-career accountants seeking their first role</span>
+                <span>&bull; Professionals transitioning into accounting</span>
+                <span>&bull; Business owners managing their own finances</span>
+                <span>&bull; Freelance bookkeepers looking to serve clients</span>
+              </div>
+            </div>
+
+            <p style={{ marginTop: 24 }}>
+              The issue isn't your potential. It's the gap between academic knowledge and workplace execution. That gap costs talented people opportunities every single day. <strong>Donzen was created to close that gap.</strong>
+            </p>
+          </div>
+        </section>
+
+        {/* Section 5: Why Traditional Isn't Enough */}
+        <section className="cf-section cf-bg-accent">
+          <div className="cf-section-heading">
+            <h2>Why Traditional Accounting Education Isn't Enough</h2>
+            <p className="cf-section-subtitle">Let's be honest. Traditional education teaches concepts, not execution.</p>
+          </div>
+
+          <div className="cf-split-table-grid">
+            <div className="cf-table-col">
+              <h3 className="cf-table-header red-bg">What Traditional Courses Teach:</h3>
+              <ul className="cf-table-list">
+                <li>Accounting principles</li>
+                <li>Financial accounting theory</li>
+                <li>Cost accounting methods</li>
+                <li>Taxation structures</li>
+                <li>Auditing rules</li>
+                <li>Economics &amp; business law</li>
+                <li>Financial management theory</li>
+              </ul>
+            </div>
+            <div className="cf-table-col">
+              <h3 className="cf-table-header green-bg">What Employers Expect You to Know:</h3>
+              <ul className="cf-table-list">
+                <li>Record daily business transactions</li>
+                <li>Manage accounting documents</li>
+                <li>Maintain customer ledgers &amp; vendor bills</li>
+                <li>Handle petty cash &amp; bank reconciliations</li>
+                <li>Organize accounting files</li>
+                <li>Generate management &amp; cash flow reports</li>
+                <li>Maintain inventory &amp; process payroll</li>
+                <li>Work confidently with accounting software</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="cf-text-block" style={{ marginTop: 30, textAlign: 'center' }}>
+            <p>
+              Unfortunately, many graduates have never practiced these tasks before entering the workplace. The result? Even brilliant graduates often feel uncertain during interviews and anxious on their first day at work.
+            </p>
+            <p style={{ fontWeight: 700, color: '#ff1717', fontSize: 17 }}>
+              Knowledge alone does not create confidence. Practice does.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 6: Introducing Donzen */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
+            <h2>Introducing Donzen Accounting Hub</h2>
+            <span className="cf-section-subtitle red">Nigeria's Workplace Accounting Experience Platform</span>
+          </div>
+
+          <div className="cf-text-block text-center">
+            <p className="cf-lead-text">
+              &quot;People do not become great accountants by studying accounting alone. They become great accountants by practicing accounting.&quot;
+            </p>
+            <p>
+              Our mission is to bridge the gap between classroom education and workplace performance by helping aspiring accountants develop the practical knowledge, professional habits, technical competence, and confidence needed to succeed in today's business environment.
+            </p>
+            <p>
+              We are not simply another online training provider. We are building a new standard for workplace accounting education in Africa. One that prepares people for real work—not just examinations.
+            </p>
+            <div className="cf-purpose-box">
+              <p style={{ margin: 0, fontWeight: 700, color: '#ff1717' }}>
+                Every lesson, exercise, template, case study, project, and resource has one purpose: To prepare you to perform confidently in a real accounting role.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 7: The Donzen Method */}
+        <section className="cf-section cf-bg-accent">
+          <div className="cf-section-heading">
+            <h2>The Donzen Method</h2>
+            <p className="cf-section-subtitle">Learn Accounting the Way Employers Expect You to Work</p>
+          </div>
+
+          <div className="cf-text-block">
+            <p>At Donzen, we don't just teach accounting concepts—we help you develop the habits, systems, and practical confidence to perform in a real workplace.</p>
+            
+            <h3 className="cf-block-title">The Workplace Accounting Experience System™</h3>
+            <p className="cf-block-subtitle">Our signature learning framework ensures every student progresses through six practical stages:</p>
+            
+            <div className="cf-process-steps">
+              {[
+                { num: '1', title: 'Learn', desc: 'Build a solid understanding of workplace accounting principles, business processes, and financial workflows.' },
+                { num: '2', title: 'Practice', desc: 'Apply what you have learned through guided exercises, business scenarios, and hands-on activities.' },
+                { num: '3', title: 'Perform', desc: 'Complete real-world accounting tasks that mirror what accountants do every day.' },
+                { num: '4', title: 'Review', desc: 'Receive structured feedback to improve your accuracy, efficiency, and professional judgment.' },
+                { num: '5', title: 'Improve', desc: 'Strengthen weak areas, refine your skills, and develop workplace confidence.' },
+                { num: '6', title: 'Excel', desc: 'Graduate with practical experience that prepares you to contribute from your first day on the job.' }
+              ].map(step => (
+                <div key={step.num} className="cf-step-card">
+                  <div className="cf-step-num">{step.num}</div>
+                  <h4>{step.title}</h4>
+                  <p>{step.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="cf-block-title" style={{ marginTop: 50 }}>The Donzen Employability Framework™</h3>
+            <p className="cf-block-subtitle">Employers don't hire certificates—they hire capability. We focus on 5 essential areas:</p>
+
+            <div className="cf-framework-list">
+              {[
+                { title: 'Technical Competence', desc: 'Learn practical bookkeeping, accounting workflows, financial reporting, payroll, inventory management, and reconciliations.' },
+                { title: 'Software Proficiency', desc: 'Gain hands-on experience with Microsoft Excel, QuickBooks, Sage, and modern accounting tools.' },
+                { title: 'Business Understanding', desc: 'Understand how accounting supports decision-making, cash flow, profitability, and business growth.' },
+                { title: 'Professional Confidence', desc: 'Develop the confidence to complete accounting tasks accurately and communicate effectively in the workplace.' },
+                { title: 'Workplace Readiness', desc: 'Learn the systems, discipline, and professional mindset expected in modern accounting roles.' }
+              ].map((f, i) => (
+                <div key={i} className="cf-framework-item">
+                  <div className="cf-framework-dot" />
+                  <div>
+                    <strong>{f.title}:</strong> {f.desc}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Section 3: First Day */}
-        <section className="vsl-section vsl-section-dark">
-          <div className="vsl-section-heading">
-            <h2>Imagine Your First Day at Work…</h2>
-            <p className="vsl-section-intro">Your manager hands you the accounts ledger and requests specific updates. Instead of feeling overwhelmed...</p>
+        {/* Section 8: What You'll Master */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
+            <h2>What You'll Master</h2>
+            <p className="cf-section-subtitle">Practical responsibilities businesses expect accountants to handle daily.</p>
           </div>
 
-          <div className="vsl-split-view">
-            <div className="vsl-split-card red-border">
-              <h3>Without Donzen</h3>
-              <p>You feel a wave of anxiety. You know the theoretical debit/credit rules, but you have never opened a live QuickBooks portal, recorded supplier invoices, processed payroll, or reconciled real bank transactions. You feel stuck and pray you do not make a mistake.</p>
-            </div>
-            <div className="vsl-split-card green-border">
-              <h3>With Donzen</h3>
-              <p>You smile. You open the workspace with confidence. You have already completed these exact tasks dozens of times before inside our simulations. You know which files to organize, how to run reconciliations, and how to format reports. You are ready from hour one.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 4: The Struggle */}
-        <section className="vsl-section">
-          <div className="vsl-section-heading font-large">
-            <h2>Why Thousands of Accounting Graduates Still Struggle</h2>
-            <span className="vsl-section-subtitle">The Reality Nobody Talks About</span>
-          </div>
-
-          <div className="vsl-text-block">
-            <p>Every year, thousands of talented accounting graduates complete their education with high hopes. They have earned degrees, passed exams, completed certifications, and watched hours of videos.</p>
-            <p>Yet many still hear the same frustrating response: <strong>&quot;We are looking for someone with practical experience.&quot;</strong></p>
-            <p>It feels unfair. How can you gain experience if every employer expects you to already have it? This challenge affects fresh graduates, NYSC members, early-career accountants, and business owners managing their own finances.</p>
-            <p>Donzen was created to break this cycle and close the gap between classroom knowledge and workplace execution.</p>
-          </div>
-        </section>
-
-        {/* Section 5: The Donzen Method */}
-        <section className="vsl-section vsl-section-dark">
-          <div className="vsl-section-heading">
-            <h2>The Donzen Method</h2>
-            <span className="vsl-section-subtitle red">Learn Accounting the Way Employers Expect You to Work</span>
-          </div>
-
-          <h3 className="vsl-sub-heading">The Workplace Accounting Experience System™</h3>
-          <div className="vsl-process-steps">
-            {[
-              { num: '1', title: 'Learn', desc: 'Build a solid understanding of workplace accounting principles, business processes, and financial workflows.' },
-              { num: '2', title: 'Practice', desc: 'Apply what you have learned through guided exercises, business scenarios, and hands-on activities.' },
-              { num: '3', title: 'Perform', desc: 'Complete real-world accounting tasks that mirror what accountants do every day.' },
-              { num: '4', title: 'Review', desc: 'Receive structured feedback to improve your accuracy, efficiency, and professional judgment.' },
-              { num: '5', title: 'Improve', desc: 'Strengthen weak areas, refine your skills, and develop workplace confidence.' },
-              { num: '6', title: 'Excel', desc: 'Graduate with practical experience that prepares you to contribute from your first day on the job.' }
-            ].map(step => (
-              <div key={step.num} className="vsl-step-card">
-                <div className="vsl-step-number">{step.num}</div>
-                <h4>{step.title}</h4>
-                <p>{step.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <h3 className="vsl-sub-heading" style={{ marginTop: 40 }}>The Donzen Employability Framework™</h3>
-          <div className="vsl-framework-grid">
-            {[
-              { title: 'Technical Competence', desc: 'Learn practical bookkeeping, accounting workflows, financial reporting, payroll, inventory management, and reconciliations.' },
-              { title: 'Software Proficiency', desc: 'Gain hands-on experience with Microsoft Excel, QuickBooks, Sage, and modern accounting tools.' },
-              { title: 'Business Understanding', desc: 'Understand how accounting supports decision-making, cash flow, profitability, and business growth.' },
-              { title: 'Professional Confidence', desc: 'Develop the confidence to complete accounting tasks accurately and communicate effectively in the workplace.' },
-              { title: 'Workplace Readiness', desc: 'Learn the systems, discipline, and professional mindset expected in modern accounting roles.' }
-            ].map((f, idx) => (
-              <div key={idx} className="vsl-framework-card">
-                <h4>{f.title}</h4>
-                <p>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 6: Mastery & Toolkit */}
-        <section className="vsl-section">
-          <div className="vsl-section-heading">
-            <h2>What You Will Master</h2>
-            <p>Our curriculum focuses entirely on tasks that companies expect their finance teams to handle on a daily basis.</p>
-          </div>
-
-          <div className="vsl-mastery-list">
+          <div className="cf-mastery-grid">
             {[
               'Recording daily business transactions',
-              'Bank reconciliations & statement matching',
-              'Accounts Receivable ledger management',
-              'Accounts Payable bill tracking',
-              'Payroll processing & payslip creation',
-              'Inventory management & stock valuation',
-              'Fixed asset register maintenance',
-              'Financial statement preparation (P&L, Balance Sheets)',
-              'Budgeting and cash flow tracking',
+              'Bank reconciliations',
+              'Accounts Receivable management',
+              'Accounts Payable management',
+              'Payroll processing',
+              'Inventory management',
+              'Fixed asset management',
+              'Financial statement preparation',
+              'Budgeting and cash flow reporting',
               'Month-end closing procedures',
-              'Financial data analysis & management reporting',
+              'Financial data analysis',
               'Accounting documentation and record keeping'
-            ].map((item, idx) => (
-              <div key={idx} className="vsl-mastery-item">
-                <span className="vsl-mastery-dot" />
+            ].map((item, i) => (
+              <div key={i} className="cf-mastery-card">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3" className="cf-check-green"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>{item}</span>
               </div>
             ))}
           </div>
 
-          <div className="vsl-toolkit-box">
-            <h3>Your Workplace Accounting Toolkit Includes:</h3>
-            <p>Every participant receives access to these professional formats and files:</p>
-            <div className="vsl-toolkit-grid">
-              <span>✓ Practical accounting templates</span>
-              <span>✓ Business transaction exercises</span>
-              <span>✓ Financial reporting formats</span>
-              <span>✓ Payroll templates</span>
-              <span>✓ Inventory management tools</span>
-              <span>✓ Bank reconciliation templates</span>
-              <span>✓ Accounts receivable tracker</span>
-              <span>✓ Accounts payable tracker</span>
-              <span>✓ Excel practice files</span>
-              <span>✓ Professional checklists</span>
+          {/* Section 9: Inside the 30-Day Program */}
+          <div className="cf-curriculum-container">
+            <h3>Inside the 30-Day Accounting Experience Program</h3>
+            <div className="cf-phases-grid">
+              {[
+                { phase: 'Phase 1', title: 'Build the Foundation', desc: 'Understand workplace accounting processes, documentation, business transactions, and accounting workflows.' },
+                { phase: 'Phase 2', title: 'Develop Practical Skills', desc: 'Learn bookkeeping systems, reconciliations, payroll, inventory, receivables, payables, and financial reporting.' },
+                { phase: 'Phase 3', title: 'Simulate the Workplace', desc: 'Work through realistic business scenarios using professional accounting tools and templates.' },
+                { phase: 'Phase 4', title: 'Become Career Ready', desc: 'Complete practical projects, improve your confidence, and prepare to perform successfully in interviews and on the job.' }
+              ].map(p => (
+                <div key={p.phase} className="cf-phase-card">
+                  <span className="cf-phase-tag">{p.phase}</span>
+                  <h4>{p.title}</h4>
+                  <p>{p.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Instructor Section */}
-        <section className="vsl-section vsl-section-dark">
-          <div className="vsl-instructor-card">
-            <div className="vsl-instructor-avatar-col">
-              <img src="/founder_portrait.jpg" alt="Samuel Nkemchor Onainor" className="vsl-instructor-img" />
-              <div className="vsl-instructor-badge">LEAD INSTRUCTOR</div>
+        {/* Section 10: Toolkit */}
+        <section className="cf-section cf-bg-accent">
+          <div className="cf-section-heading">
+            <h2>Your Workplace Accounting Toolkit</h2>
+            <p className="cf-section-subtitle">Every participant receives access to practical resources designed for immediate workplace application.</p>
+          </div>
+
+          <div className="cf-toolkit-wrapper">
+            <h4 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#1e293b', fontWeight: 800 }}>Included Resources:</h4>
+            <div className="cf-toolkit-list-grid">
+              {[
+                'Practical accounting templates',
+                'Business transaction exercises',
+                'Financial reporting formats',
+                'Payroll templates',
+                'Inventory management tools',
+                'Bank reconciliation templates',
+                'Accounts receivable tracker',
+                'Accounts payable tracker',
+                'Excel practice files',
+                'Professional checklists',
+                'Downloadable learning resources'
+              ].map((tool, i) => (
+                <div key={i} className="cf-toolkit-item">
+                  <span className="cf-toolkit-bullet">✓</span>
+                  <span>{tool}</span>
+                </div>
+              ))}
             </div>
-            <div className="vsl-instructor-info-col">
-              <span className="vsl-instructor-overline">Meet Your Instructor</span>
+          </div>
+        </section>
+
+        {/* Section 11: Who This Program Is For */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
+            <h2>Who This Program Is For</h2>
+            <p className="cf-section-subtitle">This program is designed for people who want more than theoretical knowledge.</p>
+          </div>
+
+          <div className="cf-target-students-grid">
+            {[
+              'Accounting graduates seeking practical experience',
+              'Students preparing for the workplace',
+              'NYSC members building career-ready skills',
+              'Job seekers looking to improve employability',
+              'Bookkeepers wanting to strengthen practical competence',
+              'Business owners managing their own finances',
+              'Professionals transitioning into accounting',
+              'Freelancers offering bookkeeping services',
+              'Anyone determined to become a confident workplace accountant'
+            ].map((target, idx) => (
+              <div key={idx} className="cf-target-student-card">
+                <div className="cf-target-bullet-badge">{idx + 1}</div>
+                <p>{target}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 12: Comparison */}
+        <section className="cf-section cf-bg-accent">
+          <div className="cf-section-heading">
+            <h2>Why Donzen Is Different</h2>
+            <p className="cf-section-subtitle">Most training programs stop at teaching concepts. Donzen goes further.</p>
+          </div>
+
+          <div className="cf-comparison-table-wrapper">
+            <table className="cf-comparison-table">
+              <thead>
+                <tr>
+                  <th>Feature / Outcome</th>
+                  <th className="th-traditional">Traditional Training</th>
+                  <th className="th-donzen">The Donzen Experience</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { feature: 'Core Focus', trad: 'Focuses on theory', donzen: 'Focuses on workplace application' },
+                  { feature: 'Outcome Goal', trad: 'Explains accounting', donzen: 'Develops accounting competence' },
+                  { feature: 'Methodology', trad: 'Provides lectures', donzen: 'Provides practical experience' },
+                  { feature: 'Completion Reward', trad: 'Ends with a certificate', donzen: 'Ends with career-ready confidence' },
+                  { feature: 'Software Approach', trad: 'Teaches software features', donzen: 'Teaches business workflows using software' },
+                  { feature: 'Ultimate Benefit', trad: 'Builds knowledge', donzen: 'Builds capability' }
+                ].map((row, i) => (
+                  <tr key={i}>
+                    <td><strong>{row.feature}</strong></td>
+                    <td className="td-traditional">{row.trad}</td>
+                    <td className="td-donzen">{row.donzen}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Section 13: Meet Your Instructor */}
+        <section className="cf-section">
+          <div className="cf-instructor-container">
+            <div className="cf-instructor-photo-box">
+              <img src="/founder_portrait.jpg" alt="Samuel Nkemchor Onainor" />
+              <span className="cf-instructor-title-badge">Lead Instructor</span>
+            </div>
+            <div className="cf-instructor-details">
+              <span className="cf-instructor-intro-tag">Founder &amp; Principal Consultant</span>
               <h2>Samuel Nkemchor Onainor</h2>
-              <p className="vsl-instructor-title">Founder &amp; Principal Consultant, Donzen Accounting Hub</p>
-              <p className="vsl-instructor-bio">
+              <p>
                 Samuel is an accounting professional, workplace accounting trainer, and business consultant passionate about helping aspiring accountants bridge the gap between academic learning and workplace performance.
               </p>
-              <p className="vsl-instructor-bio">
-                Having worked across multiple industries and trained accountants, graduates, and business owners, he understands one challenge better than most: People do not struggle because they lack accounting knowledge—they struggle because they lack practical experience. That insight led to the creation of Donzen Accounting Hub.
+              <p>
+                Having worked across multiple industries and trained accountants, graduates, and business owners, he understands one challenge better than most:
+              </p>
+              <blockquote className="cf-instructor-quote">
+                &quot;People do not struggle because they lack accounting knowledge—they struggle because they lack practical experience.&quot;
+              </blockquote>
+              <p>
+                His mission is simple: To develop confident, competent, and career-ready accounting professionals who can create value from day one.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Pricing & Value Section */}
-        <section className="vsl-pricing-section">
-          <div className="vsl-pricing-card">
-            <span className="vsl-pricing-badge">BOOTCAMP SPECIAL OFFER</span>
-            <h2>Complete 30-Day Practical Accounting Experience</h2>
-            <div className="vsl-pricing-prices">
-              <span className="vsl-old-price">{formatPrice(oldPrice)}</span>
-              <span className="vsl-current-price">{formatPrice(price)}</span>
+        {/* Section 14: What You'll Receive & Pricing Offer */}
+        <section className="cf-section cf-pricing-offer-section">
+          <div className="cf-pricing-box">
+            <span className="cf-pricing-header-tag">30-DAY SPECIAL ACCESS</span>
+            <h2>Start Your Workplace Accounting Journey Today</h2>
+            <p className="cf-pricing-subheader">Gain access to the entire practical program, downloadable templates, and real simulations.</p>
+            
+            <div className="cf-pricing-features">
+              <div className="cf-pricing-feat-item">✔ 30-Day Practical Training Program</div>
+              <div className="cf-pricing-feat-item">✔ Workplace Accounting Projects</div>
+              <div className="cf-pricing-feat-item">✔ Practical Accounting Templates</div>
+              <div className="cf-pricing-feat-item">✔ Excel Practice Files</div>
+              <div className="cf-pricing-feat-item">✔ QuickBooks &amp; Sage Exposure</div>
+              <div className="cf-pricing-feat-item">✔ Downloadable Resources</div>
+              <div className="cf-pricing-feat-item">✔ Practical Assignments</div>
+              <div className="cf-pricing-feat-item">✔ Certificate of Completion</div>
+              <div className="cf-pricing-feat-item">✔ Community Learning &amp; Support</div>
+              <div className="cf-pricing-feat-item">✔ Access to Structured Learning</div>
             </div>
-            <p className="vsl-pricing-desc">
-              Get immediate access to the 30-Day Practical Training Program, all assignments, files, downloadable checklists, live templates, certificate of completion, and community learning support.
-            </p>
-            <button className="vsl-pricing-cta" onClick={handleEnroll}>
-              ENROLL &amp; START LEARNING NOW
-            </button>
-            <p className="vsl-pricing-guarantee">✓ Secured connection &bull; Instant activation in student dashboard</p>
+
+            <div className="cf-pricing-grid">
+              <span className="cf-old-price-val">{formatPrice(oldPrice)}</span>
+              <span className="cf-new-price-val">{formatPrice(price)}</span>
+            </div>
+
+            <div style={{ marginTop: 28 }}>
+              <button className="cf-enroll-cta pulsing-cta-yellow" onClick={handleEnroll}>
+                👉 CLICK HERE TO ENROLL NOW 👈
+              </button>
+              <p className="cf-enroll-desc-text">Secure checkout and immediate access in your student dashboard</p>
+            </div>
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="vsl-section">
-          <div className="vsl-section-heading">
+        {/* Section 15: FAQ Accordion */}
+        <section className="cf-section">
+          <div className="cf-section-heading">
             <h2>Frequently Asked Questions</h2>
           </div>
 
-          <div className="vsl-faq-list">
+          <div className="cf-faq-accordion">
             {[
-              { q: 'Is this program suitable for beginners?', a: 'Yes. The program starts with the fundamental processes and gradually builds up to practical daily workplace accounting scenarios.' },
-              { q: 'Do I need prior workplace experience?', a: 'No. This program is specifically designed for individuals who want to gain practical experience before applying for their first job.' },
-              { q: 'Will I learn accounting software?', a: 'Yes. You will gain hands-on experience and workflows in Microsoft Excel, QuickBooks, Sage, and other workplace accounting resources.' },
-              { q: 'Is the program practical?', a: 'Absolutely. The focus is entirely on completing realistic business simulations, projects, reconciliations, and reporting tasks rather than watching video theory.' },
-              { q: 'Will I receive a certificate?', a: 'Yes. Participants who successfully complete all assignments and case reviews will receive a Certificate of Completion.' },
-              { q: 'Can I learn while working or studying?', a: 'Yes. The program is structured to provide flexibility while maintaining a clear, daily progression path.' }
+              { q: 'Is this program suitable for beginners?', a: 'Yes. The program starts with the fundamentals and gradually builds practical competence.' },
+              { q: 'Do I need workplace experience?', a: 'No. This program is specifically designed for individuals who want to gain practical workplace experience.' },
+              { q: 'Will I learn accounting software?', a: 'Yes. You\'ll be introduced to practical tools such as Microsoft Excel, QuickBooks, Sage, and other workplace accounting resources used in modern businesses.' },
+              { q: 'Is the program practical?', a: 'Absolutely. The focus is on completing realistic accounting tasks, solving business scenarios, and developing workplace confidence—not simply watching video lessons.' },
+              { q: 'Will I receive a certificate?', a: 'Yes. Participants who successfully complete the program will receive a Certificate of Completion.' },
+              { q: 'Can I learn while working or studying?', a: 'Yes. The program is structured to provide flexibility while maintaining a clear learning path.' }
             ].map((faq, idx) => (
-              <div key={idx} className="vsl-faq-item">
-                <button className="vsl-faq-question" onClick={() => toggleFaq(idx)}>
+              <div key={idx} className="cf-faq-block">
+                <button className="cf-faq-toggle" onClick={() => toggleFaq(idx)}>
                   <span>{faq.q}</span>
-                  <span className="vsl-faq-arrow" style={{ transform: openFaq === idx ? 'rotate(180deg)' : 'none' }}>▼</span>
+                  <span className="cf-faq-arrow-icon" style={{ transform: openFaq === idx ? 'rotate(180deg)' : 'none' }}>▼</span>
                 </button>
                 {openFaq === idx && (
-                  <div className="vsl-faq-answer">
-                    <p>{faq.a}</p>
+                  <div className="cf-faq-answer-content">
+                    <p style={{ margin: 0 }}>{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -374,20 +617,25 @@ export default function PlaybookSalesPage() {
           </div>
         </section>
 
-        {/* Footer Prompts */}
-        <section className="vsl-bottom-prompt">
-          <h2>Take the First Step Today</h2>
-          <p>Your career doesn't change because you wish for more opportunities. It changes when you prepare for them.</p>
-          <button className="vsl-cta-button" onClick={handleEnroll} style={{ marginTop: 24 }}>
-            JOIN THE DONZEN WORKPLACE EXPERIENCE NOW
+        {/* Call to Action Closure Section */}
+        <section className="cf-closing-cta">
+          <h2>Your Future Starts with Practical Experience</h2>
+          <p className="cf-closing-desc">
+            The question isn't whether practical accounting skills matter. The question is: When will you decide to build them? Take the first step today.
+          </p>
+          <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll} style={{ marginTop: 24 }}>
+            👉 JOIN THE WORKPLACE EXPERIENCE TODAY 👈
           </button>
         </section>
 
-        <footer className="vsl-footer">
+        {/* Minimal Footer */}
+        <footer className="cf-footer-section">
           <p>&copy; {new Date().getFullYear()} Donzen Accounting Hub. All rights reserved.</p>
-          <div className="vsl-footer-links">
+          <div className="cf-footer-links-row">
             <span onClick={() => navigate('/terms')}>Terms of Service</span>
+            <span>&bull;</span>
             <span onClick={() => navigate('/privacy')}>Privacy Policy</span>
+            <span>&bull;</span>
             <span onClick={() => navigate('/refund')}>Refund Policy</span>
           </div>
         </footer>
@@ -395,17 +643,29 @@ export default function PlaybookSalesPage() {
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .vsl-root {
-          background: #09090b;
-          color: #f4f4f5;
+        .cf-root {
+          background: #ffffff;
+          color: #1e293b;
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           min-height: 100vh;
           padding-bottom: 60px;
+          line-height: 1.6;
         }
 
-        /* Urgency Bar */
-        .vsl-urgency-bar {
-          background: #ff1717;
+        /* Top Yellow Warning */
+        .cf-top-warning {
+          background: #fef08a;
+          color: #854d0e;
+          font-size: 13px;
+          font-weight: 800;
+          text-align: center;
+          padding: 10px 16px;
+          border-bottom: 2px solid #fef3c7;
+        }
+
+        /* Timer Banner */
+        .cf-timer-banner {
+          background: #dc2626;
           color: #fff;
           font-size: 13.5px;
           font-weight: 700;
@@ -414,93 +674,88 @@ export default function PlaybookSalesPage() {
           position: sticky;
           top: 0;
           z-index: 1000;
-          box-shadow: 0 4px 15px rgba(255, 23, 23, 0.25);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
+          box-shadow: 0 4px 15px rgba(220, 38, 38, 0.15);
         }
-        .vsl-alert-icon {
-          animation: pulse 1s infinite alternate;
-        }
-        .vsl-timer {
+        .cf-timer {
           font-family: monospace;
-          background: rgba(0,0,0,0.25);
+          background: rgba(0,0,0,0.2);
           padding: 2px 6px;
           border-radius: 4px;
           margin-left: 4px;
         }
 
-        /* Container */
-        .vsl-main-container {
-          max-width: 900px;
+        /* Main Container */
+        .cf-container {
+          max-width: 960px;
           margin: 0 auto;
-          padding: 0 20px;
+          padding: 0 24px;
         }
 
-        /* Header */
-        .vsl-header {
+        /* Header Logo */
+        .cf-header {
           display: flex;
           justify-content: center;
           padding: 40px 0 20px;
         }
-        .vsl-logo {
-          height: 48px;
+        .cf-logo {
+          height: 52px;
           width: auto;
         }
 
-        /* Hero */
-        .vsl-hero {
+        /* Hero Layout */
+        .cf-hero {
           text-align: center;
-          padding: 40px 0 60px;
+          padding: 30px 0 50px;
         }
-        .vsl-badge {
+        .cf-vsl-badge {
           display: inline-block;
-          background: rgba(255, 23, 23, 0.1);
-          border: 1px solid rgba(255, 23, 23, 0.3);
-          color: #ff1717;
+          background: rgba(220, 38, 38, 0.08);
+          border: 1.5px solid rgba(220, 38, 38, 0.25);
+          color: #dc2626;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 2px;
           text-transform: uppercase;
-          padding: 6px 16px;
+          padding: 6px 18px;
           border-radius: 100px;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
         }
-        .vsl-title {
-          font-size: clamp(2rem, 5vw, 3.4rem);
+        .cf-title {
+          font-size: clamp(2.2rem, 5.5vw, 3.6rem);
           font-weight: 900;
           line-height: 1.1;
-          color: #fff;
+          color: #0f172a;
           margin: 0 0 16px;
-          letter-spacing: -1px;
+          letter-spacing: -1.5px;
         }
-        .vsl-subtitle {
-          font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-          color: #a1a1aa;
-          max-width: 720px;
-          margin: 0 auto 40px;
+        .cf-subtitle {
+          font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+          color: #475569;
+          max-width: 820px;
+          margin: 0 auto 36px;
           line-height: 1.4;
+          font-weight: 600;
+          font-style: italic;
         }
 
-        /* Video Mockup */
-        .vsl-video-wrapper {
-          background: #18181b;
-          border: 1px solid #27272a;
-          border-radius: 16px;
+        /* VSL Video Player */
+        .cf-vsl-wrapper {
+          background: #0f172a;
+          border: 4px solid #e2e8f0;
+          border-radius: 14px;
           overflow: hidden;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
           margin-bottom: 40px;
         }
-        .vsl-video-player {
+        .cf-vsl-player {
           aspect-ratio: 16/9;
           position: relative;
-          background: #000;
+          background: #09090b;
           display: flex;
           align-items: center;
           justify-content: center;
         }
-        .vsl-video-poster {
+        .cf-vsl-poster {
           position: absolute;
           inset: 0;
           cursor: pointer;
@@ -508,66 +763,63 @@ export default function PlaybookSalesPage() {
           align-items: center;
           justify-content: center;
         }
-        .vsl-poster-img {
+        .cf-poster-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.45;
+          opacity: 0.55;
         }
-        .vsl-poster-overlay {
+        .cf-poster-overlay {
           position: absolute;
           inset: 0;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 90%);
+          background: rgba(15, 23, 42, 0.45);
           gap: 16px;
         }
-        .vsl-play-btn {
-          width: 80px;
-          height: 80px;
+        .cf-play-btn {
+          width: 86px;
+          height: 86px;
           border-radius: 50%;
           background: #ff1717;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 8px 30px rgba(255, 23, 23, 0.4);
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          transform: scale(1);
+          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.5);
+          transition: all 0.2s ease-in-out;
         }
-        .vsl-video-poster:hover .vsl-play-btn {
-          transform: scale(1.1);
-          background: #e01212;
-          box-shadow: 0 12px 35px rgba(255, 23, 23, 0.6);
+        .cf-vsl-poster:hover .cf-play-btn {
+          transform: scale(1.08);
+          background: #dc2626;
         }
-        .vsl-play-text {
+        .cf-play-text {
           color: #fff;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 1.5px;
-          background: rgba(0,0,0,0.6);
-          padding: 8px 16px;
+          background: rgba(15,23,42,0.85);
+          padding: 8px 18px;
           border-radius: 4px;
-          backdrop-filter: blur(4px);
         }
-        .vsl-video-playing {
+        .cf-vsl-playing {
           width: 100%;
           height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #09090b;
+          background: #0f172a;
         }
-        .vsl-video-loader {
+        .cf-vsl-loader {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 14px;
-          color: #a1a1aa;
+          color: #94a3b8;
           font-size: 13px;
         }
-        .vsl-spinner {
+        .cf-spinner {
           width: 32px;
           height: 32px;
           border: 3px solid rgba(255,255,255,0.1);
@@ -575,571 +827,780 @@ export default function PlaybookSalesPage() {
           border-radius: 50%;
           animation: spin 0.8s linear infinite;
         }
-        .vsl-video-bar {
-          background: #09090b;
-          border-top: 1px solid #27272a;
+        .cf-vsl-status {
+          background: #1e293b;
           padding: 12px 20px;
           display: flex;
           align-items: center;
           gap: 10px;
           font-size: 12.5px;
-          color: #71717a;
+          color: #94a3b8;
         }
-        .vsl-dot {
+        .cf-status-dot {
           width: 8px;
           height: 8px;
           border-radius: 50%;
         }
-        .vsl-dot.green {
+        .cf-status-dot.green {
           background: #10b981;
           box-shadow: 0 0 8px #10b981;
         }
 
-        /* Descriptions */
-        .vsl-hero-description {
-          font-size: 17px;
-          color: #e4e4e7;
-          line-height: 1.6;
-          max-width: 780px;
-          margin: 0 auto 20px;
+        /* Text Block copy style */
+        .cf-sales-intro-block {
+          max-width: 800px;
+          margin: 0 auto;
+          text-align: left;
+          font-size: 16.5px;
+          color: #334155;
         }
-        .vsl-hero-emphasis {
-          font-size: 16px;
-          color: #a1a1aa;
-          line-height: 1.6;
-          max-width: 780px;
-          margin: 0 auto 36px;
+        .cf-sales-intro-block p {
+          margin: 0 0 18px;
+        }
+        .cf-highlight-text {
+          font-size: 20px;
+          font-weight: 800;
+          color: #ff1717;
+          text-align: center;
+          margin: 24px 0 !important;
         }
 
-        /* Buttons */
-        .vsl-cta-button {
+        /* CTA buttons */
+        .cf-cta-btn {
           background: #ff1717;
           color: #fff;
           border: none;
-          padding: 18px 40px;
-          font-size: 15px;
-          font-weight: 800;
-          letter-spacing: 1px;
+          padding: 20px 48px;
+          font-size: clamp(14px, 2.5vw, 17px);
+          font-weight: 900;
           border-radius: 8px;
           cursor: pointer;
-          box-shadow: 0 10px 30px rgba(255, 23, 23, 0.35);
-          transition: all 0.25s;
+          transition: all 0.2s;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          animation: pulse-button 2.5s infinite;
+          border-bottom: 4px solid #b91c1c;
         }
-        .vsl-cta-button:hover {
-          background: #e01212;
-          transform: translateY(-2px);
-          box-shadow: 0 14px 35px rgba(255, 23, 23, 0.5);
+        .cf-cta-btn:hover {
+          background: #dc2626;
+          transform: translateY(-1px);
+        }
+        .cf-cta-subtext {
+          font-size: 12px;
+          color: #64748b;
+          margin: 10px 0 0;
+          font-weight: 600;
         }
 
-        /* Section Layouts */
-        .vsl-section {
-          padding: 60px 0;
-          border-top: 1px solid #18181b;
+        /* Pulsing animations */
+        .pulsing-cta {
+          animation: cf-pulse 2.2s infinite;
         }
-        .vsl-section-dark {
-          background: #0c0c0e;
-          margin: 0 -20px;
-          padding: 60px 20px;
-          border-radius: 12px;
+        @keyframes cf-pulse {
+          0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+          70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .vsl-section-heading {
-          text-align: center;
-          margin-bottom: 40px;
+
+        /* Sections */
+        .cf-section {
+          padding: 64px 0;
+          border-top: 1px dashed #e2e8f0;
         }
-        .vsl-section-heading h2 {
+        .cf-bg-accent {
+          background: #f8fafc;
+          margin: 0 -24px;
+          padding: 64px 24px;
+        }
+        .cf-section-heading h2 {
           font-size: 28px;
-          font-weight: 800;
-          color: #fff;
-          margin: 0 0 10px;
+          font-weight: 900;
+          color: #0f172a;
+          margin: 0 0 8px;
+          line-height: 1.25;
+          text-align: center;
         }
-        .vsl-section-subtitle {
+        .cf-section-subtitle {
           font-size: 15px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 1px;
-          color: #a1a1aa;
+          color: #64748b;
+          text-align: center;
+          display: block;
         }
-        .vsl-section-subtitle.red {
+        .cf-section-subtitle.red {
           color: #ff1717;
         }
 
-        /* Cards Grid */
-        .vsl-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 20px;
-          margin-bottom: 40px;
+        .cf-text-block {
+          max-width: 800px;
+          margin: 0 auto;
+          font-size: 15.5px;
+          color: #334155;
         }
-        .vsl-card {
-          background: #18181b;
-          border: 1px solid #27272a;
-          border-radius: 12px;
-          padding: 24px;
+        .cf-text-block p {
+          margin: 0 0 16px;
         }
-        .vsl-card h3 {
+        .cf-bold-callout {
+          font-weight: 800;
           font-size: 17px;
-          font-weight: 700;
-          color: #fff;
-          margin: 0 0 12px;
-          border-left: 3px solid #ff1717;
-          padding-left: 10px;
-        }
-        .vsl-card p {
-          font-size: 13.5px;
-          color: #a1a1aa;
-          line-height: 1.5;
-          margin: 0;
+          color: #0f172a;
+          margin-top: 24px !important;
         }
 
-        /* Capabilities List */
-        .vsl-capabilities-container {
-          background: rgba(255, 23, 23, 0.03);
-          border: 1px solid rgba(255, 23, 23, 0.15);
+        /* Bullets */
+        .cf-bullets-container {
+          max-width: 800px;
+          margin: 24px auto 30px;
+          background: #fff;
+          border: 2px solid #e2e8f0;
           border-radius: 12px;
           padding: 30px;
         }
-        .vsl-capabilities-container h4 {
-          font-size: 16px;
-          font-weight: 700;
-          color: #fff;
-          margin: 0 0 20px;
-        }
-        .vsl-bullets-grid {
+        .cf-bullets-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 12px;
+          gap: 14px;
         }
-        .vsl-bullet-item {
+        .cf-bullet-item {
           display: flex;
           align-items: flex-start;
           gap: 10px;
-          font-size: 13.5px;
-          color: #e4e4e7;
+          font-size: 14px;
+          color: #1e293b;
         }
-        .vsl-bullet-icon {
+        .cf-bullet-icon {
           flex-shrink: 0;
           margin-top: 2px;
         }
 
-        /* Split View */
-        .vsl-split-view {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 24px;
-        }
-        .vsl-split-card {
-          background: #18181b;
-          border-radius: 12px;
-          padding: 30px;
-          border: 1.5px solid transparent;
-        }
-        .vsl-split-card.red-border {
-          border-color: rgba(239, 68, 68, 0.2);
-          background: linear-gradient(to bottom, rgba(239, 68, 68, 0.02), transparent);
-        }
-        .vsl-split-card.green-border {
-          border-color: rgba(16, 185, 129, 0.2);
-          background: linear-gradient(to bottom, rgba(16, 185, 129, 0.02), transparent);
-        }
-        .vsl-split-card h3 {
-          font-size: 18px;
-          font-weight: 800;
-          margin: 0 0 14px;
-        }
-        .vsl-split-card.red-border h3 { color: #ef4444; }
-        .vsl-split-card.green-border h3 { color: #10b981; }
-        .vsl-split-card p {
-          font-size: 13.5px;
-          color: #a1a1aa;
-          line-height: 1.6;
-          margin: 0;
+        .cf-summary-box {
+          text-align: center;
+          font-size: 17px;
+          font-weight: 700;
+          color: #0f172a;
+          max-width: 800px;
+          margin: 30px auto 0;
+          background: #fef08a;
+          padding: 16px 20px;
+          border-radius: 8px;
         }
 
-        /* Text Block */
-        .vsl-text-block {
-          max-width: 780px;
-          margin: 0 auto;
-          font-size: 15px;
-          color: #d4d4d8;
-          line-height: 1.6;
-        }
-        .vsl-text-block p {
-          margin: 0 0 16px;
-        }
-
-        /* Process Steps */
-        .vsl-process-steps {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 20px;
-          margin-top: 24px;
-        }
-        .vsl-step-card {
-          background: #18181b;
-          border: 1px solid #27272a;
-          border-radius: 12px;
-          padding: 24px;
-          position: relative;
-        }
-        .vsl-step-number {
-          position: absolute;
-          top: 16px;
-          right: 20px;
-          font-size: 32px;
-          font-weight: 900;
-          color: rgba(255, 23, 23, 0.15);
-        }
-        .vsl-step-card h4 {
-          font-size: 16px;
-          font-weight: 800;
-          color: #fff;
-          margin: 0 0 8px;
-        }
-        .vsl-step-card p {
-          font-size: 13px;
-          color: #a1a1aa;
-          line-height: 1.5;
-          margin: 0;
-        }
-
-        /* Framework */
-        .vsl-framework-grid {
+        /* Checkbox Grid */
+        .cf-checkbox-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 16px;
-          margin-top: 24px;
-        }
-        .vsl-framework-card {
-          background: rgba(255,255,255,0.02);
-          border: 1px solid #27272a;
-          border-radius: 10px;
-          padding: 20px;
-        }
-        .vsl-framework-card h4 {
-          font-size: 14.5px;
-          font-weight: 700;
-          color: #fff;
-          margin: 0 0 6px;
-        }
-        .vsl-framework-card p {
-          font-size: 12.5px;
-          color: #71717a;
-          line-height: 1.4;
-          margin: 0;
-        }
-        .vsl-sub-heading {
-          font-size: 18px;
-          font-weight: 800;
-          color: #fff;
-          margin: 30px 0 0;
-          text-align: center;
-        }
-
-        /* Mastery List */
-        .vsl-mastery-list {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 12px;
-          margin-bottom: 40px;
+          margin: 20px 0 30px;
         }
-        .vsl-mastery-item {
+        .cf-checkbox-item {
           display: flex;
           align-items: center;
           gap: 10px;
           font-size: 14px;
-          color: #e4e4e7;
+          color: #334155;
+          font-weight: 600;
         }
-        .vsl-mastery-dot {
-          width: 6px;
-          height: 6px;
-          background: #ff1717;
-          border-radius: 50%;
-          flex-shrink: 0;
+        .cf-checked-icon {
+          color: #ff1717;
+          font-weight: 900;
+          font-size: 16px;
         }
 
-        /* Toolkit Box */
-        .vsl-toolkit-box {
-          background: linear-gradient(135deg, #18181b 0%, #101012 100%);
-          border: 1px solid #27272a;
-          border-radius: 14px;
-          padding: 32px;
+        /* Highlight Callout Box */
+        .cf-highlight-callout-box {
+          background: #fff8e6;
+          border-left: 4px solid #ff1717;
+          padding: 20px 24px;
+          border-radius: 4px;
+          margin-top: 20px;
         }
-        .vsl-toolkit-box h3 {
-          font-size: 18px;
+        .cf-highlight-callout-box p {
+          font-size: 15px;
+          color: #334155;
+        }
+
+        /* Target list */
+        .cf-target-box {
+          background: #fff;
+          border: 1px solid #cbd5e1;
+          border-radius: 8px;
+          padding: 24px;
+          margin-top: 20px;
+        }
+        .cf-target-box h4 {
+          margin: 0 0 16px 0;
+          font-size: 16px;
           font-weight: 800;
-          color: #fff;
-          margin: 0 0 6px;
+          color: #0f172a;
         }
-        .vsl-toolkit-box p {
-          font-size: 13.5px;
-          color: #71717a;
-          margin: 0 0 20px;
-        }
-        .vsl-toolkit-grid {
+        .cf-target-list {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 12px;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 10px;
           font-size: 13.5px;
-          color: #e4e4e7;
+          color: #475569;
           font-weight: 600;
         }
 
-        /* Instructor */
-        .vsl-instructor-card {
-          display: flex;
-          flex-direction: row;
-          gap: 40px;
-          align-items: center;
+        /* Split Table */
+        .cf-split-table-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+          max-width: 800px;
+          margin: 30px auto 0;
         }
-        .vsl-instructor-avatar-col {
+        .cf-table-col {
+          background: #fff;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .cf-table-header {
+          margin: 0;
+          padding: 14px 20px;
+          font-size: 15px;
+          font-weight: 800;
+          color: #fff;
+        }
+        .cf-table-header.red-bg { background: #ef4444; }
+        .cf-table-header.green-bg { background: #10b981; }
+        .cf-table-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .cf-table-list li {
+          padding: 12px 20px;
+          border-bottom: 1.5px solid #f1f5f9;
+          font-size: 13.5px;
+          color: #475569;
+          font-weight: 600;
+        }
+
+        /* Lead Text */
+        .cf-lead-text {
+          font-size: 20px;
+          font-weight: 800;
+          font-style: italic;
+          color: #0f172a;
+          line-height: 1.5;
+          margin-bottom: 24px;
+          border-bottom: 1px dashed #cbd5e1;
+          padding-bottom: 20px;
+        }
+        .cf-purpose-box {
+          background: rgba(255,23,23,0.03);
+          border: 1px solid rgba(255,23,23,0.1);
+          border-radius: 8px;
+          padding: 20px;
+          margin-top: 24px;
+        }
+
+        /* block settings */
+        .cf-block-title {
+          font-size: 18px;
+          font-weight: 900;
+          color: #0f172a;
+          margin: 36px 0 4px 0;
+          border-bottom: 2px solid #ff1717;
+          display: inline-block;
+        }
+        .cf-block-subtitle {
+          font-size: 13.5px;
+          color: #64748b;
+          margin: 0 0 20px 0;
+          font-weight: 600;
+        }
+
+        /* Steps */
+        .cf-process-steps {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 16px;
+        }
+        .cf-step-card {
+          background: #fff;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 8px;
+          padding: 20px;
+          position: relative;
+        }
+        .cf-step-num {
+          position: absolute;
+          top: 10px;
+          right: 14px;
+          font-size: 28px;
+          font-weight: 900;
+          color: rgba(255,23,23,0.12);
+        }
+        .cf-step-card h4 {
+          font-size: 15px;
+          font-weight: 800;
+          color: #0f172a;
+          margin: 0 0 6px;
+        }
+        .cf-step-card p {
+          font-size: 12.5px;
+          color: #475569;
+          line-height: 1.4;
+          margin: 0;
+        }
+
+        /* Framework list */
+        .cf-framework-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .cf-framework-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          font-size: 14px;
+          color: #334155;
+        }
+        .cf-framework-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #ff1717;
+          margin-top: 8px;
+          flex-shrink: 0;
+        }
+
+        /* Mastery Grid */
+        .cf-mastery-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 12px;
+          max-width: 800px;
+          margin: 20px auto 40px;
+        }
+        .cf-mastery-card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+          color: #1e293b;
+          font-weight: 600;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          padding: 12px 18px;
+          border-radius: 8px;
+        }
+        .cf-check-green {
+          flex-shrink: 0;
+        }
+
+        /* Curriculum Container */
+        .cf-curriculum-container {
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 30px;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .cf-curriculum-container h3 {
+          margin: 0 0 20px 0;
+          font-size: 18px;
+          font-weight: 800;
+          color: #0f172a;
+          border-left: 4px solid #ff1717;
+          padding-left: 12px;
+        }
+        .cf-phases-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+          gap: 16px;
+        }
+        .cf-phase-card {
+          background: #fff;
+          border: 1px solid #cbd5e1;
+          border-radius: 8px;
+          padding: 16px;
+        }
+        .cf-phase-tag {
+          display: inline-block;
+          background: #ff1717;
+          color: #fff;
+          font-size: 9.5px;
+          font-weight: 800;
+          padding: 2px 6px;
+          border-radius: 4px;
+          margin-bottom: 8px;
+        }
+        .cf-phase-card h4 {
+          font-size: 13.5px;
+          font-weight: 700;
+          color: #0f172a;
+          margin: 0 0 6px;
+        }
+        .cf-phase-card p {
+          font-size: 11.5px;
+          color: #64748b;
+          line-height: 1.4;
+          margin: 0;
+        }
+
+        /* Toolkit Wrapper */
+        .cf-toolkit-wrapper {
+          background: #fff;
+          border: 2px dashed #cbd5e1;
+          border-radius: 12px;
+          padding: 30px;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .cf-toolkit-list-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 10px;
+        }
+        .cf-toolkit-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 13.5px;
+          color: #1e293b;
+          font-weight: 600;
+        }
+        .cf-toolkit-bullet {
+          color: #ff1717;
+          font-weight: 900;
+        }
+
+        /* Targets grid */
+        .cf-target-students-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 14px;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .cf-target-student-card {
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 16px 20px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .cf-target-bullet-badge {
+          width: 28px;
+          height: 28px;
+          background: rgba(255,23,23,0.08);
+          border-radius: 50%;
+          color: #ff1717;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          font-size: 13px;
+          flex-shrink: 0;
+        }
+        .cf-target-student-card p {
+          margin: 0;
+          font-size: 13.5px;
+          color: #334155;
+          font-weight: 600;
+        }
+
+        /* Comparison table */
+        .cf-comparison-table-wrapper {
+          max-width: 800px;
+          margin: 0 auto;
+          overflow-x: auto;
+          background: #fff;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .cf-comparison-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13.5px;
+        }
+        .cf-comparison-table th, .cf-comparison-table td {
+          padding: 14px 20px;
+          text-align: left;
+          border-bottom: 1.5px solid #f1f5f9;
+        }
+        .cf-comparison-table th {
+          background: #f8fafc;
+          font-weight: 800;
+          color: #0f172a;
+          font-size: 14px;
+        }
+        .th-traditional, .td-traditional {
+          background: rgba(239, 68, 68, 0.02);
+          color: #ef4444;
+        }
+        .th-donzen, .td-donzen {
+          background: rgba(16, 185, 129, 0.02);
+          color: #10b981;
+          font-weight: 700;
+        }
+
+        /* Instructor */
+        .cf-instructor-container {
+          display: flex;
+          gap: 36px;
+          align-items: center;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .cf-instructor-photo-box {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 12px;
           flex-shrink: 0;
         }
-        .vsl-instructor-img {
-          width: 180px;
-          height: 220px;
+        .cf-instructor-photo-box img {
+          width: 170px;
+          height: 210px;
           object-fit: cover;
-          border-radius: 12px;
-          border: 2px solid #27272a;
+          border-radius: 10px;
+          border: 2px solid #cbd5e1;
         }
-        .vsl-instructor-badge {
-          background: #ff1717;
+        .cf-instructor-title-badge {
+          background: #0f172a;
           color: #fff;
           font-size: 9.5px;
           font-weight: 800;
           letter-spacing: 1px;
           padding: 4px 10px;
           border-radius: 4px;
+          text-transform: uppercase;
         }
-        .vsl-instructor-info-col {
-          display: flex;
-          flex-direction: column;
+        .cf-instructor-details {
+          font-size: 14px;
+          color: #475569;
         }
-        .vsl-instructor-overline {
-          font-size: 11px;
+        .cf-instructor-intro-tag {
+          font-size: 10.5px;
           font-weight: 800;
           color: #ff1717;
-          letter-spacing: 1.5px;
+          letter-spacing: 1px;
           text-transform: uppercase;
-          margin-bottom: 6px;
         }
-        .vsl-instructor-info-col h2 {
+        .cf-instructor-details h2 {
           font-size: 24px;
-          font-weight: 800;
-          color: #fff;
-          margin: 0 0 4px;
+          font-weight: 900;
+          color: #0f172a;
+          margin: 4px 0 12px 0;
         }
-        .vsl-instructor-title {
-          font-size: 13.5px;
-          color: #a1a1aa;
-          margin: 0 0 16px;
-          font-weight: 600;
-        }
-        .vsl-instructor-bio {
-          font-size: 13.5px;
-          color: #71717a;
-          line-height: 1.5;
-          margin: 0 0 10px;
+        .cf-instructor-quote {
+          font-size: 15px;
+          font-weight: 700;
+          font-style: italic;
+          color: #ff1717;
+          border-left: 3px solid #ff1717;
+          padding-left: 12px;
+          margin: 16px 0;
         }
 
-        /* Pricing Section */
-        .vsl-pricing-section {
-          padding: 80px 0;
+        /* Pricing Box */
+        .cf-pricing-offer-section {
           display: flex;
           justify-content: center;
         }
-        .vsl-pricing-card {
+        .cf-pricing-box {
           width: 100%;
-          max-width: 500px;
-          background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
-          border: 2.5px solid #ff1717;
-          border-radius: 18px;
-          padding: 40px;
+          max-width: 580px;
+          background: #ffffff;
+          border: 3px solid #ff1717;
+          border-radius: 16px;
+          padding: 40px 30px;
           text-align: center;
-          box-shadow: 0 15px 40px rgba(255, 23, 23, 0.1);
+          box-shadow: 0 20px 40px -15px rgba(255, 23, 23, 0.15);
         }
-        .vsl-pricing-badge {
+        .cf-pricing-header-tag {
           display: inline-block;
           background: #ff1717;
           color: #fff;
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 800;
           letter-spacing: 1.5px;
           padding: 6px 16px;
           border-radius: 4px;
           margin-bottom: 20px;
         }
-        .vsl-pricing-card h2 {
+        .cf-pricing-box h2 {
           font-size: 22px;
-          font-weight: 800;
-          color: #fff;
-          margin: 0 0 16px;
-          line-height: 1.3;
+          font-weight: 900;
+          color: #0f172a;
+          margin: 0 0 8px;
         }
-        .vsl-pricing-prices {
+        .cf-pricing-subheader {
+          font-size: 13.5px;
+          color: #64748b;
+          margin: 0 0 24px;
+          font-weight: 600;
+        }
+        .cf-pricing-features {
+          text-align: left;
+          background: #f8fafc;
+          border-radius: 8px;
+          padding: 20px;
+          margin-bottom: 24px;
+          font-size: 13px;
+          font-weight: 600;
+          color: #334155;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        .cf-pricing-grid {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 14px;
           margin-bottom: 20px;
         }
-        .vsl-old-price {
+        .cf-old-price-val {
           font-size: 20px;
-          color: #71717a;
+          color: #94a3b8;
           text-decoration: line-through;
-          font-weight: 600;
+          font-weight: 700;
         }
-        .vsl-current-price {
-          font-size: 38px;
-          color: #fff;
+        .cf-new-price-val {
+          font-size: 40px;
+          color: #ff1717;
           font-weight: 900;
         }
-        .vsl-pricing-desc {
-          font-size: 13.5px;
-          color: #a1a1aa;
-          line-height: 1.5;
-          margin: 0 0 30px;
-        }
-        .vsl-pricing-cta {
+        .cf-enroll-cta {
           width: 100%;
           background: #ff1717;
           color: #fff;
           border: none;
-          padding: 16px;
-          font-size: 14.5px;
-          font-weight: 800;
+          padding: 18px;
+          font-size: 16px;
+          font-weight: 900;
           border-radius: 8px;
           cursor: pointer;
+          border-bottom: 4px solid #b91c1c;
           transition: background 0.2s;
         }
-        .vsl-pricing-cta:hover {
-          background: #e01212;
+        .cf-enroll-cta:hover {
+          background: #dc2626;
         }
-        .vsl-pricing-guarantee {
+        .cf-enroll-desc-text {
           font-size: 11.5px;
-          color: #71717a;
-          margin: 12px 0 0;
+          color: #64748b;
+          margin: 10px 0 0;
+          font-weight: 600;
         }
 
-        /* FAQ */
-        .vsl-faq-list {
-          max-width: 780px;
+        /* FAQ accordion */
+        .cf-faq-accordion {
+          max-width: 800px;
           margin: 0 auto;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
         }
-        .vsl-faq-item {
-          background: #18181b;
-          border: 1px solid #27272a;
-          border-radius: 10px;
+        .cf-faq-block {
+          background: #fff;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 8px;
           overflow: hidden;
         }
-        .vsl-faq-question {
+        .cf-faq-toggle {
           width: 100%;
           background: none;
           border: none;
-          padding: 18px 24px;
+          padding: 16px 20px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           cursor: pointer;
-          color: #fff;
+          color: #0f172a;
           font-size: 14.5px;
           font-weight: 700;
           text-align: left;
         }
-        .vsl-faq-arrow {
-          font-size: 10px;
-          color: #71717a;
+        .cf-faq-arrow-icon {
+          font-size: 9px;
+          color: #94a3b8;
           transition: transform 0.2s;
         }
-        .vsl-faq-answer {
-          padding: 0 24px 20px;
-          border-top: 1px solid #27272a;
+        .cf-faq-answer-content {
+          padding: 0 20px 16px;
+          border-top: 1px solid #f1f5f9;
           font-size: 13.5px;
-          color: #a1a1aa;
+          color: #475569;
           line-height: 1.5;
         }
 
-        /* Bottom Prompts */
-        .vsl-bottom-prompt {
+        /* Closing CTA */
+        .cf-closing-cta {
           text-align: center;
-          padding: 80px 0;
-          border-top: 1px solid #18181b;
+          padding: 80px 20px;
+          border-top: 1px dashed #cbd5e1;
         }
-        .vsl-bottom-prompt h2 {
-          font-size: 26px;
-          font-weight: 800;
-          color: #fff;
+        .cf-closing-cta h2 {
+          font-size: 24px;
+          font-weight: 900;
+          color: #0f172a;
           margin: 0 0 10px;
         }
-        .vsl-bottom-prompt p {
+        .cf-closing-desc {
           font-size: 15px;
-          color: #a1a1aa;
-          margin: 0;
+          color: #64748b;
+          max-width: 600px;
+          margin: 0 auto;
         }
 
         /* Footer */
-        .vsl-footer {
-          border-top: 1px solid #18181b;
-          padding: 40px 0 20px;
+        .cf-footer-section {
+          border-top: 1px solid #cbd5e1;
+          padding: 36px 0 20px;
           text-align: center;
           font-size: 12px;
-          color: #71717a;
+          color: #64748b;
+          font-weight: 600;
         }
-        .vsl-footer p {
-          margin: 0 0 10px;
+        .cf-footer-section p {
+          margin: 0 0 8px;
         }
-        .vsl-footer-links {
+        .cf-footer-links-row {
           display: flex;
           justify-content: center;
-          gap: 16px;
+          gap: 12px;
         }
-        .vsl-footer-links span {
+        .cf-footer-links-row span {
           cursor: pointer;
           transition: color 0.15s;
         }
-        .vsl-footer-links span:hover {
-          color: #fff;
+        .cf-footer-links-row span:hover {
+          color: #ff1717;
         }
 
         /* Animations */
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.15); }
-        }
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
-        @keyframes pulse-button {
-          0% {
-            box-shadow: 0 0 0 0 rgba(255, 23, 23, 0.4);
-          }
-          70% {
-            box-shadow: 0 0 0 12px rgba(255, 23, 23, 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(255, 23, 23, 0);
-          }
-        }
 
-        /* Responsive */
+        /* Responsive changes */
         @media (max-width: 768px) {
-          .vsl-instructor-card {
+          .cf-instructor-container {
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
             text-align: center;
           }
-          .vsl-instructor-info-col h2 {
-            font-size: 20px;
+          .cf-instructor-photo-box img {
+            width: 140px;
+            height: 170px;
+          }
+          .cf-pricing-features {
+            grid-template-columns: 1fr;
           }
         }
       ` }} />

@@ -82,7 +82,8 @@ function AppLayout() {
     location.pathname === '/register' ||
     location.pathname === '/forgot-password' ||
     location.pathname === '/reset-password' ||
-    location.pathname === '/setup-account'
+    location.pathname === '/setup-account' ||
+    location.pathname === '/30-days-accounting'
 
   // Always show WhatsApp widget on public pages and checkout
   const showWhatsApp = !location.pathname.startsWith('/admin')

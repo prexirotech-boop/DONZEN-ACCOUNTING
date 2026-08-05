@@ -9,7 +9,7 @@ const ROUTE_MAP = {
   'ProductDetailsPage': { path: '/product/:productId', label: 'Product Details', desc: 'Product details page', color: '#10b981', isDynamic: true },
   'AboutPage': { path: '/about', label: 'About Page', desc: 'About the brand / company', color: '#8b5cf6' },
   'EbookSalesPage': { path: '/the-n50k-blueprint', label: 'The N50K Blueprint', desc: 'Sales page for the blueprint ebook', color: '#10b981' },
-  'PlaybookSalesPage': { path: '/the-pricing-and-negotiation-playbook', label: 'The Pricing & Negotiation Playbook', desc: 'Sales page for the pricing and negotiation playbook', color: '#8b5cf6' },
+  'PlaybookSalesPage': { path: '/30-days-accounting', label: '30-Day Accounting Experience', desc: 'VSL Sales page for the 30-Day Practical Accounting Experience', color: '#ff1717' },
   'SalesPage': { path: '/course', label: 'Course Sales Page', desc: 'Sales page for the main course product', color: '#0ea5e9' },
   'PaymentPage': { path: '/checkout', label: 'Checkout / Payment', desc: 'Payment and order form page', color: '#3b82f6' },
   'ThankYouPage': { path: '/success', label: 'Thank You Page', desc: 'Order success / confirmation page', color: '#10b981' },
