@@ -230,10 +230,10 @@ export async function completeOrder({
  *
  * @returns {boolean} true if enrollment now exists (created or already existed)
  */
-export async function createEnrollment({ userId, courseId }) {
+export async function createEnrollment({ userId, courseId, returnDetail = false }) {
   if (!userId || !courseId) {
     console.warn('[createEnrollment] Missing userId or courseId', { userId, courseId })
-    return false
+    return returnDetail ? { success: false, created: false } : false
   }
 
   try {
@@ -247,7 +247,7 @@ export async function createEnrollment({ userId, courseId }) {
 
     if (existing) {
       console.log('[createEnrollment] ℹ️ Enrollment already exists:', existing.id)
-      return true
+      return returnDetail ? { success: true, created: false } : true
     }
 
     const { error } = await supabase
@@ -258,17 +258,17 @@ export async function createEnrollment({ userId, courseId }) {
       if (error.code === '23505') {
         // Unique constraint — enrollment just got created by a concurrent call
         console.log('[createEnrollment] ℹ️ Enrollment already exists (concurrent insert)')
-        return true
+        return returnDetail ? { success: true, created: false } : true
       }
       console.error('[createEnrollment] Insert failed:', error)
-      return false
+      return returnDetail ? { success: false, created: false } : false
     }
 
     console.log('[createEnrollment] ✅ Enrollment created for user', userId, 'course', courseId)
-    return true
+    return returnDetail ? { success: true, created: true } : true
   } catch (err) {
     console.error('[createEnrollment] Unexpected error:', err)
-    return false
+    return returnDetail ? { success: false, created: false } : false
   }
 }
 
@@ -306,8 +306,8 @@ export async function recoverEnrollmentFromOrders(userId, userEmail) {
       if (!order.product_id) continue
       // Only create enrollment if the user is not already enrolled in this course!
       if (!existingCourseIds.includes(order.product_id)) {
-        const wasCreated = await createEnrollment({ userId, courseId: order.product_id })
-        if (wasCreated) recovered = true
+        const result = await createEnrollment({ userId, courseId: order.product_id, returnDetail: true })
+        if (result && result.created) recovered = true
       }
     }
 

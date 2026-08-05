@@ -83,14 +83,15 @@ export default function PlaybookSalesPage() {
       {/* Main Funnel Container */}
       <div className="cf-container">
         
-        {/* Minimal Header */}
+        {/* Minimal Header with Certificate Dark Style Logo */}
         <header className="cf-header">
-          <img src="/logo.png" alt="Donzen Accounting Hub" className="cf-logo" />
+          <div style={{ backgroundColor: '#09090b', padding: '10px 20px', borderRadius: 10, display: 'inline-flex', alignItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+            <img src="/logo.png" alt="Donzen Accounting Hub" style={{ height: 38, width: 'auto', display: 'block' }} />
+          </div>
         </header>
 
         {/* Hero Section */}
         <section className="cf-hero">
-          <div className="cf-vsl-badge">TRAINING PROGRAMME</div>
           <h1 className="cf-title">Become the Accountant Employers Trust</h1>
           <p className="cf-subtitle">
             Gain Real Workplace Accounting Experience in Just 30 Days—Without Waiting Years for Someone to Hire You.
@@ -121,10 +122,6 @@ export default function PlaybookSalesPage() {
                 </div>
               )}
             </div>
-            <div className="cf-vsl-status">
-              <span className="cf-status-dot green" />
-              <span>Interactive Program Video Walkthrough &bull; High Conversion Presentation</span>
-            </div>
           </div>
 
           {/* First Block of Content */}
@@ -144,16 +141,18 @@ export default function PlaybookSalesPage() {
           </div>
 
           {/* Primary CTA Button */}
-          <div style={{ marginTop: 40, marginBottom: 50 }}>
+          <div style={{ marginTop: 40, marginBottom: 10 }}>
             <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll}>
               👉 ENROLL NOW &amp; GET INSTANT ACCESS 👈
             </button>
             <p className="cf-cta-subtext">Instant Activation &bull; 100% Secured Connection</p>
           </div>
         </section>
+      </div>
 
-        {/* Section 2: Core Exposure Gap */}
-        <section className="cf-section">
+      {/* Section 2: Core Exposure Gap */}
+      <section className="cf-section cf-bg-gray">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>More Than an Accounting Course.</h2>
             <span className="cf-section-subtitle red">This Is Your Workplace Accounting Experience.</span>
@@ -191,17 +190,19 @@ export default function PlaybookSalesPage() {
           <div className="cf-summary-box">
             <p>This is the difference between learning accounting and practicing accounting. And that difference is exactly why Donzen exists.</p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 3: First Day Simulation */}
-        <section className="cf-section cf-bg-accent">
+      {/* Section 3: First Day Simulation */}
+      <section className="cf-section cf-bg-cream">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Imagine Your First Day at Work…</h2>
             <p className="cf-section-subtitle">Imagine walking into your new accounting job with confidence instead of fear.</p>
           </div>
 
           <div className="cf-text-block">
-            <p>Your manager asks you to:</p>
+            <p className="text-center font-semibold" style={{ marginBottom: 20 }}>Your manager asks you to:</p>
             <div className="cf-checkbox-grid">
               {[
                 'Prepare the month\'s bank reconciliation.',
@@ -229,10 +230,12 @@ export default function PlaybookSalesPage() {
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 4: The Reality */}
-        <section className="cf-section">
+      {/* Section 4: The Reality */}
+      <section className="cf-section">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Why Thousands of Accounting Graduates Still Struggle to Find Good Jobs</h2>
             <span className="cf-section-subtitle red">The Reality Nobody Talks About</span>
@@ -259,10 +262,12 @@ export default function PlaybookSalesPage() {
               The issue isn't your potential. It's the gap between academic knowledge and workplace execution. That gap costs talented people opportunities every single day. <strong>Donzen was created to close that gap.</strong>
             </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 5: Why Traditional Isn't Enough */}
-        <section className="cf-section cf-bg-accent">
+      {/* Section 5: Why Traditional Isn't Enough */}
+      <section className="cf-section cf-bg-slate">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Why Traditional Accounting Education Isn't Enough</h2>
             <p className="cf-section-subtitle">Let's be honest. Traditional education teaches concepts, not execution.</p>
@@ -304,10 +309,12 @@ export default function PlaybookSalesPage() {
               Knowledge alone does not create confidence. Practice does.
             </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 6: Introducing Donzen */}
-        <section className="cf-section">
+      {/* Section 6: Introducing Donzen */}
+      <section className="cf-section">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Introducing Donzen Accounting Hub</h2>
             <span className="cf-section-subtitle red">Nigeria's Workplace Accounting Experience Platform</span>
@@ -329,10 +336,12 @@ export default function PlaybookSalesPage() {
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 7: The Donzen Method */}
-        <section className="cf-section cf-bg-accent">
+      {/* Section 7: The Donzen Method */}
+      <section className="cf-section cf-bg-gray">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>The Donzen Method</h2>
             <p className="cf-section-subtitle">Learn Accounting the Way Employers Expect You to Work</p>
@@ -341,8 +350,10 @@ export default function PlaybookSalesPage() {
           <div className="cf-text-block">
             <p>At Donzen, we don't just teach accounting concepts—we help you develop the habits, systems, and practical confidence to perform in a real workplace.</p>
             
-            <h3 className="cf-block-title">The Workplace Accounting Experience System™</h3>
-            <p className="cf-block-subtitle">Our signature learning framework ensures every student progresses through six practical stages:</p>
+            <div style={{ textAlign: 'center' }}>
+              <h3 className="cf-block-title">The Workplace Accounting Experience System™</h3>
+            </div>
+            <p className="cf-block-subtitle text-center">Our signature learning framework ensures every student progresses through six practical stages:</p>
             
             <div className="cf-process-steps">
               {[
@@ -361,8 +372,10 @@ export default function PlaybookSalesPage() {
               ))}
             </div>
 
-            <h3 className="cf-block-title" style={{ marginTop: 50 }}>The Donzen Employability Framework™</h3>
-            <p className="cf-block-subtitle">Employers don't hire certificates—they hire capability. We focus on 5 essential areas:</p>
+            <div style={{ textAlign: 'center' }}>
+              <h3 className="cf-block-title" style={{ marginTop: 50 }}>The Donzen Employability Framework™</h3>
+            </div>
+            <p className="cf-block-subtitle text-center">Employers don't hire certificates—they hire capability. We focus on 5 essential areas:</p>
 
             <div className="cf-framework-list">
               {[
@@ -381,10 +394,12 @@ export default function PlaybookSalesPage() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 8: What You'll Master */}
-        <section className="cf-section">
+      {/* Section 8: What You'll Master */}
+      <section className="cf-section cf-bg-cream">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>What You'll Master</h2>
             <p className="cf-section-subtitle">Practical responsibilities businesses expect accountants to handle daily.</p>
@@ -406,7 +421,7 @@ export default function PlaybookSalesPage() {
               'Accounting documentation and record keeping'
             ].map((item, i) => (
               <div key={i} className="cf-mastery-card">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3" className="cf-check-green"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="3" className="cf-check-green"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>{item}</span>
               </div>
             ))}
@@ -417,10 +432,10 @@ export default function PlaybookSalesPage() {
             <h3>Inside the 30-Day Accounting Experience Program</h3>
             <div className="cf-phases-grid">
               {[
-                { phase: 'Phase 1', title: 'Build the Foundation', desc: 'Understand workplace accounting processes, documentation, business transactions, and accounting workflows.' },
-                { phase: 'Phase 2', title: 'Develop Practical Skills', desc: 'Learn bookkeeping systems, reconciliations, payroll, inventory, receivables, payables, and financial reporting.' },
+                { phase: 'Phase 1', title: 'Build the Foundation', desc: 'Understand workplace accounting processes, documentation, business transactions, and workflows.' },
+                { phase: 'Phase 2', title: 'Develop Practical Skills', desc: 'Learn bookkeeping, reconciliations, payroll, inventory, receivables, payables, and reporting.' },
                 { phase: 'Phase 3', title: 'Simulate the Workplace', desc: 'Work through realistic business scenarios using professional accounting tools and templates.' },
-                { phase: 'Phase 4', title: 'Become Career Ready', desc: 'Complete practical projects, improve your confidence, and prepare to perform successfully in interviews and on the job.' }
+                { phase: 'Phase 4', title: 'Become Career Ready', desc: 'Complete practical projects, improve your confidence, and prepare for interviews.' }
               ].map(p => (
                 <div key={p.phase} className="cf-phase-card">
                   <span className="cf-phase-tag">{p.phase}</span>
@@ -430,17 +445,19 @@ export default function PlaybookSalesPage() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 10: Toolkit */}
-        <section className="cf-section cf-bg-accent">
+      {/* Section 10: Toolkit */}
+      <section className="cf-section">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Your Workplace Accounting Toolkit</h2>
             <p className="cf-section-subtitle">Every participant receives access to practical resources designed for immediate workplace application.</p>
           </div>
 
           <div className="cf-toolkit-wrapper">
-            <h4 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#1e293b', fontWeight: 800 }}>Included Resources:</h4>
+            <h4 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#0f172a', fontWeight: 800 }}>Included Resources:</h4>
             <div className="cf-toolkit-list-grid">
               {[
                 'Practical accounting templates',
@@ -462,10 +479,12 @@ export default function PlaybookSalesPage() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 11: Who This Program Is For */}
-        <section className="cf-section">
+      {/* Section 11: Who This Program Is For */}
+      <section className="cf-section cf-bg-gray">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Who This Program Is For</h2>
             <p className="cf-section-subtitle">This program is designed for people who want more than theoretical knowledge.</p>
@@ -489,10 +508,12 @@ export default function PlaybookSalesPage() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 12: Comparison */}
-        <section className="cf-section cf-bg-accent">
+      {/* Section 12: Comparison */}
+      <section className="cf-section">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Why Donzen Is Different</h2>
             <p className="cf-section-subtitle">Most training programs stop at teaching concepts. Donzen goes further.</p>
@@ -525,13 +546,15 @@ export default function PlaybookSalesPage() {
               </tbody>
             </table>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 13: Meet Your Instructor */}
-        <section className="cf-section">
+      {/* Section 13: Meet Your Instructor */}
+      <section className="cf-section cf-bg-cream">
+        <div className="cf-container">
           <div className="cf-instructor-container">
             <div className="cf-instructor-photo-box">
-              <img src="/founder_portrait.jpg" alt="Samuel Nkemchor Onainor" />
+              <img src="/donzen-man.jpeg" alt="Samuel Nkemchor Onainor" />
               <span className="cf-instructor-title-badge">Lead Instructor</span>
             </div>
             <div className="cf-instructor-details">
@@ -546,15 +569,17 @@ export default function PlaybookSalesPage() {
               <blockquote className="cf-instructor-quote">
                 &quot;People do not struggle because they lack accounting knowledge—they struggle because they lack practical experience.&quot;
               </blockquote>
-              <p>
+              <p style={{ margin: 0 }}>
                 His mission is simple: To develop confident, competent, and career-ready accounting professionals who can create value from day one.
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 14: What You'll Receive & Pricing Offer */}
-        <section className="cf-section cf-pricing-offer-section">
+      {/* Section 14: What You'll Receive & Pricing Offer */}
+      <section className="cf-section cf-pricing-offer-section">
+        <div className="cf-container">
           <div className="cf-pricing-box">
             <span className="cf-pricing-header-tag">30-DAY SPECIAL ACCESS</span>
             <h2>Start Your Workplace Accounting Journey Today</h2>
@@ -585,10 +610,12 @@ export default function PlaybookSalesPage() {
               <p className="cf-enroll-desc-text">Secure checkout and immediate access in your student dashboard</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Section 15: FAQ Accordion */}
-        <section className="cf-section">
+      {/* Section 15: FAQ Accordion */}
+      <section className="cf-section">
+        <div className="cf-container">
           <div className="cf-section-heading">
             <h2>Frequently Asked Questions</h2>
           </div>
@@ -615,10 +642,12 @@ export default function PlaybookSalesPage() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Call to Action Closure Section */}
-        <section className="cf-closing-cta">
+      {/* Call to Action Closure Section */}
+      <section className="cf-closing-cta cf-bg-gray">
+        <div className="cf-container">
           <h2>Your Future Starts with Practical Experience</h2>
           <p className="cf-closing-desc">
             The question isn't whether practical accounting skills matter. The question is: When will you decide to build them? Take the first step today.
@@ -626,21 +655,32 @@ export default function PlaybookSalesPage() {
           <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll} style={{ marginTop: 24 }}>
             👉 JOIN THE WORKPLACE EXPERIENCE TODAY 👈
           </button>
-        </section>
+        </div>
+      </section>
 
-        {/* Minimal Footer */}
-        <footer className="cf-footer-section">
+      {/* Minimal Footer with Advertising Disclaimers */}
+      <footer className="cf-footer-section">
+        <div className="cf-container">
           <p>&copy; {new Date().getFullYear()} Donzen Accounting Hub. All rights reserved.</p>
-          <div className="cf-footer-links-row">
+          <div className="cf-footer-links-row" style={{ marginBottom: 20 }}>
             <span onClick={() => navigate('/terms')}>Terms of Service</span>
             <span>&bull;</span>
             <span onClick={() => navigate('/privacy')}>Privacy Policy</span>
             <span>&bull;</span>
             <span onClick={() => navigate('/refund')}>Refund Policy</span>
           </div>
-        </footer>
-
-      </div>
+          
+          {/* Ad Networks Disclaimer */}
+          <div className="cf-ad-disclaimer">
+            <p>
+              Disclaimer: This site is not a part of the Google, Facebook, or Meta website. Additionally, this site is NOT endorsed by Google, Facebook, or Meta in any way. GOOGLE is a trademark of GOOGLE, Inc. FACEBOOK and META are trademarks of META Platforms, Inc.
+            </p>
+            <p>
+              We believe in utility and capability, not magic schemes. Our training is designed to help you build real skills to thrive in your career. We do not make any guarantees about your ability to get results or earn money with our ideas, information, tools, or strategies. As required by law, we cannot and do not make any guarantees of your future success.
+            </p>
+          </div>
+        </div>
+      </footer>
 
       <style dangerouslySetInnerHTML={{ __html: `
         .cf-root {
@@ -656,7 +696,7 @@ export default function PlaybookSalesPage() {
         .cf-top-warning {
           background: #fef08a;
           color: #854d0e;
-          font-size: 13px;
+          font-size: 13.5px;
           font-weight: 800;
           text-align: center;
           padding: 10px 16px;
@@ -665,7 +705,7 @@ export default function PlaybookSalesPage() {
 
         /* Timer Banner */
         .cf-timer-banner {
-          background: #dc2626;
+          background: #ff1717;
           color: #fff;
           font-size: 13.5px;
           font-weight: 700;
@@ -674,11 +714,11 @@ export default function PlaybookSalesPage() {
           position: sticky;
           top: 0;
           z-index: 1000;
-          box-shadow: 0 4px 15px rgba(220, 38, 38, 0.15);
+          box-shadow: 0 4px 15px rgba(255, 23, 23, 0.15);
         }
         .cf-timer {
           font-family: monospace;
-          background: rgba(0,0,0,0.2);
+          background: rgba(0,0,0,0.25);
           padding: 2px 6px;
           border-radius: 4px;
           margin-left: 4px;
@@ -686,9 +726,10 @@ export default function PlaybookSalesPage() {
 
         /* Main Container */
         .cf-container {
-          max-width: 960px;
+          max-width: 900px;
           margin: 0 auto;
           padding: 0 24px;
+          box-sizing: border-box;
         }
 
         /* Header Logo */
@@ -697,34 +738,17 @@ export default function PlaybookSalesPage() {
           justify-content: center;
           padding: 40px 0 20px;
         }
-        .cf-logo {
-          height: 52px;
-          width: auto;
-        }
 
         /* Hero Layout */
         .cf-hero {
           text-align: center;
           padding: 30px 0 50px;
         }
-        .cf-vsl-badge {
-          display: inline-block;
-          background: rgba(220, 38, 38, 0.08);
-          border: 1.5px solid rgba(220, 38, 38, 0.25);
-          color: #dc2626;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          padding: 6px 18px;
-          border-radius: 100px;
-          margin-bottom: 20px;
-        }
         .cf-title {
           font-size: clamp(2.2rem, 5.5vw, 3.6rem);
-          font-weight: 900;
+          font-weight: 950;
           line-height: 1.1;
-          color: #0f172a;
+          color: #09090b;
           margin: 0 0 16px;
           letter-spacing: -1.5px;
         }
@@ -733,24 +757,27 @@ export default function PlaybookSalesPage() {
           color: #475569;
           max-width: 820px;
           margin: 0 auto 36px;
-          line-height: 1.4;
-          font-weight: 600;
+          line-height: 1.45;
+          font-weight: 700;
           font-style: italic;
         }
 
         /* VSL Video Player */
         .cf-vsl-wrapper {
-          background: #0f172a;
-          border: 4px solid #e2e8f0;
+          background: #09090b;
+          border: 4px solid #09090b;
           border-radius: 14px;
           overflow: hidden;
           box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
           margin-bottom: 40px;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
         }
         .cf-vsl-player {
           aspect-ratio: 16/9;
           position: relative;
-          background: #09090b;
+          background: #000000;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -776,7 +803,7 @@ export default function PlaybookSalesPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: rgba(15, 23, 42, 0.45);
+          background: rgba(9, 9, 11, 0.45);
           gap: 16px;
         }
         .cf-play-btn {
@@ -792,14 +819,14 @@ export default function PlaybookSalesPage() {
         }
         .cf-vsl-poster:hover .cf-play-btn {
           transform: scale(1.08);
-          background: #dc2626;
+          background: #e01212;
         }
         .cf-play-text {
           color: #fff;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 1.5px;
-          background: rgba(15,23,42,0.85);
+          background: rgba(9, 9, 11, 0.85);
           padding: 8px 18px;
           border-radius: 4px;
         }
@@ -809,14 +836,14 @@ export default function PlaybookSalesPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #0f172a;
+          background: #09090b;
         }
         .cf-vsl-loader {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 14px;
-          color: #94a3b8;
+          color: #a1a1aa;
           font-size: 13px;
         }
         .cf-spinner {
@@ -826,24 +853,6 @@ export default function PlaybookSalesPage() {
           border-top-color: #ff1717;
           border-radius: 50%;
           animation: spin 0.8s linear infinite;
-        }
-        .cf-vsl-status {
-          background: #1e293b;
-          padding: 12px 20px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 12.5px;
-          color: #94a3b8;
-        }
-        .cf-status-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-        }
-        .cf-status-dot.green {
-          background: #10b981;
-          box-shadow: 0 0 8px #10b981;
         }
 
         /* Text Block copy style */
@@ -858,8 +867,8 @@ export default function PlaybookSalesPage() {
           margin: 0 0 18px;
         }
         .cf-highlight-text {
-          font-size: 20px;
-          font-weight: 800;
+          font-size: 21px;
+          font-weight: 900;
           color: #ff1717;
           text-align: center;
           margin: 24px 0 !important;
@@ -871,7 +880,7 @@ export default function PlaybookSalesPage() {
           color: #fff;
           border: none;
           padding: 20px 48px;
-          font-size: clamp(14px, 2.5vw, 17px);
+          font-size: clamp(14px, 2.5vw, 18px);
           font-weight: 900;
           border-radius: 8px;
           cursor: pointer;
@@ -880,9 +889,10 @@ export default function PlaybookSalesPage() {
           align-items: center;
           justify-content: center;
           border-bottom: 4px solid #b91c1c;
+          box-shadow: 0 8px 24px rgba(255, 23, 23, 0.2);
         }
         .cf-cta-btn:hover {
-          background: #dc2626;
+          background: #e01212;
           transform: translateY(-1px);
         }
         .cf-cta-subtext {
@@ -897,37 +907,43 @@ export default function PlaybookSalesPage() {
           animation: cf-pulse 2.2s infinite;
         }
         @keyframes cf-pulse {
-          0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-          70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+          0% { box-shadow: 0 0 0 0 rgba(255, 23, 23, 0.4); }
+          70% { box-shadow: 0 0 0 14px rgba(255, 23, 23, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(255, 23, 23, 0); }
         }
 
         /* Sections */
         .cf-section {
-          padding: 64px 0;
-          border-top: 1px dashed #e2e8f0;
+          padding: 70px 0;
+          border-top: 1px dashed #cbd5e1;
         }
-        .cf-bg-accent {
+        .cf-bg-gray {
           background: #f8fafc;
-          margin: 0 -24px;
-          padding: 64px 24px;
+        }
+        .cf-bg-cream {
+          background: #fffdf5;
+        }
+        .cf-bg-slate {
+          background: #f1f5f9;
+        }
+        .cf-section-heading {
+          max-width: 800px;
+          margin: 0 auto 44px;
+          text-align: center;
         }
         .cf-section-heading h2 {
-          font-size: 28px;
+          font-size: clamp(20px, 4.5vw, 29px);
           font-weight: 900;
-          color: #0f172a;
-          margin: 0 0 8px;
+          color: #09090b;
+          margin: 0 0 12px;
           line-height: 1.25;
-          text-align: center;
         }
         .cf-section-subtitle {
-          font-size: 15px;
-          font-weight: 700;
+          font-size: 14.5px;
+          font-weight: 800;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 1.2px;
           color: #64748b;
-          text-align: center;
-          display: block;
         }
         .cf-section-subtitle.red {
           color: #ff1717;
@@ -936,38 +952,40 @@ export default function PlaybookSalesPage() {
         .cf-text-block {
           max-width: 800px;
           margin: 0 auto;
-          font-size: 15.5px;
+          font-size: 16px;
           color: #334155;
+          text-align: left;
         }
         .cf-text-block p {
-          margin: 0 0 16px;
+          margin: 0 0 18px;
         }
         .cf-bold-callout {
           font-weight: 800;
           font-size: 17px;
-          color: #0f172a;
-          margin-top: 24px !important;
+          color: #09090b;
+          margin-top: 28px !important;
         }
 
         /* Bullets */
         .cf-bullets-container {
           max-width: 800px;
-          margin: 24px auto 30px;
+          margin: 28px auto 30px;
           background: #fff;
-          border: 2px solid #e2e8f0;
+          border: 2px solid #cbd5e1;
           border-radius: 12px;
           padding: 30px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
         .cf-bullets-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 14px;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 16px;
         }
         .cf-bullet-item {
           display: flex;
           align-items: flex-start;
-          gap: 10px;
-          font-size: 14px;
+          gap: 12px;
+          font-size: 14.5px;
           color: #1e293b;
         }
         .cf-bullet-icon {
@@ -978,95 +996,100 @@ export default function PlaybookSalesPage() {
         .cf-summary-box {
           text-align: center;
           font-size: 17px;
-          font-weight: 700;
-          color: #0f172a;
+          font-weight: 800;
+          color: #09090b;
           max-width: 800px;
           margin: 30px auto 0;
           background: #fef08a;
           padding: 16px 20px;
           border-radius: 8px;
+          border: 1px dashed rgba(133, 77, 14, 0.3);
         }
 
         /* Checkbox Grid */
         .cf-checkbox-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 12px;
-          margin: 20px 0 30px;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 14px;
+          margin: 24px 0 30px;
         }
         .cf-checkbox-item {
           display: flex;
           align-items: center;
-          gap: 10px;
-          font-size: 14px;
+          gap: 12px;
+          font-size: 14.5px;
           color: #334155;
-          font-weight: 600;
+          font-weight: 700;
         }
         .cf-checked-icon {
           color: #ff1717;
           font-weight: 900;
-          font-size: 16px;
+          font-size: 18px;
         }
 
         /* Highlight Callout Box */
         .cf-highlight-callout-box {
-          background: #fff8e6;
-          border-left: 4px solid #ff1717;
-          padding: 20px 24px;
-          border-radius: 4px;
-          margin-top: 20px;
+          background: #fffdf2;
+          border-left: 4.5px solid #ff1717;
+          padding: 22px 26px;
+          border-radius: 6px;
+          margin-top: 24px;
+          border-top: 1px solid #fef3c7;
+          border-right: 1px solid #fef3c7;
+          border-bottom: 1px solid #fef3c7;
         }
         .cf-highlight-callout-box p {
-          font-size: 15px;
+          font-size: 15.5px;
           color: #334155;
         }
 
         /* Target list */
         .cf-target-box {
           background: #fff;
-          border: 1px solid #cbd5e1;
-          border-radius: 8px;
-          padding: 24px;
-          margin-top: 20px;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 10px;
+          padding: 28px;
+          margin-top: 24px;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
         .cf-target-box h4 {
-          margin: 0 0 16px 0;
-          font-size: 16px;
+          margin: 0 0 18px 0;
+          font-size: 16.5px;
           font-weight: 800;
-          color: #0f172a;
+          color: #09090b;
         }
         .cf-target-list {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 10px;
-          font-size: 13.5px;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 12px;
+          font-size: 14px;
           color: #475569;
-          font-weight: 600;
+          font-weight: 700;
         }
 
         /* Split Table */
         .cf-split-table-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 24px;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 28px;
           max-width: 800px;
           margin: 30px auto 0;
         }
         .cf-table-col {
           background: #fff;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 8px;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 10px;
           overflow: hidden;
-          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
         .cf-table-header {
           margin: 0;
-          padding: 14px 20px;
+          padding: 15px 22px;
           font-size: 15px;
           font-weight: 800;
           color: #fff;
         }
-        .cf-table-header.red-bg { background: #ef4444; }
+        .cf-table-header.red-bg { background: #ff1717; }
         .cf-table-header.green-bg { background: #10b981; }
         .cf-table-list {
           list-style: none;
@@ -1074,79 +1097,85 @@ export default function PlaybookSalesPage() {
           margin: 0;
         }
         .cf-table-list li {
-          padding: 12px 20px;
-          border-bottom: 1.5px solid #f1f5f9;
-          font-size: 13.5px;
+          padding: 13px 22px;
+          border-bottom: 1.5px solid #e2e8f0;
+          font-size: 14px;
           color: #475569;
           font-weight: 600;
         }
 
         /* Lead Text */
         .cf-lead-text {
-          font-size: 20px;
-          font-weight: 800;
+          font-size: 21px;
+          font-weight: 900;
           font-style: italic;
-          color: #0f172a;
+          color: #09090b;
           line-height: 1.5;
           margin-bottom: 24px;
           border-bottom: 1px dashed #cbd5e1;
           padding-bottom: 20px;
         }
         .cf-purpose-box {
-          background: rgba(255,23,23,0.03);
-          border: 1px solid rgba(255,23,23,0.1);
+          background: rgba(255, 23, 23, 0.03);
+          border: 1.5px solid rgba(255, 23, 23, 0.12);
           border-radius: 8px;
-          padding: 20px;
+          padding: 22px;
           margin-top: 24px;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         /* block settings */
         .cf-block-title {
-          font-size: 18px;
+          font-size: 18.5px;
           font-weight: 900;
-          color: #0f172a;
-          margin: 36px 0 4px 0;
-          border-bottom: 2px solid #ff1717;
+          color: #09090b;
+          margin: 36px auto 6px;
+          border-bottom: 3.5px solid #ff1717;
           display: inline-block;
+          padding-bottom: 2px;
         }
         .cf-block-subtitle {
-          font-size: 13.5px;
+          font-size: 14px;
           color: #64748b;
-          margin: 0 0 20px 0;
-          font-weight: 600;
+          margin: 0 0 24px 0;
+          font-weight: 700;
         }
 
         /* Steps */
         .cf-process-steps {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 16px;
+          grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+          gap: 18px;
+          margin-top: 20px;
         }
         .cf-step-card {
           background: #fff;
           border: 1.5px solid #cbd5e1;
-          border-radius: 8px;
-          padding: 20px;
+          border-radius: 10px;
+          padding: 22px;
           position: relative;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
         .cf-step-num {
           position: absolute;
-          top: 10px;
-          right: 14px;
-          font-size: 28px;
+          top: 12px;
+          right: 16px;
+          font-size: 30px;
           font-weight: 900;
-          color: rgba(255,23,23,0.12);
+          color: rgba(255, 23, 23, 0.12);
         }
         .cf-step-card h4 {
           font-size: 15px;
-          font-weight: 800;
-          color: #0f172a;
+          font-weight: 850;
+          color: #09090b;
           margin: 0 0 6px;
         }
         .cf-step-card p {
-          font-size: 12.5px;
+          font-size: 13px;
           color: #475569;
-          line-height: 1.4;
+          line-height: 1.45;
           margin: 0;
         }
 
@@ -1154,18 +1183,20 @@ export default function PlaybookSalesPage() {
         .cf-framework-list {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 14px;
+          max-width: 800px;
+          margin: 20px auto 0;
         }
         .cf-framework-item {
           display: flex;
           align-items: flex-start;
-          gap: 10px;
-          font-size: 14px;
+          gap: 12px;
+          font-size: 14.5px;
           color: #334155;
         }
         .cf-framework-dot {
-          width: 6px;
-          height: 6px;
+          width: 7px;
+          height: 7px;
           border-radius: 50%;
           background: #ff1717;
           margin-top: 8px;
@@ -1176,41 +1207,40 @@ export default function PlaybookSalesPage() {
         .cf-mastery-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 12px;
+          gap: 14px;
           max-width: 800px;
-          margin: 20px auto 40px;
+          margin: 20px auto 44px;
         }
         .cf-mastery-card {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           font-size: 14px;
           color: #1e293b;
-          font-weight: 600;
+          font-weight: 700;
           background: #fff;
-          border: 1px solid #e2e8f0;
-          padding: 12px 18px;
+          border: 1.5px solid #e2e8f0;
+          padding: 14px 20px;
           border-radius: 8px;
-        }
-        .cf-check-green {
-          flex-shrink: 0;
+          box-shadow: 0 4px 6px -2px rgba(0,0,0,0.02);
         }
 
         /* Curriculum Container */
         .cf-curriculum-container {
-          background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
+          background: #fff;
+          border: 1.5px solid #cbd5e1;
           border-radius: 12px;
-          padding: 30px;
+          padding: 32px;
           max-width: 800px;
           margin: 0 auto;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
         .cf-curriculum-container h3 {
-          margin: 0 0 20px 0;
-          font-size: 18px;
-          font-weight: 800;
-          color: #0f172a;
-          border-left: 4px solid #ff1717;
+          margin: 0 0 22px 0;
+          font-size: 18.5px;
+          font-weight: 900;
+          color: #09090b;
+          border-left: 4.5px solid #ff1717;
           padding-left: 12px;
         }
         .cf-phases-grid {
@@ -1219,96 +1249,99 @@ export default function PlaybookSalesPage() {
           gap: 16px;
         }
         .cf-phase-card {
-          background: #fff;
-          border: 1px solid #cbd5e1;
+          background: #f8fafc;
+          border: 1.5px solid #cbd5e1;
           border-radius: 8px;
-          padding: 16px;
+          padding: 18px;
         }
         .cf-phase-tag {
           display: inline-block;
           background: #ff1717;
           color: #fff;
-          font-size: 9.5px;
+          font-size: 10px;
           font-weight: 800;
-          padding: 2px 6px;
+          padding: 2.5px 7px;
           border-radius: 4px;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
         .cf-phase-card h4 {
-          font-size: 13.5px;
-          font-weight: 700;
-          color: #0f172a;
+          font-size: 14px;
+          font-weight: 800;
+          color: #09090b;
           margin: 0 0 6px;
         }
         .cf-phase-card p {
-          font-size: 11.5px;
+          font-size: 12px;
           color: #64748b;
-          line-height: 1.4;
+          line-height: 1.45;
           margin: 0;
         }
 
         /* Toolkit Wrapper */
         .cf-toolkit-wrapper {
           background: #fff;
-          border: 2px dashed #cbd5e1;
-          border-radius: 12px;
-          padding: 30px;
+          border: 2px dashed #ff1717;
+          border-radius: 14px;
+          padding: 34px;
           max-width: 800px;
           margin: 0 auto;
+          box-shadow: 0 10px 25px -10px rgba(255, 23, 23, 0.05);
         }
         .cf-toolkit-list-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 10px;
+          grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+          gap: 12px;
+          margin-top: 14px;
         }
         .cf-toolkit-item {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 13.5px;
+          gap: 10px;
+          font-size: 14px;
           color: #1e293b;
-          font-weight: 600;
+          font-weight: 700;
         }
         .cf-toolkit-bullet {
           color: #ff1717;
           font-weight: 900;
+          font-size: 16px;
         }
 
         /* Targets grid */
         .cf-target-students-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 14px;
+          gap: 16px;
           max-width: 800px;
           margin: 0 auto;
         }
         .cf-target-student-card {
           background: #fff;
-          border: 1px solid #e2e8f0;
+          border: 1.5px solid #cbd5e1;
           border-radius: 8px;
           padding: 16px 20px;
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 14px;
         }
         .cf-target-bullet-badge {
-          width: 28px;
-          height: 28px;
-          background: rgba(255,23,23,0.08);
+          width: 30px;
+          height: 30px;
+          background: rgba(255, 23, 23, 0.08);
           border-radius: 50%;
           color: #ff1717;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: 800;
-          font-size: 13px;
+          font-weight: 900;
+          font-size: 13.5px;
           flex-shrink: 0;
         }
         .cf-target-student-card p {
           margin: 0;
-          font-size: 13.5px;
+          font-size: 14px;
           color: #334155;
-          font-weight: 600;
+          font-weight: 700;
         }
 
         /* Comparison table */
@@ -1319,22 +1352,22 @@ export default function PlaybookSalesPage() {
           background: #fff;
           border: 1.5px solid #cbd5e1;
           border-radius: 12px;
-          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
         .cf-comparison-table {
           width: 100%;
           border-collapse: collapse;
-          font-size: 13.5px;
+          font-size: 14px;
         }
         .cf-comparison-table th, .cf-comparison-table td {
-          padding: 14px 20px;
+          padding: 16px 22px;
           text-align: left;
-          border-bottom: 1.5px solid #f1f5f9;
+          border-bottom: 1.5px solid #cbd5e1;
         }
         .cf-comparison-table th {
           background: #f8fafc;
           font-weight: 800;
-          color: #0f172a;
+          color: #09090b;
           font-size: 14px;
         }
         .th-traditional, .td-traditional {
@@ -1344,16 +1377,17 @@ export default function PlaybookSalesPage() {
         .th-donzen, .td-donzen {
           background: rgba(16, 185, 129, 0.02);
           color: #10b981;
-          font-weight: 700;
+          font-weight: 800;
         }
 
         /* Instructor */
         .cf-instructor-container {
           display: flex;
-          gap: 36px;
+          gap: 40px;
           align-items: center;
           max-width: 800px;
           margin: 0 auto;
+          text-align: left;
         }
         .cf-instructor-photo-box {
           display: flex;
@@ -1363,63 +1397,68 @@ export default function PlaybookSalesPage() {
           flex-shrink: 0;
         }
         .cf-instructor-photo-box img {
-          width: 170px;
-          height: 210px;
+          width: 180px;
+          height: 220px;
           object-fit: cover;
-          border-radius: 10px;
-          border: 2px solid #cbd5e1;
+          border-radius: 12px;
+          border: 3px solid #cbd5e1;
         }
         .cf-instructor-title-badge {
-          background: #0f172a;
+          background: #ff1717;
           color: #fff;
           font-size: 9.5px;
           font-weight: 800;
           letter-spacing: 1px;
-          padding: 4px 10px;
+          padding: 4px 12px;
           border-radius: 4px;
           text-transform: uppercase;
         }
         .cf-instructor-details {
-          font-size: 14px;
+          font-size: 14.5px;
           color: #475569;
         }
         .cf-instructor-intro-tag {
           font-size: 10.5px;
           font-weight: 800;
           color: #ff1717;
-          letter-spacing: 1px;
+          letter-spacing: 1.5px;
           text-transform: uppercase;
         }
         .cf-instructor-details h2 {
-          font-size: 24px;
+          font-size: 26px;
           font-weight: 900;
-          color: #0f172a;
+          color: #09090b;
           margin: 4px 0 12px 0;
         }
         .cf-instructor-quote {
-          font-size: 15px;
-          font-weight: 700;
+          font-size: 16px;
+          font-weight: 800;
           font-style: italic;
           color: #ff1717;
-          border-left: 3px solid #ff1717;
-          padding-left: 12px;
-          margin: 16px 0;
+          border-left: 3.5px solid #ff1717;
+          padding-left: 14px;
+          margin: 18px 0;
+          line-height: 1.5;
         }
 
         /* Pricing Box */
         .cf-pricing-offer-section {
           display: flex;
           justify-content: center;
+          background: #fffdf5;
+          margin: 0 -24px;
+          padding: 80px 24px;
         }
         .cf-pricing-box {
           width: 100%;
           max-width: 580px;
           background: #ffffff;
-          border: 3px solid #ff1717;
+          border: 3.5px solid #ff1717;
           border-radius: 16px;
-          padding: 40px 30px;
+          padding: 44px 34px;
           text-align: center;
-          box-shadow: 0 20px 40px -15px rgba(255, 23, 23, 0.15);
+          box-shadow: 0 20px 45px -15px rgba(255, 23, 23, 0.18);
+          margin: 0 auto;
         }
         .cf-pricing-header-tag {
           display: inline-block;
@@ -1433,25 +1472,25 @@ export default function PlaybookSalesPage() {
           margin-bottom: 20px;
         }
         .cf-pricing-box h2 {
-          font-size: 22px;
-          font-weight: 900;
-          color: #0f172a;
+          font-size: 24px;
+          font-weight: 950;
+          color: #09090b;
           margin: 0 0 8px;
         }
         .cf-pricing-subheader {
-          font-size: 13.5px;
+          font-size: 14px;
           color: #64748b;
           margin: 0 0 24px;
-          font-weight: 600;
+          font-weight: 700;
         }
         .cf-pricing-features {
           text-align: left;
           background: #f8fafc;
           border-radius: 8px;
-          padding: 20px;
-          margin-bottom: 24px;
-          font-size: 13px;
-          font-weight: 600;
+          padding: 22px;
+          margin-bottom: 26px;
+          font-size: 13.5px;
+          font-weight: 700;
           color: #334155;
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -1462,18 +1501,18 @@ export default function PlaybookSalesPage() {
           align-items: center;
           justify-content: center;
           gap: 14px;
-          margin-bottom: 20px;
+          margin-bottom: 22px;
         }
         .cf-old-price-val {
-          font-size: 20px;
+          font-size: 21px;
           color: #94a3b8;
           text-decoration: line-through;
-          font-weight: 700;
+          font-weight: 800;
         }
         .cf-new-price-val {
-          font-size: 40px;
+          font-size: 42px;
           color: #ff1717;
-          font-weight: 900;
+          font-weight: 950;
         }
         .cf-enroll-cta {
           width: 100%;
@@ -1481,7 +1520,7 @@ export default function PlaybookSalesPage() {
           color: #fff;
           border: none;
           padding: 18px;
-          font-size: 16px;
+          font-size: 17px;
           font-weight: 900;
           border-radius: 8px;
           cursor: pointer;
@@ -1489,13 +1528,21 @@ export default function PlaybookSalesPage() {
           transition: background 0.2s;
         }
         .cf-enroll-cta:hover {
-          background: #dc2626;
+          background: #e01212;
         }
         .cf-enroll-desc-text {
           font-size: 11.5px;
           color: #64748b;
           margin: 10px 0 0;
           font-weight: 600;
+        }
+        .pulsing-cta-yellow {
+          animation: cf-pulse-yellow 2.2s infinite;
+        }
+        @keyframes cf-pulse-yellow {
+          0% { box-shadow: 0 0 0 0 rgba(255, 23, 23, 0.4); }
+          70% { box-shadow: 0 0 0 14px rgba(255, 23, 23, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(255, 23, 23, 0); }
         }
 
         /* FAQ accordion */
@@ -1504,68 +1551,73 @@ export default function PlaybookSalesPage() {
           margin: 0 auto;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
         }
         .cf-faq-block {
           background: #fff;
           border: 1.5px solid #cbd5e1;
           border-radius: 8px;
           overflow: hidden;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.01);
         }
         .cf-faq-toggle {
           width: 100%;
           background: none;
           border: none;
-          padding: 16px 20px;
+          padding: 18px 24px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           cursor: pointer;
-          color: #0f172a;
-          font-size: 14.5px;
-          font-weight: 700;
+          color: #09090b;
+          font-size: 15px;
+          font-weight: 800;
           text-align: left;
         }
         .cf-faq-arrow-icon {
-          font-size: 9px;
+          font-size: 10px;
           color: #94a3b8;
           transition: transform 0.2s;
         }
         .cf-faq-answer-content {
-          padding: 0 20px 16px;
+          padding: 0 24px 20px;
           border-top: 1px solid #f1f5f9;
-          font-size: 13.5px;
+          font-size: 14px;
           color: #475569;
-          line-height: 1.5;
+          line-height: 1.55;
         }
 
         /* Closing CTA */
         .cf-closing-cta {
           text-align: center;
           padding: 80px 20px;
-          border-top: 1px dashed #cbd5e1;
         }
         .cf-closing-cta h2 {
-          font-size: 24px;
-          font-weight: 900;
-          color: #0f172a;
-          margin: 0 0 10px;
+          font-size: 26px;
+          font-weight: 950;
+          color: #09090b;
+          margin: 0 0 12px;
         }
         .cf-closing-desc {
-          font-size: 15px;
+          font-size: 15.5px;
           color: #64748b;
           max-width: 600px;
           margin: 0 auto;
+          font-weight: 600;
         }
 
-        /* Footer */
+        /* Footer & Disclaimers */
         .cf-footer-section {
           border-top: 1px solid #cbd5e1;
-          padding: 36px 0 20px;
+          padding: 44px 0 30px;
           text-align: center;
-          font-size: 12px;
+          font-size: 12.5px;
           color: #64748b;
           font-weight: 600;
+          background: #f8fafc;
+          margin: 0 -24px;
+          padding-left: 24px;
+          padding-right: 24px;
         }
         .cf-footer-section p {
           margin: 0 0 8px;
@@ -1582,6 +1634,19 @@ export default function PlaybookSalesPage() {
         .cf-footer-links-row span:hover {
           color: #ff1717;
         }
+        .cf-ad-disclaimer {
+          max-width: 800px;
+          margin: 30px auto 0;
+          border-top: 1px solid #e2e8f0;
+          padding-top: 24px;
+          color: #94a3b8;
+          font-size: 11px;
+          line-height: 1.5;
+          text-align: center;
+        }
+        .cf-ad-disclaimer p {
+          margin-bottom: 12px;
+        }
 
         /* Animations */
         @keyframes spin {
@@ -1592,12 +1657,12 @@ export default function PlaybookSalesPage() {
         @media (max-width: 768px) {
           .cf-instructor-container {
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             text-align: center;
           }
           .cf-instructor-photo-box img {
-            width: 140px;
-            height: 170px;
+            width: 150px;
+            height: 180px;
           }
           .cf-pricing-features {
             grid-template-columns: 1fr;
