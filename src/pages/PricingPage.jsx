@@ -531,6 +531,7 @@ export default function PricingPage() {
           max-width: 750px;
           margin: 0 auto;
           opacity: 0;
+          text-align: center;
         }
         .pr-hero-badge {
           display: inline-block;
