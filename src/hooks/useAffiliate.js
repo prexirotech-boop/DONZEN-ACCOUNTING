@@ -68,6 +68,13 @@ export function useAffiliate() {
 
   async function recordClick(affiliateCode, landingPage) {
     try {
+      // Prevent overcounting by deduplicating clicks within the current session
+      const sessKey = `tracked_click_${affiliateCode}`
+      if (sessionStorage.getItem(sessKey)) {
+        return false // Already tracked in this session/tab
+      }
+      sessionStorage.setItem(sessKey, '1')
+
       const { data, error } = await supabase.rpc('track_affiliate_click', {
         p_affiliate_code: affiliateCode,
         p_landing_page: landingPage || window.location.href,
