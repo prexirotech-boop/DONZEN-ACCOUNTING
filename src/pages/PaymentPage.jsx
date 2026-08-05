@@ -598,7 +598,7 @@ export default function PaymentPage() {
       setLoading(false)
 
       if (isEbook) {
-        navigate('/success')
+        window.location.href = '/success'
         return
       }
 
@@ -611,7 +611,7 @@ export default function PaymentPage() {
         }
       }
 
-      navigate(hasSession ? '/dashboard' : '/setup-account')
+      window.location.href = hasSession ? '/dashboard' : '/setup-account'
       return
     }
 
@@ -699,7 +699,7 @@ export default function PaymentPage() {
     window.dispatchEvent(new Event('cart_updated'))
 
     if (isEbook) {
-      navigate('/success')
+      window.location.href = '/success'
       return
     }
 
@@ -713,7 +713,7 @@ export default function PaymentPage() {
     }
 
     setLoading(false)
-    navigate(hasSession ? '/dashboard' : '/setup-account')
+    window.location.href = hasSession ? '/dashboard' : '/setup-account'
   }
 
   const displayBonuses = bonuses
