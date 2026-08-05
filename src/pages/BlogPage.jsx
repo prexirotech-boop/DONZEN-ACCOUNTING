@@ -232,11 +232,11 @@ export default function BlogPage() {
           /* ════ HERO SECTION STYLING ════ */
           .blog-hero {
             position: relative;
-            min-height: 480px;
+            min-height: 560px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 120px 24px 80px;
+            padding: 130px 24px 90px;
             overflow: hidden;
           }
           .blog-hero-bg {
@@ -254,8 +254,7 @@ export default function BlogPage() {
           .blog-hero-overlay {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, rgba(9,9,11,0.2) 0%, #09090b 80%),
-                        linear-gradient(to bottom, transparent 60%, #09090b 100%);
+            background: linear-gradient(170deg, rgba(9,9,11,0.94) 0%, rgba(9,9,11,0.82) 50%, rgba(9,9,11,0.92) 100%);
           }
           .blog-hero-inner {
             position: relative;

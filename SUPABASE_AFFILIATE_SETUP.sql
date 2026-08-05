@@ -366,26 +366,44 @@ ALTER TABLE affiliate_commissions   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE affiliate_payouts       ENABLE ROW LEVEL SECURITY;
 
 -- Affiliates SELECT: users see their own, admins see all
+DROP POLICY IF EXISTS "affiliates_self_read" ON affiliates;
 CREATE POLICY "affiliates_self_read"  ON affiliates FOR SELECT USING (user_id = auth.uid() OR is_admin());
+
 -- Affiliates UPDATE: users can update their own (for payout settings)
+DROP POLICY IF EXISTS "affiliates_self_update" ON affiliates;
 CREATE POLICY "affiliates_self_update" ON affiliates FOR UPDATE USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "affiliates_admin_all" ON affiliates;
 CREATE POLICY "affiliates_admin_all"  ON affiliates FOR ALL USING (is_admin());
 
 -- Referrals: affiliates see their own, admins see all
+DROP POLICY IF EXISTS "referrals_self_read" ON affiliate_referrals;
 CREATE POLICY "referrals_self_read"  ON affiliate_referrals FOR SELECT
   USING (affiliate_id IN (SELECT id FROM affiliates WHERE user_id = auth.uid()) OR is_admin());
+
+DROP POLICY IF EXISTS "referrals_anon_ins" ON affiliate_referrals;
 CREATE POLICY "referrals_anon_ins"   ON affiliate_referrals FOR INSERT TO anon WITH CHECK (true);
+
+DROP POLICY IF EXISTS "referrals_auth_ins" ON affiliate_referrals;
 CREATE POLICY "referrals_auth_ins"   ON affiliate_referrals FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "referrals_admin_all" ON affiliate_referrals;
 CREATE POLICY "referrals_admin_all"  ON affiliate_referrals FOR ALL USING (is_admin());
 
 -- Commissions: affiliates see their own, admins manage all
+DROP POLICY IF EXISTS "commissions_self_read" ON affiliate_commissions;
 CREATE POLICY "commissions_self_read" ON affiliate_commissions FOR SELECT
   USING (affiliate_id IN (SELECT id FROM affiliates WHERE user_id = auth.uid()) OR is_admin());
+
+DROP POLICY IF EXISTS "commissions_admin_all" ON affiliate_commissions;
 CREATE POLICY "commissions_admin_all" ON affiliate_commissions FOR ALL USING (is_admin());
 
 -- Payouts: affiliates see their own, admins manage all
+DROP POLICY IF EXISTS "payouts_self_read" ON affiliate_payouts;
 CREATE POLICY "payouts_self_read"  ON affiliate_payouts FOR SELECT
   USING (affiliate_id IN (SELECT id FROM affiliates WHERE user_id = auth.uid()) OR is_admin());
+
+DROP POLICY IF EXISTS "payouts_admin_all" ON affiliate_payouts;
 CREATE POLICY "payouts_admin_all"  ON affiliate_payouts FOR ALL USING (is_admin());
 
 -- ─── STEP 17: Seed default platform affiliate settings ────────────────────────

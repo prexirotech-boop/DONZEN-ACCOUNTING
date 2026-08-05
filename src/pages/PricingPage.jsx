@@ -502,8 +502,11 @@ export default function PricingPage() {
         /* ════ HERO ════ */
         .pr-hero {
           position: relative;
+          min-height: 560px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           padding: 130px 24px 90px;
-          text-align: center;
           overflow: hidden;
         }
         .pr-hero-bg {
@@ -520,8 +523,7 @@ export default function PricingPage() {
         .pr-hero-overlay {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at center, rgba(9,9,11,0.2) 0%, #09090b 80%),
-                      linear-gradient(to bottom, transparent 60%, #09090b 100%);
+          background: linear-gradient(170deg, rgba(9,9,11,0.94) 0%, rgba(9,9,11,0.82) 50%, rgba(9,9,11,0.92) 100%);
         }
         .pr-hero-inner {
           position: relative;
