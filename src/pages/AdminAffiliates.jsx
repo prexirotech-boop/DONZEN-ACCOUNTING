@@ -475,7 +475,7 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
           commission_rate,
           status,
           created_at,
-          orders(reference, name, email, status)
+          orders(reference, customer_name, customer_email, status)
         `)
         .eq('affiliate_id', affiliate.id)
         .order('created_at', { ascending: false })
@@ -838,8 +838,8 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
                         return (
                           <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                             <td style={{ padding: '8px 12px', verticalAlign: 'middle' }}>
-                              <div style={{ fontWeight: 700, color: '#334155' }}>{ord.name || 'Student'}</div>
-                              <div style={{ fontSize: 10, color: '#94a3b8' }}>{ord.email || '—'}</div>
+                              <div style={{ fontWeight: 700, color: '#334155' }}>{ord.customer_name || ord.name || 'Student'}</div>
+                              <div style={{ fontSize: 10, color: '#94a3b8' }}>{ord.customer_email || ord.email || '—'}</div>
                             </td>
                             <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: 600, color: '#475569', verticalAlign: 'middle' }}>
                               {fmtNGN(c.order_amount)}
