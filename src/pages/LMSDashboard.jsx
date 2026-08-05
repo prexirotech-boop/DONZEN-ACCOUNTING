@@ -1407,9 +1407,17 @@ function AffiliateTab({ user, profile }) {
       setSaving(false)
     }
   }
+  const [localCode, setLocalCode] = useState(profile?.affiliate_code || '')
 
-  const affiliateLink = profile?.affiliate_code
-    ? `${window.location.origin}/?ref=${profile.affiliate_code}`
+  useEffect(() => {
+    if (profile?.affiliate_code) {
+      setLocalCode(profile.affiliate_code)
+    }
+  }, [profile])
+
+  const activeCode = localCode || affiliate?.affiliate_code
+  const affiliateLink = activeCode
+    ? `${window.location.origin}/?ref=${activeCode}`
     : null
 
   useEffect(() => {
@@ -1420,11 +1428,44 @@ function AffiliateTab({ user, profile }) {
   async function loadAffiliateData() {
     try {
       // Step 1: fetch affiliate record for this user
-      const { data: affData } = await supabase
+      let { data: affData, error: affErr } = await supabase
         .from('affiliates')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle()
+      
+      if (affErr) throw affErr
+
+      // Auto-enroll user as affiliate if record is missing
+      if (!affData) {
+        const fullName = profile?.full_name || user?.user_metadata?.full_name || 'Alumnus'
+        const baseCode = fullName.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 8) || 'ref'
+        const rand = Math.random().toString(36).substring(2, 6).toUpperCase()
+        const newCode = `${baseCode}-${rand}`
+
+        // Update profile
+        await supabase
+          .from('profiles')
+          .update({ affiliate_code: newCode })
+          .eq('id', user.id)
+
+        // Insert affiliate record
+        const { data: insertedAff, error: insertErr } = await supabase
+          .from('affiliates')
+          .insert({
+            user_id: user.id,
+            affiliate_code: newCode,
+            status: 'active',
+            commission_rate: 20.00
+          })
+          .select()
+          .single()
+
+        if (!insertErr && insertedAff) {
+          affData = insertedAff
+          setLocalCode(newCode)
+        }
+      }
       
       setAffiliate(affData)
 
