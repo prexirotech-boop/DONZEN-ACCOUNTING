@@ -95,6 +95,7 @@ export default function LMSCourse() {
   const [reviewText, setReviewText] = useState('')
   const [submittingReview, setSubmittingReview] = useState(false)
   const [hasTriggeredReviewModal, setHasTriggeredReviewModal] = useState(false)
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false)
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   useEffect(() => {
@@ -285,7 +286,7 @@ export default function LMSCourse() {
         localStorage.removeItem(`draft_review_rating_${courseId}`)
         setUserReview({ rating: reviewRating, review_text: reviewText })
         setShowReviewModal(false)
-        alert('Thank you for your feedback!')
+        setShowFeedbackSuccess(true)
       } else {
         alert(error.message)
       }
@@ -1498,6 +1499,67 @@ export default function LMSCourse() {
           }
         }
       `}} />
+
+      {showFeedbackSuccess && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(5, 11, 20, 0.85)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 999999, padding: 20, fontFamily: 'var(--font)'
+        }}>
+          <div style={{
+            background: '#ffffff', borderRadius: 16, border: '1px solid #e2e8f0',
+            maxWidth: 480, width: '100%', padding: '40px 32px', textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+            animation: 'modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            position: 'relative'
+          }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(16,185,129,0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: '#0f172a', margin: '0 0 10px 0' }}>Thank You for Your Feedback!</h3>
+            <p style={{ fontSize: 14.5, color: '#64748b', lineHeight: 1.6, margin: '0 0 24px 0' }}>
+              Your feedback helps us maintain high-quality material. Your accredited course completion certificate has been generated and is now available for download under your Certificates tab.
+            </p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button 
+                onClick={() => {
+                  setShowFeedbackSuccess(false)
+                  window.location.href = '/dashboard?tab=certificates'
+                }}
+                style={{
+                  background: '#ff1717', color: '#fff', border: 'none',
+                  padding: '12px 24px', borderRadius: 10, fontWeight: 700,
+                  fontSize: 14, cursor: 'pointer', boxShadow: '0 4px 12px rgba(255,23,23,0.18)',
+                  transition: 'opacity 0.2s', width: '100%'
+                }}
+              >
+                Go to My Certificates &rarr;
+              </button>
+              
+              <button 
+                onClick={() => setShowFeedbackSuccess(false)}
+                style={{
+                  background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1',
+                  padding: '11px 24px', borderRadius: 10, fontWeight: 700,
+                  fontSize: 13.5, cursor: 'pointer', transition: 'background 0.2s', width: '100%'
+                }}
+              >
+                Continue Learning
+              </button>
+            </div>
+          </div>
+          
+          <style>{`
+            @keyframes modalIn {
+              from { transform: scale(0.95) translateY(10px); opacity: 0; }
+              to { transform: scale(1) translateY(0); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   )
 }

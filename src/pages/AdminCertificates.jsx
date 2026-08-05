@@ -30,6 +30,13 @@ export default function AdminCertificates() {
   })
 
   const sigUploadRef = useRef(null)
+  const [toast, setToast] = useState(null)
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000)
+      return () => clearTimeout(timer)
+    }
+  }, [toast])
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   useEffect(() => {
@@ -195,7 +202,7 @@ export default function AdminCertificates() {
       setShowIssueModal(false)
       loadData()
     } catch (err) {
-      alert(err.message)
+      setToast({ type: 'error', message: err.message })
     } finally {
       setSubmitting(false)
     }
@@ -207,7 +214,7 @@ export default function AdminCertificates() {
     const { error } = await supabase.from('certificates').update({ is_valid: !currentlyValid }).eq('id', certId)
     if (error) {
       console.error('Error updating certificate validity:', error)
-      alert('Failed to update certificate status. Your database table is missing the "is_valid" column.')
+      setToast({ type: 'error', message: 'Failed to update certificate status. Your database table is missing the "is_valid" column.' })
     }
     setRevokeLoading(null)
     loadData()
@@ -226,9 +233,9 @@ export default function AdminCertificates() {
           updated_at: new Date().toISOString()
         })
       if (error) throw error
-      alert('Certificate templates preferences saved successfully!')
+      setToast({ type: 'success', message: 'Certificate templates preferences saved successfully!' })
     } catch (err) {
-      alert('Error saving preferences: ' + err.message)
+      setToast({ type: 'error', message: 'Error saving preferences: ' + err.message })
     } finally {
       setSavingConfig(false)
     }
@@ -261,7 +268,7 @@ export default function AdminCertificates() {
         use_signature_image: true 
       }))
     } catch (err) {
-      alert('Failed to upload signature: ' + err.message)
+      setToast({ type: 'error', message: 'Failed to upload signature: ' + err.message })
     } finally {
       setSavingConfig(false)
     }
@@ -271,7 +278,7 @@ export default function AdminCertificates() {
   const handlePreviewTemplate = () => {
     const printWindow = window.open('', '_blank', 'width=950,height=680')
     if (!printWindow) {
-      alert("Please allow popups to view preview.");
+      setToast({ type: 'error', message: 'Please allow popups to view preview.' })
       return;
     }
 
@@ -1038,6 +1045,39 @@ export default function AdminCertificates() {
           </div>
         </div>
       )}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          top: 24,
+          right: 24,
+          background: toast.type === 'success' ? '#00875a' : '#ae2a19',
+          color: '#fff',
+          padding: '12px 20px',
+          borderRadius: 8,
+          boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          zIndex: 9999,
+          animation: 'slideIn 0.3s ease',
+          fontSize: 13.5,
+          fontWeight: 600
+        }}>
+          {toast.type === 'success' ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          )}
+          <span>{toast.message}</span>
+          <button type="button" onClick={() => setToast(null)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 16, cursor: 'pointer', marginLeft: 8, padding: 0 }}>&times;</button>
+        </div>
+      )}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes slideIn {
+          from { transform: translateY(-20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      ` }} />
     </div>
   )
 }
