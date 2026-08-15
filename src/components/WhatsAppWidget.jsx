@@ -63,7 +63,7 @@ export default function WhatsAppWidget() {
             alignItems: 'center',
             justifyContent: 'space-between',
             position: 'relative',
-            borderBottom: '2px solid #ff1717'
+            borderBottom: '2px solid #25D366'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               {/* Logo Mark Avatar */}
@@ -78,7 +78,7 @@ export default function WhatsAppWidget() {
                     background: '#fff',
                     padding: '4px',
                     objectFit: 'contain',
-                    border: '1px solid rgba(255,23,23,0.3)'
+                    border: '1px solid rgba(37,211,102,0.3)'
                   }}
                   onError={e => {
                     e.currentTarget.src = '/logo.png'
@@ -97,7 +97,7 @@ export default function WhatsAppWidget() {
               </div>
               <div>
                 <h4 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 700, color: '#fff' }}>Donzen Support</h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: '#ff1717', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600 }}>
+                <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: '#25D366', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600 }}>
                   ● Replies instantly
                 </p>
               </div>
@@ -186,13 +186,13 @@ export default function WhatsAppWidget() {
                 transition: 'border-color 0.2s',
                 fontFamily: 'inherit'
               }}
-              onFocus={e => e.currentTarget.style.borderColor = '#ff1717'}
+              onFocus={e => e.currentTarget.style.borderColor = '#25D366'}
               onBlur={e => e.currentTarget.style.borderColor = '#d4d4d8'}
             />
             <button 
               type="submit"
               style={{
-                background: '#ff1717',
+                background: '#25D366',
                 border: 'none',
                 color: '#fff',
                 width: 40,
@@ -202,7 +202,7 @@ export default function WhatsAppWidget() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(255,23,23,0.4)',
+                boxShadow: '0 2px 8px rgba(37,211,102,0.4)',
                 transition: 'transform 0.2s',
                 flexShrink: 0
               }}
@@ -230,11 +230,11 @@ export default function WhatsAppWidget() {
           width: 56,
           height: 56,
           borderRadius: '50%',
-          background: '#ff1717',
+          background: '#25D366',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(255,23,23,0.5), 0 2px 8px rgba(0,0,0,0.2)',
+          boxShadow: '0 4px 20px rgba(37,211,102,0.5), 0 2px 8px rgba(0,0,0,0.2)',
           zIndex: 9998,
           border: 'none',
           cursor: 'pointer',
@@ -271,7 +271,7 @@ export default function WhatsAppWidget() {
             position: 'absolute',
             inset: -4,
             borderRadius: '50%',
-            border: '2px solid rgba(255,23,23,0.5)',
+            border: '2px solid rgba(37,211,102,0.5)',
             animation: 'waPulse 1.6s ease-out infinite',
             pointerEvents: 'none'
           }} />

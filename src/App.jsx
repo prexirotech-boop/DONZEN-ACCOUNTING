@@ -71,6 +71,7 @@ function AppLayout() {
       storeReferral(refCode)
       recordClick(refCode, window.location.href)
     }
+    // storeReferral and recordClick are now stable (useCallback)
   }, [location.search, storeReferral, recordClick])
 
   const hideHeaderFooter = 

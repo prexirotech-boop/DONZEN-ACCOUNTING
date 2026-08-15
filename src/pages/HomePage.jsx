@@ -146,18 +146,44 @@ export default function HomePage() {
   const [leadResource, setLeadResource] = useState('Free Excel Accounting Template');
   const [leadSuccess, setLeadSuccess] = useState(false);
 
-  const heroImages = [
-    '/slideshow_1.jpg',
-    '/slideshow_2.jpg',
-    '/slideshow_3.jpg'
+  const heroSlides = [
+    {
+      image: '/hero-slide1.png',
+      title: 'WE ARE BOOKKEEPING FOR AFRICA',
+      subtitle: 'At Donzen, we offer more than bookkeeping. We make bookkeeping solutions and accounting education more accessible!',
+      buttonText: 'CONTACT US',
+      buttonLink: '/contact'
+    },
+    {
+      image: '/hero-slide2.jpg',
+      title: 'SKILLS',
+      subtitle: 'Develop practical hands-on accounting skills and cloud-based tools you need to succeed in any workplace.',
+      buttonText: 'Learn More',
+      buttonLink: '/products'
+    },
+    {
+      image: '/hero-slide3.jpeg',
+      title: 'KNOWLEDGE',
+      subtitle: 'Gain rock-solid foundation of accounting processes and practices, including bookkeeping, accounting, management, and financial reporting.',
+      buttonText: 'Get Started',
+      buttonLink: '/products'
+    }
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentHeroIdx(prev => (prev + 1) % heroImages.length);
-    }, 5000);
+      setCurrentHeroIdx(prev => (prev + 1) % heroSlides.length);
+    }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [currentHeroIdx]);
+
+  const handlePrevSlide = () => {
+    setCurrentHeroIdx(prev => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
+  const handleNextSlide = () => {
+    setCurrentHeroIdx(prev => (prev + 1) % heroSlides.length);
+  };
 
   const handleLeadSubmit = (e) => {
     e.preventDefault();
@@ -174,45 +200,56 @@ export default function HomePage() {
 
   return (
     <div className="hp-wrapper">
-      {/* 1. HERO SECTION (Become Job-Ready & repositioned) */}
+      {/* 1. HERO SECTION (With interactive slider & arrows) */}
       <section className="hp-hero">
         <div className="hp-hero-bg">
-          {heroImages.map((src, idx) => (
+          {heroSlides.map((slide, idx) => (
             <img 
-              key={src} 
-              src={src} 
-              alt="Donzen Accounting Workplace Slideshow" 
+              key={slide.image} 
+              src={slide.image} 
+              alt={slide.title} 
               className={`hp-hero-img ${idx === currentHeroIdx ? 'active' : ''}`} 
-              onError={(e) => {
-                e.target.src = `/slideshow_${idx + 1}.png`;
-              }}
             />
           ))}
           <div className="hp-hero-overlay"></div>
         </div>
+
+        {/* Left & Right Navigation Arrows */}
+        <button onClick={handlePrevSlide} className="hp-hero-arrow hp-hero-arrow-left" aria-label="Previous slide">
+          &lt;
+        </button>
+        <button onClick={handleNextSlide} className="hp-hero-arrow hp-hero-arrow-right" aria-label="Next slide">
+          &gt;
+        </button>
+
+        {/* Dots Page Indicator */}
+        <div className="hp-hero-dots">
+          {heroSlides.map((_, idx) => (
+            <span 
+              key={idx} 
+              className={`hp-hero-dot ${idx === currentHeroIdx ? 'active' : ''}`}
+              onClick={() => setCurrentHeroIdx(idx)}
+            />
+          ))}
+        </div>
         
         <div className="hp-container hp-hero-content">
-          <Reveal delay={150}>
+          <Reveal key={`title-${currentHeroIdx}`} delay={150}>
             <h1 className="hp-hero-title">
-              Become Job-Ready. <br />
-              <span className="hp-text-accent">Build Real Workplace Accounting Skills</span> That Employers Need.
+              {heroSlides[currentHeroIdx].title}
             </h1>
           </Reveal>
-          <Reveal delay={300}>
+          <Reveal key={`subtitle-${currentHeroIdx}`} delay={300}>
             <p className="hp-hero-subtitle">
-              Learn bookkeeping, financial reporting, inventory accounting, Excel, Sage, QuickBooks and cloud accounting by working on real business scenarios, not classroom theory.
+              {heroSlides[currentHeroIdx].subtitle}
             </p>
           </Reveal>
-          <Reveal delay={450}>
+          <Reveal key={`cta-${currentHeroIdx}`} delay={450}>
             <div className="hp-hero-ctas">
-              <Link to="/products" className="hp-btn hp-btn-primary hp-btn-large">
-                Start Learning
+              <Link to={heroSlides[currentHeroIdx].buttonLink} className="hp-btn hp-btn-primary hp-btn-large">
+                {heroSlides[currentHeroIdx].buttonText}
                 <IconArrowRight />
               </Link>
-              <button onClick={() => setShowDemoModal(true)} className="hp-btn hp-btn-secondary hp-btn-large">
-                <IconPlay />
-                Watch Free Demo
-              </button>
             </div>
           </Reveal>
         </div>
@@ -377,7 +414,7 @@ export default function HomePage() {
           
           <Reveal className="hp-why-image-col" delay={200}>
             <div className="hp-image-frame-why">
-              <img src="/advisory-team.jpg" alt="Donzen Accounting Advisory Team" className="hp-why-img" />
+              <img src="/outcomes.jpg" alt="Donzen Accounting Advisory Team" className="hp-why-img" />
               <div className="hp-image-glow-under"></div>
             </div>
           </Reveal>
@@ -489,7 +526,7 @@ export default function HomePage() {
         <div className="hp-container hp-bootcamp-split">
           <Reveal className="hp-bootcamp-image-col">
             <div className="hp-image-frame-bootcamp">
-              <img src="/bootcamp_vision.jpg" alt="Donzen Academy training graduates" className="hp-bootcamp-img" />
+              <img src="/experience.jpg" alt="Donzen Academy training graduates" className="hp-bootcamp-img" />
               <div className="hp-badge-bootcamp">BOOTCAMP PROGRAMME</div>
             </div>
           </Reveal>
@@ -963,6 +1000,62 @@ export default function HomePage() {
         }
         .hp-hero-img.active {
           opacity: 1;
+        }
+        /* Slider controls */
+        .hp-hero-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0, 0, 0, 0.4);
+          color: #fff;
+          border: none;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          font-size: 1.5rem;
+          font-weight: 300;
+          cursor: pointer;
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.3s, transform 0.2s;
+        }
+        .hp-hero-arrow:hover {
+          background: var(--hp-red);
+          transform: translateY(-50%) scale(1.1);
+        }
+        .hp-hero-arrow-left {
+          left: 20px;
+        }
+        .hp-hero-arrow-right {
+          right: 20px;
+        }
+        .hp-hero-dots {
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 10px;
+          z-index: 10;
+        }
+        .hp-hero-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.4);
+          cursor: pointer;
+          transition: background 0.3s, transform 0.2s;
+        }
+        .hp-hero-dot.active {
+          background: var(--hp-red);
+          transform: scale(1.2);
+        }
+        @media (max-width: 768px) {
+          .hp-hero-arrow {
+            display: none;
+          }
         }
         .hp-hero-overlay {
           position: absolute;

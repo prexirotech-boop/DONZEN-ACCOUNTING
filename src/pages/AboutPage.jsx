@@ -176,7 +176,7 @@ export default function AboutPage() {
             </div>
             <div className="ab-story-visual">
               <div className="ab-story-img-wrap">
-                <img src="/hero-corporate.jpg" alt="Donzen Accounting Hub team in a strategy meeting" />
+                <img src="/bookkeeping-africa.jpg" alt="Donzen Accounting Hub team in a strategy meeting" />
                 <div className="ab-story-accent-border" />
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function AboutPage() {
           <div className={`ab-founder-inner ${founderVis ? 'ab-vis' : ''}`}>
             <div className="ab-founder-img-col">
               <div className="ab-founder-img-wrap">
-                <img src="/founder_portrait.jpg" alt="Samuel Onainor — Founder and CEO of Donzen Accounting Hub" />
+                <img src="/donzen-man-precision.jpeg" alt="Samuel Onainor — Founder and CEO of Donzen Accounting Hub" />
               </div>
               <div className="ab-founder-nameplate">
                 <div className="ab-founder-name">Samuel Onainor</div>
@@ -327,7 +327,7 @@ export default function AboutPage() {
               </Link>
             </div>
             <div className="ab-bootcamp-visual">
-              <img src="/bootcamp_vision.jpg" alt="Donzen Accounting Experience Programme — bootcamp graduates in training" />
+              <img src="/empowering-generation.jpg" alt="Donzen Accounting Experience Programme — bootcamp graduates in training" />
             </div>
           </div>
         </section>

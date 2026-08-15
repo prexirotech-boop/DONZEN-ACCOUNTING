@@ -122,7 +122,7 @@ export default function PaymentPage() {
 
   // Affiliate & Order Bump states
   const [selectedBumps, setSelectedBumps] = useState([])
-  const { referralCode } = useAffiliate()
+  const { referralCode, clearReferralCode } = useAffiliate()
   const [affiliateData, setAffiliateData] = useState(null)
 
   // Payment Plans checkout states
@@ -132,17 +132,34 @@ export default function PaymentPage() {
 
   useEffect(() => {
     async function checkReferral() {
-      // Check URL parameters directly first, fallback to context state
+      // 1. Check URL parameters directly
       const params = new URLSearchParams(window.location.search)
       const urlCode = params.get('ref')
-      const code = urlCode || referralCode
+      
+      // 2. Fallback to React state from useAffiliate hook
+      // 3. Final fallback: read localStorage directly (belt-and-suspenders)
+      let code = urlCode || referralCode
+      if (!code) {
+        try {
+          const raw = localStorage.getItem('amplified_ref')
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (parsed.code && Date.now() <= parsed.expiry) {
+              code = parsed.code
+            }
+          }
+        } catch (e) { /* ignore */ }
+      }
       
       if (code) {
         try {
           const { data } = await supabase
             .rpc('check_affiliate_code', { p_code: code })
             .maybeSingle()
-          if (data) setAffiliateData(data)
+          if (data) {
+            console.log('[PaymentPage] ✅ Affiliate code verified:', code, data)
+            setAffiliateData(data)
+          }
         } catch (e) {
           console.warn('[PaymentPage] Referral check error:', e)
         }
@@ -587,6 +604,8 @@ export default function PaymentPage() {
       localStorage.removeItem('checkout_email')
       localStorage.removeItem('checkout_phone')
       localStorage.removeItem('amplified_cart')
+      // Clear affiliate referral code so future purchases don't re-attribute
+      clearReferralCode()
       window.dispatchEvent(new Event('cart_updated'))
 
       // Confirmation email disabled until Edge Function is deployed
@@ -700,6 +719,8 @@ export default function PaymentPage() {
     localStorage.removeItem('checkout_email')
     localStorage.removeItem('checkout_phone')
     localStorage.removeItem('amplified_cart')
+    // Clear affiliate referral code so future purchases don't re-attribute
+    clearReferralCode()
     window.dispatchEvent(new Event('cart_updated'))
 
     if (isEbook) {

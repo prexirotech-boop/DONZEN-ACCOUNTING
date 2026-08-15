@@ -66,7 +66,7 @@ export default function BlogPage() {
       {/* ════ HERO SECTION ════ */}
       <section className="blog-hero">
         <div className="blog-hero-bg">
-          <img src="/images/home-hero-3.jpg" alt="" aria-hidden="true" />
+          <img src="/resources-blog-hero.jpg" alt="" aria-hidden="true" />
           <div className="blog-hero-overlay" />
         </div>
         <div className="blog-hero-inner">
@@ -249,7 +249,6 @@ export default function BlogPage() {
             height: 100%;
             object-fit: cover;
             object-position: center 40%;
-            opacity: 0.28;
           }
           .blog-hero-overlay {
             position: absolute;

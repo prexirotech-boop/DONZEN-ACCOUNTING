@@ -376,7 +376,7 @@ export default function ServicesPage() {
               </div>
             </div>
             <div className="sv-why-visual">
-              <img src="/advisory-team.jpg" alt="Donzen Accounting Hub advisory team" />
+              <img src="/businesses-trust.jpg" alt="Donzen Accounting Hub advisory team" />
             </div>
           </div>
         </section>

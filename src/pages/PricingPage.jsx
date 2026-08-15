@@ -193,7 +193,7 @@ export default function PricingPage() {
         {/* ════ HERO ════ */}
         <section className="pr-hero" ref={heroRef}>
           <div className="pr-hero-bg">
-            <img src="/images/about-hero.jpg" alt="" aria-hidden="true" />
+            <img src="/resources-blog-hero.jpg" alt="" aria-hidden="true" />
             <div className="pr-hero-overlay" />
           </div>
           <div className={`pr-hero-inner ${heroVis ? 'pr-vis' : ''}`}>
@@ -518,7 +518,7 @@ export default function PricingPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.28;
+          object-position: center 40%;
         }
         .pr-hero-overlay {
           position: absolute;
