@@ -151,9 +151,9 @@ export default function Footer() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
                 { label: 'Home', path: '/' },
+                { label: 'Learn', path: '/products' },
                 { label: 'About Us', path: '/about' },
                 { label: 'Services', path: '/services' },
-                { label: 'Products & Templates', path: '/products' },
                 { label: 'Resources & Pricing', path: '/resources' },
                 { label: 'FAQs', path: '/faq' },
                 { label: 'Contact Us', path: '/contact' },
