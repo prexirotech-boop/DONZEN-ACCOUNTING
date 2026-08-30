@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, calculateAccessDurationDates } from '../lib/supabase'
 import { useCurrency } from '../context/CurrencyContext'
+import CustomDropdown from '../components/CustomDropdown'
+
+const DURATION_OPTIONS = [
+  { value: 'lifetime', label: 'Forever / Lifetime (No Expiration)', icon: '♾️', description: 'Students maintain permanent unlimited access' },
+  { value: '1_month', label: '1 Month (30 Days)', icon: '⏱️', description: 'Access expires after 30 days' },
+  { value: '3_months', label: '3 Months (90 Days)', icon: '⏱️', description: 'Access expires after 90 days' },
+  { value: '6_months', label: '6 Months (180 Days)', icon: '⏱️', description: 'Access expires after 180 days' },
+  { value: '1_year', label: '1 Year (365 Days)', icon: '⏱️', description: 'Access expires after 365 days' },
+  { value: 'custom', label: 'Custom Duration in Days', icon: '⚙️', description: 'Specify custom number of days' }
+]
 
 export default function AdminBundles() {
   const { formatPrice } = useCurrency()
@@ -74,8 +84,9 @@ export default function AdminBundles() {
         `)
         .order('created_at', { ascending: false })
 
+      let formattedCourses = []
       if (coursesData) {
-        const formattedCourses = coursesData.map(c => ({
+        formattedCourses = coursesData.map(c => ({
           id: c.id,
           title: c.products?.title || 'Untitled Course',
           price: c.products?.price || 0,
@@ -85,28 +96,51 @@ export default function AdminBundles() {
         setAvailableCourses(formattedCourses)
       }
 
-      // 2. Fetch all bundles with their bundle_items
+      // 2. Fetch all bundles
       const { data: bundlesData, error: bErr } = await supabase
         .from('products')
-        .select(`
-          *,
-          bundle_items (
-            id,
-            course_id,
-            order_index,
-            products:course_id (
-              id,
-              title,
-              price,
-              cover_image
-            )
-          )
-        `)
+        .select('*')
         .eq('type', 'bundle')
         .order('created_at', { ascending: false })
 
-      if (!bErr && bundlesData) {
-        setBundles(bundlesData)
+      if (bErr) {
+        console.error('Error loading bundles:', bErr)
+      }
+
+      if (bundlesData) {
+        const bundleIds = bundlesData.map(b => b.id)
+        let itemsByBundle = {}
+
+        if (bundleIds.length > 0) {
+          const { data: itemsData, error: itemsErr } = await supabase
+            .from('bundle_items')
+            .select('id, bundle_id, course_id, order_index')
+            .in('bundle_id', bundleIds)
+            .order('order_index', { ascending: true })
+
+          if (!itemsErr && itemsData) {
+            itemsData.forEach(item => {
+              if (!itemsByBundle[item.bundle_id]) itemsByBundle[item.bundle_id] = []
+              const matched = formattedCourses.find(c => c.id === item.course_id)
+              itemsByBundle[item.bundle_id].push({
+                ...item,
+                products: matched ? {
+                  id: matched.id,
+                  title: matched.title,
+                  price: matched.price,
+                  cover_image: matched.cover_image
+                } : null
+              })
+            })
+          }
+        }
+
+        const merged = bundlesData.map(b => ({
+          ...b,
+          bundle_items: itemsByBundle[b.id] || []
+        }))
+
+        setBundles(merged)
       }
     } catch (err) {
       console.error('Error loading bundles data:', err)
@@ -941,19 +975,12 @@ export default function AdminBundles() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
                   <div>
-                    <label style={labelStyle}>Duration Limit</label>
-                    <select
+                    <CustomDropdown
+                      options={DURATION_OPTIONS}
                       value={form.access_duration_type}
-                      onChange={e => setForm({ ...form, access_duration_type: e.target.value })}
-                      style={inputStyle}
-                    >
-                      <option value="lifetime">Forever / Lifetime (No Expiration)</option>
-                      <option value="1_month">1 Month (30 Days)</option>
-                      <option value="3_months">3 Months (90 Days)</option>
-                      <option value="6_months">6 Months (180 Days)</option>
-                      <option value="1_year">1 Year (365 Days)</option>
-                      <option value="custom">Custom Duration in Days</option>
-                    </select>
+                      onChange={val => setForm({ ...form, access_duration_type: val })}
+                      label="Duration Limit"
+                    />
                   </div>
 
                   {form.access_duration_type === 'custom' && (

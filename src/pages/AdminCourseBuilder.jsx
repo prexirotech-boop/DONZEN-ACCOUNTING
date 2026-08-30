@@ -1,6 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import CustomDropdown from '../components/CustomDropdown'
+
+const DURATION_OPTIONS = [
+  { value: 'lifetime', label: 'Forever / Lifetime (No Expiration)', icon: '♾️', description: 'Students maintain permanent unlimited access' },
+  { value: '1_month', label: '1 Month (30 Days)', icon: '⏱️', description: 'Access expires after 30 days' },
+  { value: '3_months', label: '3 Months (90 Days)', icon: '⏱️', description: 'Access expires after 90 days' },
+  { value: '6_months', label: '6 Months (180 Days)', icon: '⏱️', description: 'Access expires after 180 days' },
+  { value: '1_year', label: '1 Year (365 Days)', icon: '⏱️', description: 'Access expires after 365 days' },
+  { value: 'custom', label: 'Custom Duration in Days', icon: '⚙️', description: 'Specify custom number of days' }
+]
+
+const LEVEL_OPTIONS = [
+  { value: 'beginner', label: 'Beginner Level', icon: '🌱' },
+  { value: 'intermediate', label: 'Intermediate Level', icon: '⚡' },
+  { value: 'advanced', label: 'Advanced Level', icon: '🚀' }
+]
 import {
   DndContext,
   closestCenter,
@@ -1343,16 +1359,12 @@ export default function AdminCourseBuilder() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Target Audience Difficulty *</label>
-                <select 
-                  value={formData.level} 
-                  onChange={e => setFormData({ ...formData, level: e.target.value })} 
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
-                >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
+                <CustomDropdown
+                  options={LEVEL_OPTIONS}
+                  value={formData.level}
+                  onChange={val => setFormData({ ...formData, level: val })}
+                  label="Target Audience Difficulty *"
+                />
               </div>
             </div>
 
@@ -1574,21 +1586,12 @@ export default function AdminCourseBuilder() {
 
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
-                    Duration Limit
-                  </label>
-                  <select
+                  <CustomDropdown
+                    options={DURATION_OPTIONS}
                     value={formData.access_duration_type}
-                    onChange={e => setFormData({ ...formData, access_duration_type: e.target.value })}
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
-                  >
-                    <option value="lifetime">Forever / Lifetime (No Expiration)</option>
-                    <option value="1_month">1 Month (30 Days)</option>
-                    <option value="3_months">3 Months (90 Days)</option>
-                    <option value="6_months">6 Months (180 Days)</option>
-                    <option value="1_year">1 Year (365 Days)</option>
-                    <option value="custom">Custom Duration in Days</option>
-                  </select>
+                    onChange={val => setFormData({ ...formData, access_duration_type: val })}
+                    label="Duration Limit"
+                  />
                 </div>
 
                 {formData.access_duration_type === 'custom' && (

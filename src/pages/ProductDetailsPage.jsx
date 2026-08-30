@@ -97,12 +97,10 @@ export default function ProductDetailsPage() {
         // 4. Check enrollment if logged in
         user ? supabase.from('enrollments').select('id').eq('user_id', user.id).eq('course_id', prod.id).maybeSingle() : Promise.resolve({ data: null }),
         // 5. Check wishlist if logged in
-        user ? supabase.from('wishlist').select('id').eq('user_id', user.id).eq('product_id', prod.id).maybeSingle() : Promise.resolve({ data: null }),
-        // 6. Fetch bundle items if bundle
-        prod.type === 'bundle' ? supabase.from('bundle_items').select('id, course_id, order_index, products:course_id(id, title, price, old_price, cover_image, description, short_description)').eq('bundle_id', prod.id).order('order_index', { ascending: true }) : Promise.resolve({ data: [] })
+        user ? supabase.from('wishlist').select('id').eq('user_id', user.id).eq('product_id', prod.id).maybeSingle() : Promise.resolve({ data: null })
       ]
 
-      const [revsRes, courseRes, modsRes, enrRes, wlRes, bundleRes] = await Promise.all(promises)
+      const [revsRes, courseRes, modsRes, enrRes, wlRes] = await Promise.all(promises)
 
       // Set reviews state
       const revs = revsRes.data
@@ -128,9 +126,27 @@ export default function ProductDetailsPage() {
         })))
       }
 
-      // Set bundle items
-      if (bundleRes.data) {
-        setBundleItems(bundleRes.data)
+      // Fetch bundle items if bundle (avoiding relational join ambiguity)
+      if (prod.type === 'bundle') {
+        const { data: biData, error: biErr } = await supabase
+          .from('bundle_items')
+          .select('id, course_id, order_index')
+          .eq('bundle_id', prod.id)
+          .order('order_index', { ascending: true })
+
+        if (!biErr && biData && biData.length > 0) {
+          const cIds = biData.map(item => item.course_id)
+          const { data: cProds } = await supabase
+            .from('products')
+            .select('id, title, price, old_price, cover_image, description, short_description')
+            .in('id', cIds)
+
+          const formattedBundleItems = biData.map(item => ({
+            ...item,
+            products: (cProds || []).find(cp => cp.id === item.course_id) || null
+          }))
+          setBundleItems(formattedBundleItems)
+        }
       }
 
       // Set user flags
