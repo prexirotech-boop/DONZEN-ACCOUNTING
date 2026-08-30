@@ -701,22 +701,24 @@ export default function PlaybookSalesPage() {
             {/* TIER 1: Standard Single Course */}
             <div className="cf-pricing-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #e2e8f0', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
               <div>
-                <span style={{ display: 'inline-block', background: '#f1f5f9', color: '#475569', fontSize: 11.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
-                  Standard Track
-                </span>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
-                  {product?.title || '30-Day Practical Accounting Experience'}
-                </h3>
-                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, marginBottom: 20 }}>
-                  The core 30-day intensive workplace simulation program covering foundational accounting, payroll, and tax computation.
-                </p>
+                <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                  <span style={{ display: 'inline-block', background: '#f1f5f9', color: '#475569', fontSize: 11.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
+                    Standard Course
+                  </span>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
+                    {product?.title || '30-Day Practical Accounting Experience'}
+                  </h3>
+                  <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, margin: '0 auto', maxWidth: 360 }}>
+                    The core 30-day intensive workplace simulation program covering foundational accounting, payroll, and tax computation.
+                  </p>
+                </div>
 
-                <div style={{ borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', padding: '16px 0', marginBottom: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <div style={{ borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', padding: '16px 0', marginBottom: 20, textAlign: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 10, marginBottom: 4 }}>
                     <span style={{ fontSize: 14, color: '#94a3b8', textDecoration: 'line-through' }}>{formatPrice(oldPrice)}</span>
                     <span style={{ fontSize: 28, fontWeight: 900, color: '#0f172a' }}>{formatPrice(price)}</span>
                   </div>
-                  <span style={{ fontSize: 11.5, color: '#16a34a', fontWeight: 600 }}>One-time payment · Instant dashboard access</span>
+                  <span style={{ fontSize: 11.5, color: '#16a34a', fontWeight: 600, display: 'block' }}>One-time payment · Instant dashboard access</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
@@ -765,27 +767,30 @@ export default function PlaybookSalesPage() {
 
             {/* TIER 2: Master Course Bundle (Recommended) */}
             <div className="cf-pricing-box" style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #ff1717', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 10px 35px rgba(255,23,23,0.08)' }}>
-              <div style={{ position: 'absolute', top: -13, right: 24, background: '#ff1717', color: '#ffffff', fontSize: 11, fontWeight: 800, padding: '3px 12px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', boxShadow: '0 2px 8px rgba(255,23,23,0.3)' }}>
-                ⭐ Best Value · Most Popular
+              <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', background: '#ff1717', color: '#ffffff', fontSize: 11, fontWeight: 800, padding: '4px 14px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', boxShadow: '0 2px 8px rgba(255,23,23,0.3)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>BEST VALUE · MOST POPULAR</span>
               </div>
 
               <div>
-                <span style={{ display: 'inline-block', background: '#fff5f5', color: '#ff1717', fontSize: 11.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
-                  Complete Bundle
-                </span>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
-                  {bundleProduct?.title || 'Master Accounting & Software Bundle'}
-                </h3>
-                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, marginBottom: 20 }}>
-                  Get the 30-Day Experience PLUS all software masterclasses (QuickBooks, Sage 50), and full bookkeeping templates toolkit.
-                </p>
+                <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                  <span style={{ display: 'inline-block', background: '#fff5f5', color: '#ff1717', fontSize: 11.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
+                    Complete Bundle
+                  </span>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
+                    {bundleProduct?.title || 'Master Accounting & Software Bundle'}
+                  </h3>
+                  <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, margin: '0 auto', maxWidth: 360 }}>
+                    Get the 30-Day Experience PLUS all software masterclasses (QuickBooks, Sage 50), and full bookkeeping templates toolkit.
+                  </p>
+                </div>
 
-                <div style={{ borderTop: '1px solid #fee2e2', borderBottom: '1px solid #fee2e2', padding: '16px 0', marginBottom: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                <div style={{ borderTop: '1px solid #fee2e2', borderBottom: '1px solid #fee2e2', padding: '16px 0', marginBottom: 20, textAlign: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 10, marginBottom: 4 }}>
                     <span style={{ fontSize: 14, color: '#94a3b8', textDecoration: 'line-through' }}>{formatPrice(bundleOldPrice)}</span>
                     <span style={{ fontSize: 28, fontWeight: 900, color: '#ff1717' }}>{formatPrice(bundlePrice)}</span>
                   </div>
-                  <span style={{ fontSize: 11.5, color: '#b91c1c', fontWeight: 700 }}>Unlocks all multi-courses in 1 enrollment</span>
+                  <span style={{ fontSize: 11.5, color: '#b91c1c', fontWeight: 700, display: 'block' }}>Unlocks all multi-courses in 1 enrollment</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
