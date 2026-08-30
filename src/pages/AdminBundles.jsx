@@ -5,12 +5,42 @@ import { useCurrency } from '../context/CurrencyContext'
 import CustomDropdown from '../components/CustomDropdown'
 
 const DURATION_OPTIONS = [
-  { value: 'lifetime', label: 'Forever / Lifetime (No Expiration)', icon: '♾️', description: 'Students maintain permanent unlimited access' },
-  { value: '1_month', label: '1 Month (30 Days)', icon: '⏱️', description: 'Access expires after 30 days' },
-  { value: '3_months', label: '3 Months (90 Days)', icon: '⏱️', description: 'Access expires after 90 days' },
-  { value: '6_months', label: '6 Months (180 Days)', icon: '⏱️', description: 'Access expires after 180 days' },
-  { value: '1_year', label: '1 Year (365 Days)', icon: '⏱️', description: 'Access expires after 365 days' },
-  { value: 'custom', label: 'Custom Duration in Days', icon: '⚙️', description: 'Specify custom number of days' }
+  { 
+    value: 'lifetime', 
+    label: 'Forever / Lifetime (No Expiration)', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18.178 8c5.096 0 5.096 8 0 8-2.673 0-4.048-2.023-6.178-4-2.13-1.977-3.505-4-6.178-4-5.096 0-5.096 8 0 8 2.673 0 4.048-2.023 6.178-4 2.13-1.977 3.505-4 6.178-4z"/></svg>, 
+    description: 'Students maintain permanent unlimited access' 
+  },
+  { 
+    value: '1_month', 
+    label: '1 Month (30 Days)', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, 
+    description: 'Access expires after 30 days' 
+  },
+  { 
+    value: '3_months', 
+    label: '3 Months (90 Days)', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, 
+    description: 'Access expires after 90 days' 
+  },
+  { 
+    value: '6_months', 
+    label: '6 Months (180 Days)', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, 
+    description: 'Access expires after 180 days' 
+  },
+  { 
+    value: '1_year', 
+    label: '1 Year (365 Days)', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, 
+    description: 'Access expires after 365 days' 
+  },
+  { 
+    value: 'custom', 
+    label: 'Custom Duration in Days', 
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>, 
+    description: 'Specify custom number of days' 
+  }
 ]
 
 export default function AdminBundles() {
@@ -904,7 +934,7 @@ export default function AdminBundles() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 18 }}>⏳</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <div>
                       <strong style={{ fontSize: 14, color: '#92400e', display: 'block' }}>
                         Batch Enrollment (Scheduled Access & Release)
@@ -962,7 +992,7 @@ export default function AdminBundles() {
                 gap: 12
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 18 }}>⏱️</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <div>
                     <strong style={{ fontSize: 14, color: '#1e293b', display: 'block' }}>
                       Access Duration Limit & Expiration

@@ -290,12 +290,25 @@ export default function PaymentPage() {
 
           // Fetch bundled items if product is a bundle
           if (activeProduct.type === 'bundle') {
-            const { data: bItems } = await supabase
+            const { data: bItems, error: bItemsErr } = await supabase
               .from('bundle_items')
-              .select('id, course_id, order_index, products:course_id(id, title, price, cover_image)')
+              .select('id, course_id, order_index')
               .eq('bundle_id', activeProduct.id)
               .order('order_index', { ascending: true })
-            if (bItems) setBundleItems(bItems)
+
+            if (!bItemsErr && bItems && bItems.length > 0) {
+              const cIds = bItems.map(item => item.course_id)
+              const { data: cProds } = await supabase
+                .from('products')
+                .select('id, title, price, cover_image')
+                .in('id', cIds)
+
+              const formattedBundleItems = bItems.map(item => ({
+                ...item,
+                products: (cProds || []).find(cp => cp.id === item.course_id) || null
+              }))
+              setBundleItems(formattedBundleItems)
+            }
           }
           
           // Auto-add checkout product to cart if not present

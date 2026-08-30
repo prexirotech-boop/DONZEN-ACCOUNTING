@@ -8,6 +8,7 @@ export default function PlaybookSalesPage() {
   const { formatPrice } = useCurrency()
   const [searchParams] = useSearchParams()
   const [product, setProduct] = useState(null)
+  const [bundleProduct, setBundleProduct] = useState(null)
   const [openFaq, setOpenFaq] = useState(null)
   const [timeLeft, setTimeLeft] = useState(2 * 60 * 60 + 14 * 60) // 2h 14m countdown
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
@@ -27,42 +28,57 @@ export default function PlaybookSalesPage() {
     return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  // Load product
+  // Load single product and bundle product
   useEffect(() => {
-    async function loadProduct() {
+    async function loadProducts() {
       try {
-        let { data } = await supabase
+        // 1. Fetch single course product
+        let { data: singleProd } = await supabase
           .from('products')
           .select('*')
-          .eq('slug', 'accounting-experience-programme')
+          .or('slug.eq.30-days-accounting,slug.eq.accounting-experience-programme,type.eq.course')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
           .maybeSingle()
 
-        if (!data) {
-          const res = await supabase
-            .from('products')
-            .select('*')
-            .eq('type', 'course')
-            .maybeSingle()
-          data = res.data
-        }
-        if (data) {
-          setProduct(data)
-        }
+        if (singleProd) setProduct(singleProd)
+
+        // 2. Fetch bundle product
+        let { data: bundleProd } = await supabase
+          .from('products')
+          .select('*')
+          .eq('type', 'bundle')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+
+        if (bundleProd) setBundleProduct(bundleProd)
       } catch (err) {
         console.error('Error loading product:', err)
       }
     }
-    loadProduct()
+    loadProducts()
   }, [])
 
-  const handleEnroll = () => {
+  const handleEnrollSingle = () => {
     const target = product ? `/checkout?product=${product.id}` : '/checkout'
+    navigate(target)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleEnrollBundle = () => {
+    const target = bundleProduct ? `/checkout?product=${bundleProduct.id}` : (product ? `/checkout?product=${product.id}` : '/checkout')
     navigate(target)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const price = product?.price || 45000
   const oldPrice = product?.old_price || 120000
+
+  const bundlePrice = bundleProduct?.price || 85000
+  const bundleOldPrice = bundleProduct?.old_price || 200000
 
   const toggleFaq = (idx) => {
     setOpenFaq(openFaq === idx ? null : idx)
@@ -72,12 +88,18 @@ export default function PlaybookSalesPage() {
     <div className="cf-root">
       {/* Top Warning Hook */}
       <div className="cf-top-warning">
-        <span>⚠️ ATTENTION: Accounting Graduates, NYSC Members, Early-Career Professionals, Freelancers, &amp; Business Owners...</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          ATTENTION: Accounting Graduates, NYSC Members, Early-Career Professionals, Freelancers, &amp; Business Owners...
+        </span>
       </div>
 
       {/* Evergreen Urgent Timer Banner */}
       <div className="cf-timer-banner">
-        <span>⚡ SPECIAL ENROLLMENT: Spots filling fast! Price increases in <strong className="cf-timer">{formatTime(timeLeft)}</strong></span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          SPECIAL ENROLLMENT: Spots filling fast! Price increases in <strong className="cf-timer">{formatTime(timeLeft)}</strong>
+        </span>
       </div>
 
       {/* Main Funnel Container */}
@@ -566,36 +588,164 @@ export default function PlaybookSalesPage() {
       {/* Section 14: What You'll Receive & Pricing Offer */}
       <section className="cf-section cf-pricing-offer-section">
         <div className="cf-container">
-          <div className="cf-pricing-box">
-            <span className="cf-pricing-header-tag">30-DAY SPECIAL ACCESS</span>
-            <h2>Start Your Workplace Accounting Journey Today</h2>
-            <p className="cf-pricing-subheader">Gain access to the entire practical program, downloadable templates, and real simulations.</p>
-            
-            <div className="cf-pricing-features">
-              <div className="cf-pricing-feat-item">✔ 30-Day Practical Training Program</div>
-              <div className="cf-pricing-feat-item">✔ Workplace Accounting Projects</div>
-              <div className="cf-pricing-feat-item">✔ Practical Accounting Templates</div>
-              <div className="cf-pricing-feat-item">✔ Excel Practice Files</div>
-              <div className="cf-pricing-feat-item">✔ QuickBooks &amp; Sage Exposure</div>
-              <div className="cf-pricing-feat-item">✔ Downloadable Resources</div>
-              <div className="cf-pricing-feat-item">✔ Practical Assignments</div>
-              <div className="cf-pricing-feat-item">✔ Certificate of Completion</div>
-              <div className="cf-pricing-feat-item">✔ Community Learning &amp; Support</div>
-              <div className="cf-pricing-feat-item">✔ Access to Structured Learning</div>
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <span className="cf-pricing-header-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
+              OFFICIAL ENROLLMENT OPTIONS
+            </span>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', color: '#0f172a', fontWeight: 800, marginTop: 12 }}>Choose Your Learning Track</h2>
+            <p className="cf-pricing-subheader" style={{ maxWidth: 650, margin: '8px auto 0' }}>Select between the standard 30-day practical cohort or unlock the complete all-inclusive software &amp; templates bundle.</p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: 24,
+            maxWidth: 1000,
+            margin: '0 auto',
+            alignItems: 'stretch'
+          }}>
+            {/* TIER 1: Standard Single Course */}
+            <div className="cf-pricing-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #e2e8f0', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+              <div>
+                <span style={{ display: 'inline-block', background: '#f1f5f9', color: '#475569', fontSize: 11.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
+                  Standard Track
+                </span>
+                <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
+                  {product?.title || '30-Day Practical Accounting Experience'}
+                </h3>
+                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, marginBottom: 20 }}>
+                  The core 30-day intensive workplace simulation program covering foundational accounting, payroll, and tax computation.
+                </p>
+
+                <div style={{ borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', padding: '16px 0', marginBottom: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                    <span style={{ fontSize: 14, color: '#94a3b8', textDecoration: 'line-through' }}>{formatPrice(oldPrice)}</span>
+                    <span style={{ fontSize: 28, fontWeight: 900, color: '#0f172a' }}>{formatPrice(price)}</span>
+                  </div>
+                  <span style={{ fontSize: 11.5, color: '#16a34a', fontWeight: 600 }}>One-time payment · Instant dashboard access</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+                  {[
+                    '30-Day Practical Training Program',
+                    'Workplace Accounting Case Studies',
+                    'Core Excel Practice Spreadsheets',
+                    'Tax Computation & PAYE Worksheets',
+                    'Certificate of Completion',
+                    'Standard Student Dashboard Access'
+                  ].map((feat, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#334155' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={handleEnrollSingle}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    background: '#0f172a',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    transition: 'background 0.15s ease'
+                  }}
+                >
+                  <span>Enroll in Single Course</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
             </div>
 
-            <div className="cf-pricing-grid">
-              <span className="cf-old-price-val">{formatPrice(oldPrice)}</span>
-              <span className="cf-new-price-val">{formatPrice(price)}</span>
-            </div>
+            {/* TIER 2: Master Course Bundle (Recommended) */}
+            <div className="cf-pricing-box" style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #ff1717', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 10px 35px rgba(255,23,23,0.08)' }}>
+              <div style={{ position: 'absolute', top: -13, right: 24, background: '#ff1717', color: '#ffffff', fontSize: 11, fontWeight: 800, padding: '3px 12px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', boxShadow: '0 2px 8px rgba(255,23,23,0.3)' }}>
+                ⭐ Best Value · Most Popular
+              </div>
 
-            <div style={{ marginTop: 28 }}>
-              <button className="cf-enroll-cta pulsing-cta-yellow" onClick={handleEnroll}>
-                👉 CLICK HERE TO ENROLL NOW 👈
-              </button>
-              <p className="cf-enroll-desc-text">Secure checkout and immediate access in your student dashboard</p>
+              <div>
+                <span style={{ display: 'inline-block', background: '#fff5f5', color: '#ff1717', fontSize: 11.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
+                  Complete Bundle
+                </span>
+                <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
+                  {bundleProduct?.title || 'Master Accounting & Software Bundle'}
+                </h3>
+                <p style={{ fontSize: 13.5, color: '#64748b', lineHeight: 1.5, marginBottom: 20 }}>
+                  Get the 30-Day Experience PLUS all software masterclasses (QuickBooks, Sage 50), and full bookkeeping templates toolkit.
+                </p>
+
+                <div style={{ borderTop: '1px solid #fee2e2', borderBottom: '1px solid #fee2e2', padding: '16px 0', marginBottom: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                    <span style={{ fontSize: 14, color: '#94a3b8', textDecoration: 'line-through' }}>{formatPrice(bundleOldPrice)}</span>
+                    <span style={{ fontSize: 28, fontWeight: 900, color: '#ff1717' }}>{formatPrice(bundlePrice)}</span>
+                  </div>
+                  <span style={{ fontSize: 11.5, color: '#b91c1c', fontWeight: 700 }}>Unlocks all multi-courses in 1 enrollment</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+                  {[
+                    'Everything in the 30-Day Practical Course',
+                    'QuickBooks Online & Desktop Masterclass',
+                    'Sage 50 Complete Workplace Training',
+                    'Complete SME Bookkeeping & Financial Model Toolkit',
+                    'Automated Excel Financial Reporting Templates',
+                    'Priority Instructor Q&A & Support',
+                    'Verified Course Bundle Completion Certificates'
+                  ].map((feat, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1e293b', fontWeight: i === 0 ? 500 : 600 }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={handleEnrollBundle}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    background: '#ff1717',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    boxShadow: '0 4px 14px rgba(255,23,23,0.35)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>Get Complete Bundle</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
             </div>
           </div>
+          
+          <p style={{ textAlign: 'center', fontSize: 12.5, color: '#64748b', marginTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Safe 256-bit encrypted checkout via Paystack · Instant activation in your student dashboard
+          </p>
         </div>
       </section>
 

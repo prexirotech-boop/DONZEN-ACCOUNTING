@@ -46,7 +46,7 @@ export const getPages = () => {
     const filename = path.split('/').pop(); // e.g. "AboutPage.jsx"
     const componentName = filename.replace('.jsx', ''); // e.g. "AboutPage"
     
-    // Skip admin, dashboard, Q&A, and authentication pages from being shown in the public pages list
+    // Skip admin, dashboard, Q&A, authentication, and decommissioned legacy funnel pages
     if (
       componentName.startsWith('Admin') || 
       componentName.startsWith('LMS') ||
@@ -57,7 +57,11 @@ export const getPages = () => {
         'ResetPasswordPage', 
         'SetPasswordPage', 
         'AccountPage',
-        'StudentCertificates'
+        'StudentCertificates',
+        'EbookSalesPage',      // The N50K Blueprint
+        'LandingPage',         // Freelance Web Design Opt-in
+        'WebinarPage',         // Webinar Replay / Training
+        'SalesPage'            // Legacy Freelance Sales Page
       ].includes(componentName)
     ) {
       continue;
