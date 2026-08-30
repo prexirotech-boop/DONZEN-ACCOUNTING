@@ -117,17 +117,20 @@ export default function ProductsPage() {
   const searchQueryParam = searchParams.get('search') || ''
 
   const hasCourses = products.some(p => p.type === 'course')
+  const hasBundles = products.some(p => p.type === 'bundle')
   const hasTemplates = products.some(p => p.type === 'template')
   const hasEbooks = products.some(p => p.type === 'ebook' || p.type === 'blueprint')
 
   const availableFilters = ['All']
   if (hasCourses) availableFilters.push('Courses')
+  if (hasBundles) availableFilters.push('Bundles')
   if (hasTemplates) availableFilters.push('Templates')
   if (hasEbooks) availableFilters.push('E-Books')
 
   const filtered = products.filter(p => {
     let typeMatches = true
     if (activeFilter === 'Courses') typeMatches = p.type === 'course'
+    else if (activeFilter === 'Bundles') typeMatches = p.type === 'bundle'
     else if (activeFilter === 'Templates') typeMatches = p.type === 'template'
     else if (activeFilter === 'E-Books') typeMatches = p.type === 'ebook' || p.type === 'blueprint'
 
@@ -212,6 +215,7 @@ export default function ProductsPage() {
               const isWishlisted = wishlistedIds.includes(product.id)
               const free = isFree(product)
               const isCourse = product.type === 'course'
+              const isBundle = product.type === 'bundle'
               const features = Array.isArray(product.features) ? product.features : []
               const discountPct = product.old_price && product.price
                 ? Math.round((1 - product.price / product.old_price) * 100)
@@ -254,13 +258,19 @@ export default function ProductsPage() {
                       </svg>
                     </button>
                     {/* Type Tag */}
-                    <div className={`lib-type-tag ${isCourse ? 'course' : 'template'}`}>
-                      {product.type ? product.type.toUpperCase() : 'PRODUCT'}
+                    <div className={`lib-type-tag ${isCourse ? 'course' : isBundle ? 'bundle' : 'template'}`} style={isBundle ? { background: '#0f172a', color: '#fff' } : undefined}>
+                      {isBundle ? 'COURSE BUNDLE' : (product.type ? product.type.toUpperCase() : 'PRODUCT')}
                     </div>
                   </div>
 
                   {/* Card Body */}
                   <div className="lib-card-body">
+                    {product.batch_enrollment_enabled && product.batch_start_date && (
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, color: '#d97706', background: '#fffbeb', padding: '3px 8px', borderRadius: 4, marginBottom: 6 }}>
+                        <span>⏳ Batch Starts:</span>
+                        <span>{new Date(product.batch_start_date).toLocaleDateString()}</span>
+                      </div>
+                    )}
                     <h2 className="lib-card-title">{product.title}</h2>
                     <p className="lib-card-desc">{product.short_description || getShortDesc(product)}</p>
 

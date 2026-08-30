@@ -382,8 +382,20 @@ export default function AdminCourseBuilder() {
     slug: '',
     meta_title: '',
     meta_desc: '',
-    bonuses: [] // Array of bonus strings shown in checkout
+    bonuses: [], // Array of bonus strings shown in checkout
+    batch_enrollment_enabled: false,
+    batch_start_date: '',
+    batch_name: '',
+    access_duration_type: 'lifetime',
+    access_duration_days: ''
   })
+
+  // Batch Broadcast Email state
+  const [showBatchBroadcastModal, setShowBatchBroadcastModal] = useState(false)
+  const [broadcastSubject, setBroadcastSubject] = useState('')
+  const [broadcastMessage, setBroadcastMessage] = useState('')
+  const [sendingBroadcast, setSendingBroadcast] = useState(false)
+  const [broadcastSuccess, setBroadcastSuccess] = useState('')
 
   // Curriculum State
   const [modules, setModules] = useState([])
@@ -552,6 +564,16 @@ export default function AdminCourseBuilder() {
       if (courseData) {
         const hasCol = 'short_description' in (courseData.products || {})
         setHasShortDescColumn(hasCol)
+
+        let formattedStartDate = ''
+        const rawBatchDate = courseData.batch_start_date || courseData.products?.batch_start_date
+        if (rawBatchDate) {
+          const d = new Date(rawBatchDate)
+          if (!isNaN(d.getTime())) {
+            formattedStartDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+          }
+        }
+
         const dbData = {
           title: courseData.products?.title || '',
           description: courseData.products?.description || '',
@@ -565,7 +587,12 @@ export default function AdminCourseBuilder() {
           slug: courseData.products?.slug || '',
           meta_title: courseData.products?.meta_title || '',
           meta_desc: courseData.products?.meta_desc || '',
-          bonuses: Array.isArray(courseData.products?.features) ? courseData.products.features : []
+          bonuses: Array.isArray(courseData.products?.features) ? courseData.products.features : [],
+          batch_enrollment_enabled: courseData.batch_enrollment_enabled || courseData.products?.batch_enrollment_enabled || false,
+          batch_start_date: formattedStartDate,
+          batch_name: courseData.batch_name || courseData.products?.batch_name || '',
+          access_duration_type: courseData.access_duration_type || courseData.products?.access_duration_type || 'lifetime',
+          access_duration_days: courseData.access_duration_days || courseData.products?.access_duration_days || ''
         }
 
         // Check if a different local storage draft settings exists
@@ -644,7 +671,12 @@ export default function AdminCourseBuilder() {
         slug: formData.slug.trim(),
         meta_title: formData.meta_title.trim() || null,
         meta_desc: formData.meta_desc.trim() || null,
-        features: Array.isArray(formData.bonuses) ? formData.bonuses.filter(b => b.trim()) : []
+        features: Array.isArray(formData.bonuses) ? formData.bonuses.filter(b => b.trim()) : [],
+        batch_enrollment_enabled: formData.batch_enrollment_enabled,
+        batch_start_date: formData.batch_enrollment_enabled && formData.batch_start_date ? new Date(formData.batch_start_date).toISOString() : null,
+        batch_name: formData.batch_enrollment_enabled ? (formData.batch_name?.trim() || null) : null,
+        access_duration_type: formData.access_duration_type || 'lifetime',
+        access_duration_days: formData.access_duration_type === 'custom' ? (parseInt(formData.access_duration_days) || null) : null
       }
 
       if (hasShortDescColumn) {
@@ -663,19 +695,103 @@ export default function AdminCourseBuilder() {
         .update({
           level: formData.level,
           preview_video: formData.preview_video.trim(),
-          what_you_learn: Array.isArray(formData.what_you_learn) ? formData.what_you_learn.filter(x => x.trim()) : []
+          what_you_learn: Array.isArray(formData.what_you_learn) ? formData.what_you_learn.filter(x => x.trim()) : [],
+          batch_enrollment_enabled: formData.batch_enrollment_enabled,
+          batch_start_date: formData.batch_enrollment_enabled && formData.batch_start_date ? new Date(formData.batch_start_date).toISOString() : null,
+          batch_name: formData.batch_enrollment_enabled ? (formData.batch_name?.trim() || null) : null,
+          access_duration_type: formData.access_duration_type || 'lifetime',
+          access_duration_days: formData.access_duration_type === 'custom' ? (parseInt(formData.access_duration_days) || null) : null
         })
         .eq('id', id)
 
       localStorage.removeItem(`draft_course_${id}`)
       setShowCourseDraftBanner(false)
-      setMessage('Course configurations updated!')
+      setMessage('Course configurations & batch schedule updated!')
       setTimeout(() => setMessage(''), 3000)
       loadCourse()
     } catch (err) {
       alert(err.message)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSendBatchBroadcast = async (e) => {
+    e.preventDefault()
+    if (!broadcastSubject.trim() || !broadcastMessage.trim()) return
+    setSendingBroadcast(true)
+    setBroadcastSuccess('')
+
+    try {
+      // 1. Fetch all students enrolled in this course
+      const { data: enrs, error: enrErr } = await supabase
+        .from('enrollments')
+        .select('user_id, profiles(email, full_name)')
+        .eq('course_id', id)
+
+      if (enrErr) throw enrErr
+
+      if (!enrs || enrs.length === 0) {
+        alert('No students enrolled in this course yet.')
+        setSendingBroadcast(false)
+        return
+      }
+
+      // 2. Insert in-app notifications for each enrolled user
+      const courseTitle = formData.title || 'Your Course'
+      const notificationsToInsert = enrs.map(enr => ({
+        user_id: enr.user_id,
+        title: broadcastSubject.trim(),
+        message: broadcastMessage.trim(),
+        link: `/course/${id}`,
+        type: 'batch_reminder'
+      }))
+
+      await supabase.from('notifications').insert(notificationsToInsert)
+
+      // 3. Send email broadcast via trigger
+      const courseLink = `/course/${id}`
+      for (const enr of enrs) {
+        const studentEmail = enr.profiles?.email
+        const studentName = enr.profiles?.full_name || 'Student'
+        if (studentEmail) {
+          setTimeout(async () => {
+            try {
+              const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-batch-reminder`
+              await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'apikey': CONFIG.SUPABASE_KEY,
+                  'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`
+                },
+                body: JSON.stringify({
+                  recipient_email: studentEmail,
+                  recipient_name: studentName,
+                  course_title: courseTitle,
+                  course_link: courseLink,
+                  batch_name: formData.batch_name || 'Scheduled Batch',
+                  custom_subject: broadcastSubject.trim(),
+                  custom_message: broadcastMessage.trim(),
+                  type: 'batch_broadcast'
+                })
+              }).catch(() => {})
+            } catch (err) {}
+          }, 10)
+        }
+      }
+
+      setBroadcastSuccess(`Broadcast sent successfully to ${enrs.length} enrolled student(s)!`)
+      setTimeout(() => {
+        setShowBatchBroadcastModal(false)
+        setBroadcastSuccess('')
+        setBroadcastSubject('')
+        setBroadcastMessage('')
+      }, 2500)
+    } catch (err) {
+      alert('Error sending broadcast: ' + err.message)
+    } finally {
+      setSendingBroadcast(false)
     }
   }
 
@@ -1348,6 +1464,151 @@ export default function AdminCourseBuilder() {
               </div>
             </div>
 
+            {/* ── Batch Enrollment (Scheduled Release) ────────────────── */}
+            <div style={{
+              background: '#fffbeb',
+              border: '1px solid #fde68a',
+              borderRadius: 8,
+              padding: 18,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 14
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 20 }}>⏳</span>
+                  <div>
+                    <strong style={{ fontSize: 14, color: '#92400e', display: 'block' }}>
+                      Batch Enrollment (Scheduled Access & Release)
+                    </strong>
+                    <span style={{ fontSize: 12, color: '#b45309' }}>
+                      When enabled, students see a countdown timer until the scheduled start date and cannot view course content early.
+                    </span>
+                  </div>
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 6, fontSize: 13, fontWeight: 700, color: '#92400e' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.batch_enrollment_enabled}
+                    onChange={e => setFormData({ ...formData, batch_enrollment_enabled: e.target.checked })}
+                    style={{ width: 16, height: 16, accentColor: '#d97706' }}
+                  />
+                  Enable Batch Release
+                </label>
+              </div>
+
+              {formData.batch_enrollment_enabled && (
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 1fr', gap: 14, paddingTop: 6 }}>
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 600, fontSize: 12.5, marginBottom: 6, color: '#92400e' }}>
+                      Scheduled Release Date & Time *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={formData.batch_start_date}
+                      onChange={e => setFormData({ ...formData, batch_start_date: e.target.value })}
+                      required={formData.batch_enrollment_enabled}
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #fde68a', fontSize: 13, background: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 600, fontSize: 12.5, marginBottom: 6, color: '#92400e' }}>
+                      Batch / Cohort Label
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.batch_name}
+                      onChange={e => setFormData({ ...formData, batch_name: e.target.value })}
+                      placeholder="e.g. October 2026 Cohort"
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #fde68a', fontSize: 13, background: '#fff' }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Broadcast email trigger button */}
+              <div style={{ borderTop: '1px solid #fef3c7', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                <span style={{ fontSize: 12, color: '#78350f' }}>
+                  Need to send an update, reminder, or link to all batch students?
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowBatchBroadcastModal(true)}
+                  style={{
+                    background: '#d97706',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '6px 14px',
+                    borderRadius: 4,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  📢 Broadcast Message to Students
+                </button>
+              </div>
+            </div>
+
+            {/* ── Access Duration Limit & Expiration ───────────────────── */}
+            <div style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: 8,
+              padding: 18,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 20 }}>⏱️</span>
+                <div>
+                  <strong style={{ fontSize: 14, color: '#1e293b', display: 'block' }}>
+                    Access Duration Limit & Expiration
+                  </strong>
+                  <span style={{ fontSize: 12, color: '#64748b' }}>
+                    Set how long students have access (e.g. 1 month, 6 months, 1 year, lifetime). Once expired, they are redirected to checkout to renew.
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
+                    Duration Limit
+                  </label>
+                  <select
+                    value={formData.access_duration_type}
+                    onChange={e => setFormData({ ...formData, access_duration_type: e.target.value })}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
+                  >
+                    <option value="lifetime">Forever / Lifetime (No Expiration)</option>
+                    <option value="1_month">1 Month (30 Days)</option>
+                    <option value="3_months">3 Months (90 Days)</option>
+                    <option value="6_months">6 Months (180 Days)</option>
+                    <option value="1_year">1 Year (365 Days)</option>
+                    <option value="custom">Custom Duration in Days</option>
+                  </select>
+                </div>
+
+                {formData.access_duration_type === 'custom' && (
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
+                      Custom Duration in Days
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.access_duration_days}
+                      onChange={e => setFormData({ ...formData, access_duration_days: e.target.value })}
+                      placeholder="e.g. 45"
+                      required
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input 
                 type="checkbox" 
@@ -1661,6 +1922,95 @@ export default function AdminCourseBuilder() {
                 <button type="button" onClick={() => setShowBulkModal(false)} style={{ flex: 1, background: '#f7f8f9', color: '#4f566b', border: '1px solid #cbd5e1', padding: '10px', borderRadius: 6, fontWeight: 500, cursor: 'pointer', fontSize: 13 }}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Batch Broadcast to Students */}
+      {showBatchBroadcastModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+          <div style={{ background: '#fff', padding: '28px 24px', borderRadius: 12, width: '100%', maxWidth: 520, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#0f172a' }}>
+                📢 Broadcast to Enrolled Batch Students
+              </h3>
+              <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                Send an in-app alert notification and email update with the course link to all students enrolled in this course.
+              </p>
+            </div>
+
+            {broadcastSuccess ? (
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '14px', borderRadius: 6, color: '#166534', fontSize: 13, fontWeight: 600 }}>
+                ✅ {broadcastSuccess}
+              </div>
+            ) : (
+              <form onSubmit={handleSendBatchBroadcast} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 600, fontSize: 12.5, marginBottom: 6, color: '#334155' }}>
+                    Broadcast Subject *
+                  </label>
+                  <input
+                    type="text"
+                    value={broadcastSubject}
+                    onChange={e => setBroadcastSubject(e.target.value)}
+                    placeholder="e.g. 🚀 Batch Access Is Live! Start Learning Now"
+                    required
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1.5px solid #cbd5e1', fontSize: 13 }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontWeight: 600, fontSize: 12.5, marginBottom: 6, color: '#334155' }}>
+                    Message Body *
+                  </label>
+                  <textarea
+                    value={broadcastMessage}
+                    onChange={e => setBroadcastMessage(e.target.value)}
+                    placeholder="Write your announcement or reminder message here. The course access link will be included automatically."
+                    rows={4}
+                    required
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1.5px solid #cbd5e1', fontSize: 13, resize: 'vertical' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
+                  <button
+                    type="submit"
+                    disabled={sendingBroadcast || !broadcastSubject.trim() || !broadcastMessage.trim()}
+                    style={{
+                      flex: 1,
+                      background: '#d97706',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '10px',
+                      borderRadius: 6,
+                      fontWeight: 700,
+                      cursor: sendingBroadcast ? 'not-allowed' : 'pointer',
+                      fontSize: 13
+                    }}
+                  >
+                    {sendingBroadcast ? 'Sending Broadcast...' : 'Send Broadcast Now'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowBatchBroadcastModal(false)}
+                    style={{
+                      flex: 1,
+                      background: '#f8fafc',
+                      color: '#475569',
+                      border: '1px solid #cbd5e1',
+                      padding: '10px',
+                      borderRadius: 6,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontSize: 13
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

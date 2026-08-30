@@ -79,6 +79,7 @@ export default function PaymentPage() {
 
   // Product data
   const [product, setProduct] = useState(null)
+  const [bundleItems, setBundleItems] = useState([])
   const [loadingProduct, setLoadingProduct] = useState(true)
   const initiatedCheckoutRef = useRef(false)
 
@@ -286,6 +287,16 @@ export default function PaymentPage() {
         
         if (activeProduct) {
           setProduct(activeProduct)
+
+          // Fetch bundled items if product is a bundle
+          if (activeProduct.type === 'bundle') {
+            const { data: bItems } = await supabase
+              .from('bundle_items')
+              .select('id, course_id, order_index, products:course_id(id, title, price, cover_image)')
+              .eq('bundle_id', activeProduct.id)
+              .order('order_index', { ascending: true })
+            if (bItems) setBundleItems(bItems)
+          }
           
           // Auto-add checkout product to cart if not present
           try {
@@ -762,13 +773,49 @@ export default function PaymentPage() {
         <div className="shopify-product-info">
           <h4 className="shopify-product-title">{productTitle}</h4>
           <span className="shopify-product-desc">
-            {product?.type === 'physical' ? 'Physical Product' : 'Digital Product'}
+            {product?.type === 'bundle'
+              ? `📦 Course Bundle (${bundleItems.length} Programs)`
+              : product?.type === 'physical'
+                ? 'Physical Product'
+                : 'Digital Product'}
           </span>
+          {searchParams.get('renew') === 'true' && (
+            <span style={{ display: 'inline-block', background: '#fef2f2', color: '#dc2626', fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: 4, marginTop: 4 }}>
+              🔄 Access Renewal
+            </span>
+          )}
+          {product?.batch_enrollment_enabled && product?.batch_start_date && (
+            <span style={{ display: 'block', color: '#d97706', fontSize: '11px', fontWeight: 600, marginTop: 3 }}>
+              ⏳ Opens: {new Date(product.batch_start_date).toLocaleDateString()}
+            </span>
+          )}
         </div>
         <div className="shopify-product-price-col">
           <span className="shopify-item-price">{formatPrice(basePrice)}</span>
         </div>
       </div>
+
+      {/* Bundle Course Breakdown */}
+      {product?.type === 'bundle' && bundleItems.length > 0 && (
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '10px 12px', marginBottom: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: 6 }}>
+            Included Programs in this Bundle:
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {bundleItems.map((bItem, bIdx) => (
+              <div key={bItem.id || bIdx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#334155' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <span>{bItem.products?.title || `Course #${bIdx + 1}`}</span>
+                </span>
+                <span style={{ color: '#64748b', fontSize: 11, textDecoration: 'line-through' }}>
+                  {formatPrice(bItem.products?.price || 0)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Selected Order Bumps */}
       {selectedBumps.map(bump => {

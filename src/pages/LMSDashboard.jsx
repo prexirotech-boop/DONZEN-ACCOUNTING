@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import UserMenu from '../components/UserMenu'
-import { supabase, recoverEnrollmentFromOrders } from '../lib/supabase'
+import { supabase, recoverEnrollmentFromOrders, checkAndTriggerBatchUnlocks } from '../lib/supabase'
 import StudentCertificates from './StudentCertificates'
 import UserAvatar from '../components/UserAvatar'
 import { useCurrency } from '../context/CurrencyContext'
+import BatchCountdown from '../components/BatchCountdown'
 
 export function getShortDesc(product) {
   if (!product) return ''
@@ -31,84 +32,108 @@ export function getShortDesc(product) {
 // ─── SUB-COMPONENTS ─────────────────────────────────────────────────────────
 
 function MyLearningTab({ user }) {
+  const { formatPrice } = useCurrency()
   const [enrollments, setEnrollments] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchLearningData() {
-      if (!user) return
-      try {
-        // Fetch course enrollments
-        const { data: enrData, error: enrError } = await supabase
-          .from('enrollments')
-          .select('course_id, progress')
-          .eq('user_id', user.id)
+  const fetchLearningData = async () => {
+    if (!user) return
+    try {
+      // 1. Trigger background batch release check
+      checkAndTriggerBatchUnlocks(user.id)
 
-        if (enrError) throw enrError
+      // 2. Fetch course enrollments with batch & duration details
+      const { data: enrData, error: enrError } = await supabase
+        .from('enrollments')
+        .select('course_id, progress, access_starts_at, access_expires_at, is_batch, bundle_id')
+        .eq('user_id', user.id)
 
-        const courseIds = (enrData || []).map(e => e.course_id).filter(Boolean)
+      if (enrError) throw enrError
 
-        if (courseIds.length === 0) {
-          setEnrollments([])
-          return
+      const courseIds = (enrData || []).map(e => e.course_id).filter(Boolean)
+      const bundleIds = (enrData || []).map(e => e.bundle_id).filter(Boolean)
+
+      if (courseIds.length === 0) {
+        setEnrollments([])
+        return
+      }
+
+      const [coursesRes, productsRes, bundlesRes] = await Promise.all([
+        supabase.from('courses').select('id, instructor, batch_name').in('id', courseIds),
+        supabase.from('products').select('id, title, cover_image, price, slug').in('id', courseIds),
+        bundleIds.length > 0 ? supabase.from('products').select('id, title').in('id', bundleIds) : Promise.resolve({ data: [] })
+      ])
+
+      const coursesData = coursesRes.data || []
+      const productsData = productsRes.data || []
+      const bundlesData = bundlesRes.data || []
+
+      const courseMap = {}
+      coursesData.forEach(c => { courseMap[c.id] = c })
+
+      const productMap = {}
+      productsData.forEach(p => { productMap[p.id] = p })
+
+      const bundleMap = {}
+      bundlesData.forEach(b => { bundleMap[b.id] = b })
+
+      const enhanced = await Promise.all((enrData || []).map(async (e) => {
+        const product = productMap[e.course_id]
+        if (!product) return null
+
+        const course = courseMap[e.course_id] || { id: e.course_id, instructor: 'Instructor' }
+        const bundle = e.bundle_id ? bundleMap[e.bundle_id] : null
+
+        let totalLessons = 0
+        const { data: modulesData, error: modsErr } = await supabase
+          .from('modules')
+          .select('id')
+          .eq('course_id', e.course_id)
+
+        if (!modsErr && modulesData && modulesData.length > 0) {
+          const moduleIds = modulesData.map(m => m.id)
+          const { count, error: lessonsCountErr } = await supabase
+            .from('lessons')
+            .select('id', { count: 'exact', head: true })
+            .in('module_id', moduleIds)
+
+          if (!lessonsCountErr) {
+            totalLessons = count || 0
+          }
         }
 
-        const [coursesRes, productsRes] = await Promise.all([
-          supabase.from('courses').select('id, instructor').in('id', courseIds),
-          supabase.from('products').select('id, title, cover_image').in('id', courseIds)
-        ])
+        const now = Date.now()
+        const isLockedBatch = e.access_starts_at ? new Date(e.access_starts_at).getTime() > now : false
+        const isExpired = e.access_expires_at ? new Date(e.access_expires_at).getTime() < now : false
 
-        const coursesData = coursesRes.data || []
-        const productsData = productsRes.data || []
+        return {
+          progress: e.progress,
+          access_starts_at: e.access_starts_at,
+          access_expires_at: e.access_expires_at,
+          is_batch: e.is_batch,
+          bundle_id: e.bundle_id,
+          bundle_title: bundle?.title || null,
+          isLockedBatch,
+          isExpired,
+          courses: {
+            id: course.id,
+            instructor: course.instructor,
+            batch_name: course.batch_name,
+            products: product
+          },
+          totalLessons
+        }
+      }))
 
-        const courseMap = {}
-        coursesData.forEach(c => { courseMap[c.id] = c })
-
-        const productMap = {}
-        productsData.forEach(p => { productMap[p.id] = p })
-
-        const enhanced = await Promise.all((enrData || []).map(async (e) => {
-          const product = productMap[e.course_id]
-          if (!product) return null
-
-          const course = courseMap[e.course_id] || { id: e.course_id, instructor: 'Instructor' }
-
-          let totalLessons = 0
-          const { data: modulesData, error: modsErr } = await supabase
-            .from('modules')
-            .select('id')
-            .eq('course_id', e.course_id)
-
-          if (!modsErr && modulesData && modulesData.length > 0) {
-            const moduleIds = modulesData.map(m => m.id)
-            const { count, error: lessonsCountErr } = await supabase
-              .from('lessons')
-              .select('id', { count: 'exact', head: true })
-              .in('module_id', moduleIds)
-
-            if (!lessonsCountErr) {
-              totalLessons = count || 0
-            }
-          }
-
-          return {
-            progress: e.progress,
-            courses: {
-              id: course.id,
-              instructor: course.instructor,
-              products: product
-            },
-            totalLessons
-          }
-        }))
-
-        setEnrollments(enhanced.filter(Boolean))
-      } catch (err) {
-        console.error('Error fetching learning data:', err)
-      } finally {
-        setLoading(false)
-      }
+      setEnrollments(enhanced.filter(Boolean))
+    } catch (err) {
+      console.error('Error fetching learning data:', err)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchLearningData()
   }, [user])
 
@@ -146,30 +171,118 @@ function MyLearningTab({ user }) {
             const nextLessonLink = `/course/${course.id}`
 
             return (
-              <div key={course.id} className="ud-course-card">
-                <div className="ud-course-card-img">
+              <div key={course.id} className="ud-course-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="ud-course-card-img" style={{ position: 'relative' }}>
                   <img src={product.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'} alt={product.title.replace(/\s+slug$/i, '')} />
-                  <div className="ud-card-overlay">
-                    <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
+                  
+                  {/* Badges Overlay */}
+                  <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', flexDirection: 'column', gap: 4, zIndex: 2 }}>
+                    {enr.bundle_title && (
+                      <span style={{ background: '#0f172a', color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 8px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        📦 {enr.bundle_title}
+                      </span>
+                    )}
+                    {enr.isLockedBatch && (
+                      <span style={{ background: '#d97706', color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 8px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        🔒 Batch Scheduled
+                      </span>
+                    )}
+                    {enr.isExpired && (
+                      <span style={{ background: '#dc2626', color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 8px', borderRadius: 4 }}>
+                        ⚠️ Access Expired
+                      </span>
+                    )}
                   </div>
+
+                  {!enr.isLockedBatch && !enr.isExpired && (
+                    <div className="ud-card-overlay">
+                      <Link to={nextLessonLink} className="ud-play-icon">▶</Link>
+                    </div>
+                  )}
                 </div>
-                <div className="ud-course-card-body">
-                  <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
-                  <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
-                  
-                  <div className="ud-progress-container">
-                    <div className="ud-progress-bar-bg">
-                      <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
-                    </div>
-                    <div className="ud-progress-info">
-                      <span className="ud-progress-text">{percentComplete}% complete</span>
-                      <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
-                    </div>
+
+                <div className="ud-course-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div>
+                    <h3 className="ud-course-card-title">{product.title.replace(/\s+slug$/i, '')}</h3>
+                    <p className="ud-course-card-instructor">By {course.instructor || 'Instructor'}</p>
                   </div>
                   
-                  <Link to={nextLessonLink} className="ud-card-btn">
-                    {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
-                  </Link>
+                  {/* ── BATCH COUNTDOWN TIMER DISPLAY ── */}
+                  {enr.isLockedBatch && enr.access_starts_at && (
+                    <div style={{ margin: '4px 0' }}>
+                      <BatchCountdown
+                        targetDate={enr.access_starts_at}
+                        label={course.batch_name ? `${course.batch_name} Starts In:` : 'Access Unlocks In:'}
+                        onComplete={fetchLearningData}
+                      />
+                    </div>
+                  )}
+
+                  {/* ── ACCESS DURATION / EXPIRATION NOTICE ── */}
+                  {enr.isExpired ? (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, padding: '8px 10px', fontSize: 12, color: '#b91c1c', fontWeight: 600 }}>
+                      Your access expired on {new Date(enr.access_expires_at).toLocaleDateString()}. Please renew below to continue learning.
+                    </div>
+                  ) : enr.access_expires_at ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: '#475569', background: '#f8fafc', padding: '4px 8px', borderRadius: 4 }}>
+                      <span>⏱️ Access valid until:</span>
+                      <strong style={{ color: '#0f172a' }}>{new Date(enr.access_expires_at).toLocaleDateString()}</strong>
+                    </div>
+                  ) : null}
+
+                  {/* Progress bar (hidden if locked batch) */}
+                  {!enr.isLockedBatch && !enr.isExpired && (
+                    <div className="ud-progress-container" style={{ marginTop: 'auto' }}>
+                      <div className="ud-progress-bar-bg">
+                        <div className="ud-progress-bar-fill" style={{ width: `${percentComplete}%` }}></div>
+                      </div>
+                      <div className="ud-progress-info">
+                        <span className="ud-progress-text">{percentComplete}% complete</span>
+                        <span className="ud-progress-label">{progressArr.length}/{total} Lessons</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Action Buttons */}
+                  <div style={{ marginTop: 'auto', paddingTop: 8 }}>
+                    {enr.isLockedBatch ? (
+                      <button
+                        disabled
+                        className="ud-card-btn"
+                        style={{
+                          background: '#e2e8f0',
+                          color: '#64748b',
+                          cursor: 'not-allowed',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 6
+                        }}
+                      >
+                        🔒 Locked Until {new Date(enr.access_starts_at).toLocaleDateString()}
+                      </button>
+                    ) : enr.isExpired ? (
+                      <Link
+                        to={`/checkout?product=${enr.bundle_id || course.id}&renew=true`}
+                        className="ud-card-btn"
+                        style={{
+                          background: '#dc2626',
+                          color: '#fff',
+                          textAlign: 'center',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 6
+                        }}
+                      >
+                        🔄 Renew Access
+                      </Link>
+                    ) : (
+                      <Link to={nextLessonLink} className="ud-card-btn">
+                        {percentComplete === 0 ? 'Start Learning' : 'Continue Learning'}
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             )
@@ -1201,9 +1314,11 @@ function NotificationsTab({ user }) {
           announcementsQuery = announcementsQuery.is('course_id', null)
         }
 
+        // 1. Fetch announcements
         const { data: announcements, error: annError } = await announcementsQuery
         if (annError) throw annError
 
+        // 2. Fetch Q&A replies
         const { data: replies, error: repError } = await supabase
           .from('qna_answers')
           .select(`
@@ -1223,7 +1338,28 @@ function NotificationsTab({ user }) {
 
         if (repError) throw repError
 
+        // 3. Fetch direct in-app notifications (e.g. batch unlock alerts, reminders)
+        const { data: customNotifs } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+
         const list = []
+        if (customNotifs) {
+          customNotifs.forEach(cn => {
+            list.push({
+              id: `notif-${cn.id}`,
+              type: cn.type || 'batch_unlock',
+              title: cn.title,
+              body: cn.message,
+              time: new Date(cn.created_at),
+              sourceName: cn.type === 'batch_unlock' ? 'Batch Release Notification' : 'Course Notification',
+              courseTitle: 'Your Enrolled Program',
+              link: cn.link
+            })
+          })
+        }
         if (announcements) {
           announcements.forEach(a => {
             list.push({
@@ -1270,31 +1406,61 @@ function NotificationsTab({ user }) {
     return (
       <div style={{ padding: '80px 24px', textAlign: 'center', background: '#fff', border: '1px solid #d1d7dc', borderRadius: 4 }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#121212', fontFamily: 'var(--font-heading)' }}>All Caught Up!</h2>
-        <p style={{ color: '#64748b', fontSize: 15 }}>No new announcements or replies recorded recently.</p>
+        <p style={{ color: '#64748b', fontSize: 15 }}>No new batch updates, announcements, or replies recorded recently.</p>
       </div>
     )
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {notifications.map(n => (
-        <div key={n.id} className="ud-notif-card" style={{ borderRadius: 4 }}>
-          <div className="ud-notif-icon">
-            {n.type === 'announcement' 
-              ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-              : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            }
-          </div>
-          <div className="ud-notif-content">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
-              <h4 className="ud-notif-title">{n.title}</h4>
-              <span className="ud-notif-meta">{n.time.toLocaleString()}</span>
+        <div key={n.id} className="ud-notif-card" style={{ borderRadius: 6, border: '1px solid #e2e8f0', background: '#fff', padding: 16 }}>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+            <div className="ud-notif-icon" style={{ marginTop: 2 }}>
+              {n.type === 'batch_unlock' ? (
+                <span style={{ fontSize: 20 }}>🎓</span>
+              ) : n.type === 'batch_reminder' ? (
+                <span style={{ fontSize: 20 }}>⏳</span>
+              ) : n.type === 'announcement' ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              )}
             </div>
-            <p className="ud-notif-body" style={{ whiteSpace: 'pre-wrap' }}>{n.body}</p>
-            <div className="ud-notif-meta">
-              <span>Source: <strong style={{ color: '#121212' }}>{n.sourceName}</strong></span>
-              <span style={{ margin: '0 8px' }}>&bull;</span>
-              <span>Course: <strong style={{ color: '#121212' }}>{n.courseTitle}</strong></span>
+            <div className="ud-notif-content" style={{ flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
+                <h4 className="ud-notif-title" style={{ fontSize: 15, fontWeight: 700, margin: 0, color: '#0f172a' }}>{n.title}</h4>
+                <span className="ud-notif-meta" style={{ fontSize: 12, color: '#94a3b8' }}>{n.time.toLocaleString()}</span>
+              </div>
+              <p className="ud-notif-body" style={{ whiteSpace: 'pre-wrap', fontSize: 13.5, color: '#475569', margin: '0 0 10px 0', lineHeight: 1.5 }}>{n.body}</p>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                <div className="ud-notif-meta" style={{ fontSize: 12, color: '#64748b' }}>
+                  <span>Source: <strong style={{ color: '#121212' }}>{n.sourceName}</strong></span>
+                  <span style={{ margin: '0 8px' }}>&bull;</span>
+                  <span>Course: <strong style={{ color: '#121212' }}>{n.courseTitle}</strong></span>
+                </div>
+
+                {n.link && (
+                  <Link
+                    to={n.link}
+                    style={{
+                      background: '#ff1717',
+                      color: '#fff',
+                      padding: '6px 14px',
+                      borderRadius: 4,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4
+                    }}
+                  >
+                    Go to Course →
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>

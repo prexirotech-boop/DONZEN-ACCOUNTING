@@ -3,6 +3,7 @@ import { useParams, Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import UserMenu from '../components/UserMenu'
 import { supabase } from '../lib/supabase'
+import BatchCountdown from '../components/BatchCountdown'
 
 const isRawVideo = (url) => {
   if (!url) return false;
@@ -69,6 +70,18 @@ export default function LMSCourse() {
   const [modules, setModules] = useState([])
   const [savedProgress, setSavedProgress] = useState([])
   
+  // Batch scheduling & duration expiry state
+  const [batchAccessInfo, setBatchAccessInfo] = useState({
+    isLocked: false,
+    isExpired: false,
+    accessStartsAt: null,
+    accessExpiresAt: null,
+    batchName: '',
+    bundleId: null,
+    coverImage: '',
+    price: 0
+  })
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [theaterMode, setTheaterMode] = useState(false)
   const [activeTab, setActiveTab] = useState('overview') // overview, resources
@@ -352,7 +365,7 @@ export default function LMSCourse() {
         } else {
           const { data: enrData, error: enrError } = await supabase
             .from('enrollments')
-            .select('progress, course_id')
+            .select('progress, course_id, access_starts_at, access_expires_at, is_batch, bundle_id')
             .eq('user_id', effectiveUser.id)
             .eq('course_id', courseId)
             .single()
@@ -365,13 +378,13 @@ export default function LMSCourse() {
 
           const { data: courseData } = await supabase
             .from('courses')
-            .select('id, instructor')
+            .select('id, instructor, batch_name, batch_start_date, batch_enrollment_enabled')
             .eq('id', courseId)
             .single()
 
           const { data: prodData } = await supabase
             .from('products')
-            .select('title')
+            .select('title, cover_image, price, old_price, batch_name, batch_start_date')
             .eq('id', courseId)
             .single()
           
@@ -381,6 +394,22 @@ export default function LMSCourse() {
             instructor: courseData?.instructor || 'Instructor'
           })
           setSavedProgress(enr.progress || [])
+
+          // Check batch and duration info
+          const now = Date.now()
+          const isLocked = enr.access_starts_at ? new Date(enr.access_starts_at).getTime() > now : false
+          const isExpired = enr.access_expires_at ? new Date(enr.access_expires_at).getTime() < now : false
+
+          setBatchAccessInfo({
+            isLocked,
+            isExpired,
+            accessStartsAt: enr.access_starts_at || courseData?.batch_start_date,
+            accessExpiresAt: enr.access_expires_at,
+            batchName: courseData?.batch_name || prodData?.batch_name || 'Scheduled Batch',
+            bundleId: enr.bundle_id,
+            coverImage: prodData?.cover_image,
+            price: prodData?.price
+          })
         }
 
         // 2. Fetch Modules & Lessons
@@ -569,6 +598,208 @@ export default function LMSCourse() {
     </div>
   )
   if (!effectiveUser) return <Navigate to="/login" />
+
+  // ── 1. SCHEDULED BATCH LOCK SCREEN ──────────────────────────────────────────
+  if (batchAccessInfo.isLocked && batchAccessInfo.accessStartsAt) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: '#09090b',
+        color: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '32px 20px',
+        fontFamily: 'var(--font)'
+      }}>
+        <div style={{
+          background: '#121215',
+          border: '1px solid #27272a',
+          borderRadius: 12,
+          maxWidth: 640,
+          width: '100%',
+          padding: '40px 32px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+        }}>
+          {/* Badge */}
+          <div style={{
+            background: 'rgba(217, 119, 6, 0.15)',
+            border: '1px solid rgba(217, 119, 6, 0.4)',
+            color: '#fbbf24',
+            padding: '6px 14px',
+            borderRadius: 999,
+            fontSize: 12.5,
+            fontWeight: 700,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            marginBottom: 20
+          }}>
+            <span>⏳</span>
+            <span>Batch Enrollment Scheduled ({batchAccessInfo.batchName})</span>
+          </div>
+
+          <h1 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 800, color: '#fff', margin: '0 0 12px 0', lineHeight: 1.3 }}>
+            {course?.title || 'Program Access Scheduled'}
+          </h1>
+          
+          <p style={{ color: '#a1a1aa', fontSize: 14.5, maxWidth: 480, margin: '0 0 28px 0', lineHeight: 1.6 }}>
+            You are enrolled in this batch! Course lessons and materials will automatically unlock on <strong>{new Date(batchAccessInfo.accessStartsAt).toLocaleString()}</strong>.
+          </p>
+
+          {/* Hero Countdown Timer */}
+          <div style={{ margin: '0 0 32px 0', width: '100%' }}>
+            <BatchCountdown
+              targetDate={batchAccessInfo.accessStartsAt}
+              variant="hero"
+              label="Course Unlocks In:"
+              onComplete={() => {
+                setBatchAccessInfo(prev => ({ ...prev, isLocked: false }))
+              }}
+            />
+          </div>
+
+          {/* Locked Notice & Instructions */}
+          <div style={{
+            background: '#18181b',
+            border: '1px solid #27272a',
+            borderRadius: 8,
+            padding: '16px 20px',
+            width: '100%',
+            marginBottom: 28,
+            textAlign: 'left',
+            fontSize: 13,
+            color: '#cbd5e1',
+            lineHeight: 1.5,
+            boxSizing: 'border-box'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fbbf24', fontWeight: 700, marginBottom: 4 }}>
+              <span>🔔</span>
+              <span>Automated Access Notification</span>
+            </div>
+            We will send you an in-app notification and email reminder with your direct classroom link as soon as your batch is released.
+          </div>
+
+          {/* Navigation Action */}
+          <Link
+            to="/dashboard"
+            style={{
+              background: '#ff1717',
+              color: '#fff',
+              padding: '12px 28px',
+              borderRadius: 6,
+              fontWeight: 700,
+              fontSize: 14,
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              boxShadow: '0 4px 14px rgba(255, 23, 23, 0.3)'
+            }}
+          >
+            ← Return to My Courses Dashboard
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // ── 2. ACCESS EXPIRED SCREEN ────────────────────────────────────────────────
+  if (batchAccessInfo.isExpired) {
+    const renewProduct = batchAccessInfo.bundleId || courseId
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: '#09090b',
+        color: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '32px 20px',
+        fontFamily: 'var(--font)'
+      }}>
+        <div style={{
+          background: '#121215',
+          border: '1px solid #dc2626',
+          borderRadius: 12,
+          maxWidth: 580,
+          width: '100%',
+          padding: '40px 32px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.2)'
+        }}>
+          <div style={{
+            background: 'rgba(220, 38, 38, 0.15)',
+            border: '1px solid rgba(220, 38, 38, 0.4)',
+            color: '#f87171',
+            padding: '6px 14px',
+            borderRadius: 999,
+            fontSize: 12.5,
+            fontWeight: 700,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            marginBottom: 20
+          }}>
+            <span>⚠️</span>
+            <span>Access Duration Expired</span>
+          </div>
+
+          <h1 style={{ fontSize: isMobile ? 22 : 26, fontWeight: 800, color: '#fff', margin: '0 0 12px 0' }}>
+            {course?.title || 'Your Course Access Has Expired'}
+          </h1>
+          
+          <p style={{ color: '#a1a1aa', fontSize: 14.5, maxWidth: 440, margin: '0 0 24px 0', lineHeight: 1.6 }}>
+            Your enrollment access period ended on <strong>{new Date(batchAccessInfo.accessExpiresAt).toLocaleDateString()}</strong>. Renew your access to regain instant access to all course lessons, exercises, and instructor Q&A.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 360 }}>
+            <Link
+              to={`/checkout?product=${renewProduct}&renew=true`}
+              style={{
+                background: '#dc2626',
+                color: '#fff',
+                padding: '14px 24px',
+                borderRadius: 6,
+                fontWeight: 700,
+                fontSize: 15,
+                textDecoration: 'none',
+                textAlign: 'center',
+                boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)'
+              }}
+            >
+              🔄 Renew Course Access
+            </Link>
+
+            <Link
+              to="/dashboard"
+              style={{
+                background: '#27272a',
+                color: '#cbd5e1',
+                padding: '10px 20px',
+                borderRadius: 6,
+                fontWeight: 600,
+                fontSize: 13,
+                textDecoration: 'none',
+                textAlign: 'center'
+              }}
+            >
+              Return to Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
   
   const currentModule = modules.find(m => m.lessons.some(l => l.id === lessonId))
   const lesson = currentModule?.lessons.find(l => l.id === lessonId)

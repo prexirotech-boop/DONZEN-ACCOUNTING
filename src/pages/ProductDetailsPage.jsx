@@ -56,6 +56,7 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState(null)
   const [courseData, setCourseData] = useState(null)
   const [modules, setModules] = useState([])
+  const [bundleItems, setBundleItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [openModule, setOpenModule] = useState(0)
   const [isEnrolled, setIsEnrolled] = useState(false)
@@ -96,10 +97,12 @@ export default function ProductDetailsPage() {
         // 4. Check enrollment if logged in
         user ? supabase.from('enrollments').select('id').eq('user_id', user.id).eq('course_id', prod.id).maybeSingle() : Promise.resolve({ data: null }),
         // 5. Check wishlist if logged in
-        user ? supabase.from('wishlist').select('id').eq('user_id', user.id).eq('product_id', prod.id).maybeSingle() : Promise.resolve({ data: null })
+        user ? supabase.from('wishlist').select('id').eq('user_id', user.id).eq('product_id', prod.id).maybeSingle() : Promise.resolve({ data: null }),
+        // 6. Fetch bundle items if bundle
+        prod.type === 'bundle' ? supabase.from('bundle_items').select('id, course_id, order_index, products:course_id(id, title, price, old_price, cover_image, description, short_description)').eq('bundle_id', prod.id).order('order_index', { ascending: true }) : Promise.resolve({ data: [] })
       ]
 
-      const [revsRes, courseRes, modsRes, enrRes, wlRes] = await Promise.all(promises)
+      const [revsRes, courseRes, modsRes, enrRes, wlRes, bundleRes] = await Promise.all(promises)
 
       // Set reviews state
       const revs = revsRes.data
@@ -123,6 +126,11 @@ export default function ProductDetailsPage() {
           ...m,
           lessons: (m.lessons || []).sort((a, b) => a.order_index - b.order_index)
         })))
+      }
+
+      // Set bundle items
+      if (bundleRes.data) {
+        setBundleItems(bundleRes.data)
       }
 
       // Set user flags
@@ -270,11 +278,30 @@ export default function ProductDetailsPage() {
 
   const features = Array.isArray(product.features) ? product.features : []
   const isCourse = product.type === 'course'
+  const isBundle = product.type === 'bundle'
   const isFree = product.is_free || product.price === 0
   const whatYouLearn = Array.isArray(courseData?.what_you_learn) ? courseData.what_you_learn : []
   const requirements = Array.isArray(courseData?.requirements) ? courseData.requirements : []
   const whoIsFor = Array.isArray(courseData?.who_is_for) ? courseData.who_is_for : []
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0)
+
+  // Progressive Curriculum Blurring Logic (for non-enrolled users):
+  // - If total curriculum is > 15: show first 10, blur the rest
+  // - If total curriculum is > 5: show first 5, blur the rest
+  // - If total curriculum <= 5: show all
+  // - Enrolled users / Admins always see full curriculum unblurred
+  const maxVisibleLessons = !isEnrolled
+    ? (totalLessons > 15 ? 10 : totalLessons > 5 ? 5 : totalLessons)
+    : totalLessons
+
+  const maxVisibleModules = !isEnrolled && totalLessons === 0
+    ? (modules.length > 15 ? 10 : modules.length > 5 ? 5 : modules.length)
+    : modules.length
+
+  const hasBlurredContent = !isEnrolled && (
+    (totalLessons > 0 && totalLessons > maxVisibleLessons) ||
+    (totalLessons === 0 && modules.length > maxVisibleModules)
+  )
 
   const priceDisplay = isFree ? 'FREE' : formatPrice(product.price)
   const oldPriceDisplay = product.old_price ? formatPrice(product.old_price) : null
@@ -283,10 +310,12 @@ export default function ProductDetailsPage() {
     ? 'Continue Learning →'
     : isFree
       ? 'Enroll for Free'
-      : 'Get Instant Access'
+      : isBundle
+        ? 'Enroll in Bundle Now'
+        : 'Get Instant Access'
 
   const ctaAction = isEnrolled
-    ? () => navigate(`/course/${product?.id}`)
+    ? () => navigate(`/dashboard`)
     : handleEnrollOrBuy
 
   const previewVideo = courseData?.preview_video || product?.preview_video || null
@@ -314,13 +343,18 @@ export default function ProductDetailsPage() {
             <div className="pd-breadcrumbs">
               <Link to="/products">All Products</Link>
               <span className="pd-separator">/</span>
-              <span>{isCourse ? 'Courses' : 'E-Books'}</span>
+              <span>{isBundle ? 'Bundles' : isCourse ? 'Courses' : 'E-Books'}</span>
               <span className="pd-separator">/</span>
               <span className="pd-active-crumb">{product.title.replace(/\s+slug$/i, '')}</span>
             </div>
 
             {isFree && <div className="pd-free-tag">FREE</div>}
-            {!isFree && !isCourse && (
+            {isBundle && (
+              <div style={{ background: '#0f172a', color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                📦 Multi-Course Bundle ({bundleItems.length} Programs Included)
+              </div>
+            )}
+            {!isFree && !isCourse && !isBundle && (
               <div className="pd-badge-bestseller">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: 5, display: 'inline-block', verticalAlign: 'middle' }}>
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -329,11 +363,36 @@ export default function ProductDetailsPage() {
               </div>
             )}
 
+            {/* Scheduled Batch Release Notification Banner */}
+            {product.batch_enrollment_enabled && product.batch_start_date && (
+              <div style={{ background: 'rgba(217, 119, 6, 0.15)', border: '1px solid rgba(217, 119, 6, 0.35)', color: '#fbbf24', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                <span>⏳</span>
+                <span>
+                  <strong>{product.batch_name || 'Scheduled Batch'}</strong>: Classroom opens on <strong>{new Date(product.batch_start_date).toLocaleString()}</strong>. Enroll now to secure your seat!
+                </span>
+              </div>
+            )}
+
             <h1 className="pd-title">{product.title.replace(/\s+slug$/i, '')}</h1>
             <p className="pd-subtitle" style={{ whiteSpace: 'pre-wrap' }}>{product.short_description || getShortDesc(product)}</p>
 
             <div className="pd-meta-row">
               <StarRating rating={reviewsAvg} count={reviewsCount} />
+              
+              {/* Access Duration Badge */}
+              {product.access_duration_type && (
+                <span className="pd-meta-badge" style={{ background: '#f1f5f9', color: '#334155' }}>
+                  <span>⏱️ Access:</span>
+                  <strong>
+                    {product.access_duration_type === '1_month' ? '1 Month' :
+                     product.access_duration_type === '3_months' ? '3 Months' :
+                     product.access_duration_type === '6_months' ? '6 Months' :
+                     product.access_duration_type === '1_year' ? '1 Year' :
+                     product.access_duration_type === 'custom' ? `${product.access_duration_days} Days` : 'Lifetime Access'}
+                  </strong>
+                </span>
+              )}
+
               {isCourse && courseData?.level && (
                 <span className="pd-meta-badge">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: 5, display: 'inline-block', verticalAlign: 'middle' }}>
@@ -396,6 +455,67 @@ export default function ProductDetailsPage() {
               </div>
             </div>
 
+            {/* ── BUNDLE INCLUDED COURSES SECTION ── */}
+            {isBundle && bundleItems.length > 0 && (
+              <div className="pd-card pd-card-learn" style={{ borderColor: '#cbd5e1' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <div>
+                    <h2 className="pd-card-title" style={{ marginBottom: 4 }}>📦 Programs Included in this Bundle</h2>
+                    <p style={{ margin: 0, fontSize: 13.5, color: '#64748b' }}>
+                      Enrolling gives you full, simultaneous access to all {bundleItems.length} individual courses below.
+                    </p>
+                  </div>
+                  <span style={{ background: '#f1f5f9', color: '#0f172a', padding: '4px 10px', borderRadius: 6, fontSize: 12, fontWeight: 700 }}>
+                    {bundleItems.length} Courses
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {bundleItems.map((item, idx) => {
+                    const cProd = item.products
+                    if (!cProd) return null
+                    return (
+                      <div
+                        key={item.id || idx}
+                        style={{
+                          display: 'flex',
+                          gap: 16,
+                          alignItems: 'center',
+                          padding: 14,
+                          background: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: 8,
+                          transition: 'border-color 0.2s'
+                        }}
+                      >
+                        <img
+                          src={cProd.cover_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800'}
+                          alt={cProd.title}
+                          style={{ width: 80, height: 54, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
+                        />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h4 style={{ margin: '0 0 4px 0', fontSize: 14.5, fontWeight: 700, color: '#0f172a' }}>
+                            {idx + 1}. {cProd.title}
+                          </h4>
+                          <p style={{ margin: 0, fontSize: 12.5, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {cProd.short_description || getShortDesc(cProd)}
+                          </p>
+                        </div>
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                            {formatPrice(cProd.price)}
+                          </span>
+                          <span style={{ display: 'block', fontSize: 11, color: '#16a34a', fontWeight: 600 }}>
+                            Included
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* "What You'll Learn" Section */}
             {(whatYouLearn.length > 0 || features.length > 0) && (
               <div className="pd-card pd-card-learn">
@@ -416,57 +536,153 @@ export default function ProductDetailsPage() {
             {/* Course Curriculum Accordion */}
             {isCourse && modules.length > 0 && (
               <div className="pd-card pd-card-curriculum">
-                <h2 className="pd-card-title">Course Curriculum</h2>
-                <div className="pd-curriculum-meta">
-                  {modules.length} sections • {totalLessons} lessons
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 8 }}>
+                  <h2 className="pd-card-title" style={{ margin: 0 }}>Course Curriculum</h2>
+                  {hasBlurredContent && (
+                    <span className="pd-curriculum-locked-pill-header">
+                      🔒 {totalLessons > 0 ? `${totalLessons - maxVisibleLessons} Lessons Locked` : `${modules.length - maxVisibleModules} Sections Locked`}
+                    </span>
+                  )}
                 </div>
+
+                <div className="pd-curriculum-meta" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                  <span>{modules.length} sections • {totalLessons} lessons</span>
+                  {hasBlurredContent && (
+                    <span style={{ fontSize: 13, color: '#e11d48', fontWeight: 700 }}>
+                      Showing first {totalLessons > 0 ? maxVisibleLessons : maxVisibleModules} outlines • Enroll to unlock full syllabus
+                    </span>
+                  )}
+                </div>
+
                 <div className="pd-accordion">
                   {modules.map((mod, mi) => {
                     const isOpen = openModule === mi
+                    const precedingLessonsCount = modules.slice(0, mi).reduce((sum, m) => sum + (m.lessons?.length || 0), 0)
+                    const isModuleAllLocked = !isEnrolled && totalLessons > 0 && (precedingLessonsCount >= maxVisibleLessons)
+                    const isModuleHeaderLocked = (!isEnrolled && totalLessons === 0 && mi >= maxVisibleModules) || isModuleAllLocked
+
                     return (
-                      <div key={mod.id} className="pd-accordion-item">
+                      <div key={mod.id} className={`pd-accordion-item ${isModuleHeaderLocked ? 'pd-accordion-item-locked' : ''}`}>
                         <button
-                          className={`pd-accordion-header ${isOpen ? 'active' : ''}`}
+                          className={`pd-accordion-header ${isOpen ? 'active' : ''} ${isModuleHeaderLocked ? 'locked-header' : ''}`}
                           onClick={() => setOpenModule(isOpen ? -1 : mi)}
                         >
                           <span className="pd-accordion-title">
                             <svg className={`pd-chevron ${isOpen ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                               <polyline points="6 9 12 15 18 9" />
                             </svg>
-                            {mod.title}
+                            <span className={isModuleHeaderLocked && totalLessons === 0 ? 'pd-module-title-blurred' : ''}>
+                              {mod.title}
+                            </span>
+                            {isModuleHeaderLocked && (
+                              <span className="pd-module-locked-pill">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                Locked Section
+                              </span>
+                            )}
                           </span>
                           <span className="pd-accordion-count">{mod.lessons?.length || 0} lessons</span>
                         </button>
                         {isOpen && (
                           <div className="pd-lessons-list">
-                            {mod.lessons?.map((les) => (
-                              <div key={les.id} className="pd-lesson-row">
-                                <div className="pd-lesson-left">
-                                  <span className="pd-lesson-icon">
-                                    {les.is_free_preview ? (
-                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--g500)" strokeWidth="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                    ) : les.type === 'article' ? (
-                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                    ) : (
-                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                    )}
-                                  </span>
-                                  <span className={`pd-lesson-title ${les.is_free_preview ? 'preview' : ''}`}>{les.title}</span>
-                                  {les.is_free_preview && <span className="pd-free-badge-inline">Free Preview</span>}
+                            {mod.lessons?.map((les, li) => {
+                              const globalIdx = precedingLessonsCount + li
+                              const isLocked = !isEnrolled && globalIdx >= maxVisibleLessons
+
+                              if (isLocked) {
+                                return (
+                                  <div
+                                    key={les.id}
+                                    className="pd-lesson-row pd-lesson-row-locked"
+                                    onClick={ctaAction}
+                                    title="Enroll to unlock this lesson and full course materials"
+                                  >
+                                    <div className="pd-lesson-left">
+                                      <span className="pd-lesson-icon pd-lesson-icon-locked">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
+                                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                        </svg>
+                                      </span>
+                                      <span className="pd-lesson-title pd-lesson-title-blurred">
+                                        {les.title}
+                                      </span>
+                                      <span className="pd-locked-badge">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                        </svg>
+                                        Locked
+                                      </span>
+                                    </div>
+                                    <div className="pd-lesson-right">
+                                      <span className="pd-lesson-locked-action">
+                                        Unlock with enrollment →
+                                      </span>
+                                    </div>
+                                  </div>
+                                )
+                              }
+
+                              return (
+                                <div key={les.id} className="pd-lesson-row">
+                                  <div className="pd-lesson-left">
+                                    <span className="pd-lesson-icon">
+                                      {les.is_free_preview ? (
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--g500)" strokeWidth="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                      ) : les.type === 'article' ? (
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                      ) : (
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                      )}
+                                    </span>
+                                    <span className={`pd-lesson-title ${les.is_free_preview ? 'preview' : ''}`}>{les.title}</span>
+                                    {les.is_free_preview && <span className="pd-free-badge-inline">Free Preview</span>}
+                                  </div>
+                                  {les.video_duration && (
+                                    <span className="pd-lesson-duration">
+                                      {Math.floor(les.video_duration / 60)}:{String(les.video_duration % 60).padStart(2, '0')}
+                                    </span>
+                                  )}
                                 </div>
-                                {les.video_duration && (
-                                  <span className="pd-lesson-duration">
-                                    {Math.floor(les.video_duration / 60)}:{String(les.video_duration % 60).padStart(2, '0')}
-                                  </span>
-                                )}
-                              </div>
-                            ))}
+                              )
+                            })}
                           </div>
                         )}
                       </div>
                     )
                   })}
                 </div>
+
+                {/* Callout Unlock Banner for Locked Curriculum */}
+                {hasBlurredContent && (
+                  <div className="pd-curriculum-unlock-banner">
+                    <div className="pd-curriculum-unlock-left">
+                      <div className="pd-curriculum-unlock-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e11d48" strokeWidth="2.5">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="pd-curriculum-unlock-title">
+                          {totalLessons > 0 
+                            ? `${totalLessons - maxVisibleLessons} more modules & practical lessons are locked`
+                            : `${modules.length - maxVisibleModules} more sections are locked`}
+                        </div>
+                        <div className="pd-curriculum-unlock-desc">
+                          Enroll in this course to gain full instant access to all {totalLessons > 0 ? totalLessons : modules.length} step-by-step video outlines, downloadable workplace templates, simulated projects, and accredited certification.
+                        </div>
+                      </div>
+                    </div>
+                    <button className="pd-curriculum-unlock-btn" onClick={ctaAction}>
+                      {ctaLabel}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1127,6 +1343,174 @@ export default function ProductDetailsPage() {
           font-size: 13px;
           color: #64748b;
           font-weight: 600;
+        }
+
+        /* ── LOCKED / BLURRED CURRICULUM STYLES ── */
+        .pd-curriculum-locked-pill-header {
+          font-size: 12px;
+          font-weight: 800;
+          color: #e11d48;
+          background: #ffe4e6;
+          border: 1px solid #fecdd3;
+          border-radius: 20px;
+          padding: 4px 12px;
+          letter-spacing: 0.3px;
+        }
+        .pd-accordion-item-locked {
+          opacity: 0.95;
+        }
+        .pd-accordion-header.locked-header {
+          background: #fafbfc;
+        }
+        .pd-module-locked-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          color: #e11d48;
+          background: #fff1f2;
+          border: 1px solid #fecdd3;
+          border-radius: 6px;
+          padding: 2px 8px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+        }
+        .pd-lesson-row-locked {
+          background: #fafbfc;
+          cursor: pointer;
+          border-left: 3px solid #e2e8f0;
+          transition: all 0.2s ease;
+        }
+        .pd-lesson-row-locked:hover {
+          background: #f1f5f9;
+          border-left-color: #e11d48;
+        }
+        .pd-lesson-icon-locked {
+          color: #94a3b8;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .pd-lesson-title-blurred {
+          filter: blur(5px);
+          -webkit-filter: blur(5px);
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          pointer-events: none;
+          opacity: 0.45;
+          letter-spacing: 0.3px;
+          max-width: 380px;
+        }
+        .pd-module-title-blurred {
+          filter: blur(4px);
+          -webkit-filter: blur(4px);
+          user-select: none;
+          -webkit-user-select: none;
+          pointer-events: none;
+          opacity: 0.5;
+        }
+        .pd-locked-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 10.5px;
+          background: #f1f5f9;
+          color: #64748b;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          padding: 2px 8px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
+          flex-shrink: 0;
+        }
+        .pd-lesson-locked-action {
+          font-size: 12.5px;
+          font-weight: 700;
+          color: #e11d48;
+          white-space: nowrap;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          transition: transform 0.2s ease;
+        }
+        .pd-lesson-row-locked:hover .pd-lesson-locked-action {
+          transform: translateX(2px);
+          color: #be123c;
+        }
+        .pd-curriculum-unlock-banner {
+          margin-top: 20px;
+          padding: 20px 24px;
+          background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%);
+          border: 1.5px dashed #fecdd3;
+          border-radius: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          box-shadow: 0 4px 14px rgba(225, 29, 72, 0.04);
+        }
+        .pd-curriculum-unlock-left {
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          flex: 1;
+        }
+        .pd-curriculum-unlock-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: #ffe4e6;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .pd-curriculum-unlock-title {
+          font-size: 15.5px;
+          font-weight: 800;
+          color: #0f172a;
+          margin-bottom: 4px;
+          font-family: var(--font-heading) !important;
+        }
+        .pd-curriculum-unlock-desc {
+          font-size: 13.5px;
+          color: #64748b;
+          line-height: 1.5;
+        }
+        .pd-curriculum-unlock-btn {
+          padding: 12px 22px;
+          background: #e11d48;
+          color: #fff;
+          border: none;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 800;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+          flex-shrink: 0;
+        }
+        .pd-curriculum-unlock-btn:hover {
+          background: #be123c;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35);
+        }
+        @media (max-width: 640px) {
+          .pd-curriculum-unlock-banner {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 16px;
+            gap: 14px;
+          }
+          .pd-curriculum-unlock-btn {
+            width: 100%;
+            text-align: center;
+          }
         }
 
         /* ── DESCRIPTION CONTENT ── */

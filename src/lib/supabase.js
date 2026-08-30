@@ -119,12 +119,48 @@ export async function createPendingOrder({
 }
 
 /**
+ * Calculate access start and expiration dates based on batch and duration settings.
+ */
+export function calculateAccessDurationDates(productOrCourse, overrideStartDate = null) {
+  let startsAt = overrideStartDate ? new Date(overrideStartDate) : new Date()
+  let isBatch = false
+
+  if (productOrCourse?.batch_enrollment_enabled && productOrCourse?.batch_start_date) {
+    const batchStart = new Date(productOrCourse.batch_start_date)
+    if (!isNaN(batchStart.getTime())) {
+      startsAt = batchStart
+      isBatch = true
+    }
+  }
+
+  let expiresAt = null
+  const durationType = productOrCourse?.access_duration_type || 'lifetime'
+  let days = 0
+
+  if (durationType === '1_month') days = 30
+  else if (durationType === '3_months') days = 90
+  else if (durationType === '6_months') days = 180
+  else if (durationType === '1_year') days = 365
+  else if (durationType === 'custom') days = parseInt(productOrCourse?.access_duration_days) || 0
+
+  if (days > 0) {
+    expiresAt = new Date(startsAt.getTime() + days * 24 * 60 * 60 * 1000)
+  }
+
+  return {
+    access_starts_at: startsAt.toISOString(),
+    access_expires_at: expiresAt ? expiresAt.toISOString() : null,
+    is_batch: isBatch
+  }
+}
+
+/**
  * STEP 2 — Complete the order after successful Paystack payment.
  *
  * This function:
  *  1. Updates the order status from "pending" to "paid" for main and bumps
- *  2. Creates the enrollment rows synchronously for courses
- *  3. Fires the confirmation email edge function
+ *  2. Creates the enrollment rows synchronously for single courses and product bundles
+ *  3. Computes batch start dates & duration expiration dates
  */
 export async function completeOrder({
   reference,
@@ -159,7 +195,6 @@ export async function completeOrder({
           .update({
             installment_paid: orderDetails.installment_paid,
             payment_plan_status: isLast ? 'completed' : 'active',
-            // Update next due date for parent (30 days from now)
             payment_plan_next_due: isLast ? null : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           })
           .eq('reference', orderDetails.parent_reference)
@@ -178,7 +213,6 @@ export async function completeOrder({
 
     if (updateErr) {
       console.error('[completeOrder] Failed to mark order paid (bulk):', updateErr)
-      // Fallback: try updating by reference only
       await supabase
         .from('orders')
         .update({ status: 'paid', paid_at: new Date().toISOString() })
@@ -187,34 +221,62 @@ export async function completeOrder({
       console.log('[completeOrder] ✅ Orders marked as paid:', reference)
     }
 
-    // Now select the updated orders to get product information via a separate clean select query
+    // Select updated orders with product details
     const { data: updatedOrders } = await supabase
       .from('orders')
-      .select('product_id, products(type)')
+      .select('product_id, products(id, type, batch_enrollment_enabled, batch_start_date, batch_name, access_duration_type, access_duration_days)')
       .or(`reference.eq.${reference},reference.like.${reference}-bump-%`)
 
-    // ── 2. Create enrollments for all courses in the transaction ─────────────
+    // ── 2. Create enrollments for all courses & bundles in the transaction ────
     if (userId && updatedOrders) {
       for (const ord of updatedOrders) {
-        if (ord.product_id && ord.products?.type === 'course') {
-          const success = await createEnrollment({ userId, courseId: ord.product_id })
+        const prod = ord.products
+        if (!ord.product_id || !prod) continue
+
+        if (prod.type === 'course') {
+          const success = await createEnrollment({
+            userId,
+            courseId: ord.product_id,
+            productMetadata: prod
+          })
           if (ord.product_id === productId) enrolled = success
+        } else if (prod.type === 'bundle') {
+          // Fetch all courses inside this bundle
+          const { data: bundleItems } = await supabase
+            .from('bundle_items')
+            .select('course_id')
+            .eq('bundle_id', ord.product_id)
+            .order('order_index', { ascending: true })
+
+          if (bundleItems && bundleItems.length > 0) {
+            for (const item of bundleItems) {
+              const success = await createEnrollment({
+                userId,
+                courseId: item.course_id,
+                bundleId: ord.product_id,
+                productMetadata: prod // Pass bundle batch/duration preferences
+              })
+              if (ord.product_id === productId) enrolled = success
+            }
+          }
         }
       }
-    } else if (productType === 'course' && productId && userId) {
-      enrolled = await createEnrollment({ userId, courseId: productId })
+    } else if (productId && userId) {
+      if (productType === 'bundle') {
+        const { data: bundleItems } = await supabase
+          .from('bundle_items')
+          .select('course_id')
+          .eq('bundle_id', productId)
+        if (bundleItems) {
+          for (const item of bundleItems) {
+            await createEnrollment({ userId, courseId: item.course_id, bundleId: productId })
+          }
+          enrolled = true
+        }
+      } else if (productType === 'course') {
+        enrolled = await createEnrollment({ userId, courseId: productId })
+      }
     }
-
-    // ── 3. Confirmation email disabled until Edge Function is deployed ─────────
-    // To re-enable: deploy the send-confirmation Edge Function via Supabase CLI,
-    // then uncomment the triggerConfirmationEmail() call below.
-    // triggerConfirmationEmail({
-    //   reference,
-    //   customer_name: name,
-    //   customer_email: email,
-    //   customer_phone: phone,
-    //   product_id: productId,
-    // })
 
     return { success: true, enrolled }
   } catch (err) {
@@ -226,21 +288,28 @@ export async function completeOrder({
 
 /**
  * Create an enrollment for a user in a course.
+ * Handles scheduled batch start dates, access duration expiration, and bundle tracking.
  * Idempotent — safe to call multiple times; will not create duplicates.
  *
- * @returns {boolean} true if enrollment now exists (created or already existed)
+ * @returns {boolean|object}
  */
-export async function createEnrollment({ userId, courseId, returnDetail = false }) {
+export async function createEnrollment({
+  userId,
+  courseId,
+  bundleId = null,
+  productMetadata = null,
+  returnDetail = false
+}) {
   if (!userId || !courseId) {
     console.warn('[createEnrollment] Missing userId or courseId', { userId, courseId })
     return returnDetail ? { success: false, created: false } : false
   }
 
   try {
-    // Check if enrollment already exists first
+    // 1. Check if enrollment already exists
     const { data: existing } = await supabase
       .from('enrollments')
-      .select('id')
+      .select('id, access_starts_at, access_expires_at')
       .eq('user_id', userId)
       .eq('course_id', courseId)
       .maybeSingle()
@@ -250,13 +319,50 @@ export async function createEnrollment({ userId, courseId, returnDetail = false 
       return returnDetail ? { success: true, created: false } : true
     }
 
+    // 2. Fetch course / product schedule metadata if not passed
+    let meta = productMetadata
+    if (!meta) {
+      const { data: courseInfo } = await supabase
+        .from('courses')
+        .select('batch_enrollment_enabled, batch_start_date, batch_name, access_duration_type, access_duration_days')
+        .eq('id', courseId)
+        .maybeSingle()
+
+      const { data: prodInfo } = await supabase
+        .from('products')
+        .select('batch_enrollment_enabled, batch_start_date, batch_name, access_duration_type, access_duration_days')
+        .eq('id', courseId)
+        .maybeSingle()
+
+      meta = {
+        batch_enrollment_enabled: courseInfo?.batch_enrollment_enabled || prodInfo?.batch_enrollment_enabled || false,
+        batch_start_date: courseInfo?.batch_start_date || prodInfo?.batch_start_date || null,
+        batch_name: courseInfo?.batch_name || prodInfo?.batch_name || null,
+        access_duration_type: courseInfo?.access_duration_type || prodInfo?.access_duration_type || 'lifetime',
+        access_duration_days: courseInfo?.access_duration_days || prodInfo?.access_duration_days || null
+      }
+    }
+
+    // 3. Compute access start & expiration dates
+    const { access_starts_at, access_expires_at, is_batch } = calculateAccessDurationDates(meta)
+
+    const insertPayload = {
+      user_id: userId,
+      course_id: courseId,
+      progress: [],
+      bundle_id: bundleId,
+      access_starts_at: access_starts_at,
+      access_expires_at: access_expires_at,
+      is_batch: is_batch,
+      batch_unlocked_notified: false
+    }
+
     const { error } = await supabase
       .from('enrollments')
-      .insert({ user_id: userId, course_id: courseId, progress: [] })
+      .insert(insertPayload)
 
     if (error) {
       if (error.code === '23505') {
-        // Unique constraint — enrollment just got created by a concurrent call
         console.log('[createEnrollment] ℹ️ Enrollment already exists (concurrent insert)')
         return returnDetail ? { success: true, created: false } : true
       }
@@ -264,7 +370,7 @@ export async function createEnrollment({ userId, courseId, returnDetail = false 
       return returnDetail ? { success: false, created: false } : false
     }
 
-    console.log('[createEnrollment] ✅ Enrollment created for user', userId, 'course', courseId)
+    console.log('[createEnrollment] ✅ Enrollment created for user', userId, 'course', courseId, { access_starts_at, access_expires_at })
     return returnDetail ? { success: true, created: true } : true
   } catch (err) {
     console.error('[createEnrollment] Unexpected error:', err)
@@ -274,8 +380,7 @@ export async function createEnrollment({ userId, courseId, returnDetail = false 
 
 /**
  * Recover enrollment for a user based on their paid orders.
- * Called when user lands on dashboard — ensures access is granted even
- * if the checkout-time enrollment failed for any reason.
+ * Supports both standalone courses and bundled products.
  *
  * @returns {boolean} true if any enrollment was recovered
  */
@@ -283,13 +388,12 @@ export async function recoverEnrollmentFromOrders(userId, userEmail) {
   if (!userId || !userEmail) return false
 
   try {
-    // Find all paid course orders for this email
+    // Find all paid course & bundle orders for this email
     const { data: orders } = await supabase
       .from('orders')
-      .select('product_id, products!inner(id, type)')
+      .select('product_id, products!inner(id, type, batch_enrollment_enabled, batch_start_date, access_duration_type, access_duration_days)')
       .eq('customer_email', userEmail.toLowerCase())
       .eq('status', 'paid')
-      .eq('products.type', 'course')
 
     if (!orders || orders.length === 0) return false
 
@@ -300,14 +404,49 @@ export async function recoverEnrollmentFromOrders(userId, userEmail) {
       .eq('user_id', userId)
 
     const existingCourseIds = (existingEnrs || []).map(e => e.course_id)
-
     let recovered = false
+
     for (const order of orders) {
-      if (!order.product_id) continue
-      // Only create enrollment if the user is not already enrolled in this course!
-      if (!existingCourseIds.includes(order.product_id)) {
-        const result = await createEnrollment({ userId, courseId: order.product_id, returnDetail: true })
-        if (result && result.created) recovered = true
+      if (!order.product_id || !order.products) continue
+      const prod = order.products
+
+      if (prod.type === 'course') {
+        if (!existingCourseIds.includes(order.product_id)) {
+          const result = await createEnrollment({
+            userId,
+            courseId: order.product_id,
+            productMetadata: prod,
+            returnDetail: true
+          })
+          if (result && result.created) {
+            recovered = true
+            existingCourseIds.push(order.product_id)
+          }
+        }
+      } else if (prod.type === 'bundle') {
+        // Fetch bundled items
+        const { data: bundleItems } = await supabase
+          .from('bundle_items')
+          .select('course_id')
+          .eq('bundle_id', order.product_id)
+
+        if (bundleItems) {
+          for (const item of bundleItems) {
+            if (!existingCourseIds.includes(item.course_id)) {
+              const result = await createEnrollment({
+                userId,
+                courseId: item.course_id,
+                bundleId: order.product_id,
+                productMetadata: prod,
+                returnDetail: true
+              })
+              if (result && result.created) {
+                recovered = true
+                existingCourseIds.push(item.course_id)
+              }
+            }
+          }
+        }
       }
     }
 
@@ -316,6 +455,97 @@ export async function recoverEnrollmentFromOrders(userId, userEmail) {
     console.error('[recoverEnrollmentFromOrders] Error:', err)
     return false
   }
+}
+
+/**
+ * Check for scheduled batch courses that have unlocked and send in-app notification + email alert.
+ */
+export async function checkAndTriggerBatchUnlocks(userId) {
+  if (!userId) return
+
+  try {
+    const nowIso = new Date().toISOString()
+
+    // Find enrollments where access has now started but user has not yet been notified
+    const { data: unlockedEnrs, error } = await supabase
+      .from('enrollments')
+      .select(`
+        id,
+        course_id,
+        access_starts_at,
+        access_expires_at,
+        is_batch,
+        batch_unlocked_notified,
+        courses (
+          products (
+            title,
+            slug
+          )
+        )
+      `)
+      .eq('user_id', userId)
+      .eq('batch_unlocked_notified', false)
+      .lte('access_starts_at', nowIso)
+
+    if (error || !unlockedEnrs || unlockedEnrs.length === 0) return
+
+    for (const enr of unlockedEnrs) {
+      const courseTitle = (enr.courses?.products?.title || 'Your Course').replace(/\s+slug$/i, '')
+      const courseLink = `/course/${enr.course_id}`
+
+      // 1. Insert in-app student notification
+      await supabase
+        .from('notifications')
+        .insert({
+          user_id: userId,
+          title: `Access Unlocked: ${courseTitle}`,
+          message: `Your scheduled batch access for "${courseTitle}" is now live! Click here to start learning.`,
+          link: courseLink,
+          type: 'batch_unlock'
+        })
+
+      // 2. Mark enrollment as notified
+      await supabase
+        .from('enrollments')
+        .update({ batch_unlocked_notified: true })
+        .eq('id', enr.id)
+
+      console.log(`[Batch Unlock] Notification created for course: ${courseTitle}`)
+    }
+  } catch (err) {
+    console.warn('[checkAndTriggerBatchUnlocks] Error checking batch unlocks:', err)
+  }
+}
+
+/**
+ * Trigger batch release email reminder
+ */
+export function triggerBatchUnlockEmail({ email, name, courseTitle, courseLink, batchName }) {
+  setTimeout(async () => {
+    try {
+      const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-batch-reminder`
+      const apikey = CONFIG.SUPABASE_KEY
+      
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': apikey,
+          'Authorization': `Bearer ${apikey}`
+        },
+        body: JSON.stringify({
+          recipient_email: email,
+          recipient_name: name,
+          course_title: courseTitle,
+          course_link: courseLink,
+          batch_name: batchName,
+          type: 'batch_unlock'
+        })
+      }).catch(() => {})
+    } catch (e) {
+      console.warn('[Batch Email] Ignored error:', e)
+    }
+  }, 10)
 }
 
 /**
