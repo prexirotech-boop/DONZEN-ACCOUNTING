@@ -1,6 +1,6 @@
 // Setup: 
 // 1. Install Supabase CLI
-// 2. Run: `supabase functions deploy send-confirmation`
+// 2. Run: `supabase functions deploy send-email`
 // Set Env Secrets in Supabase Dashboard (Settings -> Edge Functions):
 // - RESEND_API_KEY
 // - PAYSTACK_SECRET_KEY
@@ -255,4 +255,3 @@ serve(async (req: any) => {
     return new Response(JSON.stringify({ error: err.message }), { headers: corsHeaders, status: 500 })
   }
 })
-

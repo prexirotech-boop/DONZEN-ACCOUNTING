@@ -1,0 +1,38 @@
+# Robots.txt for Donzen Accounting Hub
+# https://www.donzenaccountinghub.com
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /checkout/
+Disallow: /api/
+
+# AI Crawlers & LLM Indexing (Generative Engine Optimization)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Sitemap Location
+Sitemap: https://www.donzenaccountinghub.com/sitemap.xml

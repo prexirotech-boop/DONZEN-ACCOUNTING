@@ -101,6 +101,13 @@ export default function AdminCourses() {
   // Quick Edit Course State
   const [editingCourseId, setEditingCourseId] = useState(null)
 
+  // Duplicate Course Modal State
+  const [duplicateCourseTarget, setDuplicateCourseTarget] = useState(null)
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false)
+  const [duplicateForm, setDuplicateForm] = useState({ title: '', slug: '' })
+  const [duplicateSaving, setDuplicateSaving] = useState(false)
+  const [duplicateError, setDuplicateError] = useState('')
+
   // Bulk Syllabus State
   const [showBulkEditModal, setShowBulkEditModal] = useState(false)
   const [bulkEditCourseId, setBulkEditCourseId] = useState(null)
@@ -310,6 +317,144 @@ export default function AdminCourses() {
       alert(err.message)
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  // ─── DUPLICATE COURSE LOGIC ────────────────────────────────────────────────
+  const handleOpenDuplicate = (c) => {
+    const origTitle = c.products?.title || 'Course'
+    const origSlug = c.products?.slug || 'course'
+    const randSuffix = Math.floor(1000 + Math.random() * 9000)
+    setDuplicateCourseTarget(c)
+    setDuplicateForm({
+      title: `${origTitle} (Copy)`,
+      slug: `${origSlug}-copy-${randSuffix}`
+    })
+    setDuplicateError('')
+    setShowDuplicateModal(true)
+  }
+
+  const handleExecuteDuplicate = async (e) => {
+    e.preventDefault()
+    if (!duplicateForm.title.trim() || !duplicateForm.slug.trim() || !duplicateCourseTarget) return
+    setDuplicateSaving(true)
+    setDuplicateError('')
+
+    try {
+      const origCourseId = duplicateCourseTarget.id
+
+      // 1. Fetch full original product and course details
+      const [prodRes, courseRes] = await Promise.all([
+        supabase.from('products').select('*').eq('id', origCourseId).single(),
+        supabase.from('courses').select('*').eq('id', origCourseId).single()
+      ])
+
+      if (prodRes.error) throw prodRes.error
+      if (courseRes.error) throw courseRes.error
+
+      const origProd = prodRes.data
+      const origCourse = courseRes.data
+
+      // 2. Insert new product
+      const { data: newProd, error: pErr } = await supabase
+        .from('products')
+        .insert({
+          title: duplicateForm.title.trim(),
+          slug: duplicateForm.slug.trim(),
+          type: 'course',
+          price: origProd.price || 0,
+          old_price: origProd.old_price,
+          cover_image: origProd.cover_image,
+          description: origProd.description,
+          short_description: origProd.short_description,
+          features: Array.isArray(origProd.features) ? origProd.features : [],
+          is_published: false, // Default to draft for safety
+          is_featured: false,
+          is_free: origProd.is_free || false,
+          batch_enrollment_enabled: origProd.batch_enrollment_enabled || false,
+          batch_start_date: origProd.batch_start_date,
+          batch_name: origProd.batch_name,
+          access_duration_type: origProd.access_duration_type || 'lifetime',
+          access_duration_days: origProd.access_duration_days
+        })
+        .select('id')
+        .single()
+
+      if (pErr) throw pErr
+
+      // 3. Insert new course record
+      const { error: cErr } = await supabase
+        .from('courses')
+        .insert({
+          id: newProd.id,
+          category_id: origCourse.category_id,
+          level: origCourse.level || 'beginner',
+          language: origCourse.language || 'English',
+          what_you_learn: Array.isArray(origCourse.what_you_learn) ? origCourse.what_you_learn : [],
+          requirements: Array.isArray(origCourse.requirements) ? origCourse.requirements : [],
+          who_is_for: Array.isArray(origCourse.who_is_for) ? origCourse.who_is_for : [],
+          preview_video: origCourse.preview_video,
+          instructor: origCourse.instructor || 'Instructor',
+          certificate_enabled: origCourse.certificate_enabled ?? true,
+          completion_threshold: origCourse.completion_threshold || 80,
+          total_duration: origCourse.total_duration,
+          batch_enrollment_enabled: origCourse.batch_enrollment_enabled || false,
+          batch_start_date: origCourse.batch_start_date,
+          batch_name: origCourse.batch_name,
+          access_duration_type: origCourse.access_duration_type || 'lifetime',
+          access_duration_days: origCourse.access_duration_days
+        })
+
+      if (cErr) throw cErr
+
+      // 4. Fetch all modules and lessons from original course
+      const { data: origModules, error: modsErr } = await supabase
+        .from('modules')
+        .select('*, lessons(*)')
+        .eq('course_id', origCourseId)
+        .order('order_index', { ascending: true })
+
+      if (!modsErr && origModules && origModules.length > 0) {
+        for (const mod of origModules) {
+          // Clone module
+          const { data: newMod, error: modInsertErr } = await supabase
+            .from('modules')
+            .insert({
+              course_id: newProd.id,
+              title: mod.title,
+              order_index: mod.order_index
+            })
+            .select('id')
+            .single()
+
+          if (!modInsertErr && newMod && mod.lessons && mod.lessons.length > 0) {
+            // Clone lessons
+            const lessonsToInsert = mod.lessons.map(les => ({
+              module_id: newMod.id,
+              title: les.title,
+              type: les.type || 'video',
+              video_url: les.video_url || '',
+              wistia_id: les.wistia_id || '',
+              article: les.article || '',
+              duration: les.duration || '0m',
+              overview: les.overview || '',
+              resources: Array.isArray(les.resources) ? les.resources : [],
+              is_free_preview: les.is_free_preview || false,
+              order_index: les.order_index || 0
+            }))
+
+            await supabase.from('lessons').insert(lessonsToInsert)
+          }
+        }
+      }
+
+      setShowDuplicateModal(false)
+      loadCourses()
+      navigate(`/admin/courses/${newProd.id}`)
+    } catch (err) {
+      setDuplicateError(err.message || 'Failed to duplicate course.')
+    } finally {
+      setDuplicateSaving(false)
     }
   }
 
@@ -565,10 +710,16 @@ export default function AdminCourses() {
                       Bulk Syllabus
                     </button>
                     <button 
+                      onClick={() => handleOpenDuplicate(c)}
+                      style={{ flex: '1 1 40%', background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
+                    >
+                      📋 Duplicate
+                    </button>
+                    <button 
                       onClick={() => handleOpenEdit(c)}
                       style={{ flex: '1 1 40%', background: '#f8fafc', color: '#475569', border: '1px solid #cbd5e1', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
                     >
-                      Edit
+                      Edit Settings
                     </button>
                   </div>
                 </div>
@@ -676,6 +827,29 @@ export default function AdminCourses() {
                               onMouseOut={e => e.currentTarget.style.backgroundColor = '#10b981'}
                             >
                               Bulk Syllabus
+                            </button>
+
+                            <button 
+                              onClick={() => handleOpenDuplicate(c)}
+                              style={{
+                                background: '#f8fafc',
+                                color: '#0f172a',
+                                border: '1px solid #cbd5e1',
+                                padding: '7px 14px',
+                                borderRadius: 6,
+                                fontWeight: 600,
+                                fontSize: 13,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                transition: 'all 0.15s ease'
+                              }}
+                              onMouseOver={e => { e.currentTarget.style.backgroundColor = '#e2e8f0'; e.currentTarget.style.borderColor = '#94a3b8' }}
+                              onMouseOut={e => { e.currentTarget.style.backgroundColor = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1' }}
+                              title="Duplicate course, modules, and all lessons"
+                            >
+                              📋 Duplicate
                             </button>
 
                             <button 
@@ -1064,6 +1238,115 @@ export default function AdminCourses() {
                   type="button" 
                   onClick={() => setShowBulkEditModal(false)} 
                   style={{ flex: 1, background: '#f7f8f9', color: '#4f566b', border: '1px solid #cbd5e1', padding: '12px', borderRadius: 6, fontWeight: 500, cursor: 'pointer' }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Custom Duplicate Course Modal */}
+      {showDuplicateModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 14, width: '100%', maxWidth: 520, padding: isMobile ? 20 : 28, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid #e2e8f0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a' }}>📋 Duplicate Course</h3>
+                <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0 0' }}>
+                  Clone <strong>{duplicateCourseTarget?.products?.title}</strong> and all its modules and lessons.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowDuplicateModal(false)}
+                style={{ background: 'none', border: 'none', fontSize: 20, color: '#94a3b8', cursor: 'pointer', padding: 4 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {duplicateError && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '10px 14px', borderRadius: 6, fontSize: 13 }}>
+                {duplicateError}
+              </div>
+            )}
+
+            <form onSubmit={handleExecuteDuplicate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, color: '#334155' }}>New Course Title *</label>
+                <input 
+                  type="text" 
+                  value={duplicateForm.title}
+                  onChange={e => {
+                    const t = e.target.value
+                    setDuplicateForm({
+                      title: t,
+                      slug: `${generateSlug(t)}-${Math.floor(1000 + Math.random() * 9000)}`
+                    })
+                  }}
+                  required
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, color: '#334155' }}>New URL Slug *</label>
+                <input 
+                  type="text" 
+                  value={duplicateForm.slug}
+                  onChange={e => setDuplicateForm({ ...duplicateForm, slug: e.target.value })}
+                  required
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 14px', fontSize: 12.5, color: '#475569', lineHeight: 1.5 }}>
+                ✨ <strong>What will be copied:</strong>
+                <ul style={{ margin: '6px 0 0 0', paddingLeft: 18 }}>
+                  <li>Complete course metadata, prices & syllabus highlights</li>
+                  <li>All modules and chapter structures</li>
+                  <li>All video lessons, articles, quizzes & attached resources</li>
+                  <li>Duplicate will be saved as <strong>Draft (Unpublished)</strong> initially</li>
+                </ul>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button 
+                  type="submit" 
+                  disabled={duplicateSaving}
+                  style={{ 
+                    flex: 1, 
+                    background: '#ff1717', 
+                    color: '#fff', 
+                    border: 'none', 
+                    padding: '12px', 
+                    borderRadius: 6, 
+                    fontWeight: 700, 
+                    fontSize: 14, 
+                    cursor: duplicateSaving ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8
+                  }}
+                >
+                  {duplicateSaving ? 'Duplicating Full Course...' : 'Duplicate Course Now'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowDuplicateModal(false)}
+                  style={{ 
+                    flex: 1, 
+                    background: '#f1f5f9', 
+                    color: '#475569', 
+                    border: '1px solid #cbd5e1', 
+                    padding: '12px', 
+                    borderRadius: 6, 
+                    fontWeight: 600, 
+                    fontSize: 14, 
+                    cursor: 'pointer' 
+                  }}
                 >
                   Cancel
                 </button>

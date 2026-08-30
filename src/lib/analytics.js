@@ -1,159 +1,106 @@
-import { supabase } from './supabase'
+// Google Analytics (GA4) Tracker Helper
+// Automatically dispatches events to window.gtag if initialized
 
-// Helper to generate a unique UUID
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
+export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-KC9YVM7JDR'
 
 /**
- * Retrieve or generate a persistent visitor identifier.
+ * Initialize Google Analytics dynamically
  */
-export function getVisitorId() {
-  let visitorId = localStorage.getItem('analytics_visitor_id')
-  if (!visitorId) {
-    visitorId = generateUUID()
-    localStorage.setItem('analytics_visitor_id', visitorId)
-  }
-  return visitorId
-}
+export function initGA() {
+  if (typeof window === 'undefined') return
 
-/**
- * Retrieve or generate a session identifier.
- * sessionStorage automatically persists across refreshes in the same tab,
- * but clears when the tab or browser is closed.
- */
-export function getSessionId() {
-  let sessionId = sessionStorage.getItem('analytics_session_id')
-  if (!sessionId) {
-    sessionId = generateUUID()
-    sessionStorage.setItem('analytics_session_id', sessionId)
-  }
-  return sessionId
-}
-
-/**
- * Automatically parses UTM parameters from the current URL query string
- * and saves them in sessionStorage so attribution is preserved across pages.
- */
-export function captureUTMs() {
-  try {
-    const params = new URLSearchParams(window.location.search)
-    const utms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
-    
-    utms.forEach(key => {
-      const val = params.get(key)
-      if (val) {
-        sessionStorage.setItem(`analytics_${key}`, val)
-      }
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer || []
+    window.gtag = function () {
+      window.dataLayer.push(arguments)
+    }
+    window.gtag('js', new Date())
+    window.gtag('config', GA_MEASUREMENT_ID, {
+      send_page_view: true
     })
-  } catch (err) {
-    console.error('[Analytics] Error capturing UTMs:', err)
   }
 }
 
 /**
- * Retrieves cached UTM parameters from sessionStorage.
+ * Track Page Views
+ * @param {string} path - URL path (e.g. /courses, /pricing)
+ * @param {string} title - Page title
  */
-export function getStoredUTMs() {
-  return {
-    utm_source: sessionStorage.getItem('analytics_utm_source') || null,
-    utm_medium: sessionStorage.getItem('analytics_utm_medium') || null,
-    utm_campaign: sessionStorage.getItem('analytics_utm_campaign') || null,
-    utm_content: sessionStorage.getItem('analytics_utm_content') || null,
-    utm_term: sessionStorage.getItem('analytics_utm_term') || null
+export function trackPageView(path, title) {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', {
+      page_path: path || window.location.pathname,
+      page_title: title || document.title,
+      page_location: window.location.href
+    })
   }
-}
-
-// Maps our custom analytics events to standard Facebook/Meta Pixel event names
-const META_EVENT_MAP = {
-  page_view: 'PageView',
-  webinar_signup: 'Lead',
-  initiate_checkout: 'InitiateCheckout',
-  payment_attempt: 'AddPaymentInfo',
-  purchase: 'Purchase'
 }
 
 /**
- * Tracks an event by saving it to the Supabase database and sending it to Meta Pixel.
- * This function runs asynchronously and handles errors gracefully without disrupting the UI.
- * 
- * @param {string} eventName - Name of the event (e.g., 'page_view', 'webinar_signup', 'initiate_checkout')
- * @param {Object} metadata - Optional event metadata (e.g., amount, product_title, email)
+ * Track Custom Ecommerce / Action Events
+ * @param {string} eventName - e.g. 'view_item', 'begin_checkout', 'purchase'
+ * @param {object} params - Event parameters
  */
-export async function trackEvent(eventName, metadata = {}) {
-  try {
-    // 1. Capture UTM parameters if present in the URL
-    captureUTMs()
-
-    const visitorId = getVisitorId()
-    const sessionId = getSessionId()
-    const utms = getStoredUTMs()
-    const path = window.location.pathname
-    const referrer = document.referrer || null
-
-    // Avoid logging admin actions in public traffic tracking
-    if (path.startsWith('/admin')) {
-      return
-    }
-
-    // Attempt to retrieve active auth user ID
-    let userId = null
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      userId = session?.user?.id || null
-    } catch (e) {
-      // Auth service might not be initialized or active; ignore user ID
-    }
-
-    // 2. Insert tracking record into Supabase
-    const eventData = {
-      visitor_id: visitorId,
-      session_id: sessionId,
-      event_name: eventName,
-      page_path: path,
-      referrer,
-      ...utms,
-      metadata: {
-        ...metadata,
-        timestamp_ms: Date.now()
-      },
-      user_id: userId
-    }
-
-    // Send to Supabase in a non-blocking background promise
-    supabase.from('traffic_events')
-      .insert(eventData)
-      .then(({ error }) => {
-        if (error) {
-          console.warn('[Analytics] Failed to save traffic event:', error.message)
-        }
-      })
-
-    // 3. Dispatch event to Facebook/Meta Pixel
-    if (window.fbq) {
-      const metaEventName = META_EVENT_MAP[eventName] || eventName
-      const payload = {}
-
-      // Map common metadata parameters to standard Meta Pixel values
-      if (metadata.value !== undefined) payload.value = metadata.value
-      if (metadata.currency !== undefined) payload.currency = metadata.currency || 'NGN'
-      if (metadata.content_name !== undefined) payload.content_name = metadata.content_name
-      if (metadata.content_type !== undefined) payload.content_type = metadata.content_type
-
-      // Attach UTM campaign parameters for precise campaign-level optimization in Meta Ads
-      Object.keys(utms).forEach(key => {
-        if (utms[key]) {
-          payload[key] = utms[key]
-        }
-      })
-
-      window.fbq('track', metaEventName, payload)
-    }
-  } catch (err) {
-    console.error('[Analytics] Error tracking event:', err)
+export function trackEvent(eventName, params = {}) {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('event', eventName, params)
   }
+}
+
+/**
+ * Track Course or Product View
+ */
+export function trackProductView(product) {
+  if (!product) return
+  trackEvent('view_item', {
+    currency: 'NGN',
+    value: product.price || 0,
+    items: [
+      {
+        item_id: product.id,
+        item_name: product.title,
+        item_category: product.type || 'course',
+        price: product.price || 0
+      }
+    ]
+  })
+}
+
+/**
+ * Track Checkout Initiation
+ */
+export function trackBeginCheckout(product) {
+  if (!product) return
+  trackEvent('begin_checkout', {
+    currency: 'NGN',
+    value: product.price || 0,
+    items: [
+      {
+        item_id: product.id,
+        item_name: product.title,
+        item_category: product.type || 'course',
+        price: product.price || 0
+      }
+    ]
+  })
+}
+
+/**
+ * Track Successful Purchase
+ */
+export function trackPurchase(order, product) {
+  if (!order) return
+  trackEvent('purchase', {
+    transaction_id: order.reference || order.id,
+    value: order.amount || product?.price || 0,
+    currency: 'NGN',
+    items: [
+      {
+        item_id: product?.id || order.product_id,
+        item_name: product?.title || 'Donzen Accounting Resource',
+        item_category: product?.type || 'course',
+        price: order.amount || product?.price || 0
+      }
+    ]
+  })
 }

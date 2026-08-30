@@ -13,6 +13,20 @@ export default function AdminBundles() {
   const [submitting, setSubmitting] = useState(false)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [formError, setFormError] = useState('')
+
+  // Duplicate Bundle Modal State
+  const [duplicateBundleTarget, setDuplicateBundleTarget] = useState(null)
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false)
+  const [duplicateForm, setDuplicateForm] = useState({ title: '', slug: '' })
+  const [duplicateSaving, setDuplicateSaving] = useState(false)
+  const [duplicateError, setDuplicateError] = useState('')
+
+  // Delete Bundle Modal State
+  const [deleteBundleTarget, setDeleteBundleTarget] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deletingBundle, setDeletingBundle] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth)
@@ -116,6 +130,7 @@ export default function AdminBundles() {
 
   const handleOpenAdd = () => {
     setEditingBundle(null)
+    setFormError('')
     setForm({
       title: '',
       slug: '',
@@ -137,6 +152,7 @@ export default function AdminBundles() {
 
   const handleOpenEdit = (b) => {
     setEditingBundle(b)
+    setFormError('')
     const currentCourseIds = (b.bundle_items || []).map(bi => bi.course_id)
     
     // Format date for datetime-local input
@@ -192,6 +208,7 @@ export default function AdminBundles() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploadingCover(true)
+    setFormError('')
     try {
       const fileExt = file.name.split('.').pop()
       const fileName = `bundle-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
@@ -209,7 +226,7 @@ export default function AdminBundles() {
 
       setForm(prev => ({ ...prev, cover_image: publicUrl }))
     } catch (err) {
-      alert('Cover upload failed: ' + err.message)
+      setFormError('Cover upload failed: ' + err.message)
     } finally {
       setUploadingCover(false)
     }
@@ -217,12 +234,14 @@ export default function AdminBundles() {
 
   const handleSaveBundle = async (e) => {
     e.preventDefault()
+    setFormError('')
+
     if (!form.title.trim() || !form.slug.trim()) {
-      alert('Please provide a title and slug.')
+      setFormError('Please provide a title and slug.')
       return
     }
     if (form.selectedCourseIds.length === 0) {
-      alert('Please select at least one course to include in this bundle.')
+      setFormError('Please select at least one course to include in this bundle.')
       return
     }
 
@@ -285,20 +304,108 @@ export default function AdminBundles() {
       setShowModal(false)
       loadData()
     } catch (err) {
-      alert('Error saving bundle: ' + err.message)
+      console.error('Error saving bundle:', err)
+      const isSqlSetupRelated = err.message?.includes('bundle') || err.message?.includes('column') || err.message?.includes('bundle_items')
+      setFormError(
+        err.message + 
+        (isSqlSetupRelated ? ' (Note: Make sure you ran SUPABASE_BUNDLE_AND_BATCH_SETUP.sql in Supabase SQL Editor).' : '')
+      )
     } finally {
       setSubmitting(false)
     }
   }
 
-  const handleDeleteBundle = async (bundleId) => {
-    if (!confirm('Are you sure you want to delete this bundle? Customers already enrolled will maintain course access.')) return
+  // ─── DUPLICATE BUNDLE LOGIC ────────────────────────────────────────────────
+  const handleOpenDuplicate = (b) => {
+    const origTitle = b.title || 'Bundle'
+    const origSlug = b.slug || 'bundle'
+    const randSuffix = Math.floor(1000 + Math.random() * 9000)
+    setDuplicateBundleTarget(b)
+    setDuplicateForm({
+      title: `${origTitle} (Copy)`,
+      slug: `${origSlug}-copy-${randSuffix}`
+    })
+    setDuplicateError('')
+    setShowDuplicateModal(true)
+  }
+
+  const handleExecuteDuplicate = async (e) => {
+    e.preventDefault()
+    if (!duplicateForm.title.trim() || !duplicateForm.slug.trim() || !duplicateBundleTarget) return
+    setDuplicateSaving(true)
+    setDuplicateError('')
+
     try {
-      const { error } = await supabase.from('products').delete().eq('id', bundleId)
-      if (error) throw error
+      const orig = duplicateBundleTarget
+
+      // 1. Insert new bundle product
+      const { data: newProd, error: pErr } = await supabase
+        .from('products')
+        .insert({
+          title: duplicateForm.title.trim(),
+          slug: duplicateForm.slug.trim(),
+          type: 'bundle',
+          description: orig.description || '',
+          price: orig.price || 0,
+          old_price: orig.old_price,
+          cover_image: orig.cover_image,
+          is_published: false, // Default to draft for safety
+          is_featured: false,
+          batch_enrollment_enabled: orig.batch_enrollment_enabled || false,
+          batch_start_date: orig.batch_start_date,
+          batch_name: orig.batch_name,
+          access_duration_type: orig.access_duration_type || 'lifetime',
+          access_duration_days: orig.access_duration_days
+        })
+        .select('id')
+        .single()
+
+      if (pErr) throw pErr
+
+      // 2. Clone all bundle_items
+      if (orig.bundle_items && orig.bundle_items.length > 0) {
+        const itemsToInsert = orig.bundle_items.map((bi, idx) => ({
+          bundle_id: newProd.id,
+          course_id: bi.course_id,
+          order_index: bi.order_index ?? idx
+        }))
+
+        const { error: biErr } = await supabase
+          .from('bundle_items')
+          .insert(itemsToInsert)
+
+        if (biErr) throw biErr
+      }
+
+      setShowDuplicateModal(false)
       loadData()
     } catch (err) {
-      alert(err.message)
+      setDuplicateError(err.message || 'Failed to duplicate bundle.')
+    } finally {
+      setDuplicateSaving(false)
+    }
+  }
+
+  // ─── DELETE BUNDLE MODAL LOGIC ─────────────────────────────────────────────
+  const handleOpenDeleteModal = (b) => {
+    setDeleteBundleTarget(b)
+    setDeleteError('')
+    setShowDeleteModal(true)
+  }
+
+  const handleExecuteDelete = async () => {
+    if (!deleteBundleTarget) return
+    setDeletingBundle(true)
+    setDeleteError('')
+    try {
+      const { error } = await supabase.from('products').delete().eq('id', deleteBundleTarget.id)
+      if (error) throw error
+      setShowDeleteModal(false)
+      loadData()
+    } catch (err) {
+      setDeleteError(err.message || 'Failed to delete bundle.')
+    } finally {
+      setDeletingBundle(false)
     }
   }
 
@@ -311,7 +418,7 @@ export default function AdminBundles() {
       if (error) throw error
       loadData()
     } catch (err) {
-      alert(err.message)
+      console.error('Error toggling publish:', err)
     }
   }
 
@@ -504,22 +611,29 @@ export default function AdminBundles() {
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: 'flex', gap: 8, marginTop: 'auto', paddingTop: 12 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 'auto', paddingTop: 12 }}>
                     <button
                       onClick={() => handleOpenEdit(b)}
-                      style={{ flex: 1, background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '8px 12px', borderRadius: 4, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', color: '#1e293b' }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: '#1e293b' }}
                     >
                       Edit Bundle
                     </button>
                     <button
+                      onClick={() => handleOpenDuplicate(b)}
+                      style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
+                      title="Duplicate this bundle"
+                    >
+                      📋 Duplicate
+                    </button>
+                    <button
                       onClick={() => handleTogglePublish(b)}
-                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '8px 12px', borderRadius: 4, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', color: b.is_published ? '#ea580c' : '#16a34a' }}
+                      style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: b.is_published ? '#ea580c' : '#16a34a' }}
                     >
                       {b.is_published ? 'Unpublish' : 'Publish'}
                     </button>
                     <button
-                      onClick={() => handleDeleteBundle(b.id)}
-                      style={{ background: '#fee2e2', border: 'none', padding: '8px 12px', borderRadius: 4, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', color: '#dc2626' }}
+                      onClick={() => handleOpenDeleteModal(b)}
+                      style={{ background: '#fee2e2', border: 'none', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: '#dc2626' }}
                     >
                       Delete
                     </button>
@@ -570,6 +684,12 @@ export default function AdminBundles() {
 
             {/* Modal Body Form */}
             <form onSubmit={handleSaveBundle} style={{ overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {formError && (
+                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '12px 16px', borderRadius: 6, fontSize: 13, lineHeight: 1.5 }}>
+                  ⚠️ {formError}
+                </div>
+              )}
+
               {/* Bundle Basic Info */}
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 16 }}>
                 <div>
@@ -582,7 +702,7 @@ export default function AdminBundles() {
                       setForm(p => ({
                         ...p,
                         title: t,
-                        slug: p.slug ? p.slug : generateSlug(t)
+                        slug: generateSlug(t)
                       }))
                     }}
                     placeholder="e.g. Master Financial Analyst Bundle"
@@ -902,6 +1022,218 @@ export default function AdminBundles() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM DUPLICATE BUNDLE MODAL */}
+      {showDuplicateModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(15, 23, 42, 0.5)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000,
+          padding: 16
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: 14,
+            width: '100%',
+            maxWidth: 520,
+            padding: isMobile ? 20 : 28,
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 20,
+            border: '1px solid #e2e8f0'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a' }}>📋 Duplicate Course Bundle</h3>
+                <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0 0' }}>
+                  Clone <strong>{duplicateBundleTarget?.title}</strong> and all its included course links.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowDuplicateModal(false)}
+                style={{ background: 'none', border: 'none', fontSize: 20, color: '#94a3b8', cursor: 'pointer', padding: 4 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {duplicateError && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '10px 14px', borderRadius: 6, fontSize: 13 }}>
+                {duplicateError}
+              </div>
+            )}
+
+            <form onSubmit={handleExecuteDuplicate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, color: '#334155' }}>New Bundle Title *</label>
+                <input 
+                  type="text" 
+                  value={duplicateForm.title}
+                  onChange={e => {
+                    const t = e.target.value
+                    setDuplicateForm({
+                      title: t,
+                      slug: `${generateSlug(t)}-${Math.floor(1000 + Math.random() * 9000)}`
+                    })
+                  }}
+                  required
+                  style={inputStyle}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, color: '#334155' }}>New URL Slug *</label>
+                <input 
+                  type="text" 
+                  value={duplicateForm.slug}
+                  onChange={e => setDuplicateForm({ ...duplicateForm, slug: e.target.value })}
+                  required
+                  style={inputStyle}
+                />
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 14px', fontSize: 12.5, color: '#475569', lineHeight: 1.5 }}>
+                ✨ <strong>What will be copied:</strong>
+                <ul style={{ margin: '6px 0 0 0', paddingLeft: 18 }}>
+                  <li>Bundle pricing, description & cover image</li>
+                  <li>All {duplicateBundleTarget?.bundle_items?.length || 0} linked course inclusions</li>
+                  <li>Batch scheduling and duration settings</li>
+                  <li>Duplicate will be saved as <strong>Draft (Unpublished)</strong> initially</li>
+                </ul>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button 
+                  type="submit" 
+                  disabled={duplicateSaving}
+                  style={{ 
+                    flex: 1, 
+                    background: '#ff1717', 
+                    color: '#fff', 
+                    border: 'none', 
+                    padding: '12px', 
+                    borderRadius: 6, 
+                    fontWeight: 700, 
+                    fontSize: 14, 
+                    cursor: duplicateSaving ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {duplicateSaving ? 'Duplicating Bundle...' : 'Duplicate Bundle Now'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowDuplicateModal(false)}
+                  style={{ 
+                    flex: 1, 
+                    background: '#f1f5f9', 
+                    color: '#475569', 
+                    border: '1px solid #cbd5e1', 
+                    padding: '12px', 
+                    borderRadius: 6, 
+                    fontWeight: 600, 
+                    fontSize: 14, 
+                    cursor: 'pointer' 
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM DELETE CONFIRMATION MODAL */}
+      {showDeleteModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(15, 23, 42, 0.5)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000,
+          padding: 16
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: 14,
+            width: '100%',
+            maxWidth: 440,
+            padding: 24,
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
+            border: '1px solid #fee2e2'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ background: '#fee2e2', color: '#dc2626', width: 42, height: 42, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
+                🗑️
+              </div>
+              <div>
+                <h3 style={{ fontSize: 17, fontWeight: 800, margin: 0, color: '#0f172a' }}>Delete Course Bundle?</h3>
+                <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0 0' }}>This action cannot be undone.</p>
+              </div>
+            </div>
+
+            {deleteError && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '10px 14px', borderRadius: 6, fontSize: 13 }}>
+                {deleteError}
+              </div>
+            )}
+
+            <p style={{ fontSize: 13.5, color: '#475569', margin: 0, lineHeight: 1.5 }}>
+              Are you sure you want to delete <strong>"{deleteBundleTarget?.title}"</strong>? Students who have already purchased this bundle will retain their individual course access in their dashboards.
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+              <button
+                type="button"
+                onClick={handleExecuteDelete}
+                disabled={deletingBundle}
+                style={{
+                  flex: 1,
+                  background: '#dc2626',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '11px',
+                  borderRadius: 6,
+                  fontWeight: 700,
+                  fontSize: 13.5,
+                  cursor: deletingBundle ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {deletingBundle ? 'Deleting...' : 'Yes, Delete Bundle'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                style={{
+                  flex: 1,
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  padding: '11px',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                  fontSize: 13.5,
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
