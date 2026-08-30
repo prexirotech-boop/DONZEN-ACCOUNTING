@@ -32,27 +32,110 @@ export default function PlaybookSalesPage() {
   useEffect(() => {
     async function loadProducts() {
       try {
+        const singleParam = searchParams.get('single') || searchParams.get('course') || searchParams.get('product')
+        const bundleParam = searchParams.get('bundle')
+
         // 1. Fetch single course product
-        let { data: singleProd } = await supabase
-          .from('products')
-          .select('*')
-          .or('slug.eq.30-days-accounting,slug.eq.accounting-experience-programme,type.eq.course')
-          .eq('is_published', true)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
+        let singleProd = null
+        if (singleParam) {
+          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(singleParam)
+          const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq(isUUID ? 'id' : 'slug', singleParam)
+            .maybeSingle()
+          if (data) singleProd = data
+        }
+
+        if (!singleProd) {
+          // Try known single course slugs first
+          const { data: bySlug } = await supabase
+            .from('products')
+            .select('*')
+            .or('slug.eq.30-days-accounting,slug.eq.accounting-experience-programme')
+            .eq('is_published', true)
+            .limit(1)
+            .maybeSingle()
+          if (bySlug) singleProd = bySlug
+        }
+
+        if (!singleProd) {
+          // Try featured course next
+          const { data: featuredCourse } = await supabase
+            .from('products')
+            .select('*')
+            .eq('type', 'course')
+            .eq('is_featured', true)
+            .eq('is_published', true)
+            .limit(1)
+            .maybeSingle()
+          if (featuredCourse) singleProd = featuredCourse
+        }
+
+        if (!singleProd) {
+          // Fallback to latest published course
+          const { data: latestCourse } = await supabase
+            .from('products')
+            .select('*')
+            .eq('type', 'course')
+            .eq('is_published', true)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+          if (latestCourse) singleProd = latestCourse
+        }
 
         if (singleProd) setProduct(singleProd)
 
         // 2. Fetch bundle product
-        let { data: bundleProd } = await supabase
-          .from('products')
-          .select('*')
-          .eq('type', 'bundle')
-          .eq('is_published', true)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
+        let bundleProd = null
+        if (bundleParam) {
+          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(bundleParam)
+          const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq(isUUID ? 'id' : 'slug', bundleParam)
+            .maybeSingle()
+          if (data) bundleProd = data
+        }
+
+        if (!bundleProd) {
+          // Try known bundle slugs first
+          const { data: bySlug } = await supabase
+            .from('products')
+            .select('*')
+            .or('slug.eq.30-days-bundle,slug.eq.master-course-bundle,slug.eq.accounting-mastery-bundle')
+            .eq('is_published', true)
+            .limit(1)
+            .maybeSingle()
+          if (bySlug) bundleProd = bySlug
+        }
+
+        if (!bundleProd) {
+          // Try featured bundle next
+          const { data: featuredBundle } = await supabase
+            .from('products')
+            .select('*')
+            .eq('type', 'bundle')
+            .eq('is_featured', true)
+            .eq('is_published', true)
+            .limit(1)
+            .maybeSingle()
+          if (featuredBundle) bundleProd = featuredBundle
+        }
+
+        if (!bundleProd) {
+          // Fallback to latest published bundle
+          const { data: latestBundle } = await supabase
+            .from('products')
+            .select('*')
+            .eq('type', 'bundle')
+            .eq('is_published', true)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle()
+          if (latestBundle) bundleProd = latestBundle
+        }
 
         if (bundleProd) setBundleProduct(bundleProd)
       } catch (err) {
@@ -60,7 +143,7 @@ export default function PlaybookSalesPage() {
       }
     }
     loadProducts()
-  }, [])
+  }, [searchParams])
 
   const handleEnrollSingle = () => {
     const target = product ? `/checkout?product=${product.id}` : '/checkout'
