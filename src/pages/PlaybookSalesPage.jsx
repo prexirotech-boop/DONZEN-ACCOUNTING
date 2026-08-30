@@ -145,6 +145,15 @@ export default function PlaybookSalesPage() {
     loadProducts()
   }, [searchParams])
 
+  const handleEnroll = () => {
+    const el = document.getElementById('pricing-section') || document.querySelector('.cf-pricing-offer-section')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      handleEnrollSingle()
+    }
+  }
+
   const handleEnrollSingle = () => {
     const target = product ? `/checkout?product=${product.id}` : '/checkout'
     navigate(target)
@@ -233,8 +242,9 @@ export default function PlaybookSalesPage() {
 
           {/* Primary CTA Button */}
           <div style={{ marginTop: 40, marginBottom: 10 }}>
-            <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll}>
-              👉 ENROLL NOW &amp; GET INSTANT ACCESS 👈
+            <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+              <span>ENROLL NOW &amp; GET INSTANT ACCESS</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
             <p className="cf-cta-subtext">Instant Activation &bull; 100% Secured Connection</p>
           </div>
@@ -669,7 +679,7 @@ export default function PlaybookSalesPage() {
       </section>
 
       {/* Section 14: What You'll Receive & Pricing Offer */}
-      <section className="cf-section cf-pricing-offer-section">
+      <section className="cf-section cf-pricing-offer-section" id="pricing-section">
         <div className="cf-container">
           <div style={{ textAlign: 'center', marginBottom: 36 }}>
             <span className="cf-pricing-header-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -871,8 +881,9 @@ export default function PlaybookSalesPage() {
           <p className="cf-closing-desc">
             The question isn't whether practical accounting skills matter. The question is: When will you decide to build them? Take the first step today.
           </p>
-          <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll} style={{ marginTop: 24 }}>
-            👉 JOIN THE WORKPLACE EXPERIENCE TODAY 👈
+          <button className="cf-cta-btn pulsing-cta" onClick={handleEnroll} style={{ marginTop: 24, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+            <span>JOIN THE WORKPLACE EXPERIENCE TODAY</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
       </section>
