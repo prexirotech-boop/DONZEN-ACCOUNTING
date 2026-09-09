@@ -555,7 +555,9 @@ export default function AdminBundles() {
         <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading course bundles...</div>
       ) : bundles.length === 0 ? (
         <div style={{ padding: 60, textAlign: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>📦</div>
+          <div style={{ color: '#94a3b8', marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          </div>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e293b', marginBottom: 8 }}>No Course Bundles Created Yet</h3>
           <p style={{ color: '#64748b', fontSize: 14, maxWidth: 450, margin: '0 auto 20px' }}>
             Create your first bundle to sell multiple complementary courses together at a special promotional price.
@@ -684,10 +686,11 @@ export default function AdminBundles() {
                     </button>
                     <button
                       onClick={() => handleOpenDuplicate(b)}
-                      style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
+                      style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: '8px 10px', borderRadius: 4, fontWeight: 600, fontSize: 12, cursor: 'pointer', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
                       title="Duplicate this bundle"
                     >
-                      📋 Duplicate
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      <span>Duplicate</span>
                     </button>
                     <button
                       onClick={() => handleTogglePublish(b)}
@@ -749,8 +752,9 @@ export default function AdminBundles() {
             {/* Modal Body Form */}
             <form onSubmit={handleSaveBundle} style={{ overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
               {formError && (
-                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '12px 16px', borderRadius: 6, fontSize: 13, lineHeight: 1.5 }}>
-                  ⚠️ {formError}
+                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '12px 16px', borderRadius: 6, fontSize: 13, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>{formError}</span>
                 </div>
               )}
 
@@ -870,8 +874,9 @@ export default function AdminBundles() {
                     style={inputStyle}
                   />
                   {discountPercent > 0 && (
-                    <span style={{ fontSize: 12, fontWeight: 700, color: '#16a34a', display: 'block', marginTop: 4 }}>
-                      🔥 {discountPercent}% discount vs purchasing courses separately!
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#16a34a', display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      <span>{discountPercent}% discount vs purchasing courses separately!</span>
                     </span>
                   )}
                 </div>
@@ -1110,7 +1115,10 @@ export default function AdminBundles() {
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a' }}>📋 Duplicate Course Bundle</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>Duplicate Course Bundle</span>
+                </h3>
                 <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0 0' }}>
                   Clone <strong>{duplicateBundleTarget?.title}</strong> and all its included course links.
                 </p>
@@ -1159,9 +1167,12 @@ export default function AdminBundles() {
               </div>
 
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 14px', fontSize: 12.5, color: '#475569', lineHeight: 1.5 }}>
-                ✨ <strong>What will be copied:</strong>
+                <strong style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3 1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                  <span>What will be copied:</span>
+                </strong>
                 <ul style={{ margin: '6px 0 0 0', paddingLeft: 18 }}>
-                  <li>Bundle pricing, description & cover image</li>
+                  <li>Bundle pricing, description &amp; cover image</li>
                   <li>All {duplicateBundleTarget?.bundle_items?.length || 0} linked course inclusions</li>
                   <li>Batch scheduling and duration settings</li>
                   <li>Duplicate will be saved as <strong>Draft (Unpublished)</strong> initially</li>
@@ -1235,8 +1246,8 @@ export default function AdminBundles() {
             border: '1px solid #fee2e2'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ background: '#fee2e2', color: '#dc2626', width: 42, height: 42, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
-                🗑️
+              <div style={{ background: '#fee2e2', color: '#dc2626', width: 42, height: 42, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </div>
               <div>
                 <h3 style={{ fontSize: 17, fontWeight: 800, margin: 0, color: '#0f172a' }}>Delete Course Bundle?</h3>

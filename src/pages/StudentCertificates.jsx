@@ -520,8 +520,8 @@ export default function StudentCertificates({ user, profile }) {
         <div key={cert.id} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
           <div>
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 48, height: 48, background: '#fef3c7', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
-                🎓
+              <div style={{ width: 48, height: 48, background: '#fef3c7', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{cert.courses?.products?.title}</h3>
@@ -546,14 +546,16 @@ export default function StudentCertificates({ user, profile }) {
               onClick={() => handleDownload(cert)}
               style={{ flex: 1, background: '#ff1717', color: '#fff', border: 'none', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
-              📥 Download PDF
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download PDF</span>
             </button>
             <button 
               onClick={() => handleShare(cert)}
-              style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #e2e8f0', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+              style={{ background: '#f1f5f9', color: '#334155', border: '1px solid #e2e8f0', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
               title="Copy Verification Link"
             >
-              🔗 Share
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Share</span>
             </button>
           </div>
         </div>

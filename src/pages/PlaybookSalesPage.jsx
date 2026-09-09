@@ -690,16 +690,9 @@ export default function PlaybookSalesPage() {
             <p className="cf-pricing-subheader" style={{ maxWidth: 650, margin: '8px auto 0' }}>Select between the standard 30-day practical cohort or unlock the complete all-inclusive software &amp; templates bundle.</p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: 24,
-            maxWidth: 1000,
-            margin: '0 auto',
-            alignItems: 'stretch'
-          }}>
+          <div className="cf-pricing-options-grid">
             {/* TIER 1: Standard Single Course */}
-            <div className="cf-pricing-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #e2e8f0', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <div className="cf-pricing-box cf-pricing-tier-card">
               <div>
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
                   <span style={{ display: 'inline-block', background: '#f1f5f9', color: '#475569', fontSize: 11.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 12 }}>
@@ -721,7 +714,7 @@ export default function PlaybookSalesPage() {
                   <span style={{ fontSize: 11.5, color: '#16a34a', fontWeight: 600, display: 'block' }}>One-time payment · Instant dashboard access</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24, textAlign: 'left' }}>
                   {[
                     '30-Day Practical Training Program',
                     'Workplace Accounting Case Studies',
@@ -731,14 +724,14 @@ export default function PlaybookSalesPage() {
                     'Standard Student Dashboard Access'
                   ].map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#334155' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
                       <span>{feat}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div>
+              <div style={{ marginTop: 'auto' }}>
                 <button
                   type="button"
                   onClick={handleEnrollSingle}
@@ -766,7 +759,7 @@ export default function PlaybookSalesPage() {
             </div>
 
             {/* TIER 2: Master Course Bundle (Recommended) */}
-            <div className="cf-pricing-box" style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #ff1717', background: '#ffffff', borderRadius: 16, padding: '32px 24px', boxShadow: '0 10px 35px rgba(255,23,23,0.08)' }}>
+            <div className="cf-pricing-box cf-pricing-tier-card cf-pricing-tier-featured">
               <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', background: '#ff1717', color: '#ffffff', fontSize: 11, fontWeight: 800, padding: '4px 14px', borderRadius: 999, letterSpacing: '0.5px', textTransform: 'uppercase', boxShadow: '0 2px 8px rgba(255,23,23,0.3)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 <span>BEST VALUE · MOST POPULAR</span>
@@ -793,7 +786,7 @@ export default function PlaybookSalesPage() {
                   <span style={{ fontSize: 11.5, color: '#b91c1c', fontWeight: 700, display: 'block' }}>Unlocks all multi-courses in 1 enrollment</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24, textAlign: 'left' }}>
                   {[
                     'Everything in the 30-Day Practical Course',
                     'QuickBooks Online & Desktop Masterclass',
@@ -804,14 +797,14 @@ export default function PlaybookSalesPage() {
                     'Verified Course Bundle Completion Certificates'
                   ].map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1e293b', fontWeight: i === 0 ? 500 : 600 }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2.5" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
                       <span>{feat}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div>
+              <div style={{ marginTop: 'auto' }}>
                 <button
                   type="button"
                   onClick={handleEnrollBundle}
@@ -1613,22 +1606,53 @@ export default function PlaybookSalesPage() {
 
         /* Pricing Box */
         .cf-pricing-offer-section {
-          display: flex;
-          justify-content: center;
           background: #fffdf5;
           margin: 0 -24px;
           padding: 80px 24px;
         }
+        .cf-pricing-options-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 28px;
+          max-width: 1000px;
+          margin: 0 auto;
+          align-items: stretch;
+          width: 100%;
+        }
+        .cf-pricing-tier-card {
+          width: 100%;
+          max-width: 100%;
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 36px 28px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          box-sizing: border-box;
+          position: relative;
+          text-align: left;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .cf-pricing-tier-featured {
+          border: 2px solid #ff1717;
+          box-shadow: 0 10px 35px rgba(255, 23, 23, 0.09);
+        }
+        .cf-pricing-tier-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+        .cf-pricing-tier-featured:hover {
+          box-shadow: 0 14px 40px rgba(255, 23, 23, 0.16);
+        }
         .cf-pricing-box {
           width: 100%;
-          max-width: 580px;
+          max-width: 100%;
           background: #ffffff;
-          border: 3.5px solid #ff1717;
           border-radius: 16px;
-          padding: 44px 34px;
-          text-align: center;
-          box-shadow: 0 20px 45px -15px rgba(255, 23, 23, 0.18);
           margin: 0 auto;
+          box-sizing: border-box;
         }
         .cf-pricing-header-tag {
           display: inline-block;
@@ -1824,6 +1848,17 @@ export default function PlaybookSalesPage() {
         }
 
         /* Responsive changes */
+        @media (max-width: 860px) {
+          .cf-pricing-options-grid {
+            grid-template-columns: 1fr !important;
+            max-width: 480px;
+            gap: 36px;
+          }
+          .cf-pricing-tier-card {
+            padding: 28px 20px !important;
+          }
+        }
+
         @media (max-width: 768px) {
           .cf-instructor-container {
             flex-direction: column;
@@ -1836,6 +1871,19 @@ export default function PlaybookSalesPage() {
           }
           .cf-pricing-features {
             grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .cf-pricing-offer-section {
+            margin: 0 -16px;
+            padding: 48px 16px;
+          }
+          .cf-pricing-tier-card {
+            padding: 24px 16px !important;
+          }
+          .cf-pricing-options-grid {
+            gap: 28px;
           }
         }
       ` }} />

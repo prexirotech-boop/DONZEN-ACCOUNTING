@@ -925,7 +925,9 @@ export default function AdminCertificates() {
                   onMouseEnter={e => e.currentTarget.style.borderColor = '#ff1717'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = '#cbd5e1'}
                 >
-                  <div style={{ fontSize: 20, marginBottom: 4 }}>✍️</div>
+                  <div style={{ color: '#94a3b8', marginBottom: 4, display: 'flex', justifyContent: 'center' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </div>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#0f172a' }}>Upload Handwritten Signature Image</div>
                   <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 2 }}>PNG image transparent background recommended</div>
                 </div>
@@ -956,7 +958,8 @@ export default function AdminCertificates() {
                 cursor: 'pointer', textAlign: 'center', width: '100%', boxShadow: '0 4px 10px rgba(15,23,42,0.15)'
               }}
             >
-              Preview Template 👁️
+              <span>Preview Template</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
 

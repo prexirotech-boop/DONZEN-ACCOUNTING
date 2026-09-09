@@ -325,10 +325,13 @@ function RichTextEditor({ value, onChange, placeholder }) {
         <button type="button" onClick={() => exec('insertUnorderedList')} style={btnStyle} title="Bullet List">• List</button>
         <button type="button" onClick={() => exec('insertOrderedList')} style={btnStyle} title="Numbered List">1. List</button>
         <span style={dividerStyle} />
-        <button type="button" onClick={addLink} style={btnStyle} title="Insert Link">🔗 Link</button>
-        <button type="button" onClick={() => exec('unlink')} style={btnStyle} title="Remove Link">🔗✕</button>
+        <button type="button" onClick={addLink} style={{ ...btnStyle, display: 'inline-flex', alignItems: 'center', gap: 4 }} title="Insert Link">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Link
+        </button>
+        <button type="button" onClick={() => exec('unlink')} style={btnStyle} title="Remove Link">Unlink</button>
         <span style={dividerStyle} />
-        <button type="button" onClick={() => exec('removeFormat')} style={btnStyle} title="Clear Formatting">✕ Clear</button>
+        <button type="button" onClick={() => exec('removeFormat')} style={btnStyle} title="Clear Formatting">Clear</button>
       </div>
 
       <div 
@@ -1339,7 +1342,7 @@ export default function AdminCourseBuilder() {
             {/* Short Description */}
             <div>
               <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
-                Short Description {!hasShortDescColumn && <span style={{ color: '#ea580c', fontWeight: 'normal', fontSize: '11px', marginLeft: '6px' }}>⚠️ Falling back to first paragraph (schema column missing)</span>}
+                Short Description {!hasShortDescColumn && <span style={{ color: '#ea580c', fontWeight: 'normal', fontSize: '11px', marginLeft: '6px', display: 'inline-flex', alignItems: 'center', gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Falling back to first paragraph (schema column missing)</span>}
               </label>
               <textarea 
                 value={formData.short_description || ''} 
@@ -1347,8 +1350,9 @@ export default function AdminCourseBuilder() {
                 placeholder="Enter a brief, plain-text summary (1-2 sentences) for the hero subtitle and course cards."
                 style={{ width: '100%', padding: '12px 16px', borderRadius: 8, border: '1.5px solid #cbd5e1', fontSize: 13, minHeight: 80, lineHeight: 1.5, resize: 'vertical' }} 
               />
-              <p style={{ fontSize: 11, color: '#697386', marginTop: 4 }}>
-                💡 Tip: This will be used in course listing cards and in the course details page hero subtitle.
+              <p style={{ fontSize: 11, color: '#697386', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+                <span>Tip: This will be used in course listing cards and in the course details page hero subtitle.</span>
               </p>
             </div>
 
@@ -1360,8 +1364,9 @@ export default function AdminCourseBuilder() {
                 onChange={val => setFormData({ ...formData, description: val })} 
                 placeholder="Enter course description with rich text formatting (WordPress/Google Docs style)..."
               />
-              <p style={{ fontSize: 11, color: '#697386', marginTop: 4 }}>
-                💡 Use the toolbar above to style headings, bold text, italicize, insert lists, and link text.
+              <p style={{ fontSize: 11, color: '#697386', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+                <span>Use the toolbar above to style headings, bold text, italicize, insert lists, and link text.</span>
               </p>
             </div>
 
@@ -1595,11 +1600,13 @@ export default function AdminCourseBuilder() {
                     padding: '6px 14px',
                     borderRadius: 4,
                     fontSize: 12,
-                    fontWeight: 600,
-                    cursor: 'pointer'
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6
                   }}
                 >
-                  📢 Broadcast Message to Students
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                  <span>Broadcast Message to Students</span>
                 </button>
               </div>
             </div>
@@ -1976,8 +1983,9 @@ export default function AdminCourseBuilder() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div style={{ background: '#fff', padding: '28px 24px', borderRadius: 12, width: '100%', maxWidth: 520, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#0f172a' }}>
-                📢 Broadcast to Enrolled Batch Students
+              <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                <span>Broadcast to Enrolled Batch Students</span>
               </h3>
               <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
                 Send an in-app alert notification and email update with the course link to all students enrolled in this course.
@@ -1985,8 +1993,9 @@ export default function AdminCourseBuilder() {
             </div>
 
             {broadcastSuccess ? (
-              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '14px', borderRadius: 6, color: '#166534', fontSize: 13, fontWeight: 600 }}>
-                ✅ {broadcastSuccess}
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '14px', borderRadius: 6, color: '#166534', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>{broadcastSuccess}</span>
               </div>
             ) : (
               <form onSubmit={handleSendBatchBroadcast} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -1998,7 +2007,7 @@ export default function AdminCourseBuilder() {
                     type="text"
                     value={broadcastSubject}
                     onChange={e => setBroadcastSubject(e.target.value)}
-                    placeholder="e.g. 🚀 Batch Access Is Live! Start Learning Now"
+                    placeholder="e.g. Batch Access Is Live! Start Learning Now"
                     required
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1.5px solid #cbd5e1', fontSize: 13 }}
                   />

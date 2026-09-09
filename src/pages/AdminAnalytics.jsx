@@ -766,7 +766,10 @@ export default function AdminAnalytics() {
           lineHeight: '1.5',
           boxShadow: '0 2px 4px rgba(249,115,22,0.05)'
         }}>
-          <h4 style={{ margin: '0 0 6px 0', fontWeight: '700', fontSize: '15px' }}>⚠️ Supabase Campaigns Table Missing</h4>
+          <h4 style={{ margin: '0 0 6px 0', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Supabase Campaigns Table Missing</span>
+          </h4>
           The campaigns table was not found. Please execute the database migration file <a href="file:///c:/Users/Admin/Downloads/AMPLIFIED%20SKILLS/SUPABASE_CAMPAIGNS.sql" style={{ color: '#ea580c', fontWeight: '600', textDecoration: 'underline' }}>SUPABASE_CAMPAIGNS.sql</a> inside your Supabase Dashboard SQL Editor to initialize tracking.
         </div>
       )}
@@ -1156,13 +1159,15 @@ export default function AdminAnalytics() {
                         >
                           <div style={{ position: 'absolute', top: 16, right: 16 }}>
                             {isWinner && (
-                              <span style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', fontSize: 10, fontWeight: 700, padding: '3px 6px', borderRadius: 20 }}>
-                                🏆 WINNER
+                              <span style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                WINNER
                               </span>
                             )}
                             {isLoser && (
-                              <span style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fca5a5', fontSize: 10, fontWeight: 700, padding: '3px 6px', borderRadius: 20 }}>
-                                ⚠️ LOSER
+                              <span style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fca5a5', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                LOWER
                               </span>
                             )}
                           </div>
@@ -1341,10 +1346,10 @@ export default function AdminAnalytics() {
                               <span>{lead.email}</span>
                               <button 
                                 onClick={() => copyToClipboard(lead.email)}
-                                style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b' }}
+                                style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', display: 'inline-flex', alignItems: 'center', padding: 2 }}
                                 title="Copy Email"
                               >
-                                📋
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                               </button>
                             </div>
                           </td>
@@ -1354,10 +1359,10 @@ export default function AdminAnalytics() {
                                 <span>{lead.phone}</span>
                                 <button 
                                   onClick={() => copyToClipboard(lead.phone)}
-                                  style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b' }}
+                                  style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', display: 'inline-flex', alignItems: 'center', padding: 2 }}
                                   title="Copy Phone"
                                 >
-                                  📋
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                                 </button>
                               </div>
                             ) : '-'}
@@ -1444,12 +1449,16 @@ export default function AdminAnalytics() {
                             <div style={{ fontWeight: 600, color: '#0f172a' }}>{drop.customer_name || 'Anonymous'}</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, marginTop: 2 }}>
                               <span style={{ color: '#64748b' }}>{drop.customer_email}</span>
-                              <button onClick={() => copyToClipboard(drop.customer_email)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', fontSize: 10 }}>📋</button>
+                              <button onClick={() => copyToClipboard(drop.customer_email)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', padding: 2, display: 'inline-flex', alignItems: 'center' }} title="Copy email">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                              </button>
                             </div>
                             {drop.customer_phone && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, marginTop: 2 }}>
                                 <span style={{ color: '#64748b' }}>{drop.customer_phone}</span>
-                                <button onClick={() => copyToClipboard(drop.customer_phone)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', fontSize: 10 }}>📋</button>
+                                <button onClick={() => copyToClipboard(drop.customer_phone)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#64748b', padding: 2, display: 'inline-flex', alignItems: 'center' }} title="Copy phone">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                </button>
                               </div>
                             )}
                           </td>
@@ -1698,8 +1707,9 @@ export default function AdminAnalytics() {
 
                 <form onSubmit={handleCreateCampaign} style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16, maxHeight: '80vh', overflowY: 'auto' }} className="no-scrollbar">
                   {formError && (
-                    <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', color: '#991b1b', padding: '10px 14px', borderRadius: 8, fontSize: 12.5, fontWeight: 500 }}>
-                      ⚠️ {formError}
+                    <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', color: '#991b1b', padding: '10px 14px', borderRadius: 8, fontSize: 12.5, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      <span>{formError}</span>
                     </div>
                   )}
 

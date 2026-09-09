@@ -16,7 +16,7 @@ const PURCHASE_NOTIFICATIONS = [
 // Professional website briefs from the client
 const PROJECT_BRIEFS = [
   {
-    title: '💼 Pinnacle Advisory & Co. (Accounting Firm Website)',
+    title: 'Pinnacle Advisory & Co. (Accounting Firm Website)',
     description: 'A website brief for a professional chartered accounting & business advisory firm in Lagos, Nigeria.',
     text: `Client Name: Pinnacle Advisory & Co.
 Location: Victoria Island, Lagos, Nigeria
@@ -48,7 +48,7 @@ BUDGET RANGE
 ₦1,000,000 – ₦1,800,000 depending on final scope.`
   },
   {
-    title: '🌱 Arise Africa Foundation (NGO Website Brief)',
+    title: 'Arise Africa Foundation (NGO Website Brief)',
     description: 'A compelling website brief for a youth empowerment, education access, and community development NGO.',
     text: `Client Name: Arise Africa Foundation
 Location: Lagos, Nigeria
@@ -441,8 +441,9 @@ export default function WebinarPage() {
                 </div>
               </div>
 
-              <div className="fomo-spots-alert">
-                ⚡ <strong>WARNING:</strong> Only <strong>4 spots remaining</strong> at this price. Price increases to {formattedRegularPrice} automatically once these spots are gone.
+              <div className="fomo-spots-alert" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span><strong>WARNING:</strong> Only <strong>4 spots remaining</strong> at this price. Price increases to {formattedRegularPrice} automatically once these spots are gone.</span>
               </div>
 
               <div className="fomo-progress-wrapper">

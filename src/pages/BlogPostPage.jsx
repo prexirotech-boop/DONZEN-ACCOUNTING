@@ -63,7 +63,9 @@ export default function BlogPostPage() {
   if (!post) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', color: '#0f172a', fontFamily: 'var(--font)', padding: 20, textAlign: 'center' }}>
-        <span style={{ fontSize: 50, marginBottom: 16 }}>🔍</span>
+        <div style={{ color: '#94a3b8', marginBottom: 16 }}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
         <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Article Not Found</h2>
         <p style={{ color: '#64748b', maxWidth: 400, marginBottom: 24, lineHeight: 1.5 }}>
           The article you are looking for does not exist or has been moved.

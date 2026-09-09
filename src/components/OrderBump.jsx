@@ -71,8 +71,9 @@ export default function OrderBump({ triggerProductId, onBumpsChange, currentTota
   return (
     <div style={{ marginTop: 24, marginBottom: 24 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1e1b4b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          ⚡ Special Add-ons
+        <h4 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1e1b4b', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Special Add-ons</span>
         </h4>
         <span style={{ fontSize: 9, fontWeight: 800, background: '#fee2e2', color: '#dc2626', padding: '2px 8px', borderRadius: 4, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           Limited Offer
@@ -144,8 +145,9 @@ export default function OrderBump({ triggerProductId, onBumpsChange, currentTota
 
               {/* Content */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ background: '#7c3aed', color: '#ffffff', fontSize: 9, fontWeight: 700, padding: '1px 8px', borderRadius: 10, display: 'inline-block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  ⚡ One-Time Offer
+                <div style={{ background: '#7c3aed', color: '#ffffff', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span>One-Time Offer</span>
                 </div>
                 <div style={{ fontWeight: 700, fontSize: 13.5, color: '#1e1b4b', lineHeight: 1.3 }}>{offer.headline}</div>
                 {offer.description && (

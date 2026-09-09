@@ -750,7 +750,7 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ background: '#f8fafc', borderRadius: 12, padding: 16, border: '1px solid #e2e8f0' }}>
                 <h4 style={{ margin: '0 0 12px 0', fontSize: 12.5, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
-                  Credentials: {method === 'bank_transfer' ? '🏆 Direct Bank Transfer' : method === 'paypal' ? '💳 PayPal Account' : '❌ None Configured'}
+                  Credentials: {method === 'bank_transfer' ? 'Direct Bank Transfer' : method === 'paypal' ? 'PayPal Account' : 'None Configured'}
                 </h4>
                 
                 {method === 'bank_transfer' ? (
@@ -864,16 +864,16 @@ function EditAffiliateModal({ affiliate, onClose, onSaved }) {
                                   <button
                                     onClick={() => handleUpdateCommissionStatus(c.id, 'approved')}
                                     title="Approve"
-                                    style={{ background: '#10b981', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ background: '#10b981', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 6px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
                                   >
-                                    ✓
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                                   </button>
                                   <button
                                     onClick={() => handleUpdateCommissionStatus(c.id, 'rejected')}
                                     title="Flag Fraud / Reject"
-                                    style={{ background: '#ef4444', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ background: '#ef4444', border: 'none', color: '#fff', borderRadius: 4, padding: '4px 6px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
                                   >
-                                    ✗
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                   </button>
                                 </div>
                               ) : (

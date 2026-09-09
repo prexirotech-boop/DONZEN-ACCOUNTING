@@ -76,8 +76,9 @@ export default function SalesPage() {
     <div style={{ background: '#0a0a0a', color: '#fff', fontFamily: "var(--font)" }}>
       
       {/* ── URGENCY BAR ─────────────────────────────────────────── */}
-      <div style={{ background: 'var(--red)', color: '#fff', textAlign: 'center', padding: '10px 15px', fontSize: '.85rem', fontWeight: 700, position: 'sticky', top: 0, zIndex: 100, letterSpacing: '.5px' }}>
-        🚨 WARNING: ONLY 37 SPOTS LEFT AT {formattedPrice} (PRICE INCREASES TO {formattedOldPrice} SOON)
+      <div style={{ background: 'var(--red)', color: '#fff', textAlign: 'center', padding: '10px 15px', fontSize: '.85rem', fontWeight: 700, position: 'sticky', top: 0, zIndex: 100, letterSpacing: '.5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>WARNING: ONLY 37 SPOTS LEFT AT {formattedPrice} (PRICE INCREASES TO {formattedOldPrice} SOON)</span>
       </div>
 
       {/* ── HERO ────────────────────────────────────────────────── */}
@@ -88,17 +89,17 @@ export default function SalesPage() {
 
         <div className="wrap t-center" style={{ position: 'relative', zIndex: 1 }}>
           <p style={{ display: 'inline-block', background: 'rgba(255,215,0,0.1)', color: 'var(--gold)', padding: '6px 16px', borderRadius: 50, fontSize: '.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 24, border: '1px solid rgba(255,215,0,0.2)' }}>
-            The Ultimate Escape Plan
+            The Ultimate Practical Experience Plan
           </p>
 
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-1px' }}>
-            How to Ditch the 9-to-5 Grind, <br />
-            <span style={{ color: 'var(--red)', textShadow: '0 0 20px rgba(220,38,38,0.4)' }}>Fire Your Boss</span>, and Earn <br />
-            <span style={{ color: 'var(--gold)' }}>₦500k/Month</span> From Your Living Room...
+            Master Practical Accounting, <br />
+            <span style={{ color: 'var(--red)', textShadow: '0 0 20px rgba(220,38,38,0.4)' }}>Fast-Track Your Career</span>, and Earn <br />
+            <span style={{ color: 'var(--gold)' }}>Competitive High-Income</span> as a Certified Accountant...
           </h1>
           
           <p style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: 'rgba(255,255,255,0.7)', maxWidth: 800, margin: '0 auto 40px', lineHeight: 1.6 }}>
-            ...Even If You're Broke, Overworked, Sick of Wasting Your Life, and Have <strong style={{color: '#fff'}}>ZERO Technical Skills.</strong>
+            ...Even If You Have Zero Prior Office Experience or Feel Intimidated by Software Like Sage 50, QuickBooks, and Advanced Excel.
           </p>
 
           {/* Video Placeholder / Graphic */}
@@ -114,15 +115,24 @@ export default function SalesPage() {
 
           {/* CTA Button */}
           <button onClick={go} style={{ background: 'linear-gradient(to right, var(--gold), #ffb700)', color: '#000', border: 'none', padding: '20px 40px', borderRadius: 50, fontSize: '1.2rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: 1, cursor: 'pointer', boxShadow: '0 10px 30px rgba(255,215,0,0.3)', transition: 'transform 0.2s', transform: 'scale(1)', animation: 'pulse 2s infinite' }}>
-            YES! I Want My Freedom Now ({CONFIG.PRICE_DISPLAY}) <span style={{ marginLeft: 8 }}>→</span>
+            YES! Enroll In Practical Experience ({CONFIG.PRICE_DISPLAY}) <span style={{ marginLeft: 8 }}>→</span>
           </button>
           
-          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, fontSize: '.85rem', color: 'rgba(255,255,255,0.5)' }}>
-            <span>🔒 Secure Checkout</span>
+          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, fontSize: '.85rem', color: 'rgba(255,255,255,0.7)', flexWrap: 'wrap' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Secure Checkout</span>
+            </span>
             <span>•</span>
-            <span>⚡ Instant Access</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Instant Dashboard Access</span>
+            </span>
             <span>•</span>
-            <span>💯 30-Day Guarantee</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Verified Certificate</span>
+            </span>
           </div>
         </div>
       </section>
@@ -137,7 +147,10 @@ export default function SalesPage() {
             <div>
               <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>By Nnanta Precious</p>
               <p style={{ color: 'var(--gold)', fontSize: '.9rem' }}>Founder, Donzen Accounting Hub</p>
-              <p style={{ color: '#888', fontSize: '.8rem' }}>📍 7:43 PM, Lagos</p>
+              <p style={{ color: '#888', fontSize: '.8rem', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>7:43 PM, Lagos</span>
+              </p>
             </div>
           </div>
 
@@ -162,7 +175,9 @@ export default function SalesPage() {
       <section style={{ padding: '80px 20px', background: '#0a0a0a' }}>
         <div className="wrap reveal">
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
-            <span style={{ fontSize: '3rem' }}>🚩</span>
+            <div style={{ color: '#ef4444', marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </div>
             <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>The 3 Lies They Sold Us <br /><span style={{ color: 'var(--red)' }}>(That Are Keeping You Poor)</span></h2>
           </div>
 
@@ -190,25 +205,27 @@ export default function SalesPage() {
           <div style={{ background: 'rgba(255,215,0,0.05)', border: '1px solid rgba(255,215,0,0.2)', padding: 40, borderRadius: 20, maxWidth: 800, margin: '0 auto 60px' }}>
             <h3 style={{ fontSize: '1.5rem', color: 'var(--gold)', marginBottom: 20, textAlign: 'center' }}>There's a parallel economy where:</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '1.1rem', color: '#ddd', lineHeight: 1.8 }}>
-              <li style={{ marginBottom: 15, display: 'flex', gap: 10 }}><span style={{ color: 'var(--gold)' }}>✓</span> 21-year-olds earn ₦500k/month designing websites… in pajamas.</li>
-              <li style={{ marginBottom: 15, display: 'flex', gap: 10 }}><span style={{ color: 'var(--gold)' }}>✓</span> Single mothers quit toxic jobs to homeschool kids and triple their income.</li>
-              <li style={{ display: 'flex', gap: 10 }}><span style={{ color: 'var(--gold)' }}>✓</span> Students pay tuition in cash—no more “Mummy, send me alert.”</li>
+              <li style={{ marginBottom: 15, display: 'flex', gap: 10, alignItems: 'center' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span>Accounting graduates earn ₦400k/month managing cloud accounting for remote clients.</span></li>
+              <li style={{ marginBottom: 15, display: 'flex', gap: 10, alignItems: 'center' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span>Bookkeepers consult for 4–5 small businesses simultaneously and triple their income.</span></li>
+              <li style={{ display: 'flex', gap: 10, alignItems: 'center' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span>Practitioners automate reporting in Excel &amp; Sage in minutes, not weeks.</span></li>
             </ul>
           </div>
 
           <div className="grid-2" style={{ alignItems: 'center', gap: 40, maxWidth: 900, margin: '0 auto' }}>
             <div>
               <h3 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 16 }}>Meet Temitope.</h3>
-              <p style={{ fontSize: '1.1rem', color: '#ccc', marginBottom: 16, lineHeight: 1.6 }}>Last year, she was a 300-level Microbiology student drowning in debt. Today? She's a Top-Rated Freelancer.</p>
+              <p style={{ fontSize: '1.1rem', color: '#ccc', marginBottom: 16, lineHeight: 1.6 }}>Last year, she was an unemployed graduate struggling with interview questions. Today? She manages bookkeeping for 3 major retail clients in Lagos.</p>
               <div style={{ background: '#000', padding: 20, borderRadius: 12, borderLeft: '4px solid var(--gold)' }}>
-                <p style={{ color: '#aaa', marginBottom: 8 }}>Her Last Project:</p>
-                <p style={{ fontSize: '1.5rem', color: '#fff', fontWeight: 700, marginBottom: 8 }}>₦620,000</p>
-                <p style={{ color: '#ccc', fontSize: '.9rem' }}>To redesign an electronics e-commerce store website.</p>
-                <div style={{ marginTop: 12, display: 'inline-block', background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: 4, fontSize: '.85rem', color: 'var(--gold)' }}>Time Spent: 9 days</div>
+                <p style={{ color: '#aaa', marginBottom: 8 }}>Her Monthly Retainer:</p>
+                <p style={{ fontSize: '1.5rem', color: '#fff', fontWeight: 700, marginBottom: 8 }}>₦450,000</p>
+                <p style={{ color: '#ccc', fontSize: '.9rem' }}>For monthly bookkeeping, payroll, and VAT filing.</p>
+                <div style={{ marginTop: 12, display: 'inline-block', background: 'rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: 4, fontSize: '.85rem', color: 'var(--gold)' }}>Time Spent: 6 hours/week</div>
               </div>
             </div>
             <div style={{ background: '#1a1a1a', borderRadius: 20, padding: 30, position: 'relative' }}>
-              <div style={{ position: 'absolute', top: -20, right: -20, fontSize: '4rem', opacity: 0.2 }}>🤫</div>
+              <div style={{ position: 'absolute', top: 20, right: 20, color: '#f59e0b', opacity: 0.2 }}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7zM9 21h6"/></svg>
+              </div>
               <h4 style={{ color: 'var(--gold)', fontSize: '1.2rem', marginBottom: 16, textTransform: 'uppercase', letterSpacing: 1 }}>The Secret They Don't Teach in School</h4>
               <p style={{ marginBottom: 12, fontSize: '1.05rem', color: '#fff' }}><strong>Fact:</strong> 90% of businesses NEED websites but HATE dealing with coders.</p>
               <p style={{ marginBottom: 12, fontSize: '1.05rem', color: '#fff' }}><strong>Fact:</strong> Tools like WordPress and Elementor let you build sites without coding—just drag, drop, done.</p>
@@ -224,59 +241,95 @@ export default function SalesPage() {
         <div className="wrap reveal">
           <div style={{ textAlign: 'center', marginBottom: 60 }}>
             <p style={{ color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>That's why I created...</p>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1.1, textTransform: 'uppercase' }}>THE FREELANCE WEB DESIGN <span style={{ color: 'var(--gold)' }}>MASTERY PROGRAM</span></h2>
-            <p style={{ fontSize: '1.2rem', color: '#aaa', marginTop: 16 }}>Your Step-by-Step Blueprint to Escape the Rat Race in 30 Days… Guaranteed.</p>
-            <p style={{ display: 'inline-block', marginTop: 24, padding: '10px 20px', background: 'rgba(255,255,255,0.05)', borderRadius: 50, border: '1px solid #333', color: '#fff', fontWeight: 600 }}>🎟️ "This Isn't a Course—It's a Golden Ticket"</p>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1.1, textTransform: 'uppercase' }}>THE PRACTICAL ACCOUNTING <span style={{ color: 'var(--gold)' }}>EXPERIENCE PROGRAM</span></h2>
+            <p style={{ fontSize: '1.2rem', color: '#aaa', marginTop: 16 }}>Your Step-by-Step Blueprint to Workplace Accounting Mastery in 30 Days.</p>
+            <p style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 24, padding: '10px 20px', background: 'rgba(255,255,255,0.05)', borderRadius: 50, border: '1px solid #333', color: '#fff', fontWeight: 600 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>The Complete Practical Training Track</span>
+            </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 800, margin: '0 auto' }}>
             {/* Module 1 */}
             <div style={{ background: '#0a0a0a', border: '1px solid #222', borderRadius: 16, padding: 30, display: 'flex', gap: 20 }}>
-              <div style={{ fontSize: '2.5rem' }}>🔥</div>
+              <div style={{ color: '#ff1717', display: 'flex', alignItems: 'center' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
               <div>
-                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 1: The "No-Experience" Launchpad</h3>
+                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 1: The Practical Accounting Launchpad</h3>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#bbb', lineHeight: 1.6 }}>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>3 Plug-and-Play Website Templates</strong> (worth ₦150k) – Your first projects are DONE.</li>
-                  <li>✓ <strong>The 1-Homework</strong> That Landed Me My First ₦150k Client (steal my exact script).</li>
+                  <li style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Real Workplace Company Files:</strong> Learn hands-on bookkeeping and ledger setup.</span>
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Chart of Accounts Architecture:</strong> Industry standard structures for trading, manufacturing and service firms.</span>
+                  </li>
                 </ul>
               </div>
             </div>
 
             {/* Module 2 */}
             <div style={{ background: '#0a0a0a', border: '1px solid #222', borderRadius: 16, padding: 30, display: 'flex', gap: 20 }}>
-              <div style={{ fontSize: '2.5rem' }}>💸</div>
+              <div style={{ color: '#ff1717', display: 'flex', alignItems: 'center' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
               <div>
-                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 2: The "Charge Premium" Playbook</h3>
+                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 2: Monthly Financial Reporting &amp; Tax Compliance</h3>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#bbb', lineHeight: 1.6 }}>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>Positioning Secrets:</strong> How to position yourself as an expert (even if you're new).</li>
-                  <li>✓ <strong>Pricing Psychology:</strong> Why charging ₦300k attracts BETTER clients than ₦50k.</li>
+                  <li style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Financial Statements:</strong> Profit &amp; Loss, Balance Sheet, and Cash Flow preparation in Excel.</span>
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Tax Remittance Calculations:</strong> PAYE, VAT, WHT, and Company Income Tax computations.</span>
+                  </li>
                 </ul>
               </div>
             </div>
 
             {/* Module 3 */}
             <div style={{ background: '#0a0a0a', border: '1px solid #222', borderRadius: 16, padding: 30, display: 'flex', gap: 20 }}>
-              <div style={{ fontSize: '2.5rem' }}>🚀</div>
+              <div style={{ color: '#ff1717', display: 'flex', alignItems: 'center' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
               <div>
-                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 3: Client Avalanche & Facebook Ads System</h3>
+                <h3 style={{ fontSize: '1.3rem', color: '#fff', marginBottom: 12 }}>MODULE 3: Sage 50, QuickBooks &amp; Excel Mastery</h3>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#bbb', lineHeight: 1.6 }}>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>Profitable Facebook Ads:</strong> My "3-Day Facebook Hack" to get 5–7 inbound leads weekly.</li>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>Closing the Deal:</strong> The "Dumb Phone Trick" and scripts that convince 79% of prospects to hire you.</li>
-                  <li>✓ <strong>Recurring Revenue:</strong> How to make clients pay you monthly for maintenance.</li>
+                  <li style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Cloud &amp; Desktop Software:</strong> Live migration and reconciliation scenarios.</span>
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Bank Reconciliation &amp; Audit Trail:</strong> Fixing real accounting errors under pressure.</span>
+                  </li>
                 </ul>
               </div>
             </div>
 
             {/* Bonuses */}
             <div style={{ background: 'linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.02) 100%)', border: '1px solid rgba(255,215,0,0.3)', borderRadius: 16, padding: 30, display: 'flex', gap: 20 }}>
-              <div style={{ fontSize: '2.5rem' }}>🎁</div>
+              <div style={{ color: 'var(--gold)', display: 'flex', alignItems: 'center' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M19 8a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3"/></svg>
+              </div>
               <div>
-                <h3 style={{ fontSize: '1.3rem', color: 'var(--gold)', marginBottom: 12 }}>EXCLUSIVE BONUSES:</h3>
+                <h3 style={{ fontSize: '1.3rem', color: 'var(--gold)', marginBottom: 12 }}>EXCLUSIVE PROGRAM BONUSES:</h3>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#ddd', lineHeight: 1.6 }}>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>Lifetime Access to Our Client Portal</strong> (post a project, get bids in 1 hour).</li>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>30 "Shut Up and Take My Money" Email Templates</strong> (for late-paying clients).</li>
-                  <li style={{ marginBottom: 8 }}>✓ <strong>AI Prompt Library:</strong> Use AI to build websites faster and deliver in days, not weeks.</li>
-                  <li>✓ <strong>Done-For-You Contracts:</strong> Protect yourself and look professional instantly.</li>
+                  <li style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Complete Excel Financial Modeling Templates</strong> (worth ₦50k).</span>
+                  </li>
+                  <li style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>30-Day Practical Homework &amp; Case Studies</strong> with tutor feedback.</span>
+                  </li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span><strong>Verifiable Certificate of Practical Experience</strong> upon program completion.</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -348,17 +401,19 @@ export default function SalesPage() {
       <section style={{ padding: '80px 20px', background: '#111' }}>
         <div className="wrap reveal">
           <div style={{ background: 'linear-gradient(145deg, rgba(220,38,38,0.1), rgba(0,0,0,0))', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 20, padding: 40, textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
-            <div style={{ fontSize: '4rem', marginBottom: 16 }}>🛡️</div>
-            <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', marginBottom: 16 }}>"But Nnanta—What If I Fail?"</h2>
+            <div style={{ color: '#ff1717', marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', marginBottom: 16 }}>"What If I Need Extra Help?"</h2>
             <p style={{ fontSize: '1.1rem', color: '#ccc', marginBottom: 24, lineHeight: 1.6 }}>
-              I've Been There. My first client? A disaster. I spent 3 weeks on a site… he hated it. I refunded his money, cried for hours. Then I Discovered the Missing Piece: Most freelancers focus on skills… but neglect client psychology.
+              We've built direct tutor and peer support directly into your learning dashboard so you never get stuck on a client company file or complex reconciliation.
             </p>
             <div style={{ textAlign: 'left', background: '#0a0a0a', padding: 24, borderRadius: 12, border: '1px solid #333' }}>
               <p style={{ color: '#fff', fontWeight: 700, marginBottom: 12 }}>That's why this program includes:</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, color: '#bbb', lineHeight: 1.8 }}>
-                <li>✅ <strong>Weekly Live Q&A Sessions:</strong> Stuck? Screenshare with me. I'll fix it LIVE.</li>
-                <li>✅ <strong>365-Day Access:</strong> Learn at your pace. Rewatch as needed.</li>
-                <li>✅ <strong>Ironclad Guarantee:</strong> Earn at least ₦200k within 90 days… or get 200% refund.</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>Weekly Live Support &amp; Review:</strong> Stuck? Screenshare with our certified tutors to review your entries.</span></li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>365-Day Access:</strong> Learn at your pace. Rewatch lesson recordings and download files as needed.</span></li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> <span><strong>Job Readiness Guarantee:</strong> Master real workplace scenarios or get personalized 1-on-1 coaching.</span></li>
               </ul>
             </div>
           </div>

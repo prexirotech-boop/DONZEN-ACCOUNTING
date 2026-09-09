@@ -109,9 +109,9 @@ export default function VerifyCertificatePage() {
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: 72, height: 72, borderRadius: '50%',
               background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)',
-              color: '#f87171', fontSize: 32, marginBottom: 24
+              color: '#f87171', marginBottom: 24
             }}>
-              ✕
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#f87171', marginBottom: 12 }}>Verification Failed</h2>
             <p style={{ fontSize: 14.5, color: '#94a3b8', lineHeight: 1.6, marginBottom: 32 }}>{error}</p>
@@ -134,10 +134,10 @@ export default function VerifyCertificatePage() {
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     width: 76, height: 76, borderRadius: '50%',
                     background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)',
-                    color: '#4ade80', fontSize: 36, marginBottom: 16,
+                    color: '#4ade80', marginBottom: 16,
                     boxShadow: '0 0 20px rgba(34,197,94,0.15)'
                   }}>
-                    ✓
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#4ade80', textTransform: 'uppercase', letterSpacing: '1px' }}>Verified Credentials</div>
                 </div>
@@ -147,9 +147,9 @@ export default function VerifyCertificatePage() {
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     width: 76, height: 76, borderRadius: '50%',
                     background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)',
-                    color: '#fbbf24', fontSize: 36, marginBottom: 16
+                    color: '#fbbf24', marginBottom: 16
                   }}>
-                    ⚠️
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1px' }}>Revoked / Expired</div>
                 </div>

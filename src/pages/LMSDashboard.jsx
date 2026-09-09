@@ -397,7 +397,10 @@ function EbooksTab({ user }) {
                 {/* Bonus downloads list */}
                 {ebook.bonus_ebook_urls && ebook.bonus_ebook_urls.length > 0 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>🎁 Included Bonuses:</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M19 8a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3"/></svg>
+                      <span>Included Bonuses:</span>
+                    </span>
                     {ebook.bonus_ebook_urls.map((bonus, idx) => (
                       <a 
                         key={idx} 
@@ -419,7 +422,10 @@ function EbooksTab({ user }) {
                           border: '1px solid #ffcccc'
                         }}
                       >
-                        <span>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                          <span>{bonus.name || `Bonus #${idx + 1}`}</span>
+                        </span>
                         <span style={{ fontSize: '11px', background: '#ff1717', color: '#fff', padding: '2px 8px', borderRadius: '4px' }}>Download</span>
                       </a>
                     ))}
@@ -1424,9 +1430,9 @@ function NotificationsTab({ user }) {
           <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
             <div className="ud-notif-icon" style={{ marginTop: 2 }}>
               {n.type === 'batch_unlock' ? (
-                <span style={{ fontSize: 20 }}>🎓</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               ) : n.type === 'batch_reminder' ? (
-                <span style={{ fontSize: 20 }}>⏳</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               ) : n.type === 'announcement' ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
               ) : (
@@ -2121,13 +2127,15 @@ function AffiliateTab({ user, profile }) {
 
           <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {saveError && (
-              <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#991b1b', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-                ⚠️ {saveError}
+              <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#991b1b', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>{saveError}</span>
               </div>
             )}
             {saveSuccess && (
-              <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', color: '#166534', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>
-                ✅ Payout settings saved successfully!
+              <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', color: '#166534', padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Payout settings saved successfully!</span>
               </div>
             )}
 
@@ -2643,7 +2651,7 @@ export default function LMSDashboard() {
                   <UserAvatar user={effectiveUser} size={48} />
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 15, color: '#0f172a', marginBottom: 3 }}>
-                      Welcome, {capitalizedFirstName}! 👋 Add your profile photo
+                      Welcome, {capitalizedFirstName}! Add your profile photo
                     </div>
                     <div style={{ fontSize: 13, color: '#475569', lineHeight: 1.4 }}>
                       A profile photo personalizes your account and makes your certificates look great.

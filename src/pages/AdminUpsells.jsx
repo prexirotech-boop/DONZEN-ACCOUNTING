@@ -310,7 +310,7 @@ function PreviewModal({ offer, onClose }) {
               }}>
                 {product?.cover_image
                   ? <img src={product.cover_image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : '📚'}
+                  : <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>}
               </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -1108,17 +1108,18 @@ export default function AdminUpsells() {
             whiteSpace: 'nowrap',
           }}
         >
-          ✨ Create New Offer
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+          <span>Create New Offer</span>
         </button>
       </div>
 
       {/* Stats Row */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
-        <StatCard icon="🎁" label="Total Offers"         value={totalOffers}                                              accent="#7c3aed" />
-        <StatCard icon="✅" label="Active Offers"        value={activeOffers}    sub={`${totalOffers - activeOffers} paused`} accent="#059669" />
-        <StatCard icon="👁️" label="Total Impressions"    value={totalImpressions.toLocaleString()}                        accent="#ff1717" />
-        <StatCard icon="🎯" label="Conversions"          value={totalConversions.toLocaleString()} sub={`${overallConvRate}% conv. rate`} accent="#d97706" />
-        <StatCard icon="💸" label="Revenue from Upsells" value={fmt(totalRevenue)}                                        accent="#dc2626" />
+        <StatCard icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M19 8a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3"/></svg>} label="Total Offers" value={totalOffers} accent="#7c3aed" />
+        <StatCard icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>} label="Active Offers" value={activeOffers} sub={`${totalOffers - activeOffers} paused`} accent="#059669" />
+        <StatCard icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>} label="Total Impressions" value={totalImpressions.toLocaleString()} accent="#ff1717" />
+        <StatCard icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>} label="Conversions" value={totalConversions.toLocaleString()} sub={`${overallConvRate}% conv. rate`} accent="#d97706" />
+        <StatCard icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>} label="Revenue from Upsells" value={fmt(totalRevenue)} accent="#dc2626" />
       </div>
 
       {/* Filters */}
@@ -1149,7 +1150,9 @@ export default function AdminUpsells() {
           background: '#fff', border: '1px solid #e3e8ee', borderRadius: 12,
           padding: '60px 24px', textAlign: 'center', color: '#697386',
         }}>
-          <div style={{ fontSize: 36, marginBottom: 12 }}>⚡</div>
+          <div style={{ color: '#ff1717', marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
           <div style={{ fontSize: 15, fontWeight: 500 }}>Loading offers...</div>
         </div>
       ) : filtered.length === 0 ? (
@@ -1158,7 +1161,9 @@ export default function AdminUpsells() {
           background: '#fff', border: '2px dashed #e3e8ee', borderRadius: 16,
           padding: '70px 24px', textAlign: 'center',
         }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🎁</div>
+          <div style={{ color: '#94a3b8', marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M19 8a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3"/></svg>
+          </div>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#1a1f36', marginBottom: 8 }}>
             {offers.length === 0 ? 'No upsell offers yet' : 'No offers match your filters'}
           </div>
@@ -1174,9 +1179,11 @@ export default function AdminUpsells() {
                 background: 'linear-gradient(135deg, #ff1717, #4f46e5)',
                 color: '#fff', border: 'none', padding: '12px 24px',
                 borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 8
               }}
             >
-              ✨ Create First Offer
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+              <span>Create First Offer</span>
             </button>
           )}
         </div>
@@ -1270,7 +1277,7 @@ export default function AdminUpsells() {
                             }}>
                               {offer.offered_product.cover_image
                                 ? <img src={offer.offered_product.cover_image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                : '📚'}
+                                : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>}
                             </div>
                             <div>
                               <div style={{ fontSize: 13, color: '#374151', fontWeight: 500, lineHeight: 1.3 }}>

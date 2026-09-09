@@ -735,7 +735,9 @@ export default function AdminBlog() {
                 onMouseEnter={e => e.currentTarget.style.borderColor = '#ff1717'}
                 onMouseLeave={e => e.currentTarget.style.borderColor = '#cbd5e1'}
               >
-                <div style={{ fontSize: 24, marginBottom: 8 }}>🖼️</div>
+                <div style={{ color: '#94a3b8', marginBottom: 8, display: 'flex', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: '#0f172a' }}>Upload Featured Image</div>
                 <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 4 }}>PNG, JPG or WEBP up to 5MB</div>
               </div>

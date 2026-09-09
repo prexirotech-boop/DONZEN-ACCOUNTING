@@ -720,8 +720,9 @@ export default function AdminUsers() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div style={{ background: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0', width: '100%', maxWidth: 440, padding: 24, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>Register Internal Staff</h3>
-            <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 8, padding: '10px 12px', fontSize: '11.5px', color: '#991b1b', lineHeight: 1.4 }}>
-              💡 <strong>Password Setup:</strong> Creating a staff entry sets up their placeholder admin profile. The staff member can simply register at <strong>/register</strong> using this email (or click <strong>Forgot Password</strong> to set a password) to activate their account and log in.
+            <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 8, padding: '10px 12px', fontSize: '11.5px', color: '#991b1b', lineHeight: 1.4, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: 2 }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div><strong>Password Setup:</strong> Creating a staff entry sets up their placeholder admin profile. The staff member can simply register at <strong>/register</strong> using this email (or click <strong>Forgot Password</strong> to set a password) to activate their account and log in.</div>
             </div>
             <form onSubmit={handleCreateStaff} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               <div>

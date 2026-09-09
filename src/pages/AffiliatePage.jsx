@@ -45,7 +45,7 @@ function AnimatedNumber({ value, prefix = '', suffix = '', duration = 800 }) {
 // ─── Commission tiers data ────────────────────────────────────────────────────
 const TIERS = [
   {
-    emoji: '🥉',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
     name: 'Bronze',
     range: '0 – 5 sales',
     rate: 20,
@@ -56,7 +56,7 @@ const TIERS = [
     bg: 'rgba(160, 92, 52, 0.08)',
   },
   {
-    emoji: '🥈',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
     name: 'Silver',
     range: '6 – 20 sales',
     rate: 25,
@@ -67,7 +67,7 @@ const TIERS = [
     bg: 'rgba(148, 163, 184, 0.08)',
   },
   {
-    emoji: '🥇',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7"/><path d="M14 14.66V17c0 .55.45 1 1 1h2"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>,
     name: 'Gold',
     range: '21 – 50 sales',
     rate: 30,
@@ -78,7 +78,7 @@ const TIERS = [
     bg: 'rgba(245, 158, 11, 0.08)',
   },
   {
-    emoji: '💎',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg>,
     name: 'Platinum',
     range: '50+ sales',
     rate: 35,
@@ -128,32 +128,32 @@ const FAQS = [
 
 const BENEFITS = [
   {
-    icon: '📊',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
     title: 'Real-Time Dashboard',
     desc: 'Track clicks, conversions, and earnings live with your personal affiliate dashboard.',
   },
   {
-    icon: '🍪',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>,
     title: '30-Day Cookie',
     desc: 'Earn commission on any purchase made within 30 days of your referral click.',
   },
   {
-    icon: '💸',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
     title: 'Monthly Payouts',
     desc: 'Get paid every month directly to your bank account. No delays, no excuses.',
   },
   {
-    icon: '🎯',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
     title: 'No Minimum to Join',
     desc: 'Sign up for free and start earning immediately. Zero upfront cost required.',
   },
   {
-    icon: '⚡',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
     title: 'Instant Access',
     desc: 'Get your unique affiliate link the moment you create your account. No approval wait.',
   },
   {
-    icon: '🤝',
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     title: 'Dedicated Support',
     desc: 'Our affiliate team is available to help you maximise your earnings and strategy.',
   },
@@ -334,14 +334,15 @@ export default function AffiliatePage() {
 
           {/* Badge */}
           <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            display: 'inline-flex', alignItems: 'center', gap: 6,
             background: 'rgba(139,92,246,0.15)',
             border: '1px solid rgba(139,92,246,0.4)',
             borderRadius: '100px', padding: '7px 20px',
             fontSize: '13px', fontWeight: 700, color: '#c4b5fd',
             marginBottom: '30px', letterSpacing: '0.4px',
           }}>
-            💰 Donzen Accounting Hub Affiliate Program
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Donzen Accounting Hub Affiliate Program</span>
           </div>
 
           {/* Headline */}
@@ -395,14 +396,16 @@ export default function AffiliatePage() {
                   <p style={{
                     fontSize: '11px', fontWeight: 700, color: '#64748b',
                     letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '12px',
+                    display: 'flex', alignItems: 'center', gap: 6
                   }}>
-                    🔗 Your Affiliate Link
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Your Affiliate Link</span>
                   </p>
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <span style={{
                       flex: 1, background: 'rgba(0,0,0,0.35)',
                       border: '1px solid rgba(255,255,255,0.08)',
-                      borderRadius: '10px', padding: '11px 14px',
+                      borderRadius: '100px', padding: '11px 14px',
                       fontSize: '13px', color: '#c4b5fd', fontFamily: 'monospace',
                       minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     }}>
@@ -419,21 +422,33 @@ export default function AffiliatePage() {
                         boxShadow: copied
                           ? '0 4px 16px rgba(34,197,94,0.4)'
                           : '0 4px 16px rgba(139,92,246,0.4)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 6
                       }}
                     >
-                      {copied ? '✓ Copied!' : 'Copy Link'}
+                      {copied ? (
+                        <>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        'Copy Link'
+                      )}
                     </button>
                   </div>
                 </div>
               )}
-              <Link to="/dashboard?tab=affiliate" className="aff-btn-primary">
-                <span>🚀</span> Start Earning Now
+              <Link to="/dashboard?tab=affiliate" className="aff-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <span>Start Earning Now</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </Link>
             </div>
           ) : (
             <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link to="/register" className="aff-btn-primary">
-                <span>✨</span> Create Free Account
+              <Link to="/register" className="aff-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3 1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                <span>Create Free Account</span>
               </Link>
               <Link to="/login" className="aff-btn-ghost">
                 Already have an account? Log in →
@@ -446,7 +461,7 @@ export default function AffiliatePage() {
       {/* ════════════════════════════════════════════════════
           2. HOW IT WORKS
       ════════════════════════════════════════════════════ */}
-      <div style={{ background: '#f8faff', padding: '100px 24px' }}>
+      <section style={{ padding: '100px 24px', background: '#f8fafc' }}>
         <div ref={howRef} style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <p style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#6d28d9', marginBottom: '12px', textAlign: 'center' }}>
             Simple Process
@@ -460,9 +475,9 @@ export default function AffiliatePage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '28px', position: 'relative' }}>
             {[
-              { step: 1, emoji: '🔗', title: 'Get Your Unique Link', desc: 'Sign up for free and receive your personal affiliate link instantly. No approval process, no waiting — immediate access the moment you register.', bg: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
-              { step: 2, emoji: '📣', title: 'Share With Your Audience', desc: 'Share on WhatsApp, Instagram, Twitter, YouTube, your blog — anywhere. The more channels you use and the more consistently you share, the more you earn.', bg: 'linear-gradient(135deg, #6366f1, #4338ca)' },
-              { step: 3, emoji: '💰', title: 'Earn 20–35% Commission', desc: 'Earn real money on every successful sale you refer within 30 days of your link click. Commissions grow as your referral count increases.', bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)' },
+              { step: 1, icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>, title: 'Get Your Unique Link', desc: 'Sign up for free and receive your personal affiliate link instantly. No approval process, no waiting — immediate access the moment you register.', bg: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
+              { step: 2, icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>, title: 'Share With Your Audience', desc: 'Share on WhatsApp, Instagram, Twitter, YouTube, your blog — anywhere. The more channels you use and the more consistently you share, the more you earn.', bg: 'linear-gradient(135deg, #6366f1, #4338ca)' },
+              { step: 3, icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, title: 'Earn 20–35% Commission', desc: 'Earn real money on every successful sale you refer within 30 days of your link click. Commissions grow as your referral count increases.', bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)' },
             ].map((item, i) => (
               <div
                 key={i}
@@ -479,11 +494,11 @@ export default function AffiliatePage() {
               >
                 {/* Step number bubble */}
                 <div style={{
-                  position: 'absolute', top: '-14px', left: '-14px',
-                  width: '34px', height: '34px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-                  color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '14px', fontWeight: 800,
+                  position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)',
+                  width: '32px', height: '32px', borderRadius: '50%',
+                  background: '#8b5cf6', color: '#fff',
+                  fontWeight: 800, fontSize: '13px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 4px 14px rgba(139,92,246,0.55)',
                 }}>
                   {item.step}
@@ -492,11 +507,11 @@ export default function AffiliatePage() {
                 <div style={{
                   width: '76px', height: '76px', borderRadius: '22px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '34px', margin: '0 auto 22px',
+                  color: '#fff', margin: '0 auto 22px',
                   background: item.bg,
                   boxShadow: '0 8px 28px rgba(0,0,0,0.18)',
                 }}>
-                  {item.emoji}
+                  {item.icon}
                 </div>
                 <h3 style={{ fontSize: '1.18rem', fontWeight: 800, color: '#1a1f36', marginBottom: '12px' }}>
                   {item.title}
@@ -508,7 +523,7 @@ export default function AffiliatePage() {
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ════════════════════════════════════════════════════
           3. COMMISSION TIERS
@@ -542,47 +557,30 @@ export default function AffiliatePage() {
                   ...fadeIn(tierInView, i * 110),
                 }}
               >
-                {/* Top glow */}
-                <div style={{
-                  position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)',
-                  width: '140px', height: '140px', borderRadius: '50%',
-                  background: `radial-gradient(circle, ${tier.glow} 0%, transparent 70%)`,
-                  filter: 'blur(24px)', pointerEvents: 'none',
-                }} />
-
-                <span style={{ fontSize: '3.2rem', marginBottom: '14px', display: 'block' }}>
-                  {tier.emoji}
-                </span>
+                <div style={{ color: tier.color, marginBottom: '14px', display: 'flex', justifyContent: 'center' }}>
+                  {tier.icon}
+                </div>
                 <div style={{ fontSize: '1.2rem', fontWeight: 800, color: tier.color, marginBottom: '5px' }}>
                   {tier.name}
                 </div>
                 <div style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px', opacity: 0.65, color: tier.color, marginBottom: '22px' }}>
                   {tier.range}
                 </div>
-                <div style={{ fontSize: '3.2rem', fontWeight: 900, color: tier.color, lineHeight: 1, marginBottom: '6px' }}>
+                <div style={{
+                  fontSize: 'clamp(2.4rem, 4vw, 3.2rem)',
+                  fontWeight: 900, color: '#f1f5f9',
+                  lineHeight: 1, marginBottom: '6px',
+                }}>
                   {tier.rate}%
                 </div>
-                <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '22px' }}>
-                  Commission Rate
+                <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+                  per referred sale
                 </div>
-
-                {/* Example earnings */}
                 <div style={{
-                  background: 'rgba(0,0,0,0.28)', borderRadius: '12px',
-                  padding: '14px', border: `1px solid ${tier.border}`,
+                  background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '12px 14px',
+                  fontSize: '13px', color: '#94a3b8',
                 }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px' }}>
-                    Per sale you refer
-                  </div>
-                  <div style={{ fontWeight: 800, color: tier.color, fontSize: '1.2rem', marginBottom: '10px' }}>
-                    ₦{Math.round(AVG_PRICE * tier.rate / 100).toLocaleString()}
-                  </div>
-                  <div style={{ borderTop: `1px solid ${tier.border}`, paddingTop: '10px', fontSize: '12px', color: '#64748b' }}>
-                    10 sales/mo ={' '}
-                    <strong style={{ color: '#e2e8f0' }}>
-                      ₦{(10 * Math.round(AVG_PRICE * tier.rate / 100)).toLocaleString()}
-                    </strong>
-                  </div>
+                  Earn <strong style={{ color: tier.color }}>₦{(15000 * tier.rate / 100).toLocaleString()}</strong> per avg. sale
                 </div>
               </div>
             ))}
@@ -593,62 +591,59 @@ export default function AffiliatePage() {
       {/* ════════════════════════════════════════════════════
           4. EARNINGS CALCULATOR
       ════════════════════════════════════════════════════ */}
-      <div style={{
-        padding: '100px 24px',
-        background: 'rgba(139,92,246,0.03)',
-        borderTop: '1px solid rgba(139,92,246,0.12)',
-        borderBottom: '1px solid rgba(139,92,246,0.12)',
-      }}>
-        <div ref={calcRef} style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <p style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#8b5cf6', marginBottom: '12px', textAlign: 'center' }}>
-            Earnings Calculator
+      <div style={{ padding: '100px 24px', background: 'linear-gradient(180deg, #09090f 0%, #120d24 50%, #09090f 100%)' }}>
+        <div ref={calcRef} style={{ maxWidth: '820px', margin: '0 auto', textAlign: 'center', ...fadeIn(calcInView) }}>
+          <p style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#8b5cf6', marginBottom: '12px' }}>
+            Interactive Calculator
           </p>
-          <h2 style={{ fontSize: 'clamp(1.9rem, 4vw, 2.9rem)', fontWeight: 800, color: '#f1f5f9', textAlign: 'center', marginBottom: '14px', lineHeight: 1.2 }}>
-            What Could You Earn?
+          <h2 style={{ fontSize: 'clamp(1.9rem, 4vw, 2.9rem)', fontWeight: 800, color: '#f1f5f9', marginBottom: '14px', lineHeight: 1.2 }}>
+            Estimate Your Monthly Earnings
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#64748b', textAlign: 'center', maxWidth: '500px', margin: '0 auto 60px', lineHeight: 1.75 }}>
-            Drag the slider to estimate your monthly affiliate income based on your referral volume.
+          <p style={{ fontSize: '1.05rem', color: '#64748b', maxWidth: '480px', margin: '0 auto 52px', lineHeight: 1.75 }}>
+            Slide to see how much you could earn each month based on your referral volume.
           </p>
 
           <div style={{
-            ...fadeIn(calcInView),
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(99,102,241,0.06) 100%)',
-            border: '1px solid rgba(139,92,246,0.22)',
-            borderRadius: '26px', padding: 'clamp(32px, 6vw, 60px) clamp(24px, 6vw, 56px)',
-            maxWidth: '700px', margin: '0 auto', backdropFilter: 'blur(12px)',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(139,92,246,0.3)',
+            borderRadius: '28px', padding: 'clamp(28px, 5vw, 56px)',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.5)',
           }}>
-            <p style={{ fontSize: '1.05rem', fontWeight: 600, color: '#94a3b8', marginBottom: '26px', textAlign: 'center' }}>
-              How many sales per month?{' '}
-              <strong style={{ color: '#c4b5fd', fontSize: '1.4em', fontWeight: 900 }}>{salesCount}</strong>
-            </p>
-
             {/* Slider */}
-            <input
-              type="range" min={1} max={100} value={salesCount}
-              onChange={e => setSalesCount(Number(e.target.value))}
-              style={{
-                width: '100%', height: '6px', borderRadius: '3px',
-                outline: 'none', cursor: 'pointer', marginBottom: '10px',
-                background: `linear-gradient(to right, #8b5cf6 ${salesCount}%, rgba(255,255,255,0.1) ${salesCount}%)`,
-              }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#475569', marginBottom: '40px' }}>
-              <span>1 sale</span><span>100 sales</span>
+            <div style={{ marginBottom: '40px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
+                <span style={{ fontSize: '15px', color: '#94a3b8', fontWeight: 600 }}>Referrals Per Month:</span>
+                <span style={{ fontSize: '2rem', fontWeight: 900, color: '#8b5cf6' }}>{salesCount}</span>
+              </div>
+              <input
+                type="range"
+                min={1}
+                max={100}
+                value={salesCount}
+                onChange={e => setSalesCount(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
+                <span>1 sale</span>
+                <span>50 sales</span>
+                <span>100+ sales</span>
+              </div>
             </div>
 
-            {/* Result */}
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>
-                Estimated monthly earnings
+            {/* Projected earnings display */}
+            <div style={{
+              background: 'rgba(139,92,246,0.08)',
+              border: '1px solid rgba(139,92,246,0.22)',
+              borderRadius: '20px', padding: '28px 24px',
+              marginBottom: '28px',
+            }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>
+                Estimated Monthly Earnings
               </div>
-              <div style={{
-                fontSize: 'clamp(2.8rem, 8vw, 4.5rem)', fontWeight: 900, lineHeight: 1.05, marginBottom: '8px',
-                background: 'linear-gradient(135deg, #a78bfa, #8b5cf6)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              }}>
-                ₦<AnimatedNumber value={monthlyEarnings} duration={450} />
+              <div style={{ fontSize: 'clamp(2.6rem, 6vw, 3.8rem)', fontWeight: 900, color: '#f1f5f9', lineHeight: 1.1, marginBottom: '6px' }}>
+                ₦{monthlyEarnings.toLocaleString()}
               </div>
-              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '22px' }}>
+              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '18px' }}>
                 At {currentTier.rate}% commission × ₦{AVG_PRICE.toLocaleString()} avg price × {salesCount} sales
               </div>
 
@@ -660,7 +655,7 @@ export default function AffiliatePage() {
                 border: `1px solid ${currentTier.border}`,
                 color: currentTier.color, fontSize: '14px', fontWeight: 700,
               }}>
-                <span>{currentTier.emoji}</span>
+                <span style={{ display: 'flex', alignItems: 'center' }}>{currentTier.icon}</span>
                 {currentTier.name} Tier — {currentTier.rate}% Commission
               </div>
 
@@ -669,19 +664,25 @@ export default function AffiliatePage() {
                 marginTop: '26px', padding: '18px 20px',
                 background: 'rgba(0,0,0,0.22)', borderRadius: '14px',
                 fontSize: '14px', color: '#64748b', lineHeight: 1.75,
+                display: 'flex', alignItems: 'flex-start', gap: 10
               }}>
-                💡 That's{' '}
-                <strong style={{ color: '#e2e8f0', fontSize: '1.05em' }}>
-                  ₦{(monthlyEarnings * 12).toLocaleString()}
-                </strong>{' '}
-                per year —{' '}
-                {monthlyEarnings >= 200000
-                  ? 'enough to replace a full-time salary!'
-                  : monthlyEarnings >= 80000
-                  ? 'enough to cover rent and living expenses!'
-                  : monthlyEarnings >= 30000
-                  ? 'a solid passive side income stream!'
-                  : 'a great start — scale up and earn more!'}
+                <div style={{ color: '#eab308', marginTop: 2, flexShrink: 0 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7zM9 21h6"/></svg>
+                </div>
+                <div>
+                  That's{' '}
+                  <strong style={{ color: '#e2e8f0', fontSize: '1.05em' }}>
+                    ₦{(monthlyEarnings * 12).toLocaleString()}
+                  </strong>{' '}
+                  per year —{' '}
+                  {monthlyEarnings >= 200000
+                    ? 'enough to replace a full-time salary!'
+                    : monthlyEarnings >= 80000
+                    ? 'enough to cover rent and living expenses!'
+                    : monthlyEarnings >= 30000
+                    ? 'a solid passive side income stream!'
+                    : 'a great start — scale up and earn more!'}
+                </div>
               </div>
             </div>
           </div>
@@ -860,13 +861,15 @@ export default function AffiliatePage() {
 
           {/* CTAs */}
           {user ? (
-            <Link to="/dashboard?tab=affiliate" className="aff-btn-primary" style={{ fontSize: '17px', padding: '17px 48px' }}>
-              <span>🚀</span> Go to My Affiliate Dashboard
+            <Link to="/dashboard?tab=affiliate" className="aff-btn-primary" style={{ fontSize: '17px', padding: '17px 48px', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <span>Go to My Affiliate Dashboard</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </Link>
           ) : (
             <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link to="/register" className="aff-btn-primary" style={{ fontSize: '17px', padding: '17px 44px' }}>
-                <span>✨</span> Create Free Account
+              <Link to="/register" className="aff-btn-primary" style={{ fontSize: '17px', padding: '17px 44px', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3 1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                <span>Create Free Account</span>
               </Link>
               <Link to="/login" className="aff-btn-ghost" style={{ fontSize: '15px', padding: '17px 30px' }}>
                 Log In to Dashboard
@@ -880,13 +883,13 @@ export default function AffiliatePage() {
             flexWrap: 'wrap', marginTop: '44px',
           }}>
             {[
-              { icon: '🔒', text: 'No upfront cost' },
-              { icon: '⚡', text: 'Instant link access' },
-              { icon: '📊', text: 'Real-time tracking' },
-              { icon: '💸', text: 'Monthly payouts' },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, text: 'No upfront cost' },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, text: 'Instant link access' },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, text: 'Real-time tracking' },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, text: 'Monthly payouts' },
             ].map(item => (
               <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#64748b' }}>
-                <span>{item.icon}</span><span>{item.text}</span>
+                <span style={{ display: 'inline-flex', color: '#8b5cf6' }}>{item.icon}</span><span>{item.text}</span>
               </div>
             ))}
           </div>

@@ -170,7 +170,7 @@ export default function CustomDropdown({
                   </div>
 
                   {isSelected && (
-                    <span style={{ color: '#ff1717', fontWeight: 800, fontSize: 14 }}>✓</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                   )}
                 </div>
               )

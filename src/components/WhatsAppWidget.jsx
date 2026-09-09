@@ -145,7 +145,7 @@ export default function WhatsAppWidget() {
               boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
             }}>
               <p style={{ margin: 0, fontSize: '0.86rem', color: '#101010', lineHeight: 1.5, fontWeight: 600 }}>
-                {isCheckout ? "Hi there! 👋 Need help with your booking or template purchase?" : "Welcome to Donzen Accounting Hub! 👋"}
+                {isCheckout ? "Hi there! Need help with your booking or template purchase?" : "Welcome to Donzen Accounting Hub!"}
               </p>
               <p style={{ margin: '8px 0 0', fontSize: '0.84rem', color: '#3f3f46', lineHeight: 1.5 }}>
                 {isCheckout 

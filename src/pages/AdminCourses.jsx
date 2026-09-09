@@ -711,9 +711,10 @@ export default function AdminCourses() {
                     </button>
                     <button 
                       onClick={() => handleOpenDuplicate(c)}
-                      style={{ flex: '1 1 40%', background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}
+                      style={{ flex: '1 1 40%', background: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
                     >
-                      📋 Duplicate
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      <span>Duplicate</span>
                     </button>
                     <button 
                       onClick={() => handleOpenEdit(c)}
@@ -849,7 +850,8 @@ export default function AdminCourses() {
                               onMouseOut={e => { e.currentTarget.style.backgroundColor = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1' }}
                               title="Duplicate course, modules, and all lessons"
                             >
-                              📋 Duplicate
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                              <span>Duplicate</span>
                             </button>
 
                             <button 
@@ -1253,16 +1255,19 @@ export default function AdminCourses() {
           <div style={{ background: '#fff', borderRadius: 14, width: '100%', maxWidth: 520, padding: isMobile ? 20 : 28, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: 20, border: '1px solid #e2e8f0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a' }}>📋 Duplicate Course</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>Duplicate Course</span>
+                </h3>
                 <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0 0' }}>
                   Clone <strong>{duplicateCourseTarget?.products?.title}</strong> and all its modules and lessons.
                 </p>
               </div>
               <button 
                 onClick={() => setShowDuplicateModal(false)}
-                style={{ background: 'none', border: 'none', fontSize: 20, color: '#94a3b8', cursor: 'pointer', padding: 4 }}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 4 }}
               >
-                ✕
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
 
@@ -1302,7 +1307,10 @@ export default function AdminCourses() {
               </div>
 
               <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 14px', fontSize: 12.5, color: '#475569', lineHeight: 1.5 }}>
-                ✨ <strong>What will be copied:</strong>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, color: '#0f172a' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                  <span>What will be copied:</span>
+                </div>
                 <ul style={{ margin: '6px 0 0 0', paddingLeft: 18 }}>
                   <li>Complete course metadata, prices & syllabus highlights</li>
                   <li>All modules and chapter structures</li>

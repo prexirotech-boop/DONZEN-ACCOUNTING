@@ -148,7 +148,9 @@ export default function BlogPage() {
           </div>
         ) : filteredPosts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 40px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 20, boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-            <span style={{ fontSize: 40, display: 'block', marginBottom: 16 }}>📖</span>
+            <div style={{ color: '#94a3b8', marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
             <h3 style={{ fontSize: 20, color: '#0f172a', marginBottom: 8, fontWeight: 700 }}>No articles found</h3>
             <p style={{ color: '#64748b' }}>Try adjusting your filters or search terms. New blueprints are published regularly.</p>
           </div>

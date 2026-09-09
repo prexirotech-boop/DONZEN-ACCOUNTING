@@ -37,11 +37,11 @@ function StatusDropdown({ value, onChange }) {
   }, [])
 
   const currentOpt = value === 'all' 
-    ? { label: 'All Statuses', icon: '🕒' } 
+    ? { label: 'All Statuses', icon: '' } 
     : { label: STATUS[value]?.label || value, icon: STATUS[value]?.icon || '' }
 
   const options = [
-    { value: 'all', label: 'All Statuses', icon: '🕒' },
+    { value: 'all', label: 'All Statuses', icon: '' },
     ...Object.entries(STATUS).map(([k, v]) => ({
       value: k,
       label: v.label,
@@ -484,8 +484,11 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
             </button>
           </div>
           {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '10px 14px', borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
-          <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 10, padding: '11px 13px', fontSize: '12px', color: '#991b1b', lineHeight: 1.45, marginBottom: 16 }}>
-            💡 <strong>No Password Needed:</strong> If the student doesn't have an account, they can simply sign up later at <strong>/register</strong> using this exact email (or click <strong>Forgot Password</strong> to set a password). The system will automatically link their manual orders and course access.
+          <div style={{ background: '#fff5f5', border: '1px solid #ffcccc', borderRadius: 10, padding: '11px 13px', fontSize: '12px', color: '#991b1b', lineHeight: 1.45, marginBottom: 16, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" style={{ flexShrink: 0, marginTop: 2 }}><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/></svg>
+            <div>
+              <strong>No Password Needed:</strong> If the student doesn't have an account, they can simply sign up later at <strong>/register</strong> using this exact email (or click <strong>Forgot Password</strong> to set a password). The system will automatically link their manual orders and course access.
+            </div>
           </div>
         </div>
 
@@ -522,7 +525,7 @@ function CreateOrderModal({ isOpen, onClose, products, onCreated }) {
           </div>
           <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
             <button type="submit" disabled={submitting} style={{ flex: 1, background: 'linear-gradient(135deg, #ff1717, #d91414)', color: '#fff', border: 'none', padding: '13px', borderRadius: 10, fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', fontSize: 14, opacity: submitting ? 0.7 : 1 }}>
-              {submitting ? 'Recording…' : '✓ Record Order'}
+              {submitting ? 'Recording…' : 'Record Order'}
             </button>
             <button type="button" onClick={onClose} style={{ flex: 1, background: '#f8fafc', color: '#4f566b', border: '1.5px solid #e2e8f0', padding: '13px', borderRadius: 10, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
           </div>
@@ -630,11 +633,11 @@ export default function AdminOrders() {
           if (isPaid && order.products?.type === 'course' && order.product_id) {
             const { data: profile } = await supabase.from('profiles').select('id').eq('email', order.customer_email).maybeSingle()
             if (profile) await createEnrollment({ userId: profile.id, courseId: order.product_id })
-            showToast(`✅ Paid & course access granted to ${order.customer_email}`)
+            showToast(`Paid & course access granted to ${order.customer_email}`, 'success')
           } else if (isRefund && order.products?.type === 'course' && order.product_id) {
             const { data: profile } = await supabase.from('profiles').select('id').eq('email', order.customer_email).maybeSingle()
             if (profile) await supabase.from('enrollments').delete().eq('user_id', profile.id).eq('course_id', order.product_id)
-            showToast('↩ Refund processed & access revoked', 'warning')
+            showToast('Refund processed & access revoked', 'warning')
           } else {
             showToast(`Order status updated to ${newStatus}`)
           }
@@ -651,7 +654,7 @@ export default function AdminOrders() {
     showConfirm({
       title: 'Re-Grant Course Access',
       message: `Create enrollment for ${order.customer_name || order.customer_email} in "${(order.products?.title||'').replace(/\s+slug$/i,'')}"?`,
-      confirmLabel: '🎓 Grant Access',
+      confirmLabel: 'Grant Access',
       variant: 'success',
       onConfirm: async () => {
         hideConfirm()
@@ -659,7 +662,7 @@ export default function AdminOrders() {
           const { data: profile } = await supabase.from('profiles').select('id').eq('email', order.customer_email).maybeSingle()
           if (!profile) { showToast('No user account found — they must sign up first.', 'error'); return }
           const ok = await createEnrollment({ userId: profile.id, courseId: order.product_id })
-          showToast(ok ? `✅ Course access granted to ${order.customer_email}` : 'Enrollment failed — check DB permissions.', ok ? 'success' : 'error')
+          showToast(ok ? `Course access granted to ${order.customer_email}` : 'Enrollment failed — check DB permissions.', ok ? 'success' : 'error')
         } catch { showToast('Unexpected error granting access.', 'error') }
       },
     })

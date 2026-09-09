@@ -787,19 +787,21 @@ export default function PaymentPage() {
           <h4 className="shopify-product-title">{productTitle}</h4>
           <span className="shopify-product-desc">
             {product?.type === 'bundle'
-              ? `📦 Course Bundle (${bundleItems.length} Programs)`
+              ? `Course Bundle (${bundleItems.length} Programs)`
               : product?.type === 'physical'
                 ? 'Physical Product'
                 : 'Digital Product'}
           </span>
           {searchParams.get('renew') === 'true' && (
-            <span style={{ display: 'inline-block', background: '#fef2f2', color: '#dc2626', fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: 4, marginTop: 4 }}>
-              🔄 Access Renewal
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#fef2f2', color: '#dc2626', fontSize: '10.5px', fontWeight: 700, padding: '2px 6px', borderRadius: 4, marginTop: 4 }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Access Renewal</span>
             </span>
           )}
           {product?.batch_enrollment_enabled && product?.batch_start_date && (
-            <span style={{ display: 'block', color: '#d97706', fontSize: '11px', fontWeight: 600, marginTop: 3 }}>
-              ⏳ Opens: {new Date(product.batch_start_date).toLocaleDateString()}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#d97706', fontSize: '11px', fontWeight: 600, marginTop: 3 }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Opens: {new Date(product.batch_start_date).toLocaleDateString()}</span>
             </span>
           )}
         </div>
@@ -818,7 +820,7 @@ export default function PaymentPage() {
             {bundleItems.map((bItem, bIdx) => (
               <div key={bItem.id || bIdx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#334155' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>{bItem.products?.title || `Course #${bIdx + 1}`}</span>
                 </span>
                 <span style={{ color: '#64748b', fontSize: 11, textDecoration: 'line-through' }}>
@@ -852,7 +854,10 @@ export default function PaymentPage() {
             </div>
             <div className="shopify-product-info">
               <h4 className="shopify-product-title" style={{ fontSize: 13 }}>{bump.headline}</h4>
-              <span className="shopify-product-desc" style={{ fontSize: 11 }}>⚡ One-time Addon</span>
+              <span className="shopify-product-desc" style={{ fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>One-time Addon</span>
+              </span>
             </div>
             <div className="shopify-product-price-col" style={{ fontSize: 13 }}>
               <span>{formatPrice(bumpPrice)}</span>
@@ -2062,8 +2067,9 @@ export default function PaymentPage() {
                           </div>
                         </div>
                       ) : (
-                        <div style={{ padding: '12px', background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: 6, color: '#b91c1c', fontSize: 12.5, fontWeight: 500 }}>
-                          ⚠️ Direct bank transfer details are not configured by the admin yet. Please check back later or use Paystack.
+                        <div style={{ padding: '12px', background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: 6, color: '#b91c1c', fontSize: 12.5, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                          Direct bank transfer details are not configured by the admin yet. Please check back later or use Paystack.
                         </div>
                       )}
 
@@ -2099,8 +2105,8 @@ export default function PaymentPage() {
                             >
                               {uploadingReceipt ? 'Uploading...' : 'Choose File'}
                             </button>
-                            <span style={{ fontSize: '12px', color: receiptUrl ? '#16a34a' : '#64748b', fontWeight: receiptUrl ? 600 : 400 }}>
-                              {uploadingReceipt ? 'Uploading receipt...' : receiptUrl ? `✓ Receipt uploaded: ${receiptName || 'File'}` : 'No file selected'}
+                            <span style={{ fontSize: '12px', color: receiptUrl ? '#16a34a' : '#64748b', fontWeight: receiptUrl ? 600 : 400, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                              {uploadingReceipt ? 'Uploading receipt...' : receiptUrl ? <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg> Receipt uploaded: {receiptName || 'File'}</> : 'No file selected'}
                             </span>
                           </div>
                         </div>
@@ -2112,8 +2118,9 @@ export default function PaymentPage() {
                 {/* Submit button footer area */}
                 <div style={{ marginTop: 6 }}>
                   {emailExists && !user && (
-                    <p style={{ fontSize: '12.5px', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '10px 12px', marginBottom: 14 }}>
-                      ⚠️ Please fill in your account password above to authorize payment processing.
+                    <p style={{ fontSize: '12.5px', color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '10px 12px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      Please fill in your account password above to authorize payment processing.
                     </p>
                   )}
                   

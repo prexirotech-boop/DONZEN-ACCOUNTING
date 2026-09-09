@@ -1469,7 +1469,10 @@ function AdminProducts() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: '#f8fafc', padding: 10, borderRadius: 6, border: '1px solid #e2e8f0' }}>
                         {productForm.bonus_ebook_urls.map((bonus, idx) => (
                           <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12.5, color: '#475569' }}>
-                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '80%' }}>📘 {bonus.name || `Bonus #${idx + 1}`}</span>
+                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '80%', display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ff1717" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                              <span>{bonus.name || `Bonus #${idx + 1}`}</span>
+                            </span>
                             <button 
                               type="button" 
                               onClick={() => handleRemoveBonus(idx)}

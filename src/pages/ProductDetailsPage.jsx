@@ -367,7 +367,8 @@ export default function ProductDetailsPage() {
             {isFree && <div className="pd-free-tag">FREE</div>}
             {isBundle && (
               <div style={{ background: '#0f172a', color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                📦 Multi-Course Bundle ({bundleItems.length} Programs Included)
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                Multi-Course Bundle ({bundleItems.length} Programs Included)
               </div>
             )}
             {!isFree && !isCourse && !isBundle && (
@@ -476,7 +477,10 @@ export default function ProductDetailsPage() {
               <div className="pd-card pd-card-learn" style={{ borderColor: '#cbd5e1' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <div>
-                    <h2 className="pd-card-title" style={{ marginBottom: 4 }}>📦 Programs Included in this Bundle</h2>
+                    <h2 className="pd-card-title" style={{ marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                      Programs Included in this Bundle
+                    </h2>
                     <p style={{ margin: 0, fontSize: 13.5, color: '#64748b' }}>
                       Enrolling gives you full, simultaneous access to all {bundleItems.length} individual courses below.
                     </p>
@@ -555,8 +559,9 @@ export default function ProductDetailsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 8 }}>
                   <h2 className="pd-card-title" style={{ margin: 0 }}>Course Curriculum</h2>
                   {hasBlurredContent && (
-                    <span className="pd-curriculum-locked-pill-header">
-                      🔒 {totalLessons > 0 ? `${totalLessons - maxVisibleLessons} Lessons Locked` : `${modules.length - maxVisibleModules} Sections Locked`}
+                    <span className="pd-curriculum-locked-pill-header" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      {totalLessons > 0 ? `${totalLessons - maxVisibleLessons} Lessons Locked` : `${modules.length - maxVisibleModules} Sections Locked`}
                     </span>
                   )}
                 </div>

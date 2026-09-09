@@ -126,8 +126,12 @@ function CheckoutOfferCard({ offer, onAddToOrder }) {
               letterSpacing: '0.5px',
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4
             }}>
-              ⚡ ONE-TIME ADD-ON
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>ONE-TIME ADD-ON</span>
             </span>
 
             {cover && (
@@ -217,10 +221,14 @@ function CheckoutOfferCard({ offer, onAddToOrder }) {
           color: 'white',
           fontSize: 12,
           fontWeight: 700,
-          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6,
           letterSpacing: '0.3px',
         }}>
-          ✓ Added to your order!
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Added to your order!</span>
         </div>
       )}
     </div>
@@ -301,19 +309,11 @@ function ThankYouOffer({ offer, navigate }) {
             display: 'inline-block',
           }}>{seconds}</span>
         </div>
-        <span style={{ color: '#fca5a5', fontSize: 12, fontWeight: 500 }}>remaining</span>
       </div>
 
-      {/* Main content */}
-      <div style={{
-        padding: '28px 32px',
-        display: 'flex',
-        gap: 28,
-        alignItems: 'flex-start',
-        flexWrap: 'wrap',
-      }}>
-        {/* Left: text */}
-        <div style={{ flex: 1, minWidth: 240 }}>
+      <div style={{ display: 'flex', gap: 32, alignItems: 'center', flexWrap: 'wrap' }}>
+        {/* Left: Text & Offer */}
+        <div style={{ flex: 1, minWidth: 260 }}>
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -328,7 +328,8 @@ function ThankYouOffer({ offer, navigate }) {
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
           }}>
-            ⚡ Special One-Time Offer — Just For You!
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Special One-Time Offer — Just For You!</span>
           </div>
 
           <h2 style={{
@@ -353,76 +354,73 @@ function ThankYouOffer({ offer, navigate }) {
           )}
 
           {/* Pricing */}
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap', marginBottom: 22 }}>
-            <span style={{
-              fontSize: 32,
-              fontWeight: 900,
-              color: '#a78bfa',
-              letterSpacing: '-1px',
-            }}>
-              {formatNGN(discountedPrice)}
-            </span>
-            {showDiscount && (
-              <>
-                <span style={{
-                  fontSize: 18,
-                  fontWeight: 500,
-                  textDecoration: 'line-through',
-                  color: '#6b7280',
-                }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontSize: 28, fontWeight: 900, color: '#fbbf24' }}>
+                {formatNGN(discountedPrice)}
+              </span>
+              {showDiscount && (
+                <span style={{ fontSize: 16, color: '#a5b4fc', textDecoration: 'line-through' }}>
                   {formatNGN(originalPrice)}
                 </span>
-                <span style={{
-                  background: '#16a34a',
-                  color: 'white',
-                  fontSize: 12,
-                  fontWeight: 800,
-                  padding: '4px 10px',
-                  borderRadius: 20,
-                }}>
-                  SAVE {getDiscountLabel(offer)}
-                </span>
-              </>
-            )}
+              )}
+            </div>
+
+            {/* Countdown timer */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: 'rgba(0,0,0,0.3)',
+              padding: '6px 12px',
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 700,
+              color: '#fde047',
+            }}>
+              <span style={{ fontSize: 14 }}>⏱</span>
+              <span>Expires in {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
+            </div>
           </div>
 
           {/* CTA Button */}
           <button
+            onClick={() => navigate(`/checkout?product=${slug}&upsell=${offer.id}`)}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={handleClaim}
             style={{
               background: hovered
-                ? 'linear-gradient(135deg, #5b21b6, #7c3aed)'
-                : 'linear-gradient(135deg, #7c3aed, #a855f7)',
-              color: 'white',
+                ? 'linear-gradient(135deg, #fbbf24, #f59e0b)'
+                : 'linear-gradient(135deg, #f59e0b, #f97316)',
+              color: '#1e1b4b',
               border: 'none',
-              borderRadius: 12,
+              borderRadius: 10,
               padding: '14px 28px',
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: 900,
               cursor: 'pointer',
-              letterSpacing: '0.3px',
-              boxShadow: hovered
-                ? '0 8px 30px rgba(124,58,237,0.55)'
-                : '0 4px 16px rgba(124,58,237,0.35)',
-              transform: hovered ? 'translateY(-2px)' : 'none',
-              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 20px rgba(245,158,11,0.4)',
+              transition: 'all 0.2s',
+              transform: hovered ? 'translateY(-1px)' : 'none',
               display: 'inline-flex',
               alignItems: 'center',
               gap: 8,
             }}
           >
-            Claim This Offer Now →
+            {offer.cta_text || 'Add to My Order'} →
           </button>
 
           <p style={{
             color: '#9ca3af',
             fontSize: 11,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
             marginTop: 10,
             marginBottom: 0,
           }}>
-            🔒 Secure checkout · Instant access · No recurring fees
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Secure checkout · Instant access · No recurring fees</span>
           </p>
         </div>
 
@@ -505,9 +503,8 @@ function CrossSellCard({ offer, navigate }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 40,
           }}>
-            📚
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           </div>
         )}
         {showDiscount && (
@@ -683,7 +680,8 @@ function HomepageBanner({ offer, navigate }) {
             letterSpacing: '0.8px',
             boxShadow: '0 4px 16px rgba(245,158,11,0.35)',
           }}>
-            🔥 Bundle Deal
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <span>Bundle Deal</span>
           </div>
 
           <h2 style={{
@@ -772,7 +770,8 @@ function HomepageBanner({ offer, navigate }) {
               gap: 10,
             }}
           >
-            Get This Deal Now 🚀
+            <span>Get This Deal Now</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
 
@@ -924,8 +923,12 @@ export default function UpsellWidget({
             textTransform: 'uppercase',
             letterSpacing: '0.8px',
             whiteSpace: 'nowrap',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6
           }}>
-            🎁 Exclusive Add-Ons
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13"/><path d="M19 8a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3"/></svg>
+            <span>Exclusive Add-Ons</span>
           </span>
           <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #e5e7eb)' }} />
         </div>
@@ -948,7 +951,7 @@ export default function UpsellWidget({
   /* ── Product / Dashboard: Cross-Sell Grid ── */
   if (placement === 'product' || placement === 'dashboard') {
     const heading =
-      placement === 'dashboard' ? '✨ Recommended For You' : '🎯 You Might Also Like'
+      placement === 'dashboard' ? 'Recommended For You' : 'You Might Also Like'
 
     return (
       <div style={{ marginTop: 40 }}>
