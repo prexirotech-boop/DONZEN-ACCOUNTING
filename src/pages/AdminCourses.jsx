@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import CustomDropdown from '../components/CustomDropdown'
+
+const LEVEL_OPTIONS = [
+  { value: 'beginner', label: 'Beginner' },
+  { value: 'intermediate', label: 'Intermediate' },
+  { value: 'advanced', label: 'Advanced' }
+]
+
+const DURATION_OPTIONS = [
+  { value: 'lifetime', label: 'Lifetime Access (No Expiration)' },
+  { value: '1_month', label: '1 Month (30 Days)' },
+  { value: '3_months', label: '3 Months (90 Days)' },
+  { value: '6_months', label: '6 Months (180 Days)' },
+  { value: '1_year', label: '1 Year (365 Days)' },
+  { value: 'custom', label: 'Custom Number of Days' }
+]
 
 // ─── HELPERS FOR SYLLABUS BULK EDIT ──────────────────────────────────────────
 
@@ -172,13 +188,25 @@ export default function AdminCourses() {
         level,
         what_you_learn,
         created_at,
+        batch_enrollment_enabled,
+        batch_start_date,
+        batch_name,
+        access_duration_type,
+        access_duration_days,
         products (
           title,
           slug,
           price,
           old_price,
           cover_image,
-          is_published
+          is_published,
+          is_free,
+          features,
+          batch_enrollment_enabled,
+          batch_start_date,
+          batch_name,
+          access_duration_type,
+          access_duration_days
         )
       `)
       .order('created_at', { ascending: false })
@@ -211,13 +239,18 @@ export default function AdminCourses() {
         setCourseForm({
           ...parsed,
           what_you_learn: Array.isArray(parsed.what_you_learn) ? parsed.what_you_learn : [],
-          bonuses: Array.isArray(parsed.bonuses) ? parsed.bonuses : []
+          bonuses: Array.isArray(parsed.bonuses) ? parsed.bonuses : [],
+          batch_enrollment_enabled: !!parsed.batch_enrollment_enabled,
+          batch_start_date: parsed.batch_start_date || '',
+          batch_name: parsed.batch_name || '',
+          access_duration_type: parsed.access_duration_type || 'lifetime',
+          access_duration_days: parsed.access_duration_days || ''
         })
       } catch (e) {
-        setCourseForm({ title: '', slug: '', price: '', compare_price: '', cover_image: '', level: 'beginner', what_you_learn: [], bonuses: [], is_published: false, is_free: false })
+        setCourseForm({ title: '', slug: '', price: '', compare_price: '', cover_image: '', level: 'beginner', what_you_learn: [], bonuses: [], is_published: false, is_free: false, batch_enrollment_enabled: false, batch_start_date: '', batch_name: '', access_duration_type: 'lifetime', access_duration_days: '' })
       }
     } else {
-      setCourseForm({ title: '', slug: '', price: '', compare_price: '', cover_image: '', level: 'beginner', what_you_learn: [], bonuses: [], is_published: false, is_free: false })
+      setCourseForm({ title: '', slug: '', price: '', compare_price: '', cover_image: '', level: 'beginner', what_you_learn: [], bonuses: [], is_published: false, is_free: false, batch_enrollment_enabled: false, batch_start_date: '', batch_name: '', access_duration_type: 'lifetime', access_duration_days: '' })
     }
     setShowModal(true)
   }
@@ -235,7 +268,12 @@ export default function AdminCourses() {
       is_published: p.is_published || false,
       is_free: p.is_free || false,
       what_you_learn: Array.isArray(c.what_you_learn) ? c.what_you_learn : [],
-      bonuses: Array.isArray(p.features) ? p.features : []
+      bonuses: Array.isArray(p.features) ? p.features : [],
+      batch_enrollment_enabled: !!(c.batch_enrollment_enabled || p.batch_enrollment_enabled),
+      batch_start_date: (c.batch_start_date || p.batch_start_date) ? (c.batch_start_date || p.batch_start_date).split('T')[0] : '',
+      batch_name: c.batch_name || p.batch_name || '',
+      access_duration_type: c.access_duration_type || p.access_duration_type || 'lifetime',
+      access_duration_days: c.access_duration_days || p.access_duration_days || ''
     })
     setShowModal(true)
   }
@@ -244,6 +282,12 @@ export default function AdminCourses() {
     e.preventDefault()
     if (!courseForm.title.trim() || !courseForm.slug.trim()) return
     setSubmitting(true)
+
+    const batchEnabled = !!courseForm.batch_enrollment_enabled
+    const batchDate = batchEnabled && courseForm.batch_start_date ? new Date(courseForm.batch_start_date).toISOString() : null
+    const batchName = batchEnabled ? (courseForm.batch_name?.trim() || null) : null
+    const durationType = courseForm.access_duration_type || 'lifetime'
+    const durationDays = durationType === 'custom' ? (parseInt(courseForm.access_duration_days) || null) : null
 
     try {
       if (editingCourseId) {
@@ -258,7 +302,12 @@ export default function AdminCourses() {
             cover_image: courseForm.cover_image.trim(),
             is_published: courseForm.is_published,
             is_free: courseForm.is_free,
-            features: Array.isArray(courseForm.bonuses) ? courseForm.bonuses.filter(b => b.trim()) : []
+            features: Array.isArray(courseForm.bonuses) ? courseForm.bonuses.filter(b => b.trim()) : [],
+            batch_enrollment_enabled: batchEnabled,
+            batch_start_date: batchDate,
+            batch_name: batchName,
+            access_duration_type: durationType,
+            access_duration_days: durationDays
           })
           .eq('id', editingCourseId)
 
@@ -269,7 +318,12 @@ export default function AdminCourses() {
           .from('courses')
           .update({
             level: courseForm.level,
-            what_you_learn: Array.isArray(courseForm.what_you_learn) ? courseForm.what_you_learn.filter(x => x.trim()) : []
+            what_you_learn: Array.isArray(courseForm.what_you_learn) ? courseForm.what_you_learn.filter(x => x.trim()) : [],
+            batch_enrollment_enabled: batchEnabled,
+            batch_start_date: batchDate,
+            batch_name: batchName,
+            access_duration_type: durationType,
+            access_duration_days: durationDays
           })
           .eq('id', editingCourseId)
 
@@ -290,7 +344,12 @@ export default function AdminCourses() {
             cover_image: courseForm.cover_image.trim() || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800',
             is_published: false,
             is_free: courseForm.is_free || false,
-            features: Array.isArray(courseForm.bonuses) ? courseForm.bonuses.filter(b => b.trim()) : []
+            features: Array.isArray(courseForm.bonuses) ? courseForm.bonuses.filter(b => b.trim()) : [],
+            batch_enrollment_enabled: batchEnabled,
+            batch_start_date: batchDate,
+            batch_name: batchName,
+            access_duration_type: durationType,
+            access_duration_days: durationDays
           })
           .select('id')
           .single()
@@ -303,7 +362,12 @@ export default function AdminCourses() {
           .insert({
             id: prod.id,
             level: courseForm.level,
-            what_you_learn: Array.isArray(courseForm.what_you_learn) ? courseForm.what_you_learn.filter(x => x.trim()) : []
+            what_you_learn: Array.isArray(courseForm.what_you_learn) ? courseForm.what_you_learn.filter(x => x.trim()) : [],
+            batch_enrollment_enabled: batchEnabled,
+            batch_start_date: batchDate,
+            batch_name: batchName,
+            access_duration_type: durationType,
+            access_duration_days: durationDays
           })
 
         if (cErr) throw cErr
@@ -681,6 +745,14 @@ export default function AdminCourses() {
                       <span style={{ fontSize: 11, padding: '3px 8px', background: p.is_free ? '#fef9c3' : '#ffe5e5', color: p.is_free ? '#a16207' : '#991b1b', borderRadius: 6, fontWeight: 600 }}>
                         {p.is_free ? 'FREE' : 'PAID'}
                       </span>
+                      <span style={{ fontSize: 11, padding: '3px 8px', background: '#f1f5f9', color: '#334155', borderRadius: 6, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {p.access_duration_type === '1_month' || c.access_duration_type === '1_month' ? '1 Month (30d)' :
+                         p.access_duration_type === '3_months' || c.access_duration_type === '3_months' ? '3 Months (90d)' :
+                         p.access_duration_type === '6_months' || c.access_duration_type === '6_months' ? '6 Months (180d)' :
+                         p.access_duration_type === '1_year' || c.access_duration_type === '1_year' ? '1 Year (365d)' :
+                         p.access_duration_type === 'custom' || c.access_duration_type === 'custom' ? `${p.access_duration_days || c.access_duration_days || 0} Days` : 'Lifetime'}
+                      </span>
                     </div>
                   </div>
                   
@@ -738,13 +810,14 @@ export default function AdminCourses() {
                   <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Course Title</th>
                   <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Level</th>
                   <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Price</th>
+                  <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Access Duration</th>
                   <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Status</th>
                   <th style={{ padding: '16px 24px', color: '#475569', fontSize: 12, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {courses.length === 0 ? (
-                  <tr><td colSpan="5" style={{ padding: 48, textAlign: 'center', color: '#64748b', fontSize: 14 }}>No courses found. Create one above to get started!</td></tr>
+                  <tr><td colSpan="6" style={{ padding: 48, textAlign: 'center', color: '#64748b', fontSize: 14 }}>No courses found. Create one above to get started!</td></tr>
                 ) : (
                   courses.map(c => {
                     const p = c.products || {}
@@ -756,6 +829,16 @@ export default function AdminCourses() {
                         </td>
                         <td style={{ padding: '18px 24px', fontWeight: 700, color: '#0f172a', fontSize: 14 }}>
                           ₦{(p.price || 0).toLocaleString()}
+                        </td>
+                        <td style={{ padding: '18px 24px' }}>
+                          <span style={{ fontSize: 12, padding: '3px 8px', background: '#f1f5f9', color: '#334155', borderRadius: 6, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            {p.access_duration_type === '1_month' || c.access_duration_type === '1_month' ? '1 Month (30d)' :
+                             p.access_duration_type === '3_months' || c.access_duration_type === '3_months' ? '3 Months (90d)' :
+                             p.access_duration_type === '6_months' || c.access_duration_type === '6_months' ? '6 Months (180d)' :
+                             p.access_duration_type === '1_year' || c.access_duration_type === '1_year' ? '1 Year (365d)' :
+                             p.access_duration_type === 'custom' || c.access_duration_type === 'custom' ? `${p.access_duration_days || c.access_duration_days || 0} Days` : 'Lifetime'}
+                          </span>
                         </td>
                         <td style={{ padding: '18px 24px' }}>
                           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -960,18 +1043,12 @@ export default function AdminCourses() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 8, color: '#475569' }}>Level *</label>
-                  <select 
-                    value={courseForm.level} 
-                    onChange={e => setCourseForm({ ...courseForm, level: e.target.value })} 
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', backgroundColor: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                    onFocus={e => { e.currentTarget.style.borderColor = '#ff1717'; e.currentTarget.style.boxShadow = '0 0 0 4px rgba(255, 23, 23,0.1)' }}
-                    onBlur={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none' }}
-                  >
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
+                  <CustomDropdown
+                    label="Level *"
+                    options={LEVEL_OPTIONS}
+                    value={courseForm.level}
+                    onChange={val => setCourseForm({ ...courseForm, level: val })}
+                  />
                 </div>
               </div>
 
@@ -1156,6 +1233,109 @@ export default function AdminCourses() {
                   >
                     + Add Bonus
                   </button>
+                </div>
+              </div>
+
+              {/* ── Scheduled Batch Release Section ── */}
+              <div style={{
+                background: '#fffbeb',
+                border: '1px solid #fef3c7',
+                borderRadius: 8,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <div>
+                      <strong style={{ fontSize: 13, color: '#92400e', display: 'block' }}>Scheduled Batch / Cohort Release</strong>
+                      <span style={{ fontSize: 11.5, color: '#b45309' }}>Hold classroom access until a specific release date (e.g. Next Cohort)</span>
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="course_batch_enrollment"
+                    checked={courseForm.batch_enrollment_enabled || false}
+                    onChange={e => setCourseForm({ ...courseForm, batch_enrollment_enabled: e.target.checked })}
+                    style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#d97706' }}
+                  />
+                </div>
+
+                {courseForm.batch_enrollment_enabled && (
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginTop: 4, paddingTop: 10, borderTop: '1px solid #fde68a' }}>
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, fontSize: 12, marginBottom: 4, color: '#92400e' }}>Classroom Opens (Start Date)</label>
+                      <input
+                        type="date"
+                        value={courseForm.batch_start_date || ''}
+                        onChange={e => setCourseForm({ ...courseForm, batch_start_date: e.target.value })}
+                        required={courseForm.batch_enrollment_enabled}
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, fontSize: 12, marginBottom: 4, color: '#92400e' }}>Batch / Cohort Label</label>
+                      <input
+                        type="text"
+                        value={courseForm.batch_name || ''}
+                        onChange={e => setCourseForm({ ...courseForm, batch_name: e.target.value })}
+                        placeholder="e.g. Cohort 5 - October 2026"
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Access Duration Limit Section ── */}
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: 8,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div>
+                    <strong style={{ fontSize: 13, color: '#1e293b', display: 'block' }}>
+                      Access Duration Limit & Expiration
+                    </strong>
+                    <span style={{ fontSize: 11.5, color: '#64748b' }}>
+                      Set how long students have access. Once expired, they are redirected to checkout to renew.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
+                  <div>
+                    <CustomDropdown
+                      options={DURATION_OPTIONS}
+                      value={courseForm.access_duration_type || 'lifetime'}
+                      onChange={val => setCourseForm({ ...courseForm, access_duration_type: val })}
+                      label="Duration Limit"
+                    />
+                  </div>
+
+                  {courseForm.access_duration_type === 'custom' && (
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
+                        Custom Number of Days
+                      </label>
+                      <input
+                        type="number"
+                        value={courseForm.access_duration_days || ''}
+                        onChange={e => setCourseForm({ ...courseForm, access_duration_days: e.target.value })}
+                        placeholder="e.g. 45"
+                        required
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

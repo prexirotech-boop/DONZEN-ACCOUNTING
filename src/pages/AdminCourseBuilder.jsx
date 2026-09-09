@@ -1535,7 +1535,7 @@ export default function AdminCourseBuilder() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 20 }}>⏳</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                   <div>
                     <strong style={{ fontSize: 14, color: '#92400e', display: 'block' }}>
                       Batch Enrollment (Scheduled Access & Release)
@@ -1622,7 +1622,7 @@ export default function AdminCourseBuilder() {
               gap: 12
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 20 }}>⏱️</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <div>
                   <strong style={{ fontSize: 14, color: '#1e293b', display: 'block' }}>
                     Access Duration Limit & Expiration

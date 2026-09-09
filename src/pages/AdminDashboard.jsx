@@ -20,6 +20,7 @@ import AdminAnalytics from './AdminAnalytics'
 import AdminPlatformAnalytics from './AdminPlatformAnalytics'
 import AdminBlog from './AdminBlog'
 import AdminBundles from './AdminBundles'
+import CustomDropdown from '../components/CustomDropdown'
 import { getPages } from '../lib/pagesScanner'
 
 function AdminOverview() {
@@ -729,6 +730,15 @@ function AdminOverview() {
   )
 }
 
+const DURATION_OPTIONS = [
+  { value: 'lifetime', label: 'Lifetime Access (No Expiration)' },
+  { value: '1_month', label: '1 Month (30 Days)' },
+  { value: '3_months', label: '3 Months (90 Days)' },
+  { value: '6_months', label: '6 Months (180 Days)' },
+  { value: '1_year', label: '1 Year (365 Days)' },
+  { value: 'custom', label: 'Custom Number of Days' }
+]
+
 function AdminProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -759,7 +769,12 @@ function AdminProducts() {
     is_free: false,
     ebook_url: '',
     bonus_ebook_urls: [],
-    sales_page_path: ''
+    sales_page_path: '',
+    batch_enrollment_enabled: false,
+    batch_start_date: '',
+    batch_name: '',
+    access_duration_type: 'lifetime',
+    access_duration_days: ''
   })
 
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -899,7 +914,12 @@ function AdminProducts() {
       bonus_ebook_urls: [],
       sales_page_path: '',
       has_payment_plans: false,
-      payment_plans: []
+      payment_plans: [],
+      batch_enrollment_enabled: false,
+      batch_start_date: '',
+      batch_name: '',
+      access_duration_type: 'lifetime',
+      access_duration_days: ''
     })
     setShowModal(true)
   }
@@ -921,7 +941,12 @@ function AdminProducts() {
       bonus_ebook_urls: p.bonus_ebook_urls || [],
       sales_page_path: p.sales_page_path || '',
       has_payment_plans: p.has_payment_plans || false,
-      payment_plans: Array.isArray(p.payment_plans) ? p.payment_plans : []
+      payment_plans: Array.isArray(p.payment_plans) ? p.payment_plans : [],
+      batch_enrollment_enabled: !!p.batch_enrollment_enabled,
+      batch_start_date: p.batch_start_date ? p.batch_start_date.split('T')[0] : '',
+      batch_name: p.batch_name || '',
+      access_duration_type: p.access_duration_type || 'lifetime',
+      access_duration_days: p.access_duration_days || ''
     })
     setShowModal(true)
   }
@@ -1009,7 +1034,12 @@ function AdminProducts() {
       bonus_ebook_urls: productForm.type === 'ebook' ? (productForm.bonus_ebook_urls || []) : [],
       sales_page_path: productForm.sales_page_path || null,
       has_payment_plans: !!productForm.has_payment_plans,
-      payment_plans: productForm.payment_plans || []
+      payment_plans: productForm.payment_plans || [],
+      batch_enrollment_enabled: !!productForm.batch_enrollment_enabled,
+      batch_start_date: productForm.batch_enrollment_enabled && productForm.batch_start_date ? new Date(productForm.batch_start_date).toISOString() : null,
+      batch_name: productForm.batch_enrollment_enabled ? (productForm.batch_name?.trim() || null) : null,
+      access_duration_type: productForm.access_duration_type || 'lifetime',
+      access_duration_days: productForm.access_duration_type === 'custom' ? (parseInt(productForm.access_duration_days) || null) : null
     }
 
     try {
@@ -1019,6 +1049,19 @@ function AdminProducts() {
           .update(payload)
           .eq('id', editingProduct.id)
         if (error) throw error
+
+        if (payload.type === 'course') {
+          await supabase
+            .from('courses')
+            .update({
+              batch_enrollment_enabled: payload.batch_enrollment_enabled,
+              batch_start_date: payload.batch_start_date,
+              batch_name: payload.batch_name,
+              access_duration_type: payload.access_duration_type,
+              access_duration_days: payload.access_duration_days
+            })
+            .eq('id', editingProduct.id)
+        }
       } else {
         const { data, error } = await supabase
           .from('products')
@@ -1030,7 +1073,16 @@ function AdminProducts() {
         if (payload.type === 'course') {
           const { error: cErr } = await supabase
             .from('courses')
-            .insert({ id: data.id, level: 'beginner', what_you_learn: [] })
+            .insert({
+              id: data.id,
+              level: 'beginner',
+              what_you_learn: [],
+              batch_enrollment_enabled: payload.batch_enrollment_enabled,
+              batch_start_date: payload.batch_start_date,
+              batch_name: payload.batch_name,
+              access_duration_type: payload.access_duration_type,
+              access_duration_days: payload.access_duration_days
+            })
           if (cErr) throw cErr
         }
       }
@@ -1162,17 +1214,32 @@ function AdminProducts() {
                 <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
                   <img src={p.cover_image} alt={p.title} style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }} />
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1f36' }}>{p.title}</div>
+                    <div style={{ fontWeight: 600, color: '#1a1f36', fontSize: 14 }}>{p.title}</div>
                     <div style={{ fontSize: 11, color: '#697386', textTransform: 'uppercase', marginTop: 2 }}>{p.type}</div>
                   </div>
                 </div>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: p.is_free ? '#10b981' : '#1a1f36' }}>
                     {p.is_free ? 'FREE' : `₦${p.price.toLocaleString()}`}
                   </span>
                   <span style={{ padding: '2px 6px', background: p.is_published ? '#e3fcef' : '#f7f8f9', color: p.is_published ? '#00875a' : '#697386', borderRadius: 4, fontSize: 11, fontWeight: 500 }}>
                     {p.is_published ? 'Published' : 'Draft'}
                   </span>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                  <span style={{ fontSize: 11, padding: '2px 8px', background: '#f1f5f9', color: '#334155', borderRadius: 4, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {p.access_duration_type === '1_month' ? '1 Month (30d)' :
+                     p.access_duration_type === '3_months' ? '3 Months (90d)' :
+                     p.access_duration_type === '6_months' ? '6 Months (180d)' :
+                     p.access_duration_type === '1_year' ? '1 Year (365d)' :
+                     p.access_duration_type === 'custom' ? `${p.access_duration_days} Days` : 'Lifetime Access'}
+                  </span>
+                  {p.batch_enrollment_enabled && (
+                    <span style={{ fontSize: 11, padding: '2px 8px', background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', borderRadius: 4, fontWeight: 600 }}>
+                      Scheduled Batch
+                    </span>
+                  )}
                 </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', borderTop: '1px solid #f7f8f9', paddingTop: 10 }}>
                   {p.type === 'course' && (
@@ -1216,13 +1283,14 @@ function AdminProducts() {
                   <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Title</th>
                   <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Type</th>
                   <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Price</th>
+                  <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Access Duration</th>
                   <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Status</th>
                   <th style={{ padding: '12px 20px', color: '#697386', fontSize: 11, textTransform: 'uppercase', fontWeight: 500 }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.length === 0 ? (
-                  <tr><td colSpan="6" style={{ padding: 24, textAlign: 'center', color: '#697386', fontSize: 13 }}>No products found</td></tr>
+                  <tr><td colSpan="7" style={{ padding: 24, textAlign: 'center', color: '#697386', fontSize: 13 }}>No products found</td></tr>
                 ) : (
                   filteredProducts.map(p => (
                     <tr key={p.id} style={{ borderBottom: '1px solid #f7f8f9' }}>
@@ -1233,6 +1301,23 @@ function AdminProducts() {
                       <td style={{ padding: '12px 20px', textTransform: 'uppercase', color: '#4f566b', fontSize: 12, fontWeight: 500 }}>{p.type}</td>
                       <td style={{ padding: '12px 20px', fontWeight: 600, fontSize: 13, color: p.is_free ? '#10b981' : '#1a1f36' }}>
                         {p.is_free ? 'FREE' : `₦${p.price.toLocaleString()}`}
+                      </td>
+                      <td style={{ padding: '12px 20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-start' }}>
+                          <span style={{ fontSize: 12, padding: '3px 8px', background: '#f1f5f9', color: '#334155', borderRadius: 4, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            {p.access_duration_type === '1_month' ? '1 Month (30d)' :
+                             p.access_duration_type === '3_months' ? '3 Months (90d)' :
+                             p.access_duration_type === '6_months' ? '6 Months (180d)' :
+                             p.access_duration_type === '1_year' ? '1 Year (365d)' :
+                             p.access_duration_type === 'custom' ? `${p.access_duration_days} Days` : 'Lifetime'}
+                          </span>
+                          {p.batch_enrollment_enabled && (
+                            <span style={{ fontSize: 10.5, padding: '1px 6px', background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', borderRadius: 3, fontWeight: 600 }}>
+                              {p.batch_name || 'Scheduled Batch'}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td style={{ padding: '12px 20px' }}>
                         <span style={{ padding: '2px 6px', background: p.is_published ? '#e3fcef' : '#f7f8f9', color: p.is_published ? '#00875a' : '#697386', borderRadius: 4, fontSize: 11, fontWeight: 500 }}>
@@ -1600,6 +1685,109 @@ function AdminProducts() {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* ── Scheduled Batch Release Section ── */}
+              <div style={{
+                background: '#fffbeb',
+                border: '1px solid #fef3c7',
+                borderRadius: 6,
+                padding: 14,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <div>
+                      <strong style={{ fontSize: 13, color: '#92400e', display: 'block' }}>Scheduled Batch / Cohort Release</strong>
+                      <span style={{ fontSize: 11.5, color: '#b45309' }}>Hold classroom access until a specific release date (e.g. Next Cohort)</span>
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="product_batch_enrollment"
+                    checked={productForm.batch_enrollment_enabled || false}
+                    onChange={e => setProductForm({ ...productForm, batch_enrollment_enabled: e.target.checked })}
+                    style={{ width: 16, height: 16, cursor: 'pointer' }}
+                  />
+                </div>
+
+                {productForm.batch_enrollment_enabled && (
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginTop: 4, paddingTop: 10, borderTop: '1px solid #fde68a' }}>
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, fontSize: 12, marginBottom: 4, color: '#92400e' }}>Classroom Opens (Start Date)</label>
+                      <input
+                        type="date"
+                        value={productForm.batch_start_date || ''}
+                        onChange={e => setProductForm({ ...productForm, batch_start_date: e.target.value })}
+                        required={productForm.batch_enrollment_enabled}
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 600, fontSize: 12, marginBottom: 4, color: '#92400e' }}>Batch / Cohort Label</label>
+                      <input
+                        type="text"
+                        value={productForm.batch_name || ''}
+                        onChange={e => setProductForm({ ...productForm, batch_name: e.target.value })}
+                        placeholder="e.g. Cohort 5 - October 2026"
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Access Duration Limit Section ── */}
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: 6,
+                padding: 14,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div>
+                    <strong style={{ fontSize: 13, color: '#1e293b', display: 'block' }}>
+                      Access Duration Limit & Expiration
+                    </strong>
+                    <span style={{ fontSize: 11.5, color: '#64748b' }}>
+                      Set how long buyers have access. Once expired, students are prompted to renew access.
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
+                  <div>
+                    <CustomDropdown
+                      options={DURATION_OPTIONS}
+                      value={productForm.access_duration_type || 'lifetime'}
+                      onChange={val => setProductForm({ ...productForm, access_duration_type: val })}
+                      label="Duration Limit"
+                    />
+                  </div>
+
+                  {productForm.access_duration_type === 'custom' && (
+                    <div>
+                      <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>
+                        Custom Number of Days
+                      </label>
+                      <input
+                        type="number"
+                        value={productForm.access_duration_days || ''}
+                        onChange={e => setProductForm({ ...productForm, access_duration_days: e.target.value })}
+                        placeholder="e.g. 45"
+                        required
+                        style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', fontSize: 13 }}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>

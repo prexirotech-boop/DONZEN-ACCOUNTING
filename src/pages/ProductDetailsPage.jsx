@@ -301,17 +301,15 @@ export default function ProductDetailsPage() {
   const whoIsFor = Array.isArray(courseData?.who_is_for) ? courseData.who_is_for : []
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0)
 
-  // Progressive Curriculum Blurring Logic (for non-enrolled users):
-  // - If total curriculum is > 15: show first 10, blur the rest
-  // - If total curriculum is > 5: show first 5, blur the rest
-  // - If total curriculum <= 5: show all
+  // Progressive Curriculum 50% Preview Logic (for non-enrolled users):
+  // - Shows 50% of the syllabus/curriculum to prospective students
   // - Enrolled users / Admins always see full curriculum unblurred
   const maxVisibleLessons = !isEnrolled
-    ? (totalLessons > 15 ? 10 : totalLessons > 5 ? 5 : totalLessons)
+    ? (totalLessons > 1 ? Math.max(1, Math.ceil(totalLessons * 0.5)) : totalLessons)
     : totalLessons
 
   const maxVisibleModules = !isEnrolled && totalLessons === 0
-    ? (modules.length > 15 ? 10 : modules.length > 5 ? 5 : modules.length)
+    ? (modules.length > 1 ? Math.max(1, Math.ceil(modules.length * 0.5)) : modules.length)
     : modules.length
 
   const hasBlurredContent = !isEnrolled && (
@@ -383,7 +381,7 @@ export default function ProductDetailsPage() {
             {/* Scheduled Batch Release Notification Banner */}
             {product.batch_enrollment_enabled && product.batch_start_date && (
               <div style={{ background: 'rgba(217, 119, 6, 0.15)', border: '1px solid rgba(217, 119, 6, 0.35)', color: '#fbbf24', padding: '10px 14px', borderRadius: 6, fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-                <span>⏳</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>
                   <strong>{product.batch_name || 'Scheduled Batch'}</strong>: Classroom opens on <strong>{new Date(product.batch_start_date).toLocaleString()}</strong>. Enroll now to secure your seat!
                 </span>
@@ -398,13 +396,14 @@ export default function ProductDetailsPage() {
               
               {/* Access Duration Badge */}
               {product.access_duration_type && (
-                <span className="pd-meta-badge" style={{ background: '#f1f5f9', color: '#334155' }}>
-                  <span>⏱️ Access:</span>
+                <span className="pd-meta-badge" style={{ background: '#f1f5f9', color: '#334155', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Access:</span>
                   <strong>
-                    {product.access_duration_type === '1_month' ? '1 Month' :
-                     product.access_duration_type === '3_months' ? '3 Months' :
-                     product.access_duration_type === '6_months' ? '6 Months' :
-                     product.access_duration_type === '1_year' ? '1 Year' :
+                    {product.access_duration_type === '1_month' ? '1 Month (30 Days)' :
+                     product.access_duration_type === '3_months' ? '3 Months (90 Days)' :
+                     product.access_duration_type === '6_months' ? '6 Months (180 Days)' :
+                     product.access_duration_type === '1_year' ? '1 Year (365 Days)' :
                      product.access_duration_type === 'custom' ? `${product.access_duration_days} Days` : 'Lifetime Access'}
                   </strong>
                 </span>
@@ -561,7 +560,7 @@ export default function ProductDetailsPage() {
                   {hasBlurredContent && (
                     <span className="pd-curriculum-locked-pill-header" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                      {totalLessons > 0 ? `${totalLessons - maxVisibleLessons} Lessons Locked` : `${modules.length - maxVisibleModules} Sections Locked`}
+                      {totalLessons > 0 ? `${totalLessons - maxVisibleLessons} Lessons Locked (50%)` : `${modules.length - maxVisibleModules} Sections Locked (50%)`}
                     </span>
                   )}
                 </div>
@@ -570,7 +569,7 @@ export default function ProductDetailsPage() {
                   <span>{modules.length} sections • {totalLessons} lessons</span>
                   {hasBlurredContent && (
                     <span style={{ fontSize: 13, color: '#e11d48', fontWeight: 700 }}>
-                      Showing first {totalLessons > 0 ? maxVisibleLessons : maxVisibleModules} outlines • Enroll to unlock full syllabus
+                      Showing 50% preview ({totalLessons > 0 ? maxVisibleLessons : maxVisibleModules} of {totalLessons > 0 ? totalLessons : modules.length} outlines) • Enroll to unlock full syllabus
                     </span>
                   )}
                 </div>
