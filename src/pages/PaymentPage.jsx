@@ -1036,30 +1036,39 @@ export default function PaymentPage() {
           overflow-x: hidden;
         }
 
-        /* GRID LAYOUT */
+        /* GRID & CONTAINER LAYOUT */
         .sp-checkout-layout {
-          display: grid;
-          grid-template-columns: 1fr;
-          max-width: 1100px;
-          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          min-height: 100vh;
         }
         @media(min-width: 1000px) {
           .sp-checkout-layout {
-            grid-template-columns: 1.15fr 0.85fr;
+            flex-direction: row;
             min-height: 100vh;
           }
         }
 
         /* LEFT PANEL (Billing / Information) */
         .sp-left-panel {
-          padding: 32px 24px 10px;
+          width: 100%;
           background: #ffffff;
+          padding: 32px 20px 20px;
+          display: flex;
+          justify-content: center;
         }
         @media(min-width: 1000px) {
           .sp-left-panel {
-            padding: 56px 48px 56px 24px;
+            flex: 1 1 54%;
+            justify-content: flex-end;
+            padding: 56px 64px 56px 32px;
             border-right: 1px solid #e6e6e6;
           }
+        }
+        .sp-left-inner {
+          width: 100%;
+          max-width: 600px;
         }
         .sp-logo-wrapper {
           margin-bottom: 24px;
@@ -1387,30 +1396,27 @@ export default function PaymentPage() {
         .sp-right-panel {
           display: none;
           background: #fafafa;
-          padding: 32px 24px;
+          width: 100%;
+          padding: 32px 20px;
           border-top: 1px solid #e6e6e6;
         }
         @media(min-width: 1000px) {
           .sp-right-panel {
-            display: block;
-            padding: 56px 24px 56px 48px;
+            display: flex;
+            flex: 1 1 46%;
+            justify-content: flex-start;
+            padding: 56px 32px 56px 64px;
             border-top: none;
             min-height: 100vh;
-            position: sticky;
-            top: 0;
             background: #fafafa;
           }
-          .sp-right-panel::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: -2000px;
-            background: #fafafa;
-            z-index: -1;
-            pointer-events: none;
-          }
+        }
+        .sp-right-inner {
+          width: 100%;
+          max-width: 500px;
+          position: sticky;
+          top: 40px;
+          align-self: flex-start;
         }
 
         /* SHOPIFY ORDER SUMMARY STYLING */
@@ -1796,9 +1802,9 @@ export default function PaymentPage() {
         
         {/* LEFT COLUMN: CONTACT, SHIPPING, PAYMENT (WHITE BACK) */}
         <div className="sp-left-panel">
-          
-          {/* Logo */}
-          <div className="sp-logo-wrapper">
+          <div className="sp-left-inner">
+            {/* Logo */}
+            <div className="sp-logo-wrapper">
             <Link to="/">
               <img src="/logo.png" alt="Donzen Accounting Hub" className="sp-logo" onError={e => { e.currentTarget.style.display = 'none' }} />
             </Link>
@@ -2159,12 +2165,14 @@ export default function PaymentPage() {
             <Link to="/terms" target="_blank">Terms of service</Link>
             <Link to="/contact" target="_blank">Contact details</Link>
           </footer>
-
+          </div>
         </div>
 
         {/* RIGHT COLUMN: STICKY ORDER SUMMARY (GREY BACK) */}
         <div className="sp-right-panel">
-          {renderSummaryContent()}
+          <div className="sp-right-inner">
+            {renderSummaryContent()}
+          </div>
         </div>
 
       </div>
