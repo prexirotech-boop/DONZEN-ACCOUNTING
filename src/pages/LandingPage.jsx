@@ -115,7 +115,7 @@ export default function LandingPage() {
     return () => clearTimeout(startTimer)
   }, [])
 
-  // Load Wistia scripts for n7ski2kp6w
+  // Load Wistia scripts for 5t9i9o55vy
   useEffect(() => {
     const script1 = document.createElement('script')
     script1.src = 'https://fast.wistia.com/player.js'
@@ -123,10 +123,17 @@ export default function LandingPage() {
     document.body.appendChild(script1)
 
     const script2 = document.createElement('script')
-    script2.src = 'https://fast.wistia.com/embed/n7ski2kp6w.js'
+    script2.src = 'https://fast.wistia.com/embed/5t9i9o55vy.js'
     script2.async = true
     script2.type = 'module'
     document.body.appendChild(script2)
+
+    return () => {
+      try {
+        document.body.removeChild(script1)
+        document.body.removeChild(script2)
+      } catch (e) {}
+    }
   }, [])
 
   // Scroll animations setup
@@ -240,7 +247,7 @@ export default function LandingPage() {
               
               <div className="lp-video-card-container">
                 <wistia-player 
-                  media-id="n7ski2kp6w" 
+                  media-id="5t9i9o55vy" 
                   aspect="0.5625" 
                   playbar="false"
                   play-bar-control="false"
@@ -779,8 +786,8 @@ export default function LandingPage() {
           width: 100%;
           height: 100%;
         }
-        wistia-player[media-id='n7ski2kp6w']:not(:defined) {
-          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/n7ski2kp6w/swatch');
+        wistia-player[media-id='5t9i9o55vy']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/5t9i9o55vy/swatch');
           display: block;
           filter: blur(5px);
           padding-top: 177.78%;

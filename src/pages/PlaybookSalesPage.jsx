@@ -21,6 +21,27 @@ export default function PlaybookSalesPage() {
     return () => clearInterval(timer)
   }, [])
 
+  // Load Wistia scripts for 5t9i9o55vy
+  useEffect(() => {
+    const script1 = document.createElement('script')
+    script1.src = 'https://fast.wistia.com/player.js'
+    script1.async = true
+    document.body.appendChild(script1)
+
+    const script2 = document.createElement('script')
+    script2.src = 'https://fast.wistia.com/embed/5t9i9o55vy.js'
+    script2.async = true
+    script2.type = 'module'
+    document.body.appendChild(script2)
+
+    return () => {
+      try {
+        document.body.removeChild(script1)
+        document.body.removeChild(script2)
+      } catch (e) {}
+    }
+  }, [])
+
   const formatTime = (seconds) => {
     const hrs = Math.floor(seconds / 3600)
     const mins = Math.floor((seconds % 3600) / 60)
@@ -211,16 +232,10 @@ export default function PlaybookSalesPage() {
             Gain Real Workplace Accounting Experience in Just 30 Days—Without Waiting Years for Someone to Hire You.
           </p>
 
-          {/* Real Embedded YouTube Video Sales Letter */}
+          {/* Real Embedded Wistia Video Sales Letter */}
           <div className="cf-vsl-wrapper">
             <div className="cf-vsl-player">
-              <iframe
-                className="cf-vsl-iframe"
-                src="https://www.youtube.com/embed/eVCCANkGYac?rel=0&modestbranding=1"
-                title="Donzen Accounting Hub Presentation"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
+              <wistia-player media-id="5t9i9o55vy" aspect="0.5625"></wistia-player>
             </div>
           </div>
 
@@ -991,6 +1006,16 @@ export default function PlaybookSalesPage() {
         }
 
         /* VSL Video Player */
+        wistia-player[media-id='5t9i9o55vy']:not(:defined) {
+          background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/5t9i9o55vy/swatch');
+          display: block;
+          filter: blur(5px);
+          padding-top: 177.78%;
+        }
+        wistia-player {
+          display: block;
+          width: 100%;
+        }
         .cf-vsl-wrapper {
           background: #09090b;
           border: 4px solid #09090b;
@@ -998,24 +1023,15 @@ export default function PlaybookSalesPage() {
           overflow: hidden;
           box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
           margin-bottom: 40px;
-          max-width: 800px;
+          max-width: 440px;
+          width: 100%;
           margin-left: auto;
           margin-right: auto;
         }
         .cf-vsl-player {
-          aspect-ratio: 16/9;
           position: relative;
           width: 100%;
           background: #000000;
-        }
-        .cf-vsl-iframe {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border: 0;
-          border-radius: 12px;
         }
 
         /* Text Block copy style */
