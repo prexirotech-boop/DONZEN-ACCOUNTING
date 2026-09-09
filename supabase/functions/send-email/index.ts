@@ -39,21 +39,41 @@ serve(async (req: any) => {
       return new Response(JSON.stringify({ message: "No record or reference found" }), { headers: corsHeaders, status: 400 })
     }
 
+    // 1b. Resolve Resend API key (from Env or DB settings fallback)
+    let activeResendKey = RESEND_API_KEY
+    if (!activeResendKey && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        const { data: paySetting } = await supabaseAdmin
+          .from('settings')
+          .select('value')
+          .eq('id', 'payment_config')
+          .maybeSingle()
+        if (paySetting?.value?.resend_api_key) {
+          activeResendKey = paySetting.value.resend_api_key
+        }
+      } catch (e) {}
+    }
+
     // 2. Optional: If type is direct batch unlock notification
     if (body.type === 'batch_unlock') {
-      const { user_email, user_name, course_title, course_id } = body
-      if (RESEND_API_KEY && user_email) {
+      const targetEmail = body.user_email || body.recipient_email || record.customer_email
+      const targetName = body.user_name || body.recipient_name || record.customer_name || 'Student'
+      const targetTitle = body.course_title || 'Your Course'
+      const targetCourseId = body.course_id || ''
+
+      if (activeResendKey && targetEmail) {
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RESEND_API_KEY}`
+            'Authorization': `Bearer ${activeResendKey}`
           },
           body: JSON.stringify({
             from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',
-            to: [user_email],
+            to: [targetEmail],
             reply_to: 'info@donzenaccountinghub.com',
-            subject: `🎉 Your Batch Has Started: ${course_title || 'Your Course'} is Now Live!`,
+            subject: `🎉 Your Batch Has Started: ${targetTitle} is Now Live!`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                 <div style="background: #101010; padding: 28px; text-align: center; border-bottom: 3px solid #ff1717;">
@@ -61,12 +81,12 @@ serve(async (req: any) => {
                   <p style="color: #ff1717; margin: 6px 0 0; font-size: 13px; font-weight: bold;">DONZEN ACCOUNTING HUB</p>
                 </div>
                 <div style="padding: 32px 28px;">
-                  <h2 style="color: #0f172a; margin-top: 0;">Hello ${user_name || 'Student'},</h2>
+                  <h2 style="color: #0f172a; margin-top: 0;">Hello ${targetName},</h2>
                   <p style="color: #475569; font-size: 15px; line-height: 1.6;">
-                    The countdown is complete! Your scheduled batch for <strong>${course_title || 'your program'}</strong> is now officially unlocked and available in your classroom dashboard.
+                    The countdown is complete! Your scheduled batch for <strong>${targetTitle}</strong> is now officially unlocked and available in your classroom dashboard.
                   </p>
                   <div style="text-align: center; margin: 32px 0;">
-                    <a href="${SITE_URL}/course/${course_id || ''}" style="background: #ff1717; color: #fff; padding: 14px 32px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 6px; display: inline-block;">
+                    <a href="${SITE_URL}/course/${targetCourseId}" style="background: #ff1717; color: #fff; padding: 14px 32px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 6px; display: inline-block;">
                       🚀 Enter Classroom & Start Learning
                     </a>
                   </div>
@@ -78,6 +98,53 @@ serve(async (req: any) => {
         })
       }
       return new Response(JSON.stringify({ message: "Batch unlock email dispatched" }), { headers: corsHeaders, status: 200 })
+    }
+
+    // 2b. Optional: If type is batch broadcast announcement
+    if (body.type === 'batch_broadcast') {
+      const targetEmail = body.recipient_email || body.user_email || record.customer_email
+      const targetName = body.recipient_name || body.user_name || 'Student'
+      const targetTitle = body.course_title || 'Your Course'
+      const targetLink = body.course_link || '/dashboard'
+      const customSubject = body.custom_subject || `Announcement: ${targetTitle}`
+      const customMessage = body.custom_message || ''
+
+      if (activeResendKey && targetEmail) {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${activeResendKey}`
+          },
+          body: JSON.stringify({
+            from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',
+            to: [targetEmail],
+            reply_to: 'info@donzenaccountinghub.com',
+            subject: customSubject,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                <div style="background: #101010; padding: 28px; text-align: center; border-bottom: 3px solid #ff1717;">
+                  <h1 style="color: #fff; margin: 0; font-size: 20px;">Classroom Announcement</h1>
+                  <p style="color: #ff1717; margin: 6px 0 0; font-size: 13px; font-weight: bold;">DONZEN ACCOUNTING HUB</p>
+                </div>
+                <div style="padding: 32px 28px;">
+                  <h2 style="color: #0f172a; margin-top: 0;">Hello ${targetName},</h2>
+                  <div style="color: #334155; font-size: 15px; line-height: 1.7; margin: 20px 0; white-space: pre-wrap;">
+                    ${customMessage}
+                  </div>
+                  <div style="text-align: center; margin: 32px 0;">
+                    <a href="${SITE_URL}${targetLink}" style="background: #ff1717; color: #fff; padding: 14px 32px; font-size: 15px; font-weight: bold; text-decoration: none; border-radius: 6px; display: inline-block;">
+                      Go to Classroom
+                    </a>
+                  </div>
+                  <p style="color: #94a3b8; font-size: 12px;">You are receiving this update as an enrolled student in ${targetTitle}.</p>
+                </div>
+              </div>
+            `
+          })
+        })
+      }
+      return new Response(JSON.stringify({ message: "Broadcast email dispatched" }), { headers: corsHeaders, status: 200 })
     }
 
     // 3. Security Check: Verify payment status with Paystack API if secret configured
@@ -135,12 +202,12 @@ serve(async (req: any) => {
 
     // 5. Send Confirmation Email via Resend
     console.log(`Sending confirmation email to: ${record.customer_email}`)
-    if (RESEND_API_KEY) {
+    if (activeResendKey) {
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${RESEND_API_KEY}`
+          'Authorization': `Bearer ${activeResendKey}`
         },
         body: JSON.stringify({
           from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',

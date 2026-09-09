@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import CustomDropdown from '../components/CustomDropdown'
 
 export default function AdminSettings() {
   const { user, profile, refreshProfile } = useAuth()
@@ -22,6 +23,12 @@ export default function AdminSettings() {
   // Platform styling fields
   const [brandName, setBrandName] = useState('Donzen Accounting Hub')
   const [supportEmail, setSupportEmail] = useState('info@donzenaccountinghub.com')
+
+  // Landing page showcased products
+  const [coursesList, setCoursesList] = useState([])
+  const [bundlesList, setBundlesList] = useState([])
+  const [landingSingleCourseId, setLandingSingleCourseId] = useState('')
+  const [landingBundleProductId, setLandingBundleProductId] = useState('')
 
   // Payment Configuration fields
   const [paystackPublicKey, setPaystackPublicKey] = useState('')
@@ -60,6 +67,17 @@ export default function AdminSettings() {
 
     async function loadPlatformSettings() {
       try {
+        // Load published courses and bundles for showcase selector
+        const { data: prods } = await supabase
+          .from('products')
+          .select('id, title, price, type, is_featured')
+          .eq('is_published', true)
+          .order('title')
+        if (prods) {
+          setCoursesList(prods.filter(p => p.type === 'course'))
+          setBundlesList(prods.filter(p => p.type === 'bundle'))
+        }
+
         const { data } = await supabase.from('settings').select('*')
         if (data) {
           const siteConfig = data.find(s => s.id === 'site_config')
@@ -67,6 +85,8 @@ export default function AdminSettings() {
             setBrandName(siteConfig.value.platform_name || 'Donzen Accounting Hub')
             setSupportEmail(siteConfig.value.support_email || 'info@donzenaccountinghub.com')
             setEnablePaymentPlans(!!siteConfig.value.enable_payment_plans)
+            setLandingSingleCourseId(siteConfig.value.landing_single_course_id || '')
+            setLandingBundleProductId(siteConfig.value.landing_bundle_product_id || '')
           }
           const payConfig = data.find(s => s.id === 'payment_config')
           if (payConfig?.value) {
@@ -187,7 +207,9 @@ export default function AdminSettings() {
             platform_name: brandName.trim(),
             support_email: supportEmail.trim(),
             refund_days: 30,
-            enable_payment_plans: enablePaymentPlans
+            enable_payment_plans: enablePaymentPlans,
+            landing_single_course_id: landingSingleCourseId,
+            landing_bundle_product_id: landingBundleProductId
           },
           updated_at: new Date().toISOString()
         })
@@ -445,6 +467,79 @@ export default function AdminSettings() {
                   style={{ width: 15, height: 15, cursor: 'pointer' }}
                 />
                 <label htmlFor="enable_payment_plans" style={{ fontWeight: 600, fontSize: 13, color: '#3c4257', cursor: 'pointer' }}>Enable Installment Payment Plans Globally</label>
+              </div>
+
+              {/* ── Landing Page Product Showcase Section ── */}
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: 8,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+                marginTop: 4
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                  <div>
+                    <strong style={{ fontSize: 13.5, color: '#0f172a', display: 'block' }}>
+                      Landing Page Product Showcase
+                    </strong>
+                    <span style={{ fontSize: 12, color: '#64748b' }}>
+                      Choose which single course and bundle appear on the sales & landing page (<code>/30-days-accounting</code>).
+                    </span>
+                  </div>
+                  <a
+                    href="/30-days-accounting"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: '#2563eb',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4
+                    }}
+                  >
+                    Preview Page
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
+                  <div>
+                    <CustomDropdown
+                      options={[
+                        { value: '', label: 'Auto (Flagship / Featured Course)' },
+                        ...coursesList.map(c => ({
+                          value: c.id,
+                          label: `${c.title} (₦${Number(c.price || 0).toLocaleString()})`
+                        }))
+                      ]}
+                      value={landingSingleCourseId}
+                      onChange={val => setLandingSingleCourseId(val)}
+                      label="Primary Single Course"
+                      helperText="Controls the single course and syllabus preview on the landing page."
+                    />
+                  </div>
+                  <div>
+                    <CustomDropdown
+                      options={[
+                        { value: '', label: 'Auto (Featured Bundle)' },
+                        ...bundlesList.map(b => ({
+                          value: b.id,
+                          label: `${b.title} (₦${Number(b.price || 0).toLocaleString()})`
+                        }))
+                      ]}
+                      value={landingBundleProductId}
+                      onChange={val => setLandingBundleProductId(val)}
+                      label="Featured Course Bundle"
+                      helperText="Controls the bundle offer shown side-by-side on the landing page."
+                    />
+                  </div>
+                </div>
               </div>
 
               <div style={{ borderTop: '1px solid #e2e8f0', margin: '12px 0 6px 0', paddingTop: 12 }}>

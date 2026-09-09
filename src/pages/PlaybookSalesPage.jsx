@@ -56,6 +56,21 @@ export default function PlaybookSalesPage() {
         const singleParam = searchParams.get('single') || searchParams.get('course') || searchParams.get('product')
         const bundleParam = searchParams.get('bundle')
 
+        // 0. Check site_config in settings
+        let configuredSingleId = null
+        let configuredBundleId = null
+        try {
+          const { data: siteConfigRow } = await supabase
+            .from('settings')
+            .select('value')
+            .eq('id', 'site_config')
+            .maybeSingle()
+          if (siteConfigRow?.value) {
+            configuredSingleId = siteConfigRow.value.landing_single_course_id
+            configuredBundleId = siteConfigRow.value.landing_bundle_product_id
+          }
+        } catch (e) {}
+
         // 1. Fetch single course product
         let singleProd = null
         if (singleParam) {
@@ -68,16 +83,26 @@ export default function PlaybookSalesPage() {
           if (data) singleProd = data
         }
 
-        if (!singleProd) {
-          // Try known single course slugs first
-          const { data: bySlug } = await supabase
+        // Check if admin explicitly configured a landing single course
+        if (!singleProd && configuredSingleId) {
+          const { data: cfgProd } = await supabase
             .from('products')
             .select('*')
-            .or('slug.eq.30-days-accounting,slug.eq.accounting-experience-programme')
+            .eq('id', configuredSingleId)
+            .maybeSingle()
+          if (cfgProd) singleProd = cfgProd
+        }
+
+        if (!singleProd) {
+          // Check for flagship Donzen accounting program or known slugs
+          const { data: flagshipCourse } = await supabase
+            .from('products')
+            .select('*')
+            .or('id.eq.60fc92d6-7bdc-42b7-b216-d95fcde36636,slug.eq.30-days-accounting,slug.eq.accounting-experience-programme,slug.eq.Knowledge, skills, and experience.')
             .eq('is_published', true)
             .limit(1)
             .maybeSingle()
-          if (bySlug) singleProd = bySlug
+          if (flagshipCourse) singleProd = flagshipCourse
         }
 
         if (!singleProd) {
@@ -118,6 +143,16 @@ export default function PlaybookSalesPage() {
             .eq(isUUID ? 'id' : 'slug', bundleParam)
             .maybeSingle()
           if (data) bundleProd = data
+        }
+
+        // Check if admin explicitly configured a landing bundle product
+        if (!bundleProd && configuredBundleId) {
+          const { data: cfgBndl } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', configuredBundleId)
+            .maybeSingle()
+          if (cfgBndl) bundleProd = cfgBndl
         }
 
         if (!bundleProd) {

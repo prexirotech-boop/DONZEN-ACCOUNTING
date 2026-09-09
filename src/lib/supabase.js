@@ -510,6 +510,23 @@ export async function checkAndTriggerBatchUnlocks(userId) {
         .update({ batch_unlocked_notified: true })
         .eq('id', enr.id)
 
+      // 3. Dispatch batch release email notification
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .eq('id', userId)
+        .maybeSingle()
+
+      if (prof?.email) {
+        triggerBatchUnlockEmail({
+          email: prof.email,
+          name: prof.full_name || 'Student',
+          courseTitle,
+          courseLink,
+          courseId: enr.course_id
+        })
+      }
+
       console.log(`[Batch Unlock] Notification created for course: ${courseTitle}`)
     }
   } catch (err) {
@@ -520,10 +537,10 @@ export async function checkAndTriggerBatchUnlocks(userId) {
 /**
  * Trigger batch release email reminder
  */
-export function triggerBatchUnlockEmail({ email, name, courseTitle, courseLink, batchName }) {
+export function triggerBatchUnlockEmail({ email, name, courseTitle, courseLink, batchName, courseId }) {
   setTimeout(async () => {
     try {
-      const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-batch-reminder`
+      const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-confirmation`
       const apikey = CONFIG.SUPABASE_KEY
       
       await fetch(url, {
@@ -534,10 +551,11 @@ export function triggerBatchUnlockEmail({ email, name, courseTitle, courseLink, 
           'Authorization': `Bearer ${apikey}`
         },
         body: JSON.stringify({
-          recipient_email: email,
-          recipient_name: name,
+          user_email: email,
+          user_name: name,
           course_title: courseTitle,
           course_link: courseLink,
+          course_id: courseId,
           batch_name: batchName,
           type: 'batch_unlock'
         })

@@ -818,7 +818,7 @@ export default function AdminCourseBuilder() {
         if (studentEmail) {
           setTimeout(async () => {
             try {
-              const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-batch-reminder`
+              const url = `${CONFIG.SUPABASE_URL}/functions/v1/send-confirmation`
               await fetch(url, {
                 method: 'POST',
                 headers: {
