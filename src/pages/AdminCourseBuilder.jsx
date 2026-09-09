@@ -62,6 +62,7 @@ const LEVEL_OPTIONS = [
 import {
   DndContext,
   closestCenter,
+  closestCorners,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -583,19 +584,47 @@ export default function AdminCourseBuilder() {
       } catch (err) {
         console.error('Error updating module order:', err);
       }
-    } else if (activeType === 'Lesson' && overType === 'Lesson') {
+    } else if (activeType === 'Lesson') {
       const activeLesson = active.data.current?.lesson;
-      const overLesson = over.data.current?.lesson;
+      if (!activeLesson) return;
 
-      if (activeLesson.module_id === overLesson.module_id) {
-        const modIndex = modules.findIndex(m => m.id === activeLesson.module_id);
+      const sourceModuleId = activeLesson.module_id;
+      let targetModuleId = null;
+      let targetIndex = null;
+
+      if (overType === 'Lesson') {
+        const overLesson = over.data.current?.lesson;
+        if (!overLesson) return;
+        targetModuleId = overLesson.module_id;
+
+        const targetMod = modules.find(m => m.id === targetModuleId);
+        if (!targetMod) return;
+
+        targetIndex = (targetMod.lessons || []).findIndex(l => `lesson-${l.id}` === over.id);
+        if (targetIndex === -1) targetIndex = (targetMod.lessons || []).length;
+      } else if (overType === 'Module') {
+        const overMod = over.data.current?.mod;
+        if (!overMod) return;
+        targetModuleId = overMod.id;
+
+        const targetMod = modules.find(m => m.id === targetModuleId);
+        if (!targetMod) return;
+
+        targetIndex = (targetMod.lessons || []).length;
+      }
+
+      if (!targetModuleId) return;
+
+      // ── Scenario A: Reordering within the SAME module ──
+      if (sourceModuleId === targetModuleId) {
+        const modIndex = modules.findIndex(m => m.id === sourceModuleId);
+        if (modIndex === -1) return;
         const mod = modules[modIndex];
 
-        const oldIndex = mod.lessons.findIndex(l => `lesson-${l.id}` === active.id);
-        const newIndex = mod.lessons.findIndex(l => `lesson-${l.id}` === over.id);
+        const oldIndex = (mod.lessons || []).findIndex(l => `lesson-${l.id}` === active.id);
+        if (oldIndex === -1 || targetIndex === -1 || oldIndex === targetIndex) return;
 
-        const newLessons = arrayMove(mod.lessons, oldIndex, newIndex);
-        
+        const newLessons = arrayMove(mod.lessons, oldIndex, targetIndex);
         const newModules = [...modules];
         newModules[modIndex] = { ...mod, lessons: newLessons };
         setModules(newModules);
@@ -606,6 +635,59 @@ export default function AdminCourseBuilder() {
           ));
         } catch (err) {
           console.error('Error updating lesson order:', err);
+        }
+      } else {
+        // ── Scenario B: Cross-module Drag-and-Drop (Move from Module A to Module B) ──
+        const sourceMod = modules.find(m => m.id === sourceModuleId);
+        const targetMod = modules.find(m => m.id === targetModuleId);
+        if (!sourceMod || !targetMod) return;
+
+        // 1. Remove active lesson from source module
+        const updatedSourceLessons = (sourceMod.lessons || []).filter(l => l.id !== activeLesson.id);
+
+        // 2. Prepare moved lesson with target module_id
+        const movedLesson = { ...activeLesson, module_id: targetModuleId };
+
+        // 3. Insert into target module lessons
+        const updatedTargetLessons = [...(targetMod.lessons || [])];
+        const insertAt = Math.min(Math.max(0, targetIndex ?? updatedTargetLessons.length), updatedTargetLessons.length);
+        updatedTargetLessons.splice(insertAt, 0, movedLesson);
+
+        // 4. Update order_index in state objects
+        updatedSourceLessons.forEach((l, idx) => { l.order_index = idx; });
+        updatedTargetLessons.forEach((l, idx) => { l.order_index = idx; });
+
+        // 5. Update React state immediately for responsive UI
+        const nextModules = modules.map(m => {
+          if (m.id === sourceModuleId) {
+            return { ...m, lessons: updatedSourceLessons };
+          }
+          if (m.id === targetModuleId) {
+            return { ...m, lessons: updatedTargetLessons };
+          }
+          return m;
+        });
+        setModules(nextModules);
+
+        // 6. Persist to Supabase in parallel
+        try {
+          const movedUpdate = supabase
+            .from('lessons')
+            .update({ module_id: targetModuleId, order_index: insertAt })
+            .eq('id', activeLesson.id);
+
+          const sourceUpdates = updatedSourceLessons.map((l, index) =>
+            supabase.from('lessons').update({ order_index: index }).eq('id', l.id)
+          );
+
+          const targetUpdates = updatedTargetLessons.map((l, index) =>
+            supabase.from('lessons').update({ order_index: index }).eq('id', l.id)
+          );
+
+          await Promise.all([movedUpdate, ...sourceUpdates, ...targetUpdates]);
+        } catch (err) {
+          console.error('Error persisting cross-module lesson move:', err);
+          await reloadCurriculum();
         }
       }
     }
@@ -1179,7 +1261,7 @@ export default function AdminCourseBuilder() {
                 No modules created yet. Add one to structure your lessons.
               </div>
             ) : (
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
                 <SortableContext items={modules.map(m => `module-${m.id}`)} strategy={verticalListSortingStrategy}>
                   {modules.map(mod => (
                     <SortableModule key={`module-${mod.id}`} mod={mod}>
@@ -1221,7 +1303,22 @@ export default function AdminCourseBuilder() {
                   {/* Lessons inside Module */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
                     {mod.lessons?.length === 0 ? (
-                      <div style={{ color: '#8792a2', fontSize: 12, fontStyle: 'italic', padding: '8px 0' }}>No lessons inside this module.</div>
+                      <div style={{
+                        color: '#64748b',
+                        fontSize: 12,
+                        padding: '16px 12px',
+                        textAlign: 'center',
+                        background: '#f8fafc',
+                        border: '1px dashed #cbd5e1',
+                        borderRadius: 6,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6
+                      }}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        <span>Drop lessons here or click + Add Lesson below</span>
+                      </div>
                     ) : (
                       <SortableContext items={(mod.lessons || []).map(l => `lesson-${l.id}`)} strategy={verticalListSortingStrategy}>
                         {mod.lessons?.map(les => (
