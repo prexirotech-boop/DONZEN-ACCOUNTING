@@ -705,12 +705,12 @@ export default function PlaybookSalesPage() {
         <div className="cf-container">
           <div className="cf-instructor-container">
             <div className="cf-instructor-photo-box">
-              <img src="/donzen-man.jpeg" alt="Samuel Nkemchor Onainor" />
+              <img src="/donzen-man.jpeg" alt="Samuel Onainor" />
               <span className="cf-instructor-title-badge">Lead Instructor</span>
             </div>
             <div className="cf-instructor-details">
               <span className="cf-instructor-intro-tag">Founder &amp; Principal Consultant</span>
-              <h2>Samuel Nkemchor Onainor</h2>
+              <h2>Samuel Onainor</h2>
               <p>
                 Samuel is an accounting professional, workplace accounting trainer, and business consultant passionate about helping aspiring accountants bridge the gap between academic learning and workplace performance.
               </p>
