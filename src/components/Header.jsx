@@ -15,13 +15,22 @@ export default function Header() {
   const { user } = useAuth()
   const dropdownRef = useRef(null)
   
-  const { currency, isEnabled: isCurrencyEnabled, setCurrency } = useCurrency()
+  const { currency, isEnabled: isCurrencyEnabled, setCurrency, formatPrice } = useCurrency()
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false)
   const currencyMenuRef = useRef(null)
 
   const [cartItems, setCartItems] = useState([])
   const [showCartDrawer, setShowCartDrawer] = useState(false)
   const [showMobileNav, setShowMobileNav] = useState(false)
+
+  // Navigate directly to the selected product page
+  const handleSelectProduct = (product) => {
+    if (!product) return
+    const target = `/product/${product.slug || product.id}`
+    navigate(target)
+    setSearchQuery('')
+    setShowDropdown(false)
+  }
 
   // Initialize and synchronize cart items from localStorage
   useEffect(() => {
@@ -80,10 +89,10 @@ export default function Header() {
       try {
         const { data, error } = await supabase
           .from('products')
-          .select('id, title, slug, price, cover_image, type')
-          .eq('is_published', true)
+          .select('id, title, slug, price, cover_image, type, description, short_description, is_published, is_free')
         if (!error && data) {
-          setProducts(data)
+          const published = data.filter(p => p.is_published !== false)
+          setProducts(published)
         }
       } catch (err) {
         console.error('Error prefetching products:', err)
@@ -114,17 +123,21 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutsideCurrency)
   }, [])
 
-  // Filter products based on search query
+  // Filter products based on search query (title, type, description, slug)
   useEffect(() => {
-    if (!searchQuery.trim()) {
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) {
       setFilteredProducts([])
       return
     }
-    const query = searchQuery.toLowerCase()
-    const matches = products.filter(p => 
-      p.title.toLowerCase().includes(query) || 
-      (p.type && p.type.toLowerCase().includes(query))
-    )
+    const matches = products.filter(p => {
+      const title = (p.title || '').toLowerCase()
+      const type = (p.type || '').toLowerCase()
+      const desc = (p.description || '').toLowerCase()
+      const shortDesc = (p.short_description || '').toLowerCase()
+      const slug = (p.slug || '').toLowerCase()
+      return title.includes(q) || type.includes(q) || desc.includes(q) || shortDesc.includes(q) || slug.includes(q)
+    })
     setFilteredProducts(matches)
   }, [searchQuery, products])
 
@@ -160,57 +173,141 @@ export default function Header() {
             </svg>
             <input 
               type="text" 
-              placeholder="Search services, templates, resources..." 
+              placeholder="Search courses, products, resources..." 
               value={searchQuery}
               onChange={e => {
                 setSearchQuery(e.target.value)
                 setShowDropdown(true)
               }}
-              onFocus={() => setShowDropdown(true)}
+              onFocus={() => {
+                if (searchQuery.trim()) setShowDropdown(true)
+              }}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
-                  navigate(`/resources?search=${encodeURIComponent(searchQuery)}`)
+                  const q = searchQuery.trim()
+                  if (!q) return
+                  if (filteredProducts.length === 1) {
+                    handleSelectProduct(filteredProducts[0])
+                  } else {
+                    navigate(`/products?search=${encodeURIComponent(q)}`)
+                    setShowDropdown(false)
+                  }
+                } else if (e.key === 'Escape') {
                   setShowDropdown(false)
                 }
               }}
               className="header-search-input"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('')
+                  setFilteredProducts([])
+                  setShowDropdown(false)
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  cursor: 'pointer',
+                  padding: '2px 6px',
+                  fontSize: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)'}
+                title="Clear search"
+              >
+                ✕
+              </button>
+            )}
           </div>
 
           {/* Autocomplete Dropdown Panel */}
           {showDropdown && searchQuery.trim() && (
             <div className="search-dropdown-panel">
               {filteredProducts.length > 0 ? (
-                filteredProducts.map(product => (
+                <>
+                  <div className="search-dropdown-header">
+                    <span>Matching Courses & Products ({filteredProducts.length})</span>
+                  </div>
+                  {filteredProducts.slice(0, 8).map(product => (
+                    <div 
+                      key={product.id} 
+                      className="search-dropdown-item"
+                      onMouseDown={(e) => {
+                        // Prevent input blur before click registers
+                        e.preventDefault()
+                      }}
+                      onClick={() => handleSelectProduct(product)}
+                    >
+                      <img 
+                        src={product.cover_image || '/logo.png'} 
+                        alt={product.title} 
+                        className="search-item-thumb" 
+                        onError={e => { e.currentTarget.src = '/logo.png' }}
+                      />
+                      <div className="search-item-info">
+                        <div className="search-item-title">{product.title}</div>
+                        <div className="search-item-meta">
+                          <span className="search-item-badge">{product.type || 'Course'}</span>
+                          <span className="search-item-price">
+                            {product.is_free || product.price === 0
+                              ? 'Free'
+                              : (formatPrice ? formatPrice(product.price) : `₦${Number(product.price).toLocaleString()}`)}
+                          </span>
+                        </div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#94a3b8', flexShrink: 0 }}>
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </div>
+                  ))}
                   <div 
-                    key={product.id} 
-                    className="search-dropdown-item"
+                    className="search-dropdown-footer"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
-                      navigate(`/resources`)
-                      setSearchQuery('')
+                      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`)
                       setShowDropdown(false)
                     }}
                   >
-                    <img 
-                      src={product.cover_image} 
-                      alt={product.title} 
-                      className="search-item-thumb" 
-                      onError={e => { e.currentTarget.src = '/logo.png' }}
-                    />
-                    <div className="search-item-info">
-                      <div className="search-item-title">{product.title}</div>
-                      <div className="search-item-meta">
-                        <span className="search-item-badge">{product.type || 'Service'}</span>
-                        <span className="search-item-price">
-                          {product.price ? `₦${Number(product.price).toLocaleString()}` : 'Custom'}
-                        </span>
-                      </div>
-                    </div>
+                    <span>View all results for "{searchQuery}"</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                   </div>
-                ))
+                </>
               ) : (
                 <div className="search-dropdown-empty">
-                  No accounting services or templates found for "{searchQuery}"
+                  <div>No courses or products found for "{searchQuery}"</div>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      navigate('/products')
+                      setShowDropdown(false)
+                      setSearchQuery('')
+                    }}
+                    style={{
+                      marginTop: 8,
+                      color: '#ff1717',
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4
+                    }}
+                  >
+                    Browse all products & courses →
+                  </button>
                 </div>
               )}
             </div>
@@ -417,6 +514,96 @@ export default function Header() {
             </div>
             
             <div className="mobile-nav-body">
+              {/* Mobile Search Bar */}
+              <div style={{ padding: '0 20px 16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '10px',
+                  padding: '8px 12px',
+                  gap: '8px'
+                }}>
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="#ff1717" strokeWidth="2.5" fill="none">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input 
+                    type="text"
+                    placeholder="Search courses, products..."
+                    value={searchQuery}
+                    onChange={e => {
+                      setSearchQuery(e.target.value)
+                      setShowDropdown(true)
+                    }}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        const q = searchQuery.trim()
+                        if (!q) return
+                        if (filteredProducts.length === 1) {
+                          handleSelectProduct(filteredProducts[0])
+                          setShowMobileNav(false)
+                        } else {
+                          navigate(`/products?search=${encodeURIComponent(q)}`)
+                          setShowMobileNav(false)
+                        }
+                      }
+                    }}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      width: '100%',
+                      outline: 'none'
+                    }}
+                  />
+                  {searchQuery && (
+                    <button 
+                      type="button" 
+                      onClick={() => setSearchQuery('')}
+                      style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', padding: '0 4px', fontSize: '13px' }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                {searchQuery.trim() && (
+                  <div style={{ marginTop: '10px', maxHeight: '220px', overflowY: 'auto' }}>
+                    {filteredProducts.slice(0, 5).map(prod => (
+                      <div
+                        key={prod.id}
+                        onClick={() => {
+                          handleSelectProduct(prod)
+                          setShowMobileNav(false)
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          padding: '8px 4px',
+                          borderBottom: '1px solid rgba(255,255,255,0.06)',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <img src={prod.cover_image || '/logo.png'} alt={prod.title} style={{ width: '36px', height: '36px', borderRadius: '6px', objectFit: 'cover' }} onError={e => { e.currentTarget.src = '/logo.png' }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ color: '#fff', fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prod.title}</div>
+                          <div style={{ color: '#ff1717', fontSize: '11px', fontWeight: 700 }}>
+                            {prod.is_free || prod.price === 0 ? 'Free' : (formatPrice ? formatPrice(prod.price) : `₦${Number(prod.price).toLocaleString()}`)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {filteredProducts.length === 0 && (
+                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', padding: '8px 0', textAlign: 'center' }}>
+                        No matching products
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
               {[
                 { label: 'Home', path: '/', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
                 { label: 'Learn', path: '/products', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> },
@@ -871,6 +1058,34 @@ export default function Header() {
           background: linear-gradient(135deg, #d91414, #b21010);
           transform: translateY(-1px);
           box-shadow: 0 6px 20px rgba(255, 23, 23, 0.3);
+        }
+
+        .search-dropdown-header {
+          padding: 8px 16px 6px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #64748b;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .search-dropdown-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 16px;
+          background: #f8fafc;
+          border-top: 1px solid #e2e8f0;
+          cursor: pointer;
+          font-size: 12.5px;
+          font-weight: 700;
+          color: #ff1717;
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
+          transition: background 0.15s ease;
+        }
+        .search-dropdown-footer:hover {
+          background: #fee2e2;
         }
 
         @media (max-width: 768px) {
