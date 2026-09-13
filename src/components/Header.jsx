@@ -89,10 +89,10 @@ export default function Header() {
       try {
         const { data, error } = await supabase
           .from('products')
-          .select('id, title, slug, price, cover_image, type, description, short_description, is_published, is_free')
+          .select('id, title, slug, price, cover_image, type')
+          .eq('is_published', true)
         if (!error && data) {
-          const published = data.filter(p => p.is_published !== false)
-          setProducts(published)
+          setProducts(data)
         }
       } catch (err) {
         console.error('Error prefetching products:', err)
@@ -123,21 +123,17 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutsideCurrency)
   }, [])
 
-  // Filter products based on search query (title, type, description, slug)
+  // Filter products based on search query
   useEffect(() => {
-    const q = searchQuery.trim().toLowerCase()
-    if (!q) {
+    if (!searchQuery.trim()) {
       setFilteredProducts([])
       return
     }
-    const matches = products.filter(p => {
-      const title = (p.title || '').toLowerCase()
-      const type = (p.type || '').toLowerCase()
-      const desc = (p.description || '').toLowerCase()
-      const shortDesc = (p.short_description || '').toLowerCase()
-      const slug = (p.slug || '').toLowerCase()
-      return title.includes(q) || type.includes(q) || desc.includes(q) || shortDesc.includes(q) || slug.includes(q)
-    })
+    const query = searchQuery.toLowerCase()
+    const matches = products.filter(p => 
+      p.title.toLowerCase().includes(query) || 
+      (p.type && p.type.toLowerCase().includes(query))
+    )
     setFilteredProducts(matches)
   }, [searchQuery, products])
 
