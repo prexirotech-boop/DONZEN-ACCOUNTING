@@ -9,6 +9,7 @@ export default function PlaybookSalesPage() {
   const [searchParams] = useSearchParams()
   const [product, setProduct] = useState(null)
   const [bundleProduct, setBundleProduct] = useState(null)
+  const [completeProduct, setCompleteProduct] = useState(null)
   const [openFaq, setOpenFaq] = useState(null)
   const [timeLeft, setTimeLeft] = useState(2 * 60 * 60 + 14 * 60) // 2h 14m countdown
   const [showStickyCta, setShowStickyCta] = useState(false)
@@ -68,9 +69,11 @@ export default function PlaybookSalesPage() {
       try {
         const singleParam = searchParams.get('single') || searchParams.get('course') || searchParams.get('product')
         const bundleParam = searchParams.get('bundle')
+        const completeParam = searchParams.get('complete')
 
         let configuredSingleId = null
         let configuredBundleId = null
+        let configuredCompleteId = null
         try {
           const { data: siteConfigRow } = await supabase
             .from('settings')
@@ -80,6 +83,7 @@ export default function PlaybookSalesPage() {
           if (siteConfigRow?.value) {
             configuredSingleId = siteConfigRow.value.landing_single_course_id
             configuredBundleId = siteConfigRow.value.landing_bundle_product_id
+            configuredCompleteId = siteConfigRow.value.landing_complete_product_id
           }
         } catch (e) {}
 
@@ -196,6 +200,39 @@ export default function PlaybookSalesPage() {
         }
 
         if (bundleProd) setBundleProduct(bundleProd)
+
+        let completeProd = null
+        if (completeParam) {
+          const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(completeParam)
+          const { data } = await supabase
+            .from('products')
+            .select('*')
+            .eq(isUUID ? 'id' : 'slug', completeParam)
+            .maybeSingle()
+          if (data) completeProd = data
+        }
+
+        if (!completeProd && configuredCompleteId) {
+          const { data: cfgCmpl } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', configuredCompleteId)
+            .maybeSingle()
+          if (cfgCmpl) completeProd = cfgCmpl
+        }
+
+        if (!completeProd) {
+          const { data: bySlug } = await supabase
+            .from('products')
+            .select('*')
+            .or('slug.eq.complete-experience,slug.eq.accounting-experience-complete,slug.eq.complete-package')
+            .eq('is_published', true)
+            .limit(1)
+            .maybeSingle()
+          if (bySlug) completeProd = bySlug
+        }
+
+        if (completeProd) setCompleteProduct(completeProd)
       } catch (err) {
         console.error('Error loading product:', err)
       }
@@ -228,9 +265,9 @@ export default function PlaybookSalesPage() {
         ? `/checkout?product=${bundleProduct.id}&plan=professional` 
         : (product ? `/checkout?product=${product.id}&plan=professional` : '/checkout?plan=professional')
     } else if (planName === 'complete') {
-      target = bundleProduct 
-        ? `/checkout?product=${bundleProduct.id}&plan=complete` 
-        : (product ? `/checkout?product=${product.id}&plan=complete` : '/checkout?plan=complete')
+      target = completeProduct 
+        ? `/checkout?product=${completeProduct.id}&plan=complete` 
+        : (bundleProduct ? `/checkout?product=${bundleProduct.id}&plan=complete` : (product ? `/checkout?product=${product.id}&plan=complete` : '/checkout?plan=complete'))
     }
     navigate(target)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -1250,6 +1287,21 @@ export default function PlaybookSalesPage() {
             <h3 style={{ textAlign: 'center', fontSize: 24, fontWeight: 900, color: '#09090b', marginBottom: 24 }}>
               THE DONZEN PROOF WALL
             </h3>
+            <div style={{ textAlign: 'center', marginBottom: 28 }}>
+              <img 
+                src="/donzen-proof-wall.png" 
+                alt="Donzen Wall of Proof - Real Learning. Real Work. Real Results." 
+                className="cf-proof-wall-img"
+                style={{ 
+                  width: '100%', 
+                  maxWidth: 960, 
+                  height: 'auto', 
+                  borderRadius: 12, 
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                  display: 'inline-block' 
+                }} 
+              />
+            </div>
             <div className="cf-reviews-grid">
               <div className="cf-review-card">
                 <div className="cf-rev-stars">★★★★★</div>
@@ -1350,7 +1402,7 @@ export default function PlaybookSalesPage() {
               <p className="cf-plan-desc">For learners who want the essential Donzen practical workplace accounting experience.</p>
 
               <div className="cf-plan-price-row">
-                <span className="cf-plan-price">{formatPrice ? formatPrice(53750) : '₦53,750'}</span>
+                <span className="cf-plan-price">{formatPrice ? formatPrice(product?.price || 53750) : `₦${Number(product?.price || 53750).toLocaleString()}`}</span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
 
@@ -1385,7 +1437,11 @@ export default function PlaybookSalesPage() {
               <p className="cf-plan-desc">For learners who want deeper practical exposure and broader accounting technology experience.</p>
 
               <div className="cf-plan-price-row">
-                <span className="cf-plan-price" style={{ color: '#ff1717' }}>{formatPrice ? formatPrice(187500) : '₦187,500'}</span>
+                <span className="cf-plan-price" style={{ color: '#ff1717' }}>
+                  {formatPrice 
+                    ? formatPrice(bundleProduct && bundleProduct.slug !== 'wordpress-bundle' ? bundleProduct.price : 187500) 
+                    : `₦${Number(bundleProduct && bundleProduct.slug !== 'wordpress-bundle' ? bundleProduct.price : 187500).toLocaleString()}`}
+                </span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
 
@@ -1425,7 +1481,9 @@ export default function PlaybookSalesPage() {
               <p className="cf-plan-desc">For learners who want the most comprehensive Donzen experience available.</p>
 
               <div className="cf-plan-price-row">
-                <span className="cf-plan-price">{formatPrice ? formatPrice(350000) : '₦350,000'}</span>
+                <span className="cf-plan-price">
+                  {formatPrice ? formatPrice(completeProduct?.price || 350000) : `₦${Number(completeProduct?.price || 350000).toLocaleString()}`}
+                </span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
 
@@ -1768,50 +1826,6 @@ export default function PlaybookSalesPage() {
                 <span>JOIN THE NEXT COHORT</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
-            </div>
-
-            <div className="cf-closing-sub">
-              <h4>READY TO CLOSE THE KNOWLEDGE–EXPERIENCE GAP?</h4>
-              <p>JOIN THE DONZEN ACCOUNTING EXPERIENCE PROGRAM.</p>
-              <div className="cf-closing-checklist">
-                <span>30 Days</span>
-                <span>•</span>
-                <span>Practical Accounting</span>
-                <span>•</span>
-                <span>Real Application</span>
-                <span>•</span>
-                <span>Workplace-Focused Skills</span>
-                <span>•</span>
-                <span>Accounting Technology</span>
-                <span>•</span>
-                <span>Structured Experience</span>
-              </div>
-            </div>
-
-            <div style={{ marginTop: 20 }}>
-              <button className="cf-cta-btn cf-btn-secondary" onClick={scrollToPricing} style={{ maxWidth: 380 }}>
-                <span>START YOUR DONZEN EXPERIENCE</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            </div>
-
-            <div className="cf-brand-mantra">
-              <h3>DON'T JUST LEARN ACCOUNTING. EXPERIENCE IT.</h3>
-              <p>DONZEN ACCOUNTING HUB</p>
-              <span className="cf-mantra-sub">Knowledge. Skills. Experience. Technology.</span>
-            </div>
-
-            {/* Social / Contact Links */}
-            <div className="cf-social-links-row">
-              <a href="https://donzenaccounting.com" target="_blank" rel="noopener noreferrer">Website</a>
-              <span>•</span>
-              <a href="https://wa.me/2348000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-              <span>•</span>
-              <a href="mailto:support@donzenaccounting.com">Email</a>
-              <span>•</span>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
-              <span>•</span>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
           </div>
         </div>

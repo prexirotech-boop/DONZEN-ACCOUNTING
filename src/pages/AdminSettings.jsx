@@ -29,6 +29,7 @@ export default function AdminSettings() {
   const [bundlesList, setBundlesList] = useState([])
   const [landingSingleCourseId, setLandingSingleCourseId] = useState('')
   const [landingBundleProductId, setLandingBundleProductId] = useState('')
+  const [landingCompleteProductId, setLandingCompleteProductId] = useState('')
 
   // Payment Configuration fields
   const [paystackPublicKey, setPaystackPublicKey] = useState('')
@@ -87,6 +88,7 @@ export default function AdminSettings() {
             setEnablePaymentPlans(!!siteConfig.value.enable_payment_plans)
             setLandingSingleCourseId(siteConfig.value.landing_single_course_id || '')
             setLandingBundleProductId(siteConfig.value.landing_bundle_product_id || '')
+            setLandingCompleteProductId(siteConfig.value.landing_complete_product_id || '')
           }
           const payConfig = data.find(s => s.id === 'payment_config')
           if (payConfig?.value) {
@@ -209,7 +211,8 @@ export default function AdminSettings() {
             refund_days: 30,
             enable_payment_plans: enablePaymentPlans,
             landing_single_course_id: landingSingleCourseId,
-            landing_bundle_product_id: landingBundleProductId
+            landing_bundle_product_id: landingBundleProductId,
+            landing_complete_product_id: landingCompleteProductId
           },
           updated_at: new Date().toISOString()
         })
@@ -508,11 +511,11 @@ export default function AdminSettings() {
                   </a>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr 1fr' : '1fr', gap: 16 }}>
                   <div>
                     <CustomDropdown
                       options={[
-                        { value: '', label: 'Auto (Flagship / Featured Course)' },
+                        { value: '', label: 'Auto (Flagship Course / Foundation)' },
                         ...coursesList.map(c => ({
                           value: c.id,
                           label: `${c.title} (₦${Number(c.price || 0).toLocaleString()})`
@@ -520,14 +523,14 @@ export default function AdminSettings() {
                       ]}
                       value={landingSingleCourseId}
                       onChange={val => setLandingSingleCourseId(val)}
-                      label="Primary Single Course"
-                      helperText="Controls the single course and syllabus preview on the landing page."
+                      label="Plan 1: Foundation (Course)"
+                      helperText="Controls the product for Foundation (₦53,750)."
                     />
                   </div>
                   <div>
                     <CustomDropdown
                       options={[
-                        { value: '', label: 'Auto (Featured Bundle)' },
+                        { value: '', label: 'Auto (Featured Bundle / Professional)' },
                         ...bundlesList.map(b => ({
                           value: b.id,
                           label: `${b.title} (₦${Number(b.price || 0).toLocaleString()})`
@@ -535,8 +538,23 @@ export default function AdminSettings() {
                       ]}
                       value={landingBundleProductId}
                       onChange={val => setLandingBundleProductId(val)}
-                      label="Featured Course Bundle"
-                      helperText="Controls the bundle offer shown side-by-side on the landing page."
+                      label="Plan 2: Professional (Bundle)"
+                      helperText="Controls the product for Professional (₦187,500)."
+                    />
+                  </div>
+                  <div>
+                    <CustomDropdown
+                      options={[
+                        { value: '', label: 'Auto (Complete Experience Package)' },
+                        ...[...bundlesList, ...coursesList].map(p => ({
+                          value: p.id,
+                          label: `[${p.type.toUpperCase()}] ${p.title} (₦${Number(p.price || 0).toLocaleString()})`
+                        }))
+                      ]}
+                      value={landingCompleteProductId}
+                      onChange={val => setLandingCompleteProductId(val)}
+                      label="Plan 3: Complete Experience"
+                      helperText="Controls the product for Complete Experience (₦350,000)."
                     />
                   </div>
                 </div>
