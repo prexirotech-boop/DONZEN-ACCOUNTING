@@ -1402,7 +1402,7 @@ export default function PlaybookSalesPage() {
               <p className="cf-plan-desc">For learners who want the essential Donzen practical workplace accounting experience.</p>
 
               <div className="cf-plan-price-row">
-                <span className="cf-plan-price">{formatPrice ? formatPrice(product?.price || 53750) : `₦${Number(product?.price || 53750).toLocaleString()}`}</span>
+                <span className="cf-plan-price">{formatPrice ? formatPrice(product?.price != null ? product.price : 53750) : `₦${Number(product?.price != null ? product.price : 53750).toLocaleString()}`}</span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
 
@@ -1439,8 +1439,8 @@ export default function PlaybookSalesPage() {
               <div className="cf-plan-price-row">
                 <span className="cf-plan-price" style={{ color: '#ff1717' }}>
                   {formatPrice 
-                    ? formatPrice(bundleProduct && bundleProduct.slug !== 'wordpress-bundle' ? bundleProduct.price : 187500) 
-                    : `₦${Number(bundleProduct && bundleProduct.slug !== 'wordpress-bundle' ? bundleProduct.price : 187500).toLocaleString()}`}
+                    ? formatPrice(bundleProduct?.price != null ? bundleProduct.price : 187500) 
+                    : `₦${Number(bundleProduct?.price != null ? bundleProduct.price : 187500).toLocaleString()}`}
                 </span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
@@ -1482,7 +1482,9 @@ export default function PlaybookSalesPage() {
 
               <div className="cf-plan-price-row">
                 <span className="cf-plan-price">
-                  {formatPrice ? formatPrice(completeProduct?.price || 350000) : `₦${Number(completeProduct?.price || 350000).toLocaleString()}`}
+                  {formatPrice 
+                    ? formatPrice(completeProduct?.price != null ? completeProduct.price : 350000) 
+                    : `₦${Number(completeProduct?.price != null ? completeProduct.price : 350000).toLocaleString()}`}
                 </span>
                 <span className="cf-plan-duration">/ one-time</span>
               </div>
