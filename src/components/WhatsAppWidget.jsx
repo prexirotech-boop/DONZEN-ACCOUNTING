@@ -11,6 +11,7 @@ export default function WhatsAppWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [pulse, setPulse] = useState(true)
+  const [hasStickyBottom, setHasStickyBottom] = useState(false)
 
   // Slide in after 2 seconds
   useEffect(() => {
@@ -18,6 +19,51 @@ export default function WhatsAppWidget() {
     const p = setTimeout(() => setPulse(false), 8000)
     return () => { clearTimeout(t); clearTimeout(p) }
   }, [])
+
+  // Detect sticky bottom elements (e.g. sales sticky CTA, mobile footer actions)
+  useEffect(() => {
+    const checkSticky = () => {
+      const selectors = [
+        '.cf-sticky-mobile-cta',
+        '.pd-mobile-footer-cta',
+        '[data-sticky-bottom]',
+        '.sticky-bottom-bar',
+        '.cf-sticky-btn'
+      ]
+      let foundSticky = false
+      for (const sel of selectors) {
+        const els = document.querySelectorAll(sel)
+        for (const el of els) {
+          const style = window.getComputedStyle(el)
+          if (
+            style.display !== 'none' &&
+            style.visibility !== 'hidden' &&
+            style.opacity !== '0' &&
+            el.offsetHeight > 0
+          ) {
+            foundSticky = true
+            break
+          }
+        }
+        if (foundSticky) break
+      }
+      setHasStickyBottom(foundSticky)
+    }
+
+    checkSticky()
+
+    const observer = new MutationObserver(checkSticky)
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true })
+
+    window.addEventListener('scroll', checkSticky, { passive: true })
+    window.addEventListener('resize', checkSticky, { passive: true })
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', checkSticky)
+      window.removeEventListener('resize', checkSticky)
+    }
+  }, [location.pathname])
 
   const handleSendMessage = (e) => {
     e.preventDefault()
@@ -36,24 +82,30 @@ export default function WhatsAppWidget() {
     <>
       {/* Chat Popup Widget */}
       {isOpen && (
-        <div style={{
-          position: 'fixed',
-          bottom: 100,
-          right: 28,
-          width: 350,
-          maxWidth: 'calc(100vw - 56px)',
-          height: 410,
-          background: '#fff',
-          borderRadius: 16,
-          boxShadow: '0 12px 32px rgba(16,16,16,0.25), 0 2px 12px rgba(0,0,0,0.1)',
-          display: 'flex',
-          flexDirection: 'column',
-          zIndex: 9999,
-          fontFamily: "var(--font)",
-          overflow: 'hidden',
-          border: '1.5px solid #E4E4E7',
-          animation: 'widgetFadeIn 0.25s ease-out'
-        }}>
+        <div 
+          className="wa-chat-popup"
+          style={{
+            position: 'fixed',
+            bottom: hasStickyBottom 
+              ? 'clamp(152px, calc(144px + env(safe-area-inset-bottom, 0px)), 168px)' 
+              : 'clamp(94px, calc(88px + env(safe-area-inset-bottom, 0px)), 106px)',
+            right: 24,
+            width: 350,
+            maxWidth: 'calc(100vw - 48px)',
+            maxHeight: 'calc(100dvh - 170px)',
+            height: 410,
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 12px 32px rgba(16,16,16,0.25), 0 2px 12px rgba(0,0,0,0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            zIndex: 10001,
+            fontFamily: "var(--font)",
+            overflow: 'hidden',
+            border: '1.5px solid #E4E4E7',
+            animation: 'widgetFadeIn 0.25s ease-out'
+          }}
+        >
           {/* Header */}
           <div style={{
             background: 'linear-gradient(135deg, #101010, #18181B)',
@@ -223,10 +275,13 @@ export default function WhatsAppWidget() {
       <button
         onClick={() => { setIsOpen(!isOpen); setPulse(false) }}
         aria-label="Chat on WhatsApp"
+        className="wa-floating-btn"
         style={{
           position: 'fixed',
-          bottom: 28,
-          right: 28,
+          bottom: hasStickyBottom 
+            ? 'clamp(84px, calc(78px + env(safe-area-inset-bottom, 0px)), 96px)' 
+            : 'max(24px, env(safe-area-inset-bottom, 0px))',
+          right: 24,
           width: 56,
           height: 56,
           borderRadius: '50%',
@@ -235,10 +290,10 @@ export default function WhatsAppWidget() {
           alignItems: 'center',
           justifyContent: 'center',
           boxShadow: '0 4px 20px rgba(37,211,102,0.5), 0 2px 8px rgba(0,0,0,0.2)',
-          zIndex: 9998,
+          zIndex: 10000,
           border: 'none',
           cursor: 'pointer',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          transition: 'bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease, box-shadow 0.2s ease',
           transform: visible ? 'scale(1)' : 'scale(0)',
         }}
         onMouseDown={e => e.currentTarget.style.transform = 'scale(0.93)'}
@@ -286,6 +341,19 @@ export default function WhatsAppWidget() {
         @keyframes widgetFadeIn {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 480px) {
+          .wa-floating-btn {
+            right: 16px !important;
+            width: 52px !important;
+            height: 52px !important;
+          }
+          .wa-chat-popup {
+            right: 12px !important;
+            left: 12px !important;
+            width: auto !important;
+            max-width: none !important;
+          }
         }
       `}</style>
     </>

@@ -1869,7 +1869,7 @@ export default function PlaybookSalesPage() {
 
       {/* Sticky Mobile CTA */}
       {showStickyCta && (
-        <div className="cf-sticky-mobile-cta">
+        <div className="cf-sticky-mobile-cta" data-sticky-bottom="true">
           <button onClick={scrollToPricing} className="cf-sticky-btn">
             <span>JOIN THE DONZEN EXPERIENCE</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -3842,7 +3842,7 @@ export default function PlaybookSalesPage() {
           background: #09090b;
           border-top: 1px solid rgba(255, 23, 23, 0.4);
           padding: 10px 16px;
-          z-index: 9999;
+          z-index: 9990;
           display: flex;
           justify-content: center;
           box-shadow: 0 -4px 16px rgba(0,0,0,0.3);

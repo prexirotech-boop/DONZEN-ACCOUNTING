@@ -896,7 +896,7 @@ export default function ProductDetailsPage() {
       </div>
 
       {/* Mobile Sticky Footer */}
-      <div className="pd-mobile-footer-cta">
+      <div className="pd-mobile-footer-cta" data-sticky-bottom="true">
         {!isEnrolled && (
           <div className="pd-mobile-footer-price">
             {isFree ? (
