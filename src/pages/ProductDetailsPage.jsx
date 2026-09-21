@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useCurrency } from '../context/CurrencyContext'
 import UpsellWidget from '../components/UpsellWidget'
+import { isSalesPageProduct, EXPERIENCE_SALES_PAGE_ROUTE } from '../lib/productRoutes'
 
 const StarRating = ({ rating = 0, count = 0 }) => {
   const full = Math.floor(rating)
@@ -70,6 +71,11 @@ export default function ProductDetailsPage() {
     async function load() {
       if (!productId) return
 
+      if (isSalesPageProduct(productId)) {
+        navigate(EXPERIENCE_SALES_PAGE_ROUTE, { replace: true })
+        return
+      }
+
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(productId)
       let query = supabase.from('products').select('*')
       if (isUUID) {
@@ -81,6 +87,11 @@ export default function ProductDetailsPage() {
 
       if (error || !prod) {
         navigate('/products')
+        return
+      }
+
+      if (isSalesPageProduct(prod)) {
+        navigate(EXPERIENCE_SALES_PAGE_ROUTE, { replace: true })
         return
       }
 

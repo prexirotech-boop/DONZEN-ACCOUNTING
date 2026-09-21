@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useCurrency } from '../context/CurrencyContext'
+import { getProductPath, isSalesPageProduct } from '../lib/productRoutes'
 
 const StarRating = ({ rating = 4.8 }) => (
   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
@@ -226,10 +227,12 @@ export default function ProductsPage() {
               const discountPct = product.old_price && product.price
                 ? Math.round((1 - product.price / product.old_price) * 100)
                 : null
+              const isExperience = isSalesPageProduct(product)
+              const cardTarget = getProductPath(product)
 
               return (
                 <Link
-                  to={`/product/${product.slug || product.id}`}
+                  to={cardTarget}
                   key={product.id}
                   className="lib-card"
                   style={{ textDecoration: 'none', color: 'inherit' }}
@@ -319,7 +322,7 @@ export default function ProductsPage() {
                       )}
                     </div>
                     <div className="lib-cta-label">
-                      {free ? 'Enroll Free →' : isCourse ? 'Enroll Now →' : 'View Details →'}
+                      {free ? 'Enroll Free →' : isExperience ? 'View Details →' : isCourse ? 'Enroll Now →' : 'View Details →'}
                     </div>
                   </div>
                 </Link>

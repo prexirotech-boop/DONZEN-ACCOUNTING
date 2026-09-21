@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import UserMenu from './UserMenu'
 import { supabase } from '../lib/supabase'
 import { useCurrency } from '../context/CurrencyContext'
+import { getProductPath } from '../lib/productRoutes'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export default function Header() {
   // Navigate directly to the selected product page
   const handleSelectProduct = (product) => {
     if (!product) return
-    const target = `/product/${product.slug || product.id}`
+    const target = getProductPath(product)
     navigate(target)
     setSearchQuery('')
     setShowDropdown(false)

@@ -168,7 +168,7 @@ export default function PlaybookSalesPage() {
           const { data: bySlug } = await supabase
             .from('products')
             .select('*')
-            .or('slug.eq.30-days-bundle,slug.eq.master-course-bundle,slug.eq.accounting-mastery-bundle')
+            .or('id.eq.b34f145f-d77f-47ba-aa31-6289ff6298da,slug.eq.professional,slug.eq.30-days-bundle,slug.eq.master-course-bundle,slug.eq.accounting-mastery-bundle')
             .eq('is_published', true)
             .limit(1)
             .maybeSingle()
