@@ -355,10 +355,10 @@ export default function AdminSettings() {
       {message && <div style={{ padding: 12, background: '#e3fcef', color: '#00875a', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #c3f2d7' }}>{message}</div>}
       {error && <div style={{ padding: 12, background: '#ffebe6', color: '#ae2a19', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #ffd2ca' }}>{error}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1024 ? '1.8fr 1.1fr' : '1fr', gap: 24, alignItems: 'flex-start', width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1200 ? 'minmax(0, 1fr) 300px' : 'minmax(0, 1fr)', gap: 24, alignItems: 'flex-start', width: '100%', boxSizing: 'border-box' }}>
         
         {/* Left Column: Form Settings Panels */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
           
           {/* Admin Profile Form */}
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 24, boxShadow: '0 1px 3px 0 rgba(0,0,0,0.04)' }}>
@@ -408,7 +408,7 @@ export default function AdminSettings() {
                   type="text" 
                   value={fullName} 
                   onChange={e => setFullName(e.target.value)} 
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                 />
               </div>
 
@@ -419,7 +419,7 @@ export default function AdminSettings() {
                   value={avatarUrl.startsWith('data:') ? '' : avatarUrl} 
                   onChange={e => setAvatarUrl(e.target.value)} 
                   placeholder="https://..."
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                 />
               </div>
 
@@ -428,7 +428,7 @@ export default function AdminSettings() {
                 <textarea 
                   value={bio} 
                   onChange={e => setBio(e.target.value)} 
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, minHeight: 70, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, minHeight: 70, outline: 'none' }}
                   placeholder="Showcase your professional bio in about segments..."
                 />
               </div>
@@ -450,7 +450,7 @@ export default function AdminSettings() {
                     type="text" 
                     value={brandName} 
                     onChange={e => setBrandName(e.target.value)} 
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
                 <div>
@@ -459,7 +459,7 @@ export default function AdminSettings() {
                     type="email" 
                     value={supportEmail} 
                     onChange={e => setSupportEmail(e.target.value)} 
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
               </div>
@@ -590,7 +590,7 @@ export default function AdminSettings() {
                     value={paystackPublicKey} 
                     onChange={e => setPaystackPublicKey(e.target.value)} 
                     placeholder="pk_live_... or pk_test_..."
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                   <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>Used on live checkout popup (Starts with <code>pk_live_</code> or <code>pk_test_</code>)</span>
                 </div>
@@ -601,7 +601,7 @@ export default function AdminSettings() {
                     value={paystackSecretKey} 
                     onChange={e => setPaystackSecretKey(e.target.value)} 
                     placeholder="sk_live_... or sk_test_..."
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                   <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>Used for backend order verification (Starts with <code>sk_live_</code> or <code>sk_test_</code>)</span>
                 </div>
@@ -618,7 +618,7 @@ export default function AdminSettings() {
                     value={stripePublicKey} 
                     onChange={e => setStripePublicKey(e.target.value)} 
                     placeholder="pk_live_..."
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
                 <div>
@@ -628,7 +628,7 @@ export default function AdminSettings() {
                     value={stripeSecretKey} 
                     onChange={e => setStripeSecretKey(e.target.value)} 
                     placeholder="sk_live_..."
-                    style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                    style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
               </div>
@@ -643,7 +643,7 @@ export default function AdminSettings() {
                   value={resendApiKey} 
                   onChange={e => setResendApiKey(e.target.value)} 
                   placeholder="re_..."
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                 />
               </div>
 
@@ -671,7 +671,7 @@ export default function AdminSettings() {
                       value={usdRate} 
                       onChange={e => setUsdRate(e.target.value)} 
                       placeholder="e.g. 1500"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                   <div>
@@ -681,7 +681,7 @@ export default function AdminSettings() {
                       value={eurRate} 
                       onChange={e => setEurRate(e.target.value)} 
                       placeholder="e.g. 1650"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                   <div>
@@ -691,7 +691,7 @@ export default function AdminSettings() {
                       value={gbpRate} 
                       onChange={e => setGbpRate(e.target.value)} 
                       placeholder="e.g. 1950"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                 </div>
@@ -766,7 +766,7 @@ export default function AdminSettings() {
                       value={newBankName} 
                       onChange={e => setNewBankName(e.target.value)} 
                       placeholder="e.g. GTBank"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                   <div>
@@ -776,7 +776,7 @@ export default function AdminSettings() {
                       value={newAccNum} 
                       onChange={e => setNewAccNum(e.target.value)} 
                       placeholder="10 Digits"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                   <div>
@@ -786,7 +786,7 @@ export default function AdminSettings() {
                       value={newAccName} 
                       onChange={e => setNewAccName(e.target.value)} 
                       placeholder="e.g. DONZEN ACCOUNTING HUB LTD"
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                      style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                     />
                   </div>
                 </div>
@@ -817,7 +817,7 @@ export default function AdminSettings() {
                   type="password" 
                   value={newPassword} 
                   onChange={e => setNewPassword(e.target.value)} 
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   minLength={6}
                   required
                 />
@@ -828,7 +828,7 @@ export default function AdminSettings() {
                   type="password" 
                   value={confirmPassword} 
                   onChange={e => setConfirmPassword(e.target.value)} 
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
+                  style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   minLength={6}
                   required
                 />
