@@ -355,10 +355,10 @@ export default function AdminSettings() {
       {message && <div style={{ padding: 12, background: '#e3fcef', color: '#00875a', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #c3f2d7' }}>{message}</div>}
       {error && <div style={{ padding: 12, background: '#ffebe6', color: '#ae2a19', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #ffd2ca' }}>{error}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1100 ? '1.8fr 1fr' : '1fr', gap: 24, alignItems: 'flex-start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1024 ? '1.8fr 1.1fr' : '1fr', gap: 24, alignItems: 'flex-start', width: '100%', boxSizing: 'border-box' }}>
         
         {/* Left Column: Form Settings Panels */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0, width: '100%' }}>
           
           {/* Admin Profile Form */}
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 24, boxShadow: '0 1px 3px 0 rgba(0,0,0,0.04)' }}>
@@ -842,38 +842,41 @@ export default function AdminSettings() {
         </div>
 
         {/* Right Column: Beautiful Live Preview Card */}
-        <div>
+        <div style={{ minWidth: 0, width: '100%' }}>
           <div style={{ 
             background: '#ffffff', 
             border: '1px solid #e2e8f0', 
             borderRadius: 12, 
-            padding: 24, 
+            padding: 20, 
             boxShadow: '0 1px 3px 0 rgba(0,0,0,0.04)',
             position: 'sticky',
-            top: 24
+            top: 24,
+            width: '100%',
+            boxSizing: 'border-box',
+            overflow: 'hidden'
           }}>
             <h4 style={{ margin: '0 0 16px 0', fontSize: 13, fontWeight: 600, color: '#1a1f36', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
               Live Profile Preview
             </h4>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '16px 0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '12px 0' }}>
               <img 
                 src={avatarUrl || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} 
                 alt="Avatar" 
                 style={{ width: 84, height: 84, borderRadius: '50%', objectFit: 'cover', border: '3px solid #ff1717', marginBottom: 12, boxShadow: '0 4px 10px rgba(255, 23, 23,0.15)' }} 
               />
-              <h5 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#1a1f36' }}>{fullName || 'Administrator Name'}</h5>
+              <h5 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1a1f36', wordBreak: 'break-word', maxWidth: '100%' }}>{fullName || 'Administrator Name'}</h5>
               <span style={{ fontSize: 12, color: '#697386', fontWeight: 500, marginTop: 4 }}>Platform Instructor</span>
               
-              <div style={{ borderTop: '1px solid #f1f5f9', width: '100%', margin: '16px 0', paddingTop: 16 }}>
-                <p style={{ margin: 0, fontSize: 12.5, color: '#4f566b', fontStyle: 'italic', lineHeight: 1.5 }}>
+              <div style={{ borderTop: '1px solid #f1f5f9', width: '100%', margin: '14px 0', paddingTop: 14 }}>
+                <p style={{ margin: 0, fontSize: 12.5, color: '#4f566b', fontStyle: 'italic', lineHeight: 1.5, wordBreak: 'break-word' }}>
                   "{bio || 'A descriptive biography will be displayed here for students to learn more about your teaching profile.'}"
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', width: '100%', marginTop: 8 }}>
-                <span style={{ fontSize: 11, background: '#e3fcef', color: '#00875a', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>Active</span>
-                <span style={{ fontSize: 11, background: 'rgba(255, 23, 23, 0.08)', color: '#ff1717', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>{brandName}</span>
+              <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: 8 }}>
+                <span style={{ fontSize: 11, background: '#e3fcef', color: '#00875a', padding: '3px 8px', borderRadius: 4, fontWeight: 600, flexShrink: 0 }}>Active</span>
+                <span style={{ fontSize: 11, background: 'rgba(255, 23, 23, 0.08)', color: '#ff1717', padding: '3px 8px', borderRadius: 4, fontWeight: 600, textAlign: 'center', wordBreak: 'break-word', maxWidth: '100%' }}>{brandName}</span>
               </div>
             </div>
 
