@@ -2313,7 +2313,7 @@ export default function AdminDashboard() {
   )
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', background: '#f7f8f9', fontFamily: 'var(--font)' }}>
+    <div style={{ display: 'flex', height: '100vh', width: '100%', maxWidth: '100%', overflow: 'hidden', background: '#f7f8f9', fontFamily: 'var(--font)' }}>
       
       {/* Sidebar - Desktop */}
       {!isTablet && (
@@ -2619,7 +2619,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Scrollable workspace content */}
-        <main style={{ flex: 1, padding: isTablet ? '20px 16px' : '32px 40px', overflowY: 'auto', background: '#f7f8f9' }}>
+        <main style={{ flex: 1, padding: isTablet ? '20px 16px' : '32px 40px', overflowY: 'auto', overflowX: 'hidden', maxWidth: '100%', boxSizing: 'border-box', background: '#f7f8f9' }}>
           <Routes>
             <Route path="/" element={<AdminOverview />} />
             <Route path="/products" element={<AdminProducts />} />

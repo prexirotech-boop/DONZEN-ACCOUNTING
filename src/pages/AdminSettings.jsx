@@ -346,7 +346,7 @@ export default function AdminSettings() {
   const isDesktop = windowWidth >= 1024
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', fontFamily: 'var(--font)' }}>
+    <div style={{ maxWidth: 1200, width: '100%', boxSizing: 'border-box', margin: '0 auto', fontFamily: 'var(--font)' }}>
       <div style={{ marginBottom: 28 }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a1f36', margin: 0 }}>Platform Settings</h2>
         <p style={{ color: '#697386', marginTop: 4, fontSize: 13.5 }}>Configure branding guidelines, payment gateway settings, and admin credentials.</p>
@@ -355,7 +355,7 @@ export default function AdminSettings() {
       {message && <div style={{ padding: 12, background: '#e3fcef', color: '#00875a', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #c3f2d7' }}>{message}</div>}
       {error && <div style={{ padding: 12, background: '#ffebe6', color: '#ae2a19', borderRadius: 6, marginBottom: 24, fontWeight: 500, fontSize: 13, border: '1px solid #ffd2ca' }}>{error}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1.8fr 1fr' : '1fr', gap: 24, alignItems: 'flex-start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1100 ? '1.8fr 1fr' : '1fr', gap: 24, alignItems: 'flex-start' }}>
         
         {/* Left Column: Form Settings Panels */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -514,7 +514,7 @@ export default function AdminSettings() {
                   </a>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr 1fr' : '1fr', gap: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1280 ? '1fr 1fr 1fr' : (windowWidth >= 640 ? '1fr 1fr' : '1fr'), gap: 16 }}>
                   <div>
                     <CustomDropdown
                       options={[
@@ -758,7 +758,7 @@ export default function AdminSettings() {
               {/* Add New Account Form */}
               <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 14, marginTop: 6 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Add Bank Account</span>
-                <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr 1fr' : '1fr', gap: 12, marginTop: 10 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1280 ? '1fr 1fr 1fr' : (windowWidth >= 640 ? '1fr 1fr' : '1fr'), gap: 12, marginTop: 10 }}>
                   <div>
                     <label style={{ display: 'block', fontWeight: 500, fontSize: 12.5, marginBottom: 4, color: '#3c4257' }}>Bank Name</label>
                     <input 
