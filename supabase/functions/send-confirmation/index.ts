@@ -70,9 +70,9 @@ serve(async (req: any) => {
             'Authorization': `Bearer ${activeResendKey}`
           },
           body: JSON.stringify({
-            from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',
+            from: 'Donzen Accounting Hub <donzenconsulting@gmail.com>',
             to: [targetEmail],
-            reply_to: 'info@donzenaccountinghub.com',
+            reply_to: 'donzenconsulting@gmail.com',
             subject: `🎉 Your Batch Has Started: ${targetTitle} is Now Live!`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
@@ -117,9 +117,9 @@ serve(async (req: any) => {
             'Authorization': `Bearer ${activeResendKey}`
           },
           body: JSON.stringify({
-            from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',
+            from: 'Donzen Accounting Hub <donzenconsulting@gmail.com>',
             to: [targetEmail],
-            reply_to: 'info@donzenaccountinghub.com',
+            reply_to: 'donzenconsulting@gmail.com',
             subject: customSubject,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
@@ -210,9 +210,9 @@ serve(async (req: any) => {
           'Authorization': `Bearer ${activeResendKey}`
         },
         body: JSON.stringify({
-          from: 'Donzen Accounting Hub <info@donzenaccountinghub.com>',
+          from: 'Donzen Accounting Hub <donzenconsulting@gmail.com>',
           to: [record.customer_email],
-          reply_to: 'info@donzenaccountinghub.com',
+          reply_to: 'donzenconsulting@gmail.com',
           subject: emailSubject,
           html: `
 <!DOCTYPE html>
@@ -294,7 +294,7 @@ serve(async (req: any) => {
                     <tr>
                         <td align="center" style="background-color: #F7F3F5; padding: 28px 40px; border-top: 1px solid #eef1f4;">
                             <p style="color: #718096; font-size: 13px; margin: 0 0 12px; line-height: 1.6;">
-                                Need help or have questions about your training?<br>Email us at <a href="mailto:info@donzenaccountinghub.com" style="color: #ff1717; text-decoration: none; font-weight: 700;">info@donzenaccountinghub.com</a> or call <strong>+234 703 9999 842</strong>.
+                                Need help or have questions about your training?<br>Email us at <a href="mailto:donzenconsulting@gmail.com" style="color: #ff1717; text-decoration: none; font-weight: 700;">donzenconsulting@gmail.com</a> or call <strong>+234 703 9999 842</strong>.
                             </p>
                             <p style="color: #a1a1aa; font-size: 11px; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
                                 © ${new Date().getFullYear()} Donzen Accounting Hub · Ikota Shopping Complex, Lekki, Lagos, Nigeria

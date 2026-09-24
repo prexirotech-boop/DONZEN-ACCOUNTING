@@ -22,7 +22,7 @@ export default function AdminSettings() {
 
   // Platform styling fields
   const [brandName, setBrandName] = useState('Donzen Accounting Hub')
-  const [supportEmail, setSupportEmail] = useState('info@donzenaccountinghub.com')
+  const [supportEmail, setSupportEmail] = useState('donzenconsulting@gmail.com')
 
   // Landing page showcased products
   const [coursesList, setCoursesList] = useState([])
@@ -84,7 +84,7 @@ export default function AdminSettings() {
           const siteConfig = data.find(s => s.id === 'site_config')
           if (siteConfig?.value) {
             setBrandName(siteConfig.value.platform_name || 'Donzen Accounting Hub')
-            setSupportEmail(siteConfig.value.support_email || 'info@donzenaccountinghub.com')
+            setSupportEmail(siteConfig.value.support_email || 'donzenconsulting@gmail.com')
             setEnablePaymentPlans(!!siteConfig.value.enable_payment_plans)
             setLandingSingleCourseId(siteConfig.value.landing_single_course_id || '')
             setLandingBundleProductId(siteConfig.value.landing_bundle_product_id || '')

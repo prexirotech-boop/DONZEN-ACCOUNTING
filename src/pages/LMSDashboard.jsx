@@ -692,7 +692,7 @@ function PurchaseHistoryTab({ user, profile }) {
             
             <div class="footer-note">
               <p style="font-weight: 600; color: #0f172a; margin-bottom: 4px;">Thank you for studying with Donzen Accounting Hub!</p>
-              <p style="margin: 0; font-size: 12px;">This receipt is generated automatically. For questions, reach out to info@donzenaccountinghub.com</p>
+              <p style="margin: 0; font-size: 12px;">This receipt is generated automatically. For questions, reach out to donzenconsulting@gmail.com</p>
             </div>
           </div>
         </body>

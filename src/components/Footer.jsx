@@ -223,8 +223,8 @@ export default function Footer() {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
-                <a href="mailto:info@donzenaccountinghub.com" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}>
-                  info@donzenaccountinghub.com
+                <a href="mailto:donzenconsulting@gmail.com" style={{ color: '#fff', textDecoration: 'none', transition: 'color 0.2s' }}>
+                  donzenconsulting@gmail.com
                 </a>
               </div>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
