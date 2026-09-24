@@ -77,9 +77,9 @@ export default function CustomDropdown({
           ...buttonStyle
         }}
       >
-        <span style={{ display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {selectedOption?.icon && <span style={{ fontSize: 16 }}>{selectedOption.icon}</span>}
-          <span>{selectedOption ? selectedOption.label : placeholder}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0, flex: 1 }}>
+          {selectedOption?.icon && <span style={{ fontSize: 16, flexShrink: 0 }}>{selectedOption.icon}</span>}
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0, display: 'block' }}>{selectedOption ? selectedOption.label : placeholder}</span>
         </span>
 
         {/* Chevron Icon */}

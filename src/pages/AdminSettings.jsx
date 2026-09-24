@@ -444,7 +444,7 @@ export default function AdminSettings() {
             <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16, color: '#1a1f36' }}>Platform Branding & API Keys</h3>
             <form onSubmit={handleUpdatePlatform} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Brand / Site Title</label>
                   <input 
                     type="text" 
@@ -453,7 +453,7 @@ export default function AdminSettings() {
                     style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Support Contact Email</label>
                   <input 
                     type="email" 
@@ -514,8 +514,8 @@ export default function AdminSettings() {
                   </a>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1280 ? '1fr 1fr 1fr' : (windowWidth >= 640 ? '1fr 1fr' : '1fr'), gap: 16 }}>
-                  <div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 16, width: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ minWidth: 0, width: '100%' }}>
                     <CustomDropdown
                       options={[
                         { value: '', label: 'Auto (Flagship Course / Foundation)' },
@@ -530,7 +530,7 @@ export default function AdminSettings() {
                       helperText="Controls the product for Foundation (₦53,750)."
                     />
                   </div>
-                  <div>
+                  <div style={{ minWidth: 0, width: '100%' }}>
                     <CustomDropdown
                       options={[
                         { value: '', label: 'Auto (Featured Bundle / Professional)' },
@@ -545,7 +545,7 @@ export default function AdminSettings() {
                       helperText="Controls the product for Professional (₦187,500)."
                     />
                   </div>
-                  <div>
+                  <div style={{ minWidth: 0, width: '100%' }}>
                     <CustomDropdown
                       options={[
                         { value: '', label: 'Auto (Complete Experience Package)' },
@@ -583,7 +583,7 @@ export default function AdminSettings() {
                 </button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Paystack Public Key</label>
                   <input 
                     type="text" 
@@ -594,7 +594,7 @@ export default function AdminSettings() {
                   />
                   <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>Used on live checkout popup (Starts with <code>pk_live_</code> or <code>pk_test_</code>)</span>
                 </div>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Paystack Secret Key</label>
                   <input 
                     type={showSecrets ? 'text' : 'password'}
@@ -611,7 +611,7 @@ export default function AdminSettings() {
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stripe Credentials</span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Stripe Public Key</label>
                   <input 
                     type="text" 
@@ -621,7 +621,7 @@ export default function AdminSettings() {
                     style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
                 </div>
-                <div>
+                <div style={{ minWidth: 0, width: '100%' }}>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Stripe Secret Key</label>
                   <input 
                     type={showSecrets ? 'text' : 'password'}
