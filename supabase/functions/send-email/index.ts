@@ -148,11 +148,26 @@ serve(async (req: any) => {
     }
 
     // 3. Security Check: Verify payment status with Paystack API if secret configured
-    if (PAYSTACK_SECRET_KEY && record.reference && !record.reference.startsWith('manual_')) {
+    let activePaystackSecret = PAYSTACK_SECRET_KEY
+    if (!activePaystackSecret && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        const { data: paySetting } = await supabaseAdmin
+          .from('settings')
+          .select('value')
+          .eq('id', 'payment_config')
+          .maybeSingle()
+        if (paySetting?.value?.paystack_secret_key) {
+          activePaystackSecret = paySetting.value.paystack_secret_key.trim()
+        }
+      } catch (e) {}
+    }
+
+    if (activePaystackSecret && record.reference && !record.reference.startsWith('manual_')) {
       const paystackRes = await fetch(`https://api.paystack.co/transaction/verify/${record.reference}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${PAYSTACK_SECRET_KEY}`,
+          'Authorization': `Bearer ${activePaystackSecret}`,
           'Content-Type': 'application/json'
         }
       })

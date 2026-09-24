@@ -101,6 +101,7 @@ export default function PaymentPage() {
   // State flags
   const [loading, setLoading] = useState(false)
   const [psReady, setPsReady] = useState(!!window.PaystackPop)
+  const [paystackPublicKey, setPaystackPublicKey] = useState('')
   const [imgError, setImgError] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
 
@@ -226,6 +227,17 @@ export default function PaymentPage() {
           .maybeSingle()
         if (siteConfigData?.value) {
           setGlobalPaymentPlansEnabled(!!siteConfigData.value.enable_payment_plans)
+        }
+
+        // Fetch payment gateway configuration credentials
+        const { data: payConfigData } = await supabase
+          .from('settings')
+          .select('value')
+          .eq('id', 'payment_config')
+          .maybeSingle()
+        if (payConfigData?.value?.paystack_public_key) {
+          const key = payConfigData.value.paystack_public_key.trim()
+          if (key) setPaystackPublicKey(key)
         }
 
         // Load parent order details if in installment mode
@@ -666,8 +678,9 @@ export default function PaymentPage() {
     paidRef.current = false
 
     try {
+      const activeKey = (paystackPublicKey || CONFIG.PAYSTACK_PUBLIC_KEY || '').trim()
       const handler = window.PaystackPop.setup({
-        key: CONFIG.PAYSTACK_PUBLIC_KEY,
+        key: activeKey,
         email,
         amount: Math.round(finalTotal * 100),
         currency: 'NGN',

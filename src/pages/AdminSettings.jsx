@@ -38,6 +38,9 @@ export default function AdminSettings() {
   const [stripeSecretKey, setStripeSecretKey] = useState('')
   const [resendApiKey, setResendApiKey] = useState('')
 
+  // Payment Credentials UI toggle
+  const [showSecrets, setShowSecrets] = useState(false)
+
   // Multi-Currency settings
   const [enableMultiCurrency, setEnableMultiCurrency] = useState(false)
   const [usdRate, setUsdRate] = useState(1500)
@@ -560,8 +563,24 @@ export default function AdminSettings() {
                 </div>
               </div>
 
-              <div style={{ borderTop: '1px solid #e2e8f0', margin: '12px 0 6px 0', paddingTop: 12 }}>
+              <div style={{ borderTop: '1px solid #e2e8f0', margin: '12px 0 6px 0', paddingTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paystack Credentials</span>
+                <button
+                  type="button"
+                  onClick={() => setShowSecrets(!showSecrets)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#2563eb',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    padding: 0,
+                    textDecoration: 'underline'
+                  }}
+                >
+                  {showSecrets ? '🔒 Hide Secret Keys' : '👁️ Show Secret Keys'}
+                </button>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 16 }}>
                 <div>
@@ -570,19 +589,21 @@ export default function AdminSettings() {
                     type="text" 
                     value={paystackPublicKey} 
                     onChange={e => setPaystackPublicKey(e.target.value)} 
-                    placeholder="pk_live_..."
+                    placeholder="pk_live_... or pk_test_..."
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
+                  <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>Used on live checkout popup (Starts with <code>pk_live_</code> or <code>pk_test_</code>)</span>
                 </div>
                 <div>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Paystack Secret Key</label>
                   <input 
-                    type="password" 
+                    type={showSecrets ? 'text' : 'password'}
                     value={paystackSecretKey} 
                     onChange={e => setPaystackSecretKey(e.target.value)} 
-                    placeholder="sk_live_..."
+                    placeholder="sk_live_... or sk_test_..."
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 13, outline: 'none' }}
                   />
+                  <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>Used for backend order verification (Starts with <code>sk_live_</code> or <code>sk_test_</code>)</span>
                 </div>
               </div>
 
@@ -603,7 +624,7 @@ export default function AdminSettings() {
                 <div>
                   <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Stripe Secret Key</label>
                   <input 
-                    type="password" 
+                    type={showSecrets ? 'text' : 'password'}
                     value={stripeSecretKey} 
                     onChange={e => setStripeSecretKey(e.target.value)} 
                     placeholder="sk_live_..."
@@ -618,7 +639,7 @@ export default function AdminSettings() {
               <div>
                 <label style={{ display: 'block', fontWeight: 500, fontSize: 13, marginBottom: 6, color: '#3c4257' }}>Resend API Key</label>
                 <input 
-                  type="password" 
+                  type={showSecrets ? 'text' : 'password'}
                   value={resendApiKey} 
                   onChange={e => setResendApiKey(e.target.value)} 
                   placeholder="re_..."
