@@ -252,9 +252,9 @@ export default function AdminSettings() {
           updated_at: new Date().toISOString()
         })
 
-      if (err1) throw err1
-      if (err2) throw err2
-      if (err3) throw err3
+      if (err1) throw new Error(`Site Configuration Error: ${err1.message}`)
+      if (err2) throw new Error(`Payment Gateway API Keys Error: ${err2.message}`)
+      if (err3) throw new Error(`Currency Configuration Error: ${err3.message}`)
 
       // Save in localStorage for immediate sync in frontend header
       localStorage.setItem('brandName', brandName.trim())
